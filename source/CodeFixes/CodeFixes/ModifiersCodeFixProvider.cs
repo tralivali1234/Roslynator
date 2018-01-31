@@ -70,7 +70,8 @@ namespace Roslynator.CSharp.CodeFixes
                     CompilerDiagnosticIdentifiers.AsyncMethodsCannotHaveRefOrOutParameters,
                     CompilerDiagnosticIdentifiers.IteratorsCannotHaveRefOrOutParameters,
                     CompilerDiagnosticIdentifiers.CannotHaveInstancePropertyOrFieldInitializersInStruct,
-                    CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBeUsedAsRefOrOutValue);
+                    CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBePassedAsRefOrOutValue,
+                    CompilerDiagnosticIdentifiers.MemberMustDeclareBodyBecauseItIsNotMarkedAbstractExternOrPartial);
             }
         }
 
@@ -83,7 +84,8 @@ namespace Roslynator.CSharp.CodeFixes
                 && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeContainingClassNonStatic)
                 && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddPartialModifier)
                 && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveOutModifier)
-                && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveRefModifier))
+                && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveRefModifier)
+                && !Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddModifierAbstract))
             {
                 return;
             }
@@ -411,7 +413,7 @@ namespace Roslynator.CSharp.CodeFixes
                         }
                     case CompilerDiagnosticIdentifiers.AsyncMethodsCannotHaveRefOrOutParameters:
                     case CompilerDiagnosticIdentifiers.IteratorsCannotHaveRefOrOutParameters:
-                    case CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBeUsedAsRefOrOutValue:
+                    case CompilerDiagnosticIdentifiers.ReadOnlyFieldCannotBePassedAsRefOrOutValue:
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveRefModifier))
                                 ModifiersCodeFixRegistrator.RemoveModifier(context, diagnostic, node, SyntaxKind.RefKeyword, additionalKey: nameof(SyntaxKind.RefKeyword));
@@ -425,6 +427,17 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddStaticModifier))
                                 AddStaticModifier(context, diagnostic, node);
+
+                            break;
+                        }
+                    case CompilerDiagnosticIdentifiers.MemberMustDeclareBodyBecauseItIsNotMarkedAbstractExternOrPartial:
+                        {
+                            if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddModifierAbstract)
+                                && node.Kind() == SyntaxKind.MethodDeclaration
+                                && (node.Parent as ClassDeclarationSyntax)?.Modifiers.Contains(SyntaxKind.AbstractKeyword) == true)
+                            {
+                                ModifiersCodeFixRegistrator.AddModifier(context, diagnostic, node, SyntaxKind.AbstractKeyword);
+                            }
 
                             break;
                         }

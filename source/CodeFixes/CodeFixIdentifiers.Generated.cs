@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.CodeFixes
         public const string UseExplicitTypeInsteadOfVar = Prefix + "0048";
         public const string RemoveAwaitKeyword = Prefix + "0049";
         public const string WrapInUnsafeStatement = Prefix + "0050";
-        public const string AddUnsafeModifier = Prefix + "0051";
+        public const string MakeContainingDeclarationUnsafe = Prefix + "0051";
         public const string RemoveReturnKeyword = Prefix + "0052";
         public const string RemoveParametersFromStaticConstructor = Prefix + "0053";
         public const string ReorderModifiers = Prefix + "0054";
@@ -101,5 +101,6 @@ namespace Roslynator.CSharp.CodeFixes
         public const string ReplaceStructWithClass = Prefix + "0095";
         public const string ReplaceYieldReturnWithForEach = Prefix + "0096";
         public const string ReplaceComparisonWithAssignment = Prefix + "0097";
+        public const string AddModifierAbstract = Prefix + "0098";
     }
 }

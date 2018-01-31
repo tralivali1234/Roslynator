@@ -270,7 +270,7 @@
       <Id>CS0214</Id>
     </FixableDiagnosticIds>
   </CodeFix>
-  <CodeFix Id="RCF0051" Identifier="AddUnsafeModifier" Title="Add 'unsafe' modifier">
+  <CodeFix Id="RCF0051" Identifier="MakeContainingDeclarationUnsafe" Title="Make containing declaration unsafe">
     <FixableDiagnosticIds>
       <Id>CS0214</Id>
     </FixableDiagnosticIds>
@@ -537,6 +537,11 @@
   <CodeFix Id="RCF0097" Identifier="ReplaceComparisonWithAssignment" Title="Replace comparison with assignment">
     <FixableDiagnosticIds>
       <Id>CS0201</Id>
+    </FixableDiagnosticIds>
+  </CodeFix>
+  <CodeFix Id="RCF0098" Identifier="AddModifierAbstract" Title="Add modifier 'abstract'">
+    <FixableDiagnosticIds>
+      <Id>CS0501</Id>
     </FixableDiagnosticIds>
   </CodeFix>
 </CodeFixes>

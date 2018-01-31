@@ -157,20 +157,21 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
         //    base.VisitArgumentList(node);
         //}
 
-        public override void VisitArrayCreationExpression(ArrayCreationExpressionSyntax node)
-        {
-            Visit(node.Initializer);
-            //base.VisitArrayCreationExpression(node);
-        }
+        //public override void VisitArrayCreationExpression(ArrayCreationExpressionSyntax node)
+        //{
+        //    base.VisitArrayCreationExpression(node);
+        //}
 
-        public override void VisitArrayRankSpecifier(ArrayRankSpecifierSyntax node)
-        {
-            Debug.Fail(node.ToString());
-            base.VisitArrayRankSpecifier(node);
-        }
+        //public override void VisitArrayRankSpecifier(ArrayRankSpecifierSyntax node)
+        //{
+        //    base.VisitArrayRankSpecifier(node);
+        //}
 
         public override void VisitArrayType(ArrayTypeSyntax node)
         {
+            foreach (ArrayRankSpecifierSyntax rankSpecifier in node.RankSpecifiers)
+                Visit(rankSpecifier);
+
             //base.VisitArrayType(node);
         }
 
@@ -825,11 +826,10 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
             base.VisitObjectCreationExpression(node);
         }
 
-        public override void VisitOmittedArraySizeExpression(OmittedArraySizeExpressionSyntax node)
-        {
-            Debug.Fail(node.ToString());
-            base.VisitOmittedArraySizeExpression(node);
-        }
+        //public override void VisitOmittedArraySizeExpression(OmittedArraySizeExpressionSyntax node)
+        //{
+        //    base.VisitOmittedArraySizeExpression(node);
+        //}
 
         public override void VisitOmittedTypeArgument(OmittedTypeArgumentSyntax node)
         {

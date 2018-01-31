@@ -71,6 +71,7 @@ namespace Roslynator.CSharp.Refactorings
         public const string InlineAliasExpression = Prefix + "0061";
         public const string InlineConstant = Prefix + "0181";
         public const string InlineMethod = Prefix + "0062";
+        public const string InlineProperty = Prefix + "0198";
         public const string InlineUsingStatic = Prefix + "0180";
         public const string InsertStringInterpolation = Prefix + "0063";
         public const string IntroduceAndInitializeField = Prefix + "0064";
@@ -112,6 +113,7 @@ namespace Roslynator.CSharp.Refactorings
         public const string RemoveConditionFromLastElse = Prefix + "0099";
         public const string RemoveDirectiveAndRelatedDirectives = Prefix + "0100";
         public const string RemoveEmptyLines = Prefix + "0101";
+        public const string RemoveEnumMemberValue = Prefix + "0199";
         public const string RemoveInterpolation = Prefix + "0102";
         public const string RemoveMember = Prefix + "0103";
         public const string RemoveMemberDeclarations = Prefix + "0104";
@@ -176,7 +178,8 @@ namespace Roslynator.CSharp.Refactorings
         public const string SwapExpressionsInConditionalExpression = Prefix + "0160";
         public const string SwapMemberDeclarations = Prefix + "0161";
         public const string SwapStatementsInIfElse = Prefix + "0162";
-        public const string Uncomment = Prefix + "0163";
+        public const string UncommentMultiLineComment = Prefix + "0200";
+        public const string UncommentSingleLineComment = Prefix + "0163";
         public const string UseBitwiseOperationInsteadOfCallingHasFlag = Prefix + "0164";
         public const string UseCoalesceExpressionInsteadOfIf = Prefix + "0165";
         public const string UseConditionalExpressionInsteadOfIf = Prefix + "0166";
