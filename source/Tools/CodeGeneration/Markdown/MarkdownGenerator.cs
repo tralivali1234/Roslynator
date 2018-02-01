@@ -147,6 +147,7 @@ namespace Roslynator.CodeGeneration.Markdown
                     TableRow("Enabled by Default", CheckboxOrHyphen(analyzer.IsEnabledByDefault)),
                     TableRow("Supports Fade-Out", CheckboxOrHyphen(analyzer.SupportsFadeOut)),
                     TableRow("Supports Fade-Out Analyzer", CheckboxOrHyphen(analyzer.SupportsFadeOutAnalyzer))),
+                (!string.IsNullOrEmpty(analyzer.Summary)) ? Raw(analyzer.Summary) : null,
                 Samples(),
                 Heading2("How to Suppress"),
                 Heading3("SuppressMessageAttribute"),

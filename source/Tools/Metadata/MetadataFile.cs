@@ -35,6 +35,7 @@ namespace Roslynator.Metadata
                     element.AttributeValueAsBooleanOrDefault("IsObsolete"),
                     bool.Parse(element.Element("SupportsFadeOut").Value),
                     bool.Parse(element.Element("SupportsFadeOutAnalyzer").Value),
+                    element.Element("Summary")?.Value,
                     (element.Element("Samples") != null)
                         ? element.Element("Samples")?
                             .Elements("Sample")
