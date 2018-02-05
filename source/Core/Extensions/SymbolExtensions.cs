@@ -468,7 +468,7 @@ namespace Roslynator
                 || accessibility == accessibility3;
         }
 
-        internal static ImmutableArray<IParameterSymbol> GetParameters(this ISymbol symbol)
+        internal static ImmutableArray<IParameterSymbol> ParametersOrDefault(this ISymbol symbol)
         {
             if (symbol == null)
                 throw new ArgumentNullException(nameof(symbol));
@@ -480,7 +480,7 @@ namespace Roslynator
                 case SymbolKind.Property:
                     return ((IPropertySymbol)symbol).Parameters;
                 default:
-                    return ImmutableArray<IParameterSymbol>.Empty;
+                    return default(ImmutableArray<IParameterSymbol>);
             }
         }
 

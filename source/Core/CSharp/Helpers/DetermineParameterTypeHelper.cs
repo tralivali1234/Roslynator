@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -107,7 +108,12 @@ namespace Roslynator.CSharp.Helpers
             ArgumentSyntax argument,
             BaseArgumentListSyntax argumentList)
         {
-            ImmutableArray<IParameterSymbol> parameters = symbol.GetParameters();
+            ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
+
+            Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+            if (parameters.IsDefault)
+                return null;
 
             string name = argument.NameColon?.Name?.Identifier.ValueText;
 

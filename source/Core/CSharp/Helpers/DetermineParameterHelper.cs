@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -36,7 +37,14 @@ namespace Roslynator.CSharp.Helpers
             if (symbol == null)
                 return null;
 
-            return DetermineParameter(argument, argumentList.Arguments, symbol.GetParameters(), allowParams);
+            ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
+
+            Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+            if (parameters.IsDefault)
+                return null;
+
+            return DetermineParameter(argument, argumentList.Arguments, parameters, allowParams);
         }
 
         internal static IParameterSymbol DetermineParameter(
@@ -106,7 +114,14 @@ namespace Roslynator.CSharp.Helpers
             if (symbol == null)
                 return null;
 
-            return DetermineParameter(attributeArgument, argumentList.Arguments, symbol.GetParameters(), allowParams);
+            ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
+
+            Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+            if (parameters.IsDefault)
+                return null;
+
+            return DetermineParameter(attributeArgument, argumentList.Arguments, parameters, allowParams);
         }
 
         internal static IParameterSymbol DetermineParameter(

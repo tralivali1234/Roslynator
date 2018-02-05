@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using System.Collections.Immutable;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -156,10 +157,15 @@ namespace Roslynator.CSharp.Refactorings
 
                         if (parameterSymbol.RefKind == RefKind.None)
                         {
-                            return semanticModel
-                                .GetEnclosingSymbol(containingNode.SpanStart, cancellationToken)?
-                                .GetParameters()
-                                .Contains(parameterSymbol) == true;
+                            ISymbol enclosingSymbol = semanticModel.GetEnclosingSymbol(containingNode.SpanStart, cancellationToken);
+
+                            if (enclosingSymbol != null)
+                            {
+                                ImmutableArray<IParameterSymbol> parameters = enclosingSymbol.ParametersOrDefault();
+
+                                return !parameters.IsDefault
+                                    && parameters.Contains(parameterSymbol);
+                            }
                         }
 
                         break;
