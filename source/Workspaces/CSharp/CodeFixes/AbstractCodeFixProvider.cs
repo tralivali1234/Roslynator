@@ -95,7 +95,7 @@ namespace Roslynator.CSharp.CodeFixes
 
             bool success = (kind == SyntaxKind.None) ? !token.IsKind(SyntaxKind.None) : token.IsKind(kind);
 
-            Assert.IsTrue(success, nameof(token), kind);
+            Assert.True(success, nameof(token), kind);
 
             return success;
         }
@@ -111,7 +111,7 @@ namespace Roslynator.CSharp.CodeFixes
 
             bool success = (kind == SyntaxKind.None) ? !trivia.IsKind(SyntaxKind.None) : trivia.IsKind(kind);
 
-            Assert.IsTrue(success, nameof(trivia), kind);
+            Assert.True(success, nameof(trivia), kind);
 
             return success;
         }
