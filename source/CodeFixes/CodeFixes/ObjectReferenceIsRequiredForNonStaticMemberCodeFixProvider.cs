@@ -79,7 +79,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private void AddStaticModifier(
+        private static void AddStaticModifier(
             CodeFixContext context,
             Diagnostic diagnostic,
             SyntaxNode node,

@@ -86,7 +86,6 @@ namespace Roslynator.CSharp.CodeFixes
                                         GetEquivalenceKey(diagnostic, CodeFixIdentifiers.WrapInUnsafeStatement));
 
                                     context.RegisterCodeFix(codeAction, diagnostic);
-                                    continue;
                                 }
                                 else if (!fMemberDeclaration
                                     && ancestor is MemberDeclarationSyntax)
