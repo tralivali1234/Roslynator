@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -30,7 +31,12 @@ namespace Roslynator.CSharp.CodeFixes
 
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token, kind: SyntaxKind.IdentifierToken))
+            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token))
+                return;
+
+            Debug.Assert(token.Kind() == SyntaxKind.IdentifierToken, token.Kind().ToString());
+
+            if (token.Kind() != SyntaxKind.IdentifierToken)
                 return;
 
             SyntaxNode parent = token.Parent;

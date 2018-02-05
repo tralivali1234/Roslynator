@@ -51,7 +51,7 @@
     <Compile Include="CodeFixes\AddBreakStatementToSwitchSectionCodeFixProvider.cs" />
     <Compile Include="CodeFixes\AssignDefaultValueToOutParameterCodeFixProvider.cs" />
     <Compile Include="CodeFixes\AttributeCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\BaseCodeFixProvider.cs" />
+    <Compile Include="BaseCodeFixProvider.cs" />
     <Compile Include="CodeFixes\BinaryExpressionCodeFixProvider.cs" />
     <Compile Include="CodeFixes\ChangeOverridingMemberAccessibilityCodeFixProvider.cs" />
     <Compile Include="CodeFixes\ClassDeclarationCodeFixProvider.cs" />

@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.CSharp.CodeFixes
+namespace Roslynator.CodeFixes
 {
     internal static class EquivalenceKeyProvider
     {

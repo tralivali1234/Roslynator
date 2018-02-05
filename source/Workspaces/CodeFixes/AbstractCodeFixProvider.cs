@@ -3,11 +3,10 @@
 using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.Diagnostics;
 
-namespace Roslynator.CSharp.CodeFixes
+namespace Roslynator.CodeFixes
 {
     public abstract class AbstractCodeFixProvider : CodeFixProvider
     {
@@ -26,7 +25,7 @@ namespace Roslynator.CSharp.CodeFixes
             return EquivalenceKeyProvider.GetEquivalenceKey(key, additionalKey);
         }
 
-        protected static bool TryFindFirstAncestorOrSelf<TNode>(
+        protected internal static bool TryFindFirstAncestorOrSelf<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -44,7 +43,7 @@ namespace Roslynator.CSharp.CodeFixes
             return node != null;
         }
 
-        protected static bool TryFindFirstDescendantOrSelf<TNode>(
+        protected internal static bool TryFindFirstDescendantOrSelf<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -62,7 +61,7 @@ namespace Roslynator.CSharp.CodeFixes
             return node != null;
         }
 
-        protected static bool TryFindNode<TNode>(
+        protected internal static bool TryFindNode<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -84,34 +83,32 @@ namespace Roslynator.CSharp.CodeFixes
             return node != null;
         }
 
-        protected static bool TryFindToken(
+        protected internal static bool TryFindToken(
             SyntaxNode root,
             int position,
             out SyntaxToken token,
-            bool findInsideTrivia = true,
-            SyntaxKind kind = SyntaxKind.None)
+            bool findInsideTrivia = true)
         {
             token = root.FindToken(position, findInsideTrivia: findInsideTrivia);
 
-            bool success = (kind == SyntaxKind.None) ? !token.IsKind(SyntaxKind.None) : token.IsKind(kind);
+            bool success = token != default(SyntaxToken);
 
-            Assert.True(success, nameof(token), kind);
+            Assert.True(success, nameof(token));
 
             return success;
         }
 
-        protected static bool TryFindTrivia(
+        protected internal static bool TryFindTrivia(
             SyntaxNode root,
             int position,
             out SyntaxTrivia trivia,
-            bool findInsideTrivia = true,
-            SyntaxKind kind = SyntaxKind.None)
+            bool findInsideTrivia = true)
         {
             trivia = root.FindTrivia(position, findInsideTrivia: findInsideTrivia);
 
-            bool success = (kind == SyntaxKind.None) ? !trivia.IsKind(SyntaxKind.None) : trivia.IsKind(kind);
+            bool success = trivia != default(SyntaxTrivia);
 
-            Assert.True(success, nameof(trivia), kind);
+            Assert.True(success, nameof(trivia));
 
             return success;
         }
