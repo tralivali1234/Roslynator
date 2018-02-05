@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.CodeFixes
                             {
                                 string oldName = methodDeclaration.Identifier.ValueText;
 
-                                string newName = await WorkspaceNameGenerator.EnsureUniqueMemberNameAsync(
+                                string newName = await MemberNameGenerator.EnsureUniqueMemberNameAsync(
                                     oldName,
                                     methodSymbol,
                                     context.Solution(),
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 string name = methodDeclaration.Identifier.ValueText;
                                 string newName = name.Remove(name.Length - AsyncSuffix.Length);
 
-                                newName = await WorkspaceNameGenerator.EnsureUniqueMemberNameAsync(
+                                newName = await MemberNameGenerator.EnsureUniqueMemberNameAsync(
                                     newName,
                                     methodSymbol,
                                     context.Solution(),

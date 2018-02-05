@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
                                 {
                                     ISymbol symbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
 
-                                    if (await WorkspaceNameGenerator.IsUniqueMemberNameAsync(
+                                    if (await MemberNameGenerator.IsUniqueMemberNameAsync(
                                         newName,
                                         symbol,
                                         context.Solution,

@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Refactorings
                             string oldName = identifier.ValueText;
 
                             if (!string.Equals(oldName, newName, StringComparison.Ordinal)
-                                && await WorkspaceNameGenerator.IsUniqueMemberNameAsync(
+                                && await MemberNameGenerator.IsUniqueMemberNameAsync(
                                     newName,
                                     methodSymbol,
                                     context.Solution,

@@ -53,7 +53,7 @@
     <Compile Include="Extensions\CodeFixContextExtensions.cs" />
     <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\SolutionExtensions.cs" />
-    <Compile Include="WorkspaceNameGenerator.cs" />
+    <Compile Include="MemberNameGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxFinder.cs" />
   </ItemGroup>

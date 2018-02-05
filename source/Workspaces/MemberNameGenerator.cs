@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace Roslynator
 {
-    internal static class WorkspaceNameGenerator
+    internal static class MemberNameGenerator
     {
         internal static async Task<string> EnsureUniqueMemberNameAsync(
             string baseName,
@@ -53,7 +53,7 @@ namespace Roslynator
             return NameGenerator.IsUniqueName(name, reservedNames);
         }
 
-        internal static async Task<HashSet<string>> GetReservedNamesAsync(
+        private static async Task<HashSet<string>> GetReservedNamesAsync(
             ISymbol memberSymbol,
             Solution solution,
             bool isCaseSensitive = true,
