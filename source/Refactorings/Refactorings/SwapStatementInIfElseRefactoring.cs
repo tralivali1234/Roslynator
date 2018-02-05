@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             IfStatementSyntax newIfStatement = ifStatement
-                .WithCondition(LogicalNegationHelper.LogicallyNegate(ifStatement.Condition, semanticModel, cancellationToken))
+                .WithCondition(LogicalNegation.LogicallyNegate(ifStatement.Condition, semanticModel, cancellationToken))
                 .WithStatement(falseStatement.WithTriviaFrom(trueStatement))
                 .WithElse(ifStatement.Else.WithStatement(trueStatement.WithTriviaFrom(falseStatement)))
                 .WithFormatterAnnotation();

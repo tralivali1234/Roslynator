@@ -11,7 +11,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
-    internal static class LogicalNegationHelper
+    internal static class LogicalNegation
     {
         public static ExpressionSyntax LogicallyNegate(
             ExpressionSyntax expression,
