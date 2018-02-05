@@ -50,7 +50,7 @@
     <Compile Include="CSharp\LogicalNegation.cs" />
     <Compile Include="CSharp\RemoveCommentHelper.cs" />
     <Compile Include="DocumentReferenceInfo.cs" />
-    <Compile Include="Extensions\CodeFixContextExtensions.cs" />
+    <Compile Include="CodeFixes\Extensions\CodeFixContextExtensions.cs" />
     <Compile Include="Extensions\DocumentExtensions.cs" />
     <Compile Include="Extensions\SolutionExtensions.cs" />
     <Compile Include="MemberNameGenerator.cs" />
