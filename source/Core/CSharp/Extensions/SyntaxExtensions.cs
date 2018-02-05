@@ -2963,35 +2963,6 @@ namespace Roslynator.CSharp
             return parent;
         }
 
-        internal static TNode FirstDescendantOrSelf<TNode>(
-            this SyntaxNode node,
-            Func<SyntaxNode, bool> descendIntoChildren = null,
-            bool descendIntoTrivia = false) where TNode : SyntaxNode
-        {
-            foreach (SyntaxNode descendant in node.DescendantNodesAndSelf(descendIntoChildren: descendIntoChildren, descendIntoTrivia: descendIntoTrivia))
-            {
-                if (descendant is TNode tnode)
-                    return tnode;
-            }
-
-            return default(TNode);
-        }
-
-        internal static TNode FirstDescendantOrSelf<TNode>(
-            this SyntaxNode node,
-            TextSpan span,
-            Func<SyntaxNode, bool> descendIntoChildren = null,
-            bool descendIntoTrivia = false) where TNode : SyntaxNode
-        {
-            foreach (SyntaxNode descendant in node.DescendantNodesAndSelf(span, descendIntoChildren: descendIntoChildren, descendIntoTrivia: descendIntoTrivia))
-            {
-                if (descendant is TNode tnode)
-                    return tnode;
-            }
-
-            return default(TNode);
-        }
-
         internal static TNode RemoveStatement<TNode>(this TNode node, StatementSyntax statement) where TNode : SyntaxNode
         {
             if (node == null)
