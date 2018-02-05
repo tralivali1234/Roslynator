@@ -41,7 +41,6 @@
     <AssemblyOriginatorKeyFile>Roslynator.Workspaces.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeFixes\AbstractCodeFixProvider.cs" />
     <Compile Include="CSharp\CSharpSyntax.cs" />
     <Compile Include="CSharp\CSharpTypeFactory.cs" />
     <Compile Include="CSharp\DocumentFormatter.cs" />

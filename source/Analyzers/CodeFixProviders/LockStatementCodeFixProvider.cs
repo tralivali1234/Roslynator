@@ -14,11 +14,16 @@ namespace Roslynator.CSharp.CodeFixes
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(LockStatementCodeFixProvider))]
     [Shared]
-    public class LockStatementCodeFixProvider : AbstractCodeFixProvider
+    public class LockStatementCodeFixProvider : BaseCodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(DiagnosticIdentifiers.AvoidLockingOnPubliclyAccessibleInstance); }
+        }
+
+        public override FixAllProvider GetFixAllProvider()
+        {
+            return null;
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)

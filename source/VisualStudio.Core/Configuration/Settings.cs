@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using Roslynator.CSharp.CodeFixes;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.Configuration

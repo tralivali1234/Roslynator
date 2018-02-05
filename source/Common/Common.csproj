@@ -41,6 +41,7 @@
     <AssemblyOriginatorKeyFile>Roslynator.Common.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeFixes\AbstractCodeFixProvider.cs" />
     <Compile Include="CSharp\Refactorings\AddCastExpressionRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\CallExtensionMethodAsInstanceMethodAnalysis.cs" />
     <Compile Include="CSharp\Refactorings\ChangeAccessibilityRefactoring.cs" />

@@ -416,7 +416,7 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey)
         {
-            return EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey);
+            return EquivalenceKey.Create(diagnostic, additionalKey);
         }
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind)

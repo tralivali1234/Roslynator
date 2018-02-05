@@ -15,17 +15,17 @@ namespace Roslynator.CodeFixes
             return WellKnownFixAllProviders.BatchFixer;
         }
 
-        protected static string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey = null)
+        protected static string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey1 = null, string additionalKey2 = null)
         {
-            return EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey);
+            return EquivalenceKey.Create(diagnostic, additionalKey1, additionalKey2);
         }
 
-        protected static string GetEquivalenceKey(string key, string additionalKey = null)
+        protected static string GetEquivalenceKey(string key, string additionalKey1 = null, string additionalKey2 = null)
         {
-            return EquivalenceKeyProvider.GetEquivalenceKey(key, additionalKey);
+            return EquivalenceKey.Create(key, additionalKey1, additionalKey2);
         }
 
-        protected internal static bool TryFindFirstAncestorOrSelf<TNode>(
+        protected static bool TryFindFirstAncestorOrSelf<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -43,7 +43,7 @@ namespace Roslynator.CodeFixes
             return node != null;
         }
 
-        protected internal static bool TryFindFirstDescendantOrSelf<TNode>(
+        protected static bool TryFindFirstDescendantOrSelf<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -61,7 +61,7 @@ namespace Roslynator.CodeFixes
             return node != null;
         }
 
-        protected internal static bool TryFindNode<TNode>(
+        protected static bool TryFindNode<TNode>(
             SyntaxNode root,
             TextSpan span,
             out TNode node,
@@ -83,7 +83,7 @@ namespace Roslynator.CodeFixes
             return node != null;
         }
 
-        protected internal static bool TryFindToken(
+        protected static bool TryFindToken(
             SyntaxNode root,
             int position,
             out SyntaxToken token,
@@ -98,7 +98,7 @@ namespace Roslynator.CodeFixes
             return success;
         }
 
-        protected internal static bool TryFindTrivia(
+        protected static bool TryFindTrivia(
             SyntaxNode root,
             int position,
             out SyntaxTrivia trivia,

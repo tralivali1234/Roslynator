@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var accessibility = (Accessibility)Enum.Parse(
                                 typeof(Accessibility),
-                                context.Diagnostics[0].Properties[nameof(Accessibility)]);
+                                diagnostic.Properties[nameof(Accessibility)]);
 
                             CodeAction codeAction = CodeAction.Create(
                                 "Add default access modifier",

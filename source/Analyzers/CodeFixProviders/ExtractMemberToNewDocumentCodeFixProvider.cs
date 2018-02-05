@@ -14,11 +14,16 @@ namespace Roslynator.CSharp.CodeFixes
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ExtractMemberToNewDocumentCodeFixProvider))]
     [Shared]
-    public class ExtractMemberToNewDocumentCodeFixProvider : AbstractCodeFixProvider
+    public class ExtractMemberToNewDocumentCodeFixProvider : BaseCodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(DiagnosticIdentifiers.DeclareEachTypeInSeparateFile); }
+        }
+
+        public override FixAllProvider GetFixAllProvider()
+        {
+            return null;
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)

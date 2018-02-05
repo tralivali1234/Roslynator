@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CodeFixes;
 using Roslynator.CSharp.CodeFixes;
 
 namespace Roslynator.CSharp.Refactorings
@@ -109,7 +108,7 @@ namespace Roslynator.CSharp.Refactorings
             CodeAction codeAction = CodeAction.Create(
                 $"Change type to '{typeName}' and add await",
                 cancellationToken => context.Document.ReplaceNodeAsync(variableDeclaration, newNode, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, CodeFixIdentifiers.ChangeTypeAccordingToInitializer + "AddAwait"));
+                EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.ChangeTypeAccordingToInitializer, "AddAwait"));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }

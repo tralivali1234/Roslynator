@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -34,7 +33,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                     return document.ReplaceNodeAsync(type, newType, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -55,7 +54,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                     return document.ReplaceNodeAsync(type, newType, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -74,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
             CodeAction codeAction = CodeAction.Create(
                 $"Cast to '{typeName}'",
                 cancellationToken => AddCastExpressionRefactoring.RefactorAsync(context.Document, expression, newType, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, CodeFixIdentifiers.AddCastExpression));
+                EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.AddCastExpression));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -90,7 +89,7 @@ namespace Roslynator.CSharp.CodeFixes
             CodeAction codeAction = CodeAction.Create(
                 $"Remove {memberDeclaration.GetTitle()}",
                 cancellationToken => document.RemoveMemberAsync(memberDeclaration, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -110,7 +109,7 @@ namespace Roslynator.CSharp.CodeFixes
             CodeAction codeAction = CodeAction.Create(
                 title ?? $"Remove {statement.GetTitle()}",
                 cancellationToken => document.RemoveStatementAsync(statement, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -151,7 +150,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                     return document.ReplaceNodeAsync(expression, newNode, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }

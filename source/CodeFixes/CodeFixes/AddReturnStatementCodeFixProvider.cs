@@ -38,6 +38,8 @@ namespace Roslynator.CSharp.CodeFixes
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
+            Diagnostic diagnostic = context.Diagnostics[0];
+
             foreach (SyntaxNode ancestor in node.AncestorsAndSelf())
             {
                 switch (ancestor.Kind())
@@ -47,7 +49,7 @@ namespace Roslynator.CSharp.CodeFixes
                             var methodDeclaration = (MethodDeclarationSyntax)ancestor;
 
                             if (!methodDeclaration.Modifiers.Contains(SyntaxKind.PartialKeyword))
-                                ComputeCodeFix(context, context.Diagnostics[0], methodDeclaration.ReturnType, methodDeclaration.Body, semanticModel);
+                                ComputeCodeFix(context, diagnostic, methodDeclaration.ReturnType, methodDeclaration.Body, semanticModel);
 
                             return;
                         }
@@ -55,21 +57,21 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var operatorDeclaration = (OperatorDeclarationSyntax)ancestor;
 
-                            ComputeCodeFix(context, context.Diagnostics[0], operatorDeclaration.ReturnType, operatorDeclaration.Body, semanticModel);
+                            ComputeCodeFix(context, diagnostic, operatorDeclaration.ReturnType, operatorDeclaration.Body, semanticModel);
                             return;
                         }
                     case SyntaxKind.ConversionOperatorDeclaration:
                         {
                             var conversionOperatorDeclaration = (ConversionOperatorDeclarationSyntax)ancestor;
 
-                            ComputeCodeFix(context, context.Diagnostics[0], conversionOperatorDeclaration.Type, conversionOperatorDeclaration.Body, semanticModel);
+                            ComputeCodeFix(context, diagnostic, conversionOperatorDeclaration.Type, conversionOperatorDeclaration.Body, semanticModel);
                             return;
                         }
                     case SyntaxKind.LocalFunctionStatement:
                         {
                             var localFunction = (LocalFunctionStatementSyntax)ancestor;
 
-                            ComputeCodeFix(context, context.Diagnostics[0], localFunction.ReturnType, localFunction.Body, semanticModel);
+                            ComputeCodeFix(context, diagnostic, localFunction.ReturnType, localFunction.Body, semanticModel);
                             return;
                         }
                     case SyntaxKind.GetAccessorDeclaration:
@@ -82,14 +84,14 @@ namespace Roslynator.CSharp.CodeFixes
                                     {
                                         var propertyDeclaration = (PropertyDeclarationSyntax)accessor.Parent.Parent;
 
-                                        ComputeCodeFix(context, context.Diagnostics[0], propertyDeclaration.Type, accessor.Body, semanticModel);
+                                        ComputeCodeFix(context, diagnostic, propertyDeclaration.Type, accessor.Body, semanticModel);
                                         break;
                                     }
                                 case SyntaxKind.IndexerDeclaration:
                                     {
                                         var indexerDeclaration = (IndexerDeclarationSyntax)accessor.Parent.Parent;
 
-                                        ComputeCodeFix(context, context.Diagnostics[0], indexerDeclaration.Type, accessor.Body, semanticModel);
+                                        ComputeCodeFix(context, diagnostic, indexerDeclaration.Type, accessor.Body, semanticModel);
                                         break;
                                     }
                             }
@@ -109,7 +111,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 var methodSymbol = semanticModel.GetSymbol(anonymousFunction, context.CancellationToken) as IMethodSymbol;
 
                                 if (methodSymbol?.IsErrorType() == false)
-                                    ComputeCodeFix(context, context.Diagnostics[0], methodSymbol.ReturnType, body, semanticModel);
+                                    ComputeCodeFix(context, diagnostic, methodSymbol.ReturnType, body, semanticModel);
                             }
 
                             return;
