@@ -86,7 +86,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             {
                                                 CatchDeclarationSyntax newNode = catchDeclaration
                                                     .WithIdentifier(default(SyntaxToken))
-                                                    .WithCloseParenToken(catchDeclaration.CloseParenToken.PrependToLeadingTrivia(token.GetLeadingAndTrailingTrivia()))
+                                                    .WithCloseParenToken(catchDeclaration.CloseParenToken.PrependToLeadingTrivia(token.GetAllTrivia()))
                                                     .WithFormatterAnnotation();
 
                                                 return context.Document.ReplaceNodeAsync(catchDeclaration, newNode, cancellationToken);

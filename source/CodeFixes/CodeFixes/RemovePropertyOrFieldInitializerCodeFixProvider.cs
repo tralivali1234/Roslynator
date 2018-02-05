@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 PropertyDeclarationSyntax newNode = propertyDeclaration
                                     .RemoveNode(initializer, RemoveHelper.GetRemoveOptions(initializer))
                                     .WithSemicolonToken(default(SyntaxToken))
-                                    .AppendToTrailingTrivia(propertyDeclaration.SemicolonToken.GetLeadingAndTrailingTrivia())
+                                    .AppendToTrailingTrivia(propertyDeclaration.SemicolonToken.GetAllTrivia())
                                     .WithFormatterAnnotation();
 
                                 return context.Document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken);

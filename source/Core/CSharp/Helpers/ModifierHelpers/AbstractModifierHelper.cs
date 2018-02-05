@@ -214,7 +214,7 @@ namespace Roslynator.CSharp.Helpers.ModifierHelpers
                 trivia = trivia.AddRange(firstModifier.TrailingTrivia.EmptyIfWhitespace());
 
                 for (int i = 1; i < modifiers.Count; i++)
-                    trivia = trivia.AddRange(modifiers[i].GetLeadingAndTrailingTrivia().EmptyIfWhitespace());
+                    trivia = trivia.AddRange(modifiers[i].LeadingAndTrailingTrivia().EmptyIfWhitespace());
 
                 trivia = trivia.AddRange(nextToken.LeadingTrivia.EmptyIfWhitespace());
 
@@ -226,10 +226,10 @@ namespace Roslynator.CSharp.Helpers.ModifierHelpers
 
                 if (!previousToken.IsKind(SyntaxKind.None))
                 {
-                    SyntaxTriviaList trivia = firstModifier.GetLeadingAndTrailingTrivia();
+                    SyntaxTriviaList trivia = firstModifier.LeadingAndTrailingTrivia();
 
                     for (int i = 1; i < modifiers.Count; i++)
-                        trivia = trivia.AddRange(modifiers[i].GetLeadingAndTrailingTrivia().EmptyIfWhitespace());
+                        trivia = trivia.AddRange(modifiers[i].LeadingAndTrailingTrivia().EmptyIfWhitespace());
 
                     node = node.ReplaceToken(nextToken, nextToken.AppendToTrailingTrivia(trivia));
                 }

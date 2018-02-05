@@ -74,8 +74,8 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             if (parameterList?.IsMissing == false)
             {
                 identifier = identifier.AppendToTrailingTrivia(
-                    parameterList.OpenParenToken.GetLeadingAndTrailingTrivia().Concat(
-                        parameterList.CloseParenToken.GetLeadingAndTrailingTrivia()));
+                    parameterList.OpenParenToken.GetAllTrivia().Concat(
+                        parameterList.CloseParenToken.GetAllTrivia()));
             }
 
             if (methodDeclaration.ExpressionBody != null)

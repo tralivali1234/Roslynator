@@ -63,8 +63,8 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             if (argumentList != null)
             {
                 node = node.AppendToTrailingTrivia(
-                    argumentList.OpenParenToken.GetLeadingAndTrailingTrivia()
-                        .Concat(argumentList.CloseParenToken.GetLeadingAndTrailingTrivia()));
+                    argumentList.OpenParenToken.GetAllTrivia()
+                        .Concat(argumentList.CloseParenToken.GetAllTrivia()));
             }
 
             return node;

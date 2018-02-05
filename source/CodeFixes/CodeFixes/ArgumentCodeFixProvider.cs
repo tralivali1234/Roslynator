@@ -83,7 +83,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     ArgumentSyntax newArgument = argument
                                         .WithRefOrOutKeyword(default(SyntaxToken))
-                                        .PrependToLeadingTrivia(argument.RefOrOutKeyword.GetLeadingAndTrailingTrivia())
+                                        .PrependToLeadingTrivia(argument.RefOrOutKeyword.GetAllTrivia())
                                         .WithFormatterAnnotation();
 
                                     return context.Document.ReplaceNodeAsync(argument, newArgument, cancellationToken);

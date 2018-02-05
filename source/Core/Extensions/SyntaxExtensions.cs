@@ -493,9 +493,23 @@ namespace Roslynator
             return token.WithLeadingTrivia(token.LeadingTrivia.Add(trivia));
         }
 
-        public static SyntaxTriviaList GetLeadingAndTrailingTrivia(this SyntaxToken token)
+        public static SyntaxTriviaList LeadingAndTrailingTrivia(this SyntaxToken token)
         {
-            return token.LeadingTrivia.AddRange(token.TrailingTrivia);
+            SyntaxTriviaList leadingTrivia = token.LeadingTrivia;
+            SyntaxTriviaList trailingTrivia = token.TrailingTrivia;
+
+            if (leadingTrivia.Any())
+            {
+                if (trailingTrivia.Any())
+                    return leadingTrivia.AddRange(trailingTrivia);
+
+                return leadingTrivia;
+            }
+
+            if (trailingTrivia.Any())
+                return trailingTrivia;
+
+            return SyntaxTriviaList.Empty;
         }
 
         public static int GetSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
