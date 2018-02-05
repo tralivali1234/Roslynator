@@ -13,9 +13,11 @@ namespace Roslynator
     public abstract class NameGenerator
     {
         internal static StringComparer OrdinalComparer { get; } = StringComparer.Ordinal;
+
         internal static StringComparer OrdinalIgnoreCaseComparer { get; } = StringComparer.OrdinalIgnoreCase;
 
-        public abstract string EnsureUniqueName(string baseName, HashSet<string> reservedNames);
+        public abstract string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true);
+
         public abstract string EnsureUniqueName(string baseName, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true);
 
         public static NameGenerator Default
@@ -152,9 +154,17 @@ namespace Roslynator
             return true;
         }
 
-        internal static bool IsUniqueName(string name, HashSet<string> reservedNames)
+        internal static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
-            return !reservedNames.Contains(name);
+            StringComparison comparison = GetStringComparison(isCaseSensitive);
+
+            foreach (string reservedName in reservedNames)
+            {
+                if (string.Equals(name, reservedName, comparison))
+                    return false;
+            }
+
+            return true;
         }
 
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)

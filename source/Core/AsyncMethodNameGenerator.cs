@@ -8,13 +8,13 @@ namespace Roslynator
 {
     internal class AsyncMethodNameGenerator : NameGenerator
     {
-        public override string EnsureUniqueName(string baseName, HashSet<string> reservedNames)
+        public override string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
             int suffix = 1;
 
             string name = baseName + "Async";
 
-            while (!IsUniqueName(name, reservedNames))
+            while (!IsUniqueName(name, reservedNames, isCaseSensitive))
             {
                 suffix++;
                 name = baseName + suffix.ToString() + "Async";

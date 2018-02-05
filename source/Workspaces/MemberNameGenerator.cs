@@ -13,7 +13,7 @@ namespace Roslynator
 {
     internal static class MemberNameGenerator
     {
-        internal static async Task<string> EnsureUniqueMemberNameAsync(
+        public static async Task<string> EnsureUniqueMemberNameAsync(
             string baseName,
             ISymbol memberSymbol,
             Solution solution,
@@ -35,7 +35,7 @@ namespace Roslynator
             return nameGenerator.EnsureUniqueName(baseName, reservedNames);
         }
 
-        internal static async Task<bool> IsUniqueMemberNameAsync(
+        public static async Task<bool> IsUniqueMemberNameAsync(
             string name,
             ISymbol memberSymbol,
             Solution solution,
@@ -50,7 +50,7 @@ namespace Roslynator
 
             HashSet<string> reservedNames = await GetReservedNamesAsync(memberSymbol, solution, isCaseSensitive, cancellationToken).ConfigureAwait(false);
 
-            return NameGenerator.IsUniqueName(name, reservedNames);
+            return !reservedNames.Contains(name);
         }
 
         private static async Task<HashSet<string>> GetReservedNamesAsync(
