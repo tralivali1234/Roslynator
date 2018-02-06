@@ -101,9 +101,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
         {
             MemberDeclarationComparer comparer = MemberDeclarationComparer.GetInstance(sortMode);
 
-            MemberDeclarationSyntax containingMember = selectedMembers.ContainingMember;
+            MemberDeclarationSyntax containingDeclaration = selectedMembers.ContainingDeclaration;
 
-            SyntaxList<MemberDeclarationSyntax> members = containingMember.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> members = containingDeclaration.GetMembers();
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.StartIndex)
@@ -111,9 +111,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
                 .Concat(members.Skip(selectedMembers.EndIndex + 1))
                 .ToSyntaxList();
 
-            MemberDeclarationSyntax newNode = containingMember.WithMembers(newMembers);
+            MemberDeclarationSyntax newNode = containingDeclaration.WithMembers(newMembers);
 
-            return document.ReplaceNodeAsync(containingMember, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(containingDeclaration, newNode, cancellationToken);
         }
 
         public static async Task<Document> RefactorAsync(

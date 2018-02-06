@@ -9,13 +9,13 @@ namespace Roslynator.CSharp
 {
     public class MemberDeclarationSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
-        private MemberDeclarationSelection(MemberDeclarationSyntax containingMember, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int startIndex, int endIndex)
+        private MemberDeclarationSelection(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int startIndex, int endIndex)
              : base(members, span, startIndex, endIndex)
         {
-            ContainingMember = containingMember;
+            ContainingDeclaration = containingDeclaration;
         }
 
-        public MemberDeclarationSyntax ContainingMember { get; }
+        public MemberDeclarationSyntax ContainingDeclaration { get; }
 
         public static MemberDeclarationSelection Create(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span)
         {

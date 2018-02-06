@@ -126,7 +126,7 @@ namespace Roslynator.CSharp.Refactorings
                 .SelectMany(declaration => declaration.Variables.Select(declarator => FieldInfo.Create(declaration.Type, declarator)))
                 .ToImmutableArray();
 
-            return RefactorAsync(document, fieldInfo, (TypeDeclarationSyntax)selectedMembers.ContainingMember, cancellationToken);
+            return RefactorAsync(document, fieldInfo, (TypeDeclarationSyntax)selectedMembers.ContainingDeclaration, cancellationToken);
         }
 
         private static Task<Document> RefactorAsync(
