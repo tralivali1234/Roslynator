@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.Text;
 
 namespace Roslynator.CSharp
 {
@@ -232,10 +233,12 @@ namespace Roslynator.CSharp
                     }
                 }
 
-                (sb ?? (sb = new StringBuilder(text.Length))).Append(ch);
+                (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult(sb?.ToString() ?? text.Substring(start, length));
+            return new StringLiteralParseResult((sb != null)
+                ? StringBuilderCache.GetStringAndFree(sb)
+                : text.Substring(start, length));
         }
 
         private static StringLiteralParseResult ParseVerbatim(
@@ -282,10 +285,12 @@ namespace Roslynator.CSharp
                     }
                 }
 
-                (sb ?? (sb = new StringBuilder(text.Length))).Append(ch);
+                (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult(sb?.ToString() ?? text.Substring(start, length));
+            return new StringLiteralParseResult((sb != null)
+                ? StringBuilderCache.GetStringAndFree(sb)
+                : text.Substring(start, length));
         }
 
         internal static bool CanExtractSpan(string text, TextSpan span, bool isVerbatim, bool isInterpolatedText)

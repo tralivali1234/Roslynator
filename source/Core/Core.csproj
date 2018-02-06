@@ -154,6 +154,7 @@
     <Compile Include="CSharp\Syntax\MemberInvocationExpressionInfo.cs" />
     <Compile Include="ExtensionMethodInfo.cs" />
     <Compile Include="ExtensionMethodKind.cs" />
+    <Compile Include="Text\StringBuilderCache.cs" />
     <Compile Include="Utilities\FlagsUtility.cs" />
     <Compile Include="Utilities\Deferred`1.cs" />
     <Compile Include="MethodInfo.cs" />

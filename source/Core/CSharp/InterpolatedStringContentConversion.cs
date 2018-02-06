@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
@@ -46,7 +47,8 @@ namespace Roslynator.CSharp
                         if (alignmentClause != null
                             || formatClause != null)
                         {
-                            var sb = new StringBuilder();
+                            StringBuilder sb = StringBuilderCache.GetInstance();
+
                             sb.Append("\"{0");
 
                             if (alignmentClause != null)
@@ -63,11 +65,13 @@ namespace Roslynator.CSharp
 
                             sb.Append("}\"");
 
-                            return new InterpolatedStringContentConversion(kind,"AppendFormat", SeparatedList(new ArgumentSyntax[] { Argument(ParseExpression(sb.ToString())), Argument(interpolation.Expression) }));
+                            ExpressionSyntax expression = ParseExpression(StringBuilderCache.GetStringAndFree(sb));
+
+                            return new InterpolatedStringContentConversion(kind, "AppendFormat", SeparatedList(new ArgumentSyntax[] { Argument(expression), Argument(interpolation.Expression) }));
                         }
                         else
                         {
-                            return new InterpolatedStringContentConversion(kind ,"Append", SingletonSeparatedList(Argument(interpolation.Expression)));
+                            return new InterpolatedStringContentConversion(kind, "Append", SingletonSeparatedList(Argument(interpolation.Expression)));
                         }
                     }
                 case SyntaxKind.InterpolatedStringText:

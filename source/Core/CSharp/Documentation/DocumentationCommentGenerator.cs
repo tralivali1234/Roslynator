@@ -13,6 +13,7 @@ using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.Text;
 
 namespace Roslynator.CSharp.Documentation
 {
@@ -259,7 +260,7 @@ namespace Roslynator.CSharp.Documentation
 
             ImmutableArray<string> comments = settings.Comments;
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append(settings.Indent);
             sb.Append("/// <summary>");
@@ -318,7 +319,7 @@ namespace Roslynator.CSharp.Documentation
                 sb.AppendLine("/// <returns></returns>");
             }
 
-            return SyntaxFactory.ParseLeadingTrivia(sb.ToString());
+            return SyntaxFactory.ParseLeadingTrivia(StringBuilderCache.GetStringAndFree(sb));
         }
 
         internal static bool CanGenerateFromBase(SyntaxKind kind)
@@ -643,7 +644,7 @@ namespace Roslynator.CSharp.Documentation
 
         private static string AddSlashes(string innerXml)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             string indent = null;
 
@@ -665,7 +666,7 @@ namespace Roslynator.CSharp.Documentation
                 }
             }
 
-            return sb.ToString();
+            return StringBuilderCache.GetStringAndFree(sb);
         }
 
         private class DocumentationCommentTriviaRewriter : CSharpSyntaxRewriter

@@ -10,7 +10,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.Text;
 using Roslynator.Utilities;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
@@ -209,7 +211,7 @@ namespace Roslynator.CSharp.Syntax
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('$');
 
@@ -295,7 +297,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append("\"");
 
-            return (InterpolatedStringExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (InterpolatedStringExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public LiteralExpressionSyntax ToStringLiteral()
@@ -303,7 +305,7 @@ namespace Roslynator.CSharp.Syntax
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             if (!ContainsRegular)
                 sb.Append('@');
@@ -335,7 +337,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            return (LiteralExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (LiteralExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public LiteralExpressionSyntax ToMultilineStringLiteral()
@@ -343,7 +345,7 @@ namespace Roslynator.CSharp.Syntax
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('@');
             sb.Append('"');
@@ -388,7 +390,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            return (LiteralExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (LiteralExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public override string ToString()

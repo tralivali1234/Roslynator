@@ -2,6 +2,7 @@
 
 using System;
 using System.Text;
+using Roslynator.Text;
 
 namespace Roslynator.Utilities
 {
@@ -106,24 +107,22 @@ namespace Roslynator.Utilities
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            if (value.Length == 0)
-                return "";
-
-            var sb = new StringBuilder();
-
-            foreach (char ch in value)
+            int i = 0;
+            while (i < value.Length)
             {
-                if (ch == '\n'
-                    || ch == '\r'
+                char ch = value[i];
+
+                if (ch == '\r'
+                    || ch == '\n'
                     || !char.IsWhiteSpace(ch))
                 {
                     break;
                 }
 
-                sb.Append(ch);
+                i++;
             }
 
-            return sb.ToString();
+            return value.Remove(i);
         }
 
         public static string DoubleBraces(string value)
@@ -176,7 +175,9 @@ namespace Roslynator.Utilities
 
         private static string ToCamelCase(string value, string prefix)
         {
-            var sb = new StringBuilder(prefix, value.Length + prefix.Length);
+            StringBuilder sb = StringBuilderCache.GetInstance(value.Length + prefix.Length);
+
+            sb.Append(prefix);
 
             int i = 0;
 
@@ -196,7 +197,7 @@ namespace Roslynator.Utilities
 
             sb.Append(value, i, value.Length - i);
 
-            return sb.ToString();
+            return StringBuilderCache.GetStringAndFree(sb);
         }
 
         public static bool IsCamelCasePrefixedWithUnderscore(string value)
