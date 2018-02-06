@@ -7,7 +7,7 @@ namespace Roslynator.Text
 {
     public class TextLineCollectionSelection : Selection<TextLine>
     {
-        public TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int startIndex, int endIndex)
+        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int startIndex, int endIndex)
             : base(lines, span, startIndex, endIndex)
         {
         }

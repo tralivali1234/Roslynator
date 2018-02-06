@@ -451,6 +451,11 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.StatementsInfo.Create(switchSection);
         }
 
+        internal static StatementsInfo StatementsInfo(StatementsSelection selectedStatements)
+        {
+            return Syntax.StatementsInfo.Create(selectedStatements);
+        }
+
         internal static StringConcatenationExpressionInfo StringConcatenationExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,

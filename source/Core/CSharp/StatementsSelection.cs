@@ -10,17 +10,14 @@ namespace Roslynator.CSharp
 {
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
-        private StatementsSelection(StatementsInfo info, TextSpan span, int startIndex, int endIndex)
-             : base(info.Statements, span, startIndex, endIndex)
+        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, int startIndex, int endIndex)
+             : base(statements, span, startIndex, endIndex)
         {
-            Info = info;
         }
-
-        public StatementsInfo Info { get; }
 
         public SyntaxList<StatementSyntax> Statements
         {
-            get { return Info.Statements; }
+            get { return (SyntaxList<StatementSyntax>)Items; }
         }
 
         public static StatementsSelection Create(BlockSyntax block, TextSpan span)
@@ -28,9 +25,7 @@ namespace Roslynator.CSharp
             if (block == null)
                 throw new ArgumentNullException(nameof(block));
 
-            var info = new StatementsInfo(block);
-
-            return Create(info, span);
+            return Create(block.Statements, span);
         }
 
         public static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span)
@@ -38,52 +33,49 @@ namespace Roslynator.CSharp
             if (switchSection == null)
                 throw new ArgumentNullException(nameof(switchSection));
 
-            var info = new StatementsInfo(switchSection);
-
-            return Create(info, span);
+            return Create(switchSection.Statements, span);
         }
 
-        public static StatementsSelection Create(StatementsInfo info, TextSpan span)
+        public static StatementsSelection Create(StatementsInfo statementsInfo, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(info.Statements, span);
+            return Create(statementsInfo.Statements, span);
+        }
 
-            return new StatementsSelection(info, span, startIndex, endIndex);
+        private static StatementsSelection Create(SyntaxList<StatementSyntax> statements, TextSpan span)
+        {
+            (int startIndex, int endIndex) = GetIndexes(statements, span);
+
+            return new StatementsSelection(statements, span, startIndex, endIndex);
         }
 
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
         {
-            StatementsInfo info = SyntaxInfo.StatementsInfo(block);
-
-            if (!info.Success)
+            if (block == null)
             {
                 selectedStatements = null;
                 return false;
             }
 
-            return TryCreate(info, span, out selectedStatements);
+            return TryCreate(block.Statements, span, out selectedStatements);
         }
 
         public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, out StatementsSelection selectedStatements)
         {
-            StatementsInfo info = SyntaxInfo.StatementsInfo(switchSection);
-
-            if (!info.Success)
+            if (switchSection == null)
             {
                 selectedStatements = null;
                 return false;
             }
 
-            return TryCreate(info, span, out selectedStatements);
+            return TryCreate(switchSection.Statements, span, out selectedStatements);
         }
 
-        public static bool TryCreate(StatementsInfo statementsInfo, TextSpan span, out StatementsSelection selectedStatements)
+        public static bool TryCreate(SyntaxList<StatementSyntax> statements, TextSpan span, out StatementsSelection selectedStatements)
         {
             selectedStatements = null;
 
             if (span.IsEmpty)
                 return false;
-
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
             if (!statements.Any())
                 return false;
@@ -93,7 +85,7 @@ namespace Roslynator.CSharp
             if (startIndex == -1)
                 return false;
 
-            selectedStatements = new StatementsSelection(statementsInfo, span, startIndex, endIndex);
+            selectedStatements = new StatementsSelection(statements, span, startIndex, endIndex);
             return true;
         }
     }

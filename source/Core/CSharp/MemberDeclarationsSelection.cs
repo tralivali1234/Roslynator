@@ -7,9 +7,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
-    public class MemberDeclarationSelection : SyntaxListSelection<MemberDeclarationSyntax>
+    public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
-        private MemberDeclarationSelection(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int startIndex, int endIndex)
+        private MemberDeclarationsSelection(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int startIndex, int endIndex)
              : base(members, span, startIndex, endIndex)
         {
             ContainingDeclaration = containingDeclaration;
@@ -17,7 +17,7 @@ namespace Roslynator.CSharp
 
         public MemberDeclarationSyntax ContainingDeclaration { get; }
 
-        public static MemberDeclarationSelection Create(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span)
+        public static MemberDeclarationsSelection Create(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span)
         {
             if (namespaceDeclaration == null)
                 throw new ArgumentNullException(nameof(namespaceDeclaration));
@@ -25,7 +25,7 @@ namespace Roslynator.CSharp
             return Create(namespaceDeclaration, namespaceDeclaration.Members, span);
         }
 
-        public static MemberDeclarationSelection Create(ClassDeclarationSyntax classDeclaration, TextSpan span)
+        public static MemberDeclarationsSelection Create(ClassDeclarationSyntax classDeclaration, TextSpan span)
         {
             if (classDeclaration == null)
                 throw new ArgumentNullException(nameof(classDeclaration));
@@ -33,7 +33,7 @@ namespace Roslynator.CSharp
             return Create(classDeclaration, classDeclaration.Members, span);
         }
 
-        public static MemberDeclarationSelection Create(StructDeclarationSyntax structDeclaration, TextSpan span)
+        public static MemberDeclarationsSelection Create(StructDeclarationSyntax structDeclaration, TextSpan span)
         {
             if (structDeclaration == null)
                 throw new ArgumentNullException(nameof(structDeclaration));
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp
             return Create(structDeclaration, structDeclaration.Members, span);
         }
 
-        public static MemberDeclarationSelection Create(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span)
+        public static MemberDeclarationsSelection Create(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span)
         {
             if (interfaceDeclaration == null)
                 throw new ArgumentNullException(nameof(interfaceDeclaration));
@@ -49,14 +49,14 @@ namespace Roslynator.CSharp
             return Create(interfaceDeclaration, interfaceDeclaration.Members, span);
         }
 
-        private static MemberDeclarationSelection Create(MemberDeclarationSyntax memberDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
+        private static MemberDeclarationsSelection Create(MemberDeclarationSyntax memberDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
         {
             (int startIndex, int endIndex) = GetIndexes(members, span);
 
-            return new MemberDeclarationSelection(memberDeclaration, members, span, startIndex, endIndex);
+            return new MemberDeclarationsSelection(memberDeclaration, members, span, startIndex, endIndex);
         }
 
-        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationSelection selectedMembers)
+        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             if (namespaceDeclaration != null)
             {
@@ -69,7 +69,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool TryCreate(ClassDeclarationSyntax classDeclaration, TextSpan span, out MemberDeclarationSelection selectedMembers)
+        public static bool TryCreate(ClassDeclarationSyntax classDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             if (classDeclaration != null)
             {
@@ -82,7 +82,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool TryCreate(StructDeclarationSyntax structDeclaration, TextSpan span, out MemberDeclarationSelection selectedMembers)
+        public static bool TryCreate(StructDeclarationSyntax structDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             if (structDeclaration != null)
             {
@@ -95,7 +95,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool TryCreate(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span, out MemberDeclarationSelection selectedMembers)
+        public static bool TryCreate(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             if (interfaceDeclaration != null)
             {
@@ -108,7 +108,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        private static bool TryCreate(MemberDeclarationSyntax containingMember, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, out MemberDeclarationSelection selectedMembers)
+        private static bool TryCreate(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = null;
 
@@ -123,7 +123,7 @@ namespace Roslynator.CSharp
             if (startIndex == -1)
                 return false;
 
-            selectedMembers = new MemberDeclarationSelection(containingMember, members, span, startIndex, endIndex);
+            selectedMembers = new MemberDeclarationsSelection(containingDeclaration, members, span, startIndex, endIndex);
             return true;
         }
     }

@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         return RefactorAsync(
                             context.Document,
-                            selectedStatements.Info,
+                            selectedStatements,
                             ifStatements.ToImmutableArray(),
                             cancellationToken);
                     });
@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            StatementsInfo statementsInfo,
+            StatementsSelection selectedStatements,
             ImmutableArray<IfStatementSyntax> ifStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Refactorings
                 BinaryExpression(SyntaxKind.LogicalOrExpression, ifStatements.Select(f => f.Condition)),
                 Block(CreateStatements(ifStatements)));
 
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.Statements;
 
             int index = statements.IndexOf(ifStatements[0]);
 
@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = 1; i < ifStatements.Length; i++)
                 newStatements = newStatements.RemoveAt(index + 1);
 
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
 
         private static BinaryExpressionSyntax BinaryExpression(SyntaxKind kind, IEnumerable<ExpressionSyntax> expressions)

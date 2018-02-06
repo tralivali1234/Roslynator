@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = newStatements.Count - 1; i >= selectedStatements.StartIndex; i--)
                 newStatements = newStatements.RemoveAt(i);
 
-            return document.ReplaceStatementsAsync(selectedStatements.Info, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
     }
 }

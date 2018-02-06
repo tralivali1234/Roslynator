@@ -12,7 +12,7 @@ namespace Roslynator
         {
         }
 
-        protected static (int startIndex, int endIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
+        internal static (int startIndex, int endIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
             SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
 

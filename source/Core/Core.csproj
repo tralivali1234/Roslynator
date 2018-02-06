@@ -141,7 +141,7 @@
     <Compile Include="CSharp\Syntax\SimpleAssignmentExpressionInfo.cs" />
     <Compile Include="CSharp\Syntax\SingleParameterLambdaExpressionInfo.cs" />
     <Compile Include="CSharp\BinaryExpressionSelection.cs" />
-    <Compile Include="CSharp\MemberDeclarationSelection.cs" />
+    <Compile Include="CSharp\MemberDeclarationsSelection.cs" />
     <Compile Include="CSharp\Syntax\SimpleAssignmentStatementInfo.cs" />
     <Compile Include="CSharp\Syntax\SimpleIfStatementInfo.cs" />
     <Compile Include="CSharp\Syntax\StringConcatenationExpressionInfo.cs" />

@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{accessibility.GetName()}'";
         }
 
-        public static AccessibilityFlags GetAllowedAccessibilityFlags(MemberDeclarationSelection selectedMembers, bool allowOverride = false)
+        public static AccessibilityFlags GetAllowedAccessibilityFlags(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
                 return AccessibilityFlags.None;
@@ -143,7 +143,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
@@ -164,7 +164,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static async Task<Solution> RefactorAsync(
             Solution solution,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             Accessibility newAccessibility,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

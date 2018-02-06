@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
                 cancellationToken => RefactorAsync(context.Document, fieldDeclaration, cancellationToken));
         }
 
-        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSelection selectedMembers)
+        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationsSelection selectedMembers)
         {
             int count = 0;
 
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             CancellationToken cancellationToken)
         {
             ImmutableArray<FieldInfo> fieldInfo = selectedMembers
