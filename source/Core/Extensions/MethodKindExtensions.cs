@@ -35,15 +35,5 @@ namespace Roslynator.CSharp
                 || methodKind == methodKind4
                 || methodKind == methodKind5;
         }
-
-        public static bool Is(this MethodKind methodKind, MethodKind methodKind1, MethodKind methodKind2, MethodKind methodKind3, MethodKind methodKind4, MethodKind methodKind5, MethodKind methodKind6)
-        {
-            return methodKind == methodKind1
-                || methodKind == methodKind2
-                || methodKind == methodKind3
-                || methodKind == methodKind4
-                || methodKind == methodKind5
-                || methodKind == methodKind6;
-        }
     }
 }

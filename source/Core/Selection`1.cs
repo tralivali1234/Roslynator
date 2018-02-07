@@ -19,6 +19,7 @@ namespace Roslynator
 
         public TextSpan Span { get; }
 
+        //TODO: ren
         public IReadOnlyList<T> Items { get; }
 
         public int StartIndex { get; }

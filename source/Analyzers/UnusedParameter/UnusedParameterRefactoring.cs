@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Analyzers.UnusedParameter
 {

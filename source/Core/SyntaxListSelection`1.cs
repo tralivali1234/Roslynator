@@ -48,6 +48,13 @@ namespace Roslynator
             return (-1, -1);
         }
 
+        public static SyntaxListSelection<TNode> Create(SyntaxList<TNode> list, TextSpan span)
+        {
+            (int startIndex, int endIndex) = GetIndexes(list, span);
+
+            return new SyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+        }
+
         public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, out SyntaxListSelection<TNode> selection)
         {
             selection = null;

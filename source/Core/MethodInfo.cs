@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
+    //TODO: equals
     public struct MethodInfo
     {
         internal MethodInfo(IMethodSymbol symbol, SemanticModel semanticModel)

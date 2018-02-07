@@ -38,16 +38,6 @@ namespace Roslynator
                 || accessibility == accessibility5;
         }
 
-        public static bool Is(this Accessibility accessibility, Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3, Accessibility accessibility4, Accessibility accessibility5, Accessibility accessibility6)
-        {
-            return accessibility == accessibility1
-                || accessibility == accessibility2
-                || accessibility == accessibility3
-                || accessibility == accessibility4
-                || accessibility == accessibility5
-                || accessibility == accessibility6;
-        }
-
         public static bool IsPublic(this Accessibility accessibility)
         {
             return accessibility == Accessibility.Public;
@@ -108,6 +98,7 @@ namespace Roslynator
             return AccessibilityFlags.None;
         }
 
+        //TODO: pub
         internal static bool IsMoreRestrictiveThan(this Accessibility accessibility, Accessibility other)
         {
             switch (other)
@@ -146,7 +137,7 @@ namespace Roslynator
             return false;
         }
 
-        public static string GetName(this Accessibility accessibility)
+        internal static string GetName(this Accessibility accessibility)
         {
             switch (accessibility)
             {

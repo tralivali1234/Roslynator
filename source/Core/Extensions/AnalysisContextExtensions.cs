@@ -72,7 +72,7 @@ namespace Roslynator
                 throw new ArgumentNullException(nameof(node));
 
             context.ReportDiagnostic(
-            Diagnostic.Create(descriptor, node.GetLocation(), messageArgs));
+                Diagnostic.Create(descriptor, node.GetLocation(), messageArgs));
         }
 
         public static void ReportDiagnostic(
@@ -127,14 +127,14 @@ namespace Roslynator
                 Diagnostic.Create(descriptor, location, additionalLocations, messageArgs));
         }
 
-        public static INamedTypeSymbol GetTypeByMetadataName(
+        internal static INamedTypeSymbol GetTypeByMetadataName(
             this SyntaxNodeAnalysisContext context,
             string fullyQualifiedMetadataName)
         {
             return context.SemanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
         }
 
-        public static SyntaxTree SyntaxTree(this SyntaxNodeAnalysisContext context)
+        internal static SyntaxTree SyntaxTree(this SyntaxNodeAnalysisContext context)
         {
             return context.Node.SyntaxTree;
         }

@@ -14,6 +14,7 @@ namespace Roslynator
     public static class SymbolExtensions
     {
         #region ISymbol
+        //TODO: FindFirst
         public static ISymbol FindImplementedInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
         {
             if (symbol == null)
@@ -40,11 +41,13 @@ namespace Roslynator
             return default(ISymbol);
         }
 
+        //TODO: pub
         internal static bool ImplementsInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
         {
             return FindImplementedInterfaceMember(symbol, allInterfaces) != null;
         }
 
+        //TODO: FindFirst
         public static TSymbol FindImplementedInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
         {
             if (symbol == null)
@@ -74,6 +77,7 @@ namespace Roslynator
             return default(TSymbol);
         }
 
+        //TODO: pub
         internal static bool ImplementsInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
         {
             return !EqualityComparer<TSymbol>.Default.Equals(
@@ -81,6 +85,7 @@ namespace Roslynator
                 default(TSymbol));
         }
 
+        //TODO: pub
         internal static bool IsAnyInterfaceMemberExplicitlyImplemented(this INamedTypeSymbol symbol, ISymbol interfaceSymbol)
         {
             foreach (ISymbol member in symbol.GetMembers())
@@ -258,12 +263,14 @@ namespace Roslynator
             return symbol?.Kind == SymbolKind.TypeParameter;
         }
 
+        //TODO: 
         public static bool IsEnumField(this ISymbol symbol)
         {
             return symbol?.Kind == SymbolKind.Field
                 && symbol.ContainingType?.TypeKind == TypeKind.Enum;
         }
 
+        //TODO: int
         public static IEnumerable<INamespaceSymbol> ContainingNamespaces(this ISymbol symbol)
         {
             if (symbol == null)
@@ -282,7 +289,7 @@ namespace Roslynator
 
         public static bool IsAsyncMethod(this ISymbol symbol)
         {
-            return symbol?.IsMethod() == true
+            return IsMethod(symbol)
                 && ((IMethodSymbol)symbol).IsAsync;
         }
 
@@ -335,6 +342,7 @@ namespace Roslynator
             return false;
         }
 
+        //TODO: del
         public static bool IsAccessible(this ISymbol symbol, SemanticModel semanticModel, int position)
         {
             if (semanticModel == null)
@@ -343,6 +351,7 @@ namespace Roslynator
             return semanticModel.IsAccessible(position, symbol);
         }
 
+        //TODO: IsPropertyOfAnonymousType
         internal static bool IsAnonymousTypeProperty(this ISymbol symbol)
         {
             return symbol.IsProperty()
@@ -379,12 +388,7 @@ namespace Roslynator
                 .GetSyntaxAsync(cancellationToken);
         }
 
-        internal static bool TryGetSyntax<TNode>(this ISymbol symbol, out TNode node) where TNode : SyntaxNode
-        {
-            return TryGetSyntax(symbol, default(CancellationToken), out node);
-        }
-
-        internal static bool TryGetSyntax<TNode>(this ISymbol symbol, CancellationToken cancellationToken, out TNode node) where TNode : SyntaxNode
+        internal static bool TryGetSyntax<TNode>(this ISymbol symbol, out TNode node, CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
         {
             ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
 
@@ -440,34 +444,6 @@ namespace Roslynator
             return null;
         }
 
-        public static bool IsDeclaredAccessibility(this ISymbol symbol, Accessibility accessibility)
-        {
-            return symbol?.DeclaredAccessibility == accessibility;
-        }
-
-        public static bool IsDeclaredAccessibility(this ISymbol symbol, Accessibility accessibility1, Accessibility accessibility2)
-        {
-            if (symbol == null)
-                return false;
-
-            Accessibility accessibility = symbol.DeclaredAccessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2;
-        }
-
-        public static bool IsDeclaredAccessibility(this ISymbol symbol, Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3)
-        {
-            if (symbol == null)
-                return false;
-
-            Accessibility accessibility = symbol.DeclaredAccessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2
-                || accessibility == accessibility3;
-        }
-
         internal static ImmutableArray<IParameterSymbol> ParametersOrDefault(this ISymbol symbol)
         {
             if (symbol == null)
@@ -484,6 +460,7 @@ namespace Roslynator
             }
         }
 
+        //TODO: int, OrDefault
         public static ISymbol OverriddenSymbol(this ISymbol symbol)
         {
             if (symbol == null)
@@ -502,6 +479,7 @@ namespace Roslynator
             return null;
         }
 
+        //TODO: pub
         internal static ISymbol BaseOverriddenSymbol(this ISymbol symbol)
         {
             if (symbol == null)
@@ -522,6 +500,7 @@ namespace Roslynator
         #endregion ISymbol
 
         #region IEventSymbol
+        //TODO: pub
         internal static IEventSymbol BaseOverriddenEvent(this IEventSymbol eventSymbol)
         {
             if (eventSymbol == null)
@@ -538,6 +517,7 @@ namespace Roslynator
             }
         }
 
+        //TODO: int
         public static IEnumerable<IEventSymbol> OverriddenEvents(this IEventSymbol eventSymbol)
         {
             if (eventSymbol == null)
@@ -564,8 +544,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is bool
-                    && (bool)constantValue == value;
+                return constantValue is bool value2
+                    && value == value2;
             }
 
             return false;
@@ -580,8 +560,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is char
-                    && (char)constantValue == value;
+                return constantValue is char value2
+                    && value == value2;
             }
 
             return false;
@@ -596,8 +576,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is sbyte
-                    && (sbyte)constantValue == value;
+                return constantValue is sbyte value2
+                    && value == value2;
             }
 
             return false;
@@ -612,8 +592,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is byte
-                    && (byte)constantValue == value;
+                return constantValue is byte value2
+                    && value == value2;
             }
 
             return false;
@@ -628,8 +608,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is short
-                    && (short)constantValue == value;
+                return constantValue is short value2
+                    && value == value2;
             }
 
             return false;
@@ -644,8 +624,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is ushort
-                    && (ushort)constantValue == value;
+                return constantValue is ushort value2
+                    && value == value2;
             }
 
             return false;
@@ -660,8 +640,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is int
-                    && (int)constantValue == value;
+                return constantValue is int value2
+                    && value == value2;
             }
 
             return false;
@@ -676,8 +656,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is uint
-                    && (uint)constantValue == value;
+                return constantValue is uint value2
+                    && value == value2;
             }
 
             return false;
@@ -692,8 +672,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is long
-                    && (long)constantValue == value;
+                return constantValue is long value2
+                    && value == value2;
             }
 
             return false;
@@ -708,8 +688,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is ulong
-                    && (ulong)constantValue == value;
+                return constantValue is ulong value2
+                    && value == value2;
             }
 
             return false;
@@ -724,8 +704,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is decimal
-                    && (decimal)constantValue == value;
+                return constantValue is decimal value2
+                    && value == value2;
             }
 
             return false;
@@ -740,8 +720,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is float
-                    && (float)constantValue == value;
+                return constantValue is float value2
+                    && value == value2;
             }
 
             return false;
@@ -756,8 +736,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is double
-                    && (double)constantValue == value;
+                return constantValue is double value2
+                    && value == value2;
             }
 
             return false;
@@ -772,8 +752,8 @@ namespace Roslynator
             {
                 object constantValue = fieldSymbol.ConstantValue;
 
-                return constantValue is string
-                    && (string)constantValue == value;
+                return constantValue is string value2
+                    && value == value2;
             }
 
             return false;
@@ -781,6 +761,7 @@ namespace Roslynator
         #endregion IFieldSymbol
 
         #region IMethodSymbol
+        //TODO: pub
         internal static IMethodSymbol BaseOverriddenMethod(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
@@ -797,6 +778,7 @@ namespace Roslynator
             }
         }
 
+        //TODO: int
         public static IEnumerable<IMethodSymbol> OverriddenMethods(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)

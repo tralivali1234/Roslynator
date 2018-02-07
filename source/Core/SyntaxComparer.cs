@@ -12,7 +12,7 @@ namespace Roslynator
             SyntaxNode node2,
             bool disregardTrivia = true,
             bool topLevel = false,
-            bool requireNotNull = false)
+            bool requireNotNull = false) //TODO: ren
         {
             if (disregardTrivia)
             {

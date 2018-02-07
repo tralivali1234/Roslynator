@@ -7,7 +7,7 @@ namespace Roslynator
 {
     internal static class EquivalenceKey
     {
-        private const string Prefix = "Roslynator.CSharp";
+        private const string Prefix = "Roslynator";
 
         private const string Separator = ".";
 

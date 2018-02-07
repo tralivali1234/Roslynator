@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.Rename;
 using Roslynator.CSharp.Refactorings.MakeMemberAbstract;
 using Roslynator.CSharp.Refactorings.MakeMemberVirtual;
 using Roslynator.CSharp.Refactorings.ReplacePropertyWithMethod;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {

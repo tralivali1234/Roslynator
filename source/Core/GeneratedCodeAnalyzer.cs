@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator
 {
+    //TODO: rename
     [Obsolete]
     internal class GeneratedCodeAnalyzer
     {

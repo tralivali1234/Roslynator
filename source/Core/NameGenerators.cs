@@ -5,7 +5,9 @@ namespace Roslynator
     internal static class NameGenerators
     {
         public static AsyncMethodNameGenerator AsyncMethod { get; } = new AsyncMethodNameGenerator();
+
         public static NumberSuffixNameGenerator NumberSuffix { get; } = new NumberSuffixNameGenerator();
+
         public static UnderscoreSuffixNameGenerator UnderscoreSuffix { get; } = new UnderscoreSuffixNameGenerator();
     }
 }

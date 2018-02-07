@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.Utilities
+namespace Roslynator
 {
     internal static class FlagsUtility
     {

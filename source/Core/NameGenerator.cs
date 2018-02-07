@@ -6,7 +6,6 @@ using System.Collections.Immutable;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Roslynator.Helpers;
-using Roslynator.Utilities;
 
 namespace Roslynator
 {
@@ -141,6 +140,7 @@ namespace Roslynator
             return IsUniqueName(name, containingType.GetMembers(), isCaseSensitive);
         }
 
+        //TODO: public
         internal static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
@@ -154,6 +154,7 @@ namespace Roslynator
             return true;
         }
 
+        //TODO: public
         internal static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
@@ -167,6 +168,7 @@ namespace Roslynator
             return true;
         }
 
+        //TODO: rename
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);
@@ -174,7 +176,7 @@ namespace Roslynator
             if (name != null
                 && firstCharToLower)
             {
-                name = StringUtility.FirstCharToLower(name);
+                return StringUtility.FirstCharToLower(name);
             }
 
             return name;
@@ -248,19 +250,19 @@ namespace Roslynator
                 && AreDigits(oldName, newName.Length, oldName.Length - newName.Length)
                 && uniqueName.Length > newName.Length
                 && AreDigits(uniqueName, newName.Length, uniqueName.Length - newName.Length);
-        }
 
-        private static bool AreDigits(string value, int start, int count)
-        {
-            int max = start + count;
-
-            for (int i = start; i < max; i++)
+            bool AreDigits(string value, int start, int count)
             {
-                if (!char.IsDigit(value, i))
-                    return false;
-            }
+                int max = start + count;
 
-            return true;
+                for (int i = start; i < max; i++)
+                {
+                    if (!char.IsDigit(value, i))
+                        return false;
+                }
+
+                return true;
+            }
         }
 
         private static StringComparison GetStringComparison(bool isCaseSensitive)

@@ -7,7 +7,6 @@ namespace Roslynator
     internal struct ExtensionMethodInfo
     {
         private ExtensionMethodInfo(IMethodSymbol methodSymbol, IMethodSymbol reducedSymbol, SemanticModel semanticModel)
-            : this()
         {
             MethodInfo = new MethodInfo(methodSymbol, semanticModel);
             ReducedSymbol = reducedSymbol;

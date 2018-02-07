@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Roslynator.CSharp;
-using Roslynator.Utilities;
 
 namespace Roslynator.Helpers
 {

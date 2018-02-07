@@ -36,16 +36,6 @@ namespace Roslynator
                 || specialType == specialType5;
         }
 
-        public static bool Is(this SpecialType specialType, SpecialType specialType1, SpecialType specialType2, SpecialType specialType3, SpecialType specialType4, SpecialType specialType5, SpecialType specialType6)
-        {
-            return specialType == specialType1
-                || specialType == specialType2
-                || specialType == specialType3
-                || specialType == specialType4
-                || specialType == specialType5
-                || specialType == specialType6;
-        }
-
         public static bool SupportsConstantValue(SpecialType specialType)
         {
             switch (specialType)

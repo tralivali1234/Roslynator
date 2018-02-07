@@ -53,6 +53,13 @@ namespace Roslynator
             return (i == list.Count - 1) ? node.FullSpan.End : list.GetSeparator(i).FullSpan.End;
         }
 
+        public static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span)
+        {
+            (int startIndex, int endIndex) = GetIndexes(list, span);
+
+            return new SeparatedSyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+        }
+
         public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, out SeparatedSyntaxListSelection<TNode> selection)
         {
             selection = null;

@@ -4,7 +4,7 @@ using System;
 using System.Text;
 using Roslynator.Text;
 
-namespace Roslynator.Utilities
+namespace Roslynator
 {
     internal static class StringUtility
     {
