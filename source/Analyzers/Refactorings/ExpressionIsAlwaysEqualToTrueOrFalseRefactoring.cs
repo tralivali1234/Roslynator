@@ -140,7 +140,7 @@ namespace Roslynator.CSharp.Refactorings
 
                                 if (containingType != null)
                                 {
-                                    if (containingType.IsSpecialType(
+                                    if (containingType.SpecialType.Is(
                                         SpecialType.System_String,
                                         SpecialType.System_Array,
                                         SpecialType.System_Collections_Generic_ICollection_T))

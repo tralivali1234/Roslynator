@@ -448,8 +448,12 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var returnType = methodSymbol.ReturnType as INamedTypeSymbol;
 
-                if (returnType?.IsConstructedFromTaskOfT(semanticModel) == true)
+                if (returnType?
+                    .ConstructedFrom
+                    .EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)) == true)
+                {
                     return returnType.TypeArguments.Single();
+                }
             }
 
             return null;

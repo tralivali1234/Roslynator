@@ -1,5 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -45,7 +50,88 @@ namespace Roslynator.CSharp.Refactorings
         private static bool IsUnconstrainedTypeParameter(ITypeSymbol typeSymbol)
         {
             return typeSymbol?.IsTypeParameter() == true
-                && ((ITypeParameterSymbol)typeSymbol).VerifyConstraint(allowReference: false, allowValueType: false, allowConstructor: true);
+                && VerifyConstraint((ITypeParameterSymbol)typeSymbol, allowReference: false, allowValueType: false, allowConstructor: true);
+        }
+
+        private static bool VerifyConstraint(
+            ITypeParameterSymbol typeParameterSymbol,
+            bool allowReference,
+            bool allowValueType,
+            bool allowConstructor)
+        {
+            if (typeParameterSymbol == null)
+                throw new ArgumentNullException(nameof(typeParameterSymbol));
+
+            if (!CheckConstraint(typeParameterSymbol, allowReference, allowValueType, allowConstructor))
+                return false;
+
+            ImmutableArray<ITypeSymbol> constraintTypes = typeParameterSymbol.ConstraintTypes;
+
+            if (!constraintTypes.Any())
+                return true;
+
+            var stack = new Stack<ITypeSymbol>(constraintTypes);
+
+            while (stack.Count > 0)
+            {
+                ITypeSymbol type = stack.Pop();
+
+                switch (type.TypeKind)
+                {
+                    case TypeKind.Class:
+                        {
+                            if (!allowReference)
+                                return false;
+
+                            break;
+                        }
+                    case TypeKind.Struct:
+                        {
+                            if (allowValueType)
+                                return false;
+
+                            break;
+                        }
+                    case TypeKind.Interface:
+                        {
+                            break;
+                        }
+                    case TypeKind.TypeParameter:
+                        {
+                            var typeParameterSymbol2 = (ITypeParameterSymbol)type;
+
+                            if (!CheckConstraint(typeParameterSymbol2, allowReference, allowValueType, allowConstructor))
+                                return false;
+
+                            foreach (ITypeSymbol constraintType in typeParameterSymbol2.ConstraintTypes)
+                                stack.Push(constraintType);
+
+                            break;
+                        }
+                    case TypeKind.Error:
+                        {
+                            return false;
+                        }
+                    default:
+                        {
+                            Debug.Fail(type.TypeKind.ToString());
+                            return false;
+                        }
+                }
+            }
+
+            return true;
+        }
+
+        private static bool CheckConstraint(
+            ITypeParameterSymbol typeParameterSymbol,
+            bool allowReference,
+            bool allowValueType,
+            bool allowConstructor)
+        {
+            return (allowReference || !typeParameterSymbol.HasReferenceTypeConstraint)
+                && (allowValueType || !typeParameterSymbol.HasValueTypeConstraint)
+                && (allowConstructor || !typeParameterSymbol.HasConstructorConstraint);
         }
 
         public static async Task<Document> RefactorAsync(

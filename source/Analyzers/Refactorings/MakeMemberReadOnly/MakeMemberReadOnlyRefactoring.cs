@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
         {
             var typeSymbol = (INamedTypeSymbol)context.Symbol;
 
-            if (typeSymbol.IsTypeKind(TypeKind.Class, TypeKind.Struct))
+            if (typeSymbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct))
             {
                 HashSet<ISymbol> symbols = GetAnalyzableSymbols(context, typeSymbol);
 

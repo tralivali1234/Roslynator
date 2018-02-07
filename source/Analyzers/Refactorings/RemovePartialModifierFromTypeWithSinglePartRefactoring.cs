@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
         {
-            if (symbol.IsTypeKind(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
+            if (symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
             {
                 ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
 

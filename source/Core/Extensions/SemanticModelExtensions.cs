@@ -11,16 +11,6 @@ namespace Roslynator
 {
     public static class SemanticModelExtensions
     {
-        //TODO: del
-        public static bool ContainsDiagnostic(
-            this SemanticModel semanticModel,
-            string id,
-            TextSpan? span = null,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return GetDiagnostic(semanticModel, id, span, cancellationToken) != null;
-        }
-
         public static Diagnostic GetDiagnostic(
             this SemanticModel semanticModel,
             string id,

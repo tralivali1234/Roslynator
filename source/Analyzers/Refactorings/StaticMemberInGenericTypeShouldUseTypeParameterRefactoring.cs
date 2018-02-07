@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            if (namedType.IsTypeKind(TypeKind.Class, TypeKind.Struct)
+            if (namedType.TypeKind.Is(TypeKind.Class, TypeKind.Struct)
                 && namedType.Arity > 0
                 && !namedType.IsStatic
                 && !namedType.IsImplicitClass
