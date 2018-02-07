@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+//TODO: pub ?
 namespace Roslynator.CSharp.Comparers
 {
     internal class EnumMemberDeclarationNameComparer : IComparer<EnumMemberDeclarationSyntax>

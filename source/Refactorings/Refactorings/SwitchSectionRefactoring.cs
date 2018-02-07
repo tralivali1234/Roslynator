@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -31,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
-                switch (CSharpAnalysis.AnalyzeBraces(switchSection))
+                switch (BracesAnalysis.AnalyzeBraces(switchSection))
                 {
                     case BracesAnalysisResult.AddBraces:
                         {

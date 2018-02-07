@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+//TODO: int
 namespace Roslynator.CSharp.Documentation
 {
     internal class AddBaseOrNewDocumentationCommentRewriter : AddNewDocumentationCommentRewriter
@@ -16,6 +17,7 @@ namespace Roslynator.CSharp.Documentation
         }
 
         public SemanticModel SemanticModel { get; }
+
         public CancellationToken CancellationToken { get; }
 
         protected override MemberDeclarationSyntax AddDocumentationComment(MemberDeclarationSyntax memberDeclaration)

@@ -20,12 +20,6 @@ namespace Roslynator.CSharp.Helpers
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (argument == null)
-                throw new ArgumentNullException(nameof(argument));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
             if (!(argument.Parent is BaseArgumentListSyntax argumentList))
                 return null;
 
@@ -92,12 +86,6 @@ namespace Roslynator.CSharp.Helpers
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (attributeArgument == null)
-                throw new ArgumentNullException(nameof(attributeArgument));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
             if (attributeArgument.NameEquals != null)
                 return null;
 

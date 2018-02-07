@@ -14,11 +14,12 @@ namespace Roslynator.CSharp.Documentation
         }
 
         public SyntaxTrivia Comment { get; }
+
         public BaseDocumentationCommentOrigin Origin { get; }
 
         public bool Success
         {
-            get { return Comment.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia); }
+            get { return Comment.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia; }
         }
     }
 }

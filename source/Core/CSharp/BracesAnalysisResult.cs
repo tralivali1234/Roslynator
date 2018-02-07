@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Roslynator.CSharp.Analysis
+namespace Roslynator.CSharp
 {
     [Flags]
     internal enum BracesAnalysisResult

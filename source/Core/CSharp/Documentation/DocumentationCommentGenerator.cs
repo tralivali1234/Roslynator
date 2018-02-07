@@ -3,13 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Xml;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,6 +13,8 @@ using Roslynator.Text;
 
 namespace Roslynator.CSharp.Documentation
 {
+    //TODO: DocumentationCommentFactory
+    //TODO: přesunout do CSharpFactory?
     public static class DocumentationCommentGenerator
     {
         public static SyntaxTriviaList Generate(MemberDeclarationSyntax memberDeclaration, DocumentationCommentGeneratorSettings settings = null)
@@ -338,6 +336,7 @@ namespace Roslynator.CSharp.Documentation
             }
         }
 
+        //TODO: int + dolů
         public static BaseDocumentationCommentData GenerateFromBase(MemberDeclarationSyntax memberDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (memberDeclaration.Kind())
@@ -462,7 +461,7 @@ namespace Roslynator.CSharp.Documentation
 
                 if (baseConstructor?.IsErrorType() == false)
                 {
-                    SyntaxTrivia trivia = GetDocumentationCommentTrivia(baseConstructor, semanticModel, constructorDeclaration.SpanStart, cancellationToken);
+                    SyntaxTrivia trivia = DocumentationCommentProvider.GetDocumentationCommentTrivia(baseConstructor, semanticModel, constructorDeclaration.SpanStart, cancellationToken);
 
                     if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
                         return new BaseDocumentationCommentData(trivia, BaseDocumentationCommentOrigin.BaseMember);
@@ -476,7 +475,7 @@ namespace Roslynator.CSharp.Documentation
         {
             for (IMethodSymbol overriddenMethod = methodSymbol.OverriddenMethod; overriddenMethod != null; overriddenMethod = overriddenMethod.OverriddenMethod)
             {
-                SyntaxTrivia trivia = GetDocumentationCommentTrivia(overriddenMethod, semanticModel, position, cancellationToken);
+                SyntaxTrivia trivia = DocumentationCommentProvider.GetDocumentationCommentTrivia(overriddenMethod, semanticModel, position, cancellationToken);
 
                 if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
                     return trivia;
@@ -489,7 +488,7 @@ namespace Roslynator.CSharp.Documentation
         {
             for (IPropertySymbol overriddenProperty = propertySymbol.OverriddenProperty; overriddenProperty != null; overriddenProperty = overriddenProperty.OverriddenProperty)
             {
-                SyntaxTrivia trivia = GetDocumentationCommentTrivia(overriddenProperty, semanticModel, position, cancellationToken);
+                SyntaxTrivia trivia = DocumentationCommentProvider.GetDocumentationCommentTrivia(overriddenProperty, semanticModel, position, cancellationToken);
 
                 if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
                     return trivia;
@@ -502,7 +501,7 @@ namespace Roslynator.CSharp.Documentation
         {
             for (IEventSymbol overriddenEvent = eventSymbol.OverriddenEvent; overriddenEvent != null; overriddenEvent = overriddenEvent.OverriddenEvent)
             {
-                SyntaxTrivia trivia = GetDocumentationCommentTrivia(overriddenEvent, semanticModel, position, cancellationToken);
+                SyntaxTrivia trivia = DocumentationCommentProvider.GetDocumentationCommentTrivia(overriddenEvent, semanticModel, position, cancellationToken);
 
                 if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
                     return trivia;
@@ -521,212 +520,11 @@ namespace Roslynator.CSharp.Documentation
 
             if (!EqualityComparer<TInterfaceSymbol>.Default.Equals(interfaceMember, default(TInterfaceSymbol)))
             {
-                return GetDocumentationCommentTrivia(interfaceMember, semanticModel, position, cancellationToken);
+                return DocumentationCommentProvider.GetDocumentationCommentTrivia(interfaceMember, semanticModel, position, cancellationToken);
             }
             else
             {
                 return default(SyntaxTrivia);
-            }
-        }
-
-        private static SyntaxTrivia GetDocumentationCommentTrivia(ISymbol symbol, SemanticModel semanticModel, int position, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            string xmlString = symbol.GetDocumentationCommentXml(cancellationToken: cancellationToken);
-
-            if (!string.IsNullOrEmpty(xmlString))
-            {
-                string innerXml = GetInnerXml(xmlString);
-
-                if (innerXml != null)
-                {
-                    string text = AddSlashes(innerXml.TrimEnd());
-
-                    SyntaxTriviaList triviaList = SyntaxFactory.ParseLeadingTrivia(text);
-
-                    if (triviaList.Count == 1)
-                    {
-                        SyntaxTrivia trivia = triviaList.First();
-
-                        if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia)
-                            && trivia.HasStructure)
-                        {
-                            SyntaxNode structure = trivia.GetStructure();
-
-                            if (structure.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
-                            {
-                                var commentTrivia = (DocumentationCommentTriviaSyntax)structure;
-
-                                var rewriter = new DocumentationCommentTriviaRewriter(position, semanticModel);
-
-                                // Remove T: from cref attribute and replace `1 with {T}
-                                commentTrivia = (DocumentationCommentTriviaSyntax)rewriter.Visit(commentTrivia);
-
-                                // Remove <filterpriority> element
-                                commentTrivia = RemoveFilterPriorityElement(commentTrivia);
-
-                                string commentTriviaText = commentTrivia.ToFullString();
-
-                                commentTriviaText = Regex.Replace(commentTriviaText, @"^///\s*(\r?\n|$)", "", RegexOptions.Multiline);
-
-                                triviaList = SyntaxFactory.ParseLeadingTrivia(commentTriviaText);
-
-                                if (triviaList.Count == 1)
-                                    return triviaList.First();
-                            }
-                        }
-                    }
-                }
-
-                Debug.Fail(xmlString);
-            }
-
-            return default(SyntaxTrivia);
-        }
-
-        private static DocumentationCommentTriviaSyntax RemoveFilterPriorityElement(DocumentationCommentTriviaSyntax commentTrivia)
-        {
-            SyntaxList<XmlNodeSyntax> content = commentTrivia.Content;
-
-            for (int i = content.Count - 1; i >= 0; i--)
-            {
-                XmlNodeSyntax xmlNode = content[i];
-
-                if (xmlNode.IsKind(SyntaxKind.XmlElement))
-                {
-                    var xmlElement = (XmlElementSyntax)xmlNode;
-
-                    if (xmlElement.IsLocalName("filterpriority", "FILTERPRIORITY"))
-                        content = content.RemoveAt(i);
-                }
-            }
-
-            return commentTrivia.WithContent(content);
-        }
-
-        private static string GetInnerXml(string comment)
-        {
-            using (var sr = new StringReader(comment))
-            {
-                var settings = new XmlReaderSettings() { ConformanceLevel = ConformanceLevel.Fragment };
-
-                using (XmlReader reader = XmlReader.Create(sr, settings))
-                {
-                    if (reader.Read()
-                        && reader.NodeType == XmlNodeType.Element)
-                    {
-                        switch (reader.Name)
-                        {
-                            case "member":
-                            case "doc":
-                                {
-                                    try
-                                    {
-                                        return reader.ReadInnerXml();
-                                    }
-                                    catch (XmlException ex)
-                                    {
-                                        Debug.Fail(ex.ToString());
-                                        return null;
-                                    }
-                                }
-                            default:
-                                {
-                                    Debug.Fail(reader.Name);
-                                    return null;
-                                }
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private static string AddSlashes(string innerXml)
-        {
-            StringBuilder sb = StringBuilderCache.GetInstance();
-
-            string indent = null;
-
-            using (var sr = new StringReader(innerXml))
-            {
-                string s = null;
-
-                while ((s = sr.ReadLine()) != null)
-                {
-                    if (s.Length > 0)
-                    {
-                        indent = indent ?? Regex.Match(s, "^ *").Value;
-
-                        sb.Append("/// ");
-                        s = Regex.Replace(s, $"^{indent}", "");
-
-                        sb.AppendLine(s);
-                    }
-                }
-            }
-
-            return StringBuilderCache.GetStringAndFree(sb);
-        }
-
-        private class DocumentationCommentTriviaRewriter : CSharpSyntaxRewriter
-        {
-            private readonly SemanticModel _semanticModel;
-            private readonly int _position;
-
-            public DocumentationCommentTriviaRewriter(int position, SemanticModel semanticModel)
-                : base(visitIntoStructuredTrivia: true)
-            {
-                _semanticModel = semanticModel ?? throw new ArgumentNullException(nameof(semanticModel));
-                _position = position;
-            }
-
-            public override SyntaxNode VisitXmlTextAttribute(XmlTextAttributeSyntax node)
-            {
-                if (node.Name?.IsLocalName("cref", "CREF") == true)
-                {
-                    SyntaxTokenList tokens = node.TextTokens;
-
-                    if (tokens.Count == 1)
-                    {
-                        SyntaxToken token = tokens.First();
-
-                        string text = token.Text;
-
-                        string valueText = token.ValueText;
-
-                        if (text.StartsWith("T:", StringComparison.Ordinal))
-                            text = GetMinimalDisplayString(text.Substring(2));
-
-                        if (valueText.StartsWith("T:", StringComparison.Ordinal))
-                            valueText = GetMinimalDisplayString(valueText.Substring(2));
-
-                        SyntaxToken newToken = SyntaxFactory.Token(
-                            default(SyntaxTriviaList),
-                            SyntaxKind.XmlTextLiteralToken,
-                            text,
-                            valueText,
-                            default(SyntaxTriviaList));
-
-                        return node.WithTextTokens(tokens.Replace(token, newToken));
-                    }
-                }
-
-                return base.VisitXmlTextAttribute(node);
-            }
-
-            private string GetMinimalDisplayString(string metadataName)
-            {
-                INamedTypeSymbol typeSymbol = _semanticModel.Compilation.GetTypeByMetadataName(metadataName);
-
-                if (typeSymbol != null)
-                {
-                    return SymbolDisplay.GetMinimalString(typeSymbol, _semanticModel, _position)
-                        .Replace('<', '{')
-                        .Replace('>', '}');
-                }
-
-                return metadataName;
             }
         }
     }

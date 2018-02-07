@@ -3699,31 +3699,31 @@ namespace Roslynator.CSharp
         #endregion UsingStatementSyntax
 
         #region XmlElementSyntax
-        internal static bool IsLocalName(this XmlElementSyntax xmlElement, string localName)
+        internal static bool IsLocalName(this XmlElementSyntax xmlElement, string localName, StringComparison comparison = StringComparison.Ordinal)
         {
-            return xmlElement.StartTag?.Name?.IsLocalName(localName) == true;
+            return xmlElement.StartTag?.Name?.IsLocalName(localName, comparison) == true;
         }
 
-        internal static bool IsLocalName(this XmlElementSyntax xmlElement, string localName1, string localName2)
+        internal static bool IsLocalName(this XmlElementSyntax xmlElement, string localName1, string localName2, StringComparison comparison = StringComparison.Ordinal)
         {
-            return xmlElement.StartTag?.Name?.IsLocalName(localName1, localName2) == true;
+            return xmlElement.StartTag?.Name?.IsLocalName(localName1, localName2, comparison) == true;
         }
         #endregion XmlElementSyntax
 
         #region XmlNameSyntax
-        internal static bool IsLocalName(this XmlNameSyntax xmlName, string localName)
+        internal static bool IsLocalName(this XmlNameSyntax xmlName, string localName, StringComparison comparison = StringComparison.Ordinal)
         {
             string name = xmlName.LocalName.ValueText;
 
-            return string.Equals(name, localName, StringComparison.Ordinal);
+            return string.Equals(name, localName, comparison);
         }
 
-        internal static bool IsLocalName(this XmlNameSyntax xmlName, string localName1, string localName2)
+        internal static bool IsLocalName(this XmlNameSyntax xmlName, string localName1, string localName2, StringComparison comparison = StringComparison.Ordinal)
         {
             string name = xmlName.LocalName.ValueText;
 
-            return string.Equals(name, localName1, StringComparison.Ordinal)
-                || string.Equals(name, localName2, StringComparison.Ordinal);
+            return string.Equals(name, localName1, comparison)
+                || string.Equals(name, localName2, comparison);
         }
         #endregion XmlNameSyntax
 

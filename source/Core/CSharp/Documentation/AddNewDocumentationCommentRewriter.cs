@@ -15,6 +15,7 @@ namespace Roslynator.CSharp.Documentation
         }
 
         public bool SkipNamespaceDeclaration { get; }
+
         public DocumentationCommentGeneratorSettings Settings { get; }
 
         protected virtual MemberDeclarationSyntax AddDocumentationComment(MemberDeclarationSyntax memberDeclaration)

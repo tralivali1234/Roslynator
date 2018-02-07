@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -974,6 +973,14 @@ namespace Roslynator
             return IsIEnumerable(namedTypeSymbol)
                 || IsConstructedFromIEnumerableOfT(namedTypeSymbol);
         }
+
+        //TODO: pub
+        internal static bool IsConstructedFromTaskOfT(this INamedTypeSymbol namedTypeSymbol, SemanticModel semanticModel)
+        {
+            return namedTypeSymbol
+                .ConstructedFrom
+                .EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T));
+        }
         #endregion INamedTypeSymbol
 
         #region INamespaceSymbol
@@ -1562,7 +1569,8 @@ namespace Roslynator
             return typeSymbol.EqualsOrInheritsFrom(taskSymbol);
         }
 
-        internal static bool IsConstructedFromTaskOfT(ITypeSymbol typeSymbol, SemanticModel semanticModel)
+        //TODO: pub
+        internal static bool IsConstructedFromTaskOfT(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));

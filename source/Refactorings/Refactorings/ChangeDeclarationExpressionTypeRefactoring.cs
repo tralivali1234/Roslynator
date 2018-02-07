@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -20,7 +19,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                TypeAnalysisFlags flags = CSharpAnalysis.AnalyzeType(declarationExpression, semanticModel, context.CancellationToken);
+                TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(declarationExpression, semanticModel, context.CancellationToken);
 
                 if (flags.IsExplicit())
                 {

@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -38,7 +37,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            TypeAnalysisFlags flags = CSharpAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken);
+            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken);
 
             if (flags.IsExplicit())
             {

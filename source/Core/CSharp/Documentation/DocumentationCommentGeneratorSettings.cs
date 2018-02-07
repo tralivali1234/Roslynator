@@ -22,9 +22,16 @@ namespace Roslynator.CSharp.Documentation
 
         public static DocumentationCommentGeneratorSettings Default { get; } = new DocumentationCommentGeneratorSettings();
 
+        //TODO: Lines, CommentLines
         public ImmutableArray<string> Comments { get; }
+
+        //TODO: Indentation
         public string Indent { get; }
+
+        //TODO: ren
         public bool SingleLineSummary { get; }
+
+        //TODO: ren
         public bool GenerateReturns { get; }
 
         public DocumentationCommentGeneratorSettings WithComments(IEnumerable<string> comments)

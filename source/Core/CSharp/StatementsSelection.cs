@@ -25,7 +25,7 @@ namespace Roslynator.CSharp
             if (block == null)
                 throw new ArgumentNullException(nameof(block));
 
-            return Create(block.Statements, span);
+            return CreateCore(block.Statements, span);
         }
 
         public static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span)
@@ -33,15 +33,15 @@ namespace Roslynator.CSharp
             if (switchSection == null)
                 throw new ArgumentNullException(nameof(switchSection));
 
-            return Create(switchSection.Statements, span);
+            return CreateCore(switchSection.Statements, span);
         }
 
         public static StatementsSelection Create(StatementsInfo statementsInfo, TextSpan span)
         {
-            return Create(statementsInfo.Statements, span);
+            return CreateCore(statementsInfo.Statements, span);
         }
 
-        private static StatementsSelection Create(SyntaxList<StatementSyntax> statements, TextSpan span)
+        private static StatementsSelection CreateCore(SyntaxList<StatementSyntax> statements, TextSpan span)
         {
             (int startIndex, int endIndex) = GetIndexes(statements, span);
 

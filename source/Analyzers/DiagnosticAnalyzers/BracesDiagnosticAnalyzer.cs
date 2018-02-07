@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -35,14 +34,14 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeIfStatement, SyntaxKind.IfStatement);
         }
 
-        private void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
             if (!ifStatement.IsParentKind(SyntaxKind.ElseClause)
                 && ifStatement.Else != null)
             {
-                BracesAnalysisResult result = CSharpAnalysis.AnalyzeBraces(ifStatement);
+                BracesAnalysisResult result = BracesAnalysis.AnalyzeBraces(ifStatement);
 
                 if ((result & BracesAnalysisResult.AddBraces) != 0)
                 {
