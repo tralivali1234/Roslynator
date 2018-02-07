@@ -88,7 +88,6 @@ namespace Roslynator.CSharp.Syntax
                             {
                                 binaryExpression = (BinaryExpressionSyntax)left;
                                 success = true;
-                                continue;
                             }
                             else
                             {

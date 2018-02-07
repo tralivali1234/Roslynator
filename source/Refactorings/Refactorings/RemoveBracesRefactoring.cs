@@ -72,10 +72,9 @@ namespace Roslynator.CSharp.Refactorings
             foreach (BlockSyntax block in GetBlockStatements(topmostIf))
             {
                 if (block == selectedBlock)
-                {
                     continue;
-                }
-                else if (IsEmbeddableBlock(block))
+
+                if (IsEmbeddableBlock(block))
                 {
                     success = true;
                 }
