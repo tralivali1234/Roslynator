@@ -42,7 +42,9 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             if (name != identifierName.Identifier.ValueText)
                 return false;
 
-            if (!semanticModel.TryGetMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return false;
 
             if (!methodInfo.ReturnType.Equals(typeSymbol))

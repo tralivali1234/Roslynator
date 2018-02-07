@@ -36,7 +36,9 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return;
 
-            if (!ExtensionMethodInfo.TryCreate(methodSymbol, semanticModel, out ExtensionMethodInfo extensionMethodInfo))
+            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, semanticModel);
+
+            if (extensionMethodInfo.Symbol == null)
                 return;
 
             if (!extensionMethodInfo.MethodInfo.IsLinqSelect(allowImmutableArrayExtension: true))

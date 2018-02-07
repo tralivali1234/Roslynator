@@ -27,22 +27,17 @@ namespace Roslynator
             get { return ReducedSymbol ?? Symbol; }
         }
 
-        public bool IsValid
-        {
-            get { return MethodInfo.IsValid; }
-        }
-
         public bool IsFromReduced
         {
-            get { return IsValid && !object.ReferenceEquals(ReducedSymbol, MethodInfo.Symbol); }
+            get { return Symbol != null && !object.ReferenceEquals(ReducedSymbol, Symbol); }
         }
 
         public bool IsFromOrdinary
         {
-            get { return IsValid && object.ReferenceEquals(ReducedSymbol, MethodInfo.Symbol); }
+            get { return Symbol != null && object.ReferenceEquals(ReducedSymbol, Symbol); }
         }
 
-        public static bool TryCreate(IMethodSymbol methodSymbol, SemanticModel semanticModel, out ExtensionMethodInfo extensionMethodInfo, ExtensionMethodKind kind = ExtensionMethodKind.None)
+        public static ExtensionMethodInfo Create(IMethodSymbol methodSymbol, SemanticModel semanticModel, ExtensionMethodKind kind = ExtensionMethodKind.None)
         {
             if (methodSymbol?.IsExtensionMethod == true)
             {
@@ -52,19 +47,16 @@ namespace Roslynator
                 {
                     if (kind != ExtensionMethodKind.NonReduced)
                     {
-                        extensionMethodInfo = new ExtensionMethodInfo(reducedFrom, methodSymbol, semanticModel);
-                        return true;
+                        return new ExtensionMethodInfo(reducedFrom, methodSymbol, semanticModel);
                     }
                 }
                 else if (kind != ExtensionMethodKind.Reduced)
                 {
-                    extensionMethodInfo = new ExtensionMethodInfo(methodSymbol, null, semanticModel);
-                    return true;
+                    return new ExtensionMethodInfo(methodSymbol, null, semanticModel);
                 }
             }
 
-            extensionMethodInfo = default(ExtensionMethodInfo);
-            return false;
+            return default(ExtensionMethodInfo);
         }
     }
 }

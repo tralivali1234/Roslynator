@@ -39,23 +39,29 @@ namespace Roslynator.CSharp.Refactorings
                                 SemanticModel semanticModel = context.SemanticModel;
                                 CancellationToken cancellationToken = context.CancellationToken;
 
-                                if (semanticModel.TryGetExtensionMethodInfo(invocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.None, cancellationToken)
-                                    && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate("Any")
-                                    && semanticModel.TryGetExtensionMethodInfo(invocationInfo2.InvocationExpression, out MethodInfo methodInfo2, ExtensionMethodKind.None, cancellationToken)
-                                    && methodInfo2.IsLinqWhere(allowImmutableArrayExtension: true))
+                                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.None, cancellationToken);
+
+                                if (methodInfo.Symbol != null
+                                    && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate("Any"))
                                 {
-                                    SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);
-                                    if (lambda.Success
-                                        && lambda.Body is ExpressionSyntax)
+                                    MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocationInfo2.InvocationExpression, ExtensionMethodKind.None, cancellationToken);
+
+                                    if (methodInfo2.Symbol != null
+                                        && methodInfo2.IsLinqWhere(allowImmutableArrayExtension: true))
                                     {
-                                        SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument2.Expression);
-                                        if (lambda2.Success
-                                            && lambda2.Body is ExpressionSyntax
-                                            && lambda.ParameterName.Equals(lambda2.ParameterName, StringComparison.Ordinal))
+                                        SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);
+                                        if (lambda.Success
+                                            && lambda.Body is ExpressionSyntax)
                                         {
-                                            context.ReportDiagnostic(
-                                                DiagnosticDescriptors.SimplifyLinqMethodChain,
-                                                Location.Create(context.SyntaxTree(), TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
+                                            SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument2.Expression);
+                                            if (lambda2.Success
+                                                && lambda2.Body is ExpressionSyntax
+                                                && lambda.ParameterName.Equals(lambda2.ParameterName, StringComparison.Ordinal))
+                                            {
+                                                context.ReportDiagnostic(
+                                                    DiagnosticDescriptors.SimplifyLinqMethodChain,
+                                                    Location.Create(context.SyntaxTree(), TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
+                                            }
                                         }
                                     }
                                 }

@@ -296,44 +296,36 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        public static bool TryGetExtensionMethodInfo(
+        public static MethodInfo GetExtensionMethodInfo(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
-            out MethodInfo methodInfo,
-            ExtensionMethodKind kind = ExtensionMethodKind.None,
+            ExtensionMethodKind extensionMethodKind = ExtensionMethodKind.None,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-            if (symbol?.IsMethod() == true
-                && ExtensionMethodInfo.TryCreate((IMethodSymbol)symbol, semanticModel, out ExtensionMethodInfo extensionMethodInfo, kind))
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
             {
-                methodInfo = extensionMethodInfo.MethodInfo;
-                return true;
+                ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, semanticModel, extensionMethodKind);
+
+                if (extensionMethodInfo.Symbol != null)
+                {
+                    return extensionMethodInfo.MethodInfo;
+                }
             }
 
-            methodInfo = default(MethodInfo);
-            return false;
+            return default(MethodInfo);
         }
 
-        public static bool TryGetMethodInfo(
+        public static MethodInfo GetMethodInfo(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
-            out MethodInfo methodInfo,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ISymbol symbol = GetSymbol(semanticModel, expression, cancellationToken);
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
+            {
+                return new MethodInfo(methodSymbol, semanticModel);
+            }
 
-            if (symbol?.IsMethod() == true)
-            {
-                methodInfo = new MethodInfo((IMethodSymbol)symbol, semanticModel);
-                return true;
-            }
-            else
-            {
-                methodInfo = default(MethodInfo);
-                return false;
-            }
+            return default(MethodInfo);
         }
 
         internal static MethodDeclarationSyntax GetOtherPart(

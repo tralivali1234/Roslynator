@@ -25,12 +25,16 @@ namespace Roslynator.CSharp.Refactorings
 
                         ExpressionSyntax expression = invocationExpression.WalkUpParentheses();
 
-                        if (IsExpressionOfAccessExpression(expression)
-                            && context.SemanticModel.TryGetMethodInfo(invocationExpression, out MethodInfo methodInfo, context.CancellationToken)
-                            && methodInfo.ReturnType.IsReferenceType
-                            && methodInfo.IsContainingType(MetadataNames.System_Linq_Enumerable))
+                        if (IsExpressionOfAccessExpression(expression))
                         {
-                            ReportDiagnostic(context, expression);
+                            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationExpression, context.CancellationToken);
+
+                            if (methodInfo.Symbol != null
+                                && methodInfo.ReturnType.IsReferenceType
+                                && methodInfo.IsContainingType(MetadataNames.System_Linq_Enumerable))
+                            {
+                                ReportDiagnostic(context, expression);
+                            }
                         }
 
                         break;

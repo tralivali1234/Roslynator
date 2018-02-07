@@ -39,31 +39,39 @@ namespace Roslynator.CSharp.Refactorings
                     SemanticModel semanticModel = context.SemanticModel;
                     CancellationToken cancellationToken = context.CancellationToken;
 
-                    if (string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal)
-                        && semanticModel.TryGetExtensionMethodInfo(invocation2, out MethodInfo methodInfo2, ExtensionMethodKind.Reduced, cancellationToken)
-                        && methodInfo2.IsLinqExtensionOfIEnumerableOfT("Where", parameterCount: 2))
+                    if (string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
                     {
-                        if (SymbolUtility.IsPredicateFunc(
-                            methodInfo2.Parameters[1].Type,
-                            methodInfo2.TypeArguments[0],
-                            semanticModel))
+                        MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
+
+                        if (methodInfo2.Symbol != null
+                            && methodInfo2.IsLinqExtensionOfIEnumerableOfT("Where", parameterCount: 2))
                         {
-                            if (semanticModel.TryGetExtensionMethodInfo(invocation, out MethodInfo methodInfo, ExtensionMethodKind.Reduced, cancellationToken)
-                                && methodInfo.IsLinqWhere())
+                            if (SymbolUtility.IsPredicateFunc(
+                                methodInfo2.Parameters[1].Type,
+                                methodInfo2.TypeArguments[0],
+                                semanticModel))
                             {
-                                Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
+                                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+
+                                if (methodInfo.Symbol != null
+                                    && methodInfo.IsLinqWhere())
+                                {
+                                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
+                                }
                             }
-                        }
-                        else if (SymbolUtility.IsPredicateFunc(
-                            methodInfo2.Parameters[1].Type,
-                            methodInfo2.TypeArguments[0],
-                            semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32),
-                            semanticModel))
-                        {
-                            if (semanticModel.TryGetExtensionMethodInfo(invocation, out MethodInfo methodInfo, ExtensionMethodKind.Reduced, cancellationToken)
-                                && methodInfo.IsLinqWhereWithIndex())
+                            else if (SymbolUtility.IsPredicateFunc(
+                                methodInfo2.Parameters[1].Type,
+                                methodInfo2.TypeArguments[0],
+                                semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32),
+                                semanticModel))
                             {
-                                Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
+                                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+
+                                if (methodInfo.Symbol != null
+                                    && methodInfo.IsLinqWhereWithIndex())
+                                {
+                                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
+                                }
                             }
                         }
                     }

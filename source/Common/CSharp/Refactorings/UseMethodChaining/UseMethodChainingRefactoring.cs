@@ -84,7 +84,9 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             if (statements.Count == 1)
                 return false;
 
-            if (!semanticModel.TryGetMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return false;
 
             ITypeSymbol typeSymbol = methodInfo.ReturnType;
@@ -146,7 +148,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 
             InvocationExpressionSyntax invocationExpression = GetInvocationExpression(expressionStatement);
 
-            semanticModel.TryGetMethodInfo(invocationExpression, out MethodInfo methodInfo, cancellationToken);
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
 
             MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
 

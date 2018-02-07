@@ -41,23 +41,27 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     var memberAccess = (MemberAccessExpressionSyntax)expression;
 
-                    if (memberAccess.Name?.Identifier.ValueText.Equals("ToCharArray", StringComparison.Ordinal) == true
-                        && semanticModel.TryGetMethodInfo(invocation, out MethodInfo info, cancellationToken)
-                            && info.IsName("ToCharArray")
-                            && info.IsPublic
-                            && !info.IsStatic
-                            && !info.IsGenericMethod
-                            && !info.Parameters.Any()
-                            && info.IsContainingType(SpecialType.System_String))
+                    if (memberAccess.Name?.Identifier.ValueText.Equals("ToCharArray", StringComparison.Ordinal) == true)
                     {
-                        ITypeSymbol returnType = info.ReturnType;
+                        MethodInfo methodInfo = semanticModel.GetMethodInfo(invocation, cancellationToken);
 
-                        if (returnType?.IsArrayType() == true)
+                        if (methodInfo.Symbol != null
+                            && methodInfo.IsName("ToCharArray")
+                            && methodInfo.IsPublic
+                            && !methodInfo.IsStatic
+                            && !methodInfo.IsGenericMethod
+                            && !methodInfo.Parameters.Any()
+                            && methodInfo.IsContainingType(SpecialType.System_String))
                         {
-                            var arrayType = (IArrayTypeSymbol)returnType;
+                            ITypeSymbol returnType = methodInfo.ReturnType;
 
-                            if (arrayType.ElementType?.IsChar() == true)
-                                return true;
+                            if (returnType?.IsArrayType() == true)
+                            {
+                                var arrayType = (IArrayTypeSymbol)returnType;
+
+                                if (arrayType.ElementType?.IsChar() == true)
+                                    return true;
+                            }
                         }
                     }
                 }

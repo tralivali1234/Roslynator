@@ -46,7 +46,9 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsLinqExtensionOfIEnumerableOfT(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
         {
-            return context.SemanticModel.TryGetExtensionMethodInfo(invocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.None, context.CancellationToken)
+            MethodInfo methodInfo = context.SemanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.None, context.CancellationToken);
+
+            return methodInfo.Symbol != null
                 && methodInfo.IsName("OrderBy", "OrderByDescending")
                 && methodInfo.IsLinqExtensionOfIEnumerableOfT();
         }

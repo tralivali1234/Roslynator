@@ -24,15 +24,19 @@ namespace Roslynator.CSharp.Refactorings
             {
                 MemberAccessExpressionSyntax memberAccess = GetTopmostMemberAccessExpression((MemberAccessExpressionSyntax)invocation.Expression);
 
-                if (memberAccess.Name.Identifier.ValueText == "HasFlag"
-                    && semanticModel.TryGetMethodInfo(memberAccess, out MethodInfo info, cancellationToken)
-                    && info.IsName("HasFlag")
-                    && !info.IsExtensionMethod
-                    && info.IsReturnType(SpecialType.System_Boolean)
-                    && info.Symbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.SpecialType == SpecialType.System_Enum
-                    && info.IsContainingType(SpecialType.System_Enum))
+                if (memberAccess.Name.Identifier.ValueText == "HasFlag")
                 {
-                    return true;
+                    MethodInfo methodInfo = semanticModel.GetMethodInfo(memberAccess, cancellationToken);
+
+                    if (methodInfo.Symbol != null
+                        && methodInfo.IsName("HasFlag")
+                        && !methodInfo.IsExtensionMethod
+                        && methodInfo.IsReturnType(SpecialType.System_Boolean)
+                        && methodInfo.Symbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.SpecialType == SpecialType.System_Enum
+                        && methodInfo.IsContainingType(SpecialType.System_Enum))
+                    {
+                        return true;
+                    }
                 }
             }
 
