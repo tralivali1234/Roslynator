@@ -167,7 +167,10 @@ namespace Roslynator.CSharp
                     }
                 case SyntaxKind.SimpleMemberAccessExpression:
                     {
-                        return semanticModel.GetSymbol(expression, cancellationToken)?.IsEnumField() == true;
+                        ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
+
+                        return symbol?.Kind == SymbolKind.Field
+                            && symbol.ContainingType?.TypeKind == TypeKind.Enum;
                     }
             }
 

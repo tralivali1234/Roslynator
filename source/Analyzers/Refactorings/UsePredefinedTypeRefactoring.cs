@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var typeSymbol = context.SemanticModel.GetSymbol(identifierName, context.CancellationToken) as ITypeSymbol;
 
-            if (typeSymbol?.SupportsPredefinedType() != true)
+            if (typeSymbol?.IsPredefinedType() != true)
                 return;
 
             IAliasSymbol aliasSymbol = context.SemanticModel.GetAliasInfo(identifierName, context.CancellationToken);
@@ -86,7 +86,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var typeSymbol = context.SemanticModel.GetSymbol(identifierName, context.CancellationToken) as ITypeSymbol;
 
-            if (typeSymbol?.SupportsPredefinedType() != true)
+            if (typeSymbol?.IsPredefinedType() != true)
                 return;
 
             IAliasSymbol aliasSymbol = context.SemanticModel.GetAliasInfo(identifierName, context.CancellationToken);
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var typeSymbol = context.SemanticModel.GetSymbol(qualifiedName, context.CancellationToken) as ITypeSymbol;
 
-            if (typeSymbol?.SupportsPredefinedType() != true)
+            if (typeSymbol?.IsPredefinedType() != true)
                 return;
 
             ReportDiagnostic(context, qualifiedName);
@@ -153,7 +153,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var typeSymbol = context.SemanticModel.GetSymbol(expression, context.CancellationToken) as ITypeSymbol;
 
-            if (typeSymbol?.SupportsPredefinedType() != true)
+            if (typeSymbol?.IsPredefinedType() != true)
                 return;
 
             IAliasSymbol aliasSymbol = context.SemanticModel.GetAliasInfo(expression, context.CancellationToken);

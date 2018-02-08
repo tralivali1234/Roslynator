@@ -192,10 +192,14 @@ namespace Roslynator.CSharp
                     }
                     else if (name.IsParentKind(SyntaxKind.NamespaceDeclaration))
                     {
-                        foreach (INamespaceSymbol containingNamespace in symbol.ContainingNamespaces())
+                        INamespaceSymbol containingNamespace = symbol.ContainingNamespace;
+
+                        while (containingNamespace != null)
                         {
                             if (string.Equals(namespaceText, containingNamespace.ToString(), StringComparison.Ordinal))
                                 return true;
+
+                            containingNamespace = containingNamespace.ContainingNamespace;
                         }
                     }
                 }

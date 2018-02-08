@@ -314,12 +314,12 @@ namespace Roslynator
                 && !node.GetLeadingTrivia().Any(f => f.IsDirective);
         }
 
-        //TODO: opt
         public static bool ContainsDirectives(this SyntaxNode node, TextSpan span)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
+            //XTODO: optimize
             return node.ContainsDirectives
                 && node.DescendantTrivia(span).Any(f => f.IsDirective);
         }
@@ -335,12 +335,11 @@ namespace Roslynator
         }
 
         //TODO: int
+        //TODO: odmazat Get
         public static int GetSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
-
-            //TODO: throw is tree null
 
             if (node.SyntaxTree != null)
             {

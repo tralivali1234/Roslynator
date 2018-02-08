@@ -47,6 +47,7 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        //TODO: IsFunction, IsNestedFunction
         internal static bool IsNestedMethod(this SyntaxKind kind)
         {
             return kind.Is(
@@ -56,8 +57,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.LocalFunctionStatement);
         }
 
-        //TODO: pub
-        internal static bool IsLoop(this SyntaxKind kind)
+        public static bool IsLoop(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.ForStatement,
@@ -66,18 +66,14 @@ namespace Roslynator.CSharp
                 SyntaxKind.DoStatement);
         }
 
-        //TODO: pub
-        //TODO: IsLambda
-        internal static bool IsLambdaExpression(this SyntaxKind kind)
+        public static bool IsLambdaExpression(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.SimpleLambdaExpression,
                 SyntaxKind.ParenthesizedLambdaExpression);
         }
 
-        //TODO: pub
-        //TODO: IsAnonymousFunction
-        internal static bool IsAnonymousFunctionExpression(this SyntaxKind kind)
+        public static bool IsAnonymousFunctionExpression(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.AnonymousMethodExpression,
@@ -85,8 +81,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.ParenthesizedLambdaExpression);
         }
 
-        //TODO: pub
-        internal static bool IsJumpStatement(this SyntaxKind kind)
+        public static bool IsJumpStatement(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.BreakStatement,
@@ -103,16 +98,14 @@ namespace Roslynator.CSharp
                 || kind == SyntaxKind.YieldBreakStatement;
         }
 
-        //TODO: pub
-        internal static bool IsBooleanLiteralExpression(this SyntaxKind kind)
+        public static bool IsBooleanLiteralExpression(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.TrueLiteralExpression,
                 SyntaxKind.FalseLiteralExpression);
         }
 
-        //TODO: pub
-        internal static bool IsIncrementOrDecrementExpression(this SyntaxKind kind)
+        public static bool IsIncrementOrDecrementExpression(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.PreIncrementExpression,
@@ -121,8 +114,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.PostDecrementExpression);
         }
 
-        //TODO: pub
-        internal static bool SupportsCompoundAssignment(this SyntaxKind kind)
+        public static bool SupportsCompoundAssignment(this SyntaxKind kind)
         {
             switch (kind)
             {
@@ -142,8 +134,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: pub
-        internal static bool SupportsModifiers(this SyntaxKind kind)
+        public static bool SupportsModifiers(this SyntaxKind kind)
         {
             switch (kind)
             {
@@ -177,8 +168,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: pub
-        internal static bool SupportsExpressionBody(this SyntaxKind kind)
+        public static bool SupportsExpressionBody(this SyntaxKind kind)
         {
             switch (kind)
             {
@@ -199,8 +189,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: pub
-        internal static bool CanContainEmbeddedStatement(this SyntaxKind kind)
+        public static bool CanContainEmbeddedStatement(this SyntaxKind kind)
         {
             switch (kind)
             {
@@ -220,8 +209,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: pub
-        internal static bool CanHaveAccessibility(this SyntaxKind kind)
+        public static bool CanHaveAccessibility(this SyntaxKind kind)
         {
             switch (kind)
             {

@@ -137,6 +137,7 @@ namespace Roslynator
             return false;
         }
 
+        //TODO: SyntaxFacts.GetText
         internal static string GetName(this Accessibility accessibility)
         {
             switch (accessibility)

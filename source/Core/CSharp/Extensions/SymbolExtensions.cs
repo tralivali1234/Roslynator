@@ -18,8 +18,7 @@ namespace Roslynator.CSharp
                 | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
 
         #region INamespaceOrTypeSymbol
-        //TODO: pub
-        internal static TypeSyntax ToTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SymbolDisplayFormat format = null)
+        public static TypeSyntax ToTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SymbolDisplayFormat format = null)
         {
             if (namespaceOrTypeSymbol == null)
                 throw new ArgumentNullException(nameof(namespaceOrTypeSymbol));
@@ -34,7 +33,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static TypeSyntax ToMinimalTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
+        public static TypeSyntax ToMinimalTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (namespaceOrTypeSymbol == null)
                 throw new ArgumentNullException(nameof(namespaceOrTypeSymbol));
@@ -157,7 +156,6 @@ namespace Roslynator.CSharp
         }
 
         //TODO: GetDefaultValueSyntax
-        //TODO: int
         public static ExpressionSyntax ToDefaultValueSyntax(this ITypeSymbol typeSymbol, TypeSyntax type)
         {
             if (typeSymbol == null)
@@ -180,6 +178,7 @@ namespace Roslynator.CSharp
             return ToDefaultValueSyntax(typeSymbol, default(TypeSyntax), semanticModel, position, format);
         }
 
+        // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/default-values-table
         private static ExpressionSyntax ToDefaultValueSyntax(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (typeSymbol.Kind == SymbolKind.ErrorType)
@@ -237,32 +236,12 @@ namespace Roslynator.CSharp
         }
 
         //TODO: del
-        public static bool SupportsPredefinedType(this ITypeSymbol typeSymbol)
+        public static bool IsPredefinedType(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            switch (typeSymbol.SpecialType)
-            {
-                case SpecialType.System_Object:
-                case SpecialType.System_Boolean:
-                case SpecialType.System_Char:
-                case SpecialType.System_SByte:
-                case SpecialType.System_Byte:
-                case SpecialType.System_Int16:
-                case SpecialType.System_UInt16:
-                case SpecialType.System_Int32:
-                case SpecialType.System_UInt32:
-                case SpecialType.System_Int64:
-                case SpecialType.System_UInt64:
-                case SpecialType.System_Decimal:
-                case SpecialType.System_Single:
-                case SpecialType.System_Double:
-                case SpecialType.System_String:
-                    return true;
-                default:
-                    return false;
-            }
+            return typeSymbol.SpecialType.IsPredefinedType();
         }
 
         public static bool SupportsConstantValue(this ITypeSymbol typeSymbol)

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: move to common
     internal class RefactoringIdentifierSet : HashSet<string>
     {
         public RefactoringIdentifierSet()

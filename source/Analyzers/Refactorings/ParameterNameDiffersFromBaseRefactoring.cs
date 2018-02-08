@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (parameters.Any())
             {
-                IMethodSymbol baseSymbol = methodSymbol.OverriddenMethod ?? methodSymbol.FindImplementedInterfaceMember<IMethodSymbol>();
+                IMethodSymbol baseSymbol = methodSymbol.OverriddenMethod ?? methodSymbol.FindFirstImplementedInterfaceMember<IMethodSymbol>();
 
                 if (baseSymbol != null)
                     Analyze(context, parameters, baseSymbol.Parameters);
@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (parameters.Any())
                 {
-                    IPropertySymbol baseSymbol = propertySymbol.OverriddenProperty ?? propertySymbol.FindImplementedInterfaceMember<IPropertySymbol>();
+                    IPropertySymbol baseSymbol = propertySymbol.OverriddenProperty ?? propertySymbol.FindFirstImplementedInterfaceMember<IPropertySymbol>();
 
                     if (baseSymbol != null)
                         Analyze(context, parameters, baseSymbol.Parameters);

@@ -60,8 +60,6 @@
     <Compile Include="CSharp\Syntax\AsExpressionInfo.cs" />
     <Compile Include="CSharp\Syntax\ModifiersInfo.cs" />
     <Compile Include="CSharp\Syntax\OverrideInfo.cs" />
-    <Compile Include="CSharp\Refactorings\RefactoringIdentifierSet.cs" />
-    <Compile Include="CSharp\Refactorings\RefactoringSettings.cs" />
     <Compile Include="CSharp\Syntax\BinaryExpressionInfo.cs" />
     <Compile Include="CSharp\Syntax\ConditionalExpressionInfo.cs" />
     <Compile Include="CSharp\Syntax\GenericInfo.cs" />

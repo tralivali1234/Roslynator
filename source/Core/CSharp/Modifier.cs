@@ -999,70 +999,13 @@ namespace Roslynator.CSharp
             return ParameterModifierHelper.Instance.RemoveModifiers(parameter);
         }
 
-        //TODO: použít SyntaxFacts.GetText
-        //TODO: GetText
-        internal static string GetName(SyntaxKind modifierKind)
-        {
-            switch (modifierKind)
-            {
-                case SyntaxKind.NewKeyword:
-                    return "new";
-                case SyntaxKind.PublicKeyword:
-                    return "public";
-                case SyntaxKind.ProtectedKeyword:
-                    return "protected";
-                case SyntaxKind.InternalKeyword:
-                    return "internal";
-                case SyntaxKind.PrivateKeyword:
-                    return "private";
-                case SyntaxKind.ConstKeyword:
-                    return "const";
-                case SyntaxKind.StaticKeyword:
-                    return "static";
-                case SyntaxKind.VirtualKeyword:
-                    return "virtual";
-                case SyntaxKind.SealedKeyword:
-                    return "sealed";
-                case SyntaxKind.OverrideKeyword:
-                    return "override";
-                case SyntaxKind.AbstractKeyword:
-                    return "abstract";
-                case SyntaxKind.ReadOnlyKeyword:
-                    return "readonly";
-                case SyntaxKind.ExternKeyword:
-                    return "extern";
-                case SyntaxKind.UnsafeKeyword:
-                    return "unsafe";
-                case SyntaxKind.VolatileKeyword:
-                    return "volatile";
-                case SyntaxKind.AsyncKeyword:
-                    return "async";
-                case SyntaxKind.PartialKeyword:
-                    return "partial";
-                case SyntaxKind.ThisKeyword:
-                    return "this";
-                case SyntaxKind.ParamsKeyword:
-                    return "params";
-                case SyntaxKind.InKeyword:
-                    return "in";
-                case SyntaxKind.OutKeyword:
-                    return "out";
-                case SyntaxKind.RefKeyword:
-                    return "ref";
-                default:
-                    {
-                        Debug.Fail(modifierKind.ToString());
-                        return null;
-                    }
-            }
-        }
-
         internal static string GetTitle(SyntaxKind modifierKind)
         {
             if (modifierKind == SyntaxKind.ReadOnlyKeyword)
                 return "read-only";
 
-            return GetName(modifierKind);
+            //XTODO: test
+            return SyntaxFacts.GetText(modifierKind);
         }
     }
 }

@@ -5,6 +5,8 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Documentation
 {
+    //TODO: DocumentationCommentData
+    //TODO: int
     public struct BaseDocumentationCommentData
     {
         internal BaseDocumentationCommentData(SyntaxTrivia comment, BaseDocumentationCommentOrigin origin)

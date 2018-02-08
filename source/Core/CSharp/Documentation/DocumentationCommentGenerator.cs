@@ -13,8 +13,7 @@ using Roslynator.Text;
 
 namespace Roslynator.CSharp.Documentation
 {
-    //TODO: DocumentationCommentFactory
-    //TODO: přesunout do CSharpFactory?
+    //TODO: DocumentationCommentFactory, DocumentationFactory
     public static class DocumentationCommentGenerator
     {
         public static SyntaxTriviaList Generate(MemberDeclarationSyntax memberDeclaration, DocumentationCommentGeneratorSettings settings = null)
@@ -337,7 +336,7 @@ namespace Roslynator.CSharp.Documentation
         }
 
         //TODO: int + dolů
-        public static BaseDocumentationCommentData GenerateFromBase(MemberDeclarationSyntax memberDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(MemberDeclarationSyntax memberDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (memberDeclaration.Kind())
             {
@@ -358,7 +357,7 @@ namespace Roslynator.CSharp.Documentation
             }
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(MethodDeclarationSyntax methodDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(MethodDeclarationSyntax methodDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, cancellationToken);
 
@@ -380,14 +379,14 @@ namespace Roslynator.CSharp.Documentation
             return default(BaseDocumentationCommentData);
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, cancellationToken);
 
             return GenerateFromBase(propertySymbol, semanticModel, propertyDeclaration.SpanStart, cancellationToken);
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(IndexerDeclarationSyntax indexerDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(IndexerDeclarationSyntax indexerDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(indexerDeclaration, cancellationToken);
 
@@ -412,14 +411,14 @@ namespace Roslynator.CSharp.Documentation
             return default(BaseDocumentationCommentData);
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(EventDeclarationSyntax eventDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(EventDeclarationSyntax eventDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             IEventSymbol eventSymbol = semanticModel.GetDeclaredSymbol(eventDeclaration, cancellationToken);
 
             return GenerateFromBase(eventSymbol, semanticModel, eventDeclaration.SpanStart, cancellationToken);
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(EventFieldDeclarationSyntax eventFieldDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(EventFieldDeclarationSyntax eventFieldDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             VariableDeclaratorSyntax variableDeclarator = eventFieldDeclaration.Declaration?.Variables.FirstOrDefault();
 
@@ -451,7 +450,7 @@ namespace Roslynator.CSharp.Documentation
             return default(BaseDocumentationCommentData);
         }
 
-        public static BaseDocumentationCommentData GenerateFromBase(ConstructorDeclarationSyntax constructorDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        internal static BaseDocumentationCommentData GenerateFromBase(ConstructorDeclarationSyntax constructorDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
             ConstructorInitializerSyntax initializer = constructorDeclaration.Initializer;
 
@@ -516,7 +515,7 @@ namespace Roslynator.CSharp.Documentation
             int position,
             CancellationToken cancellationToken) where TInterfaceSymbol : ISymbol
         {
-            TInterfaceSymbol interfaceMember = memberSymbol.FindImplementedInterfaceMember<TInterfaceSymbol>();
+            TInterfaceSymbol interfaceMember = memberSymbol.FindFirstImplementedInterfaceMember<TInterfaceSymbol>();
 
             if (!EqualityComparer<TInterfaceSymbol>.Default.Equals(interfaceMember, default(TInterfaceSymbol)))
             {

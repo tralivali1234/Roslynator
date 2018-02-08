@@ -7,7 +7,8 @@ namespace Roslynator.CSharp
     //TODO: pub
     internal static class SpecialTypeExtensions
     {
-        public static bool SupportsPredefinedType(SpecialType specialType)
+        //TODO: IsBuiltInType
+        public static bool IsPredefinedType(this SpecialType specialType)
         {
             switch (specialType)
             {

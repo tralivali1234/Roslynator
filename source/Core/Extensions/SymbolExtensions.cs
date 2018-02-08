@@ -13,8 +13,7 @@ namespace Roslynator
     public static class SymbolExtensions
     {
         #region ISymbol
-        //TODO: FindFirst
-        public static ISymbol FindImplementedInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
+        internal static ISymbol FindFirstImplementedInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
         {
             if (symbol == null)
                 throw new ArgumentNullException(nameof(symbol));
@@ -40,14 +39,12 @@ namespace Roslynator
             return default(ISymbol);
         }
 
-        //TODO: pub
-        internal static bool ImplementsInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
+        public static bool ImplementsInterfaceMember(this ISymbol symbol, bool allInterfaces = false)
         {
-            return FindImplementedInterfaceMember(symbol, allInterfaces) != null;
+            return FindFirstImplementedInterfaceMember(symbol, allInterfaces) != null;
         }
 
-        //TODO: FindFirst
-        public static TSymbol FindImplementedInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
+        internal static TSymbol FindFirstImplementedInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
         {
             if (symbol == null)
                 throw new ArgumentNullException(nameof(symbol));
@@ -76,15 +73,13 @@ namespace Roslynator
             return default(TSymbol);
         }
 
-        //TODO: pub
-        internal static bool ImplementsInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
+        public static bool ImplementsInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
         {
             return !EqualityComparer<TSymbol>.Default.Equals(
-                FindImplementedInterfaceMember<TSymbol>(symbol, allInterfaces),
+                FindFirstImplementedInterfaceMember<TSymbol>(symbol, allInterfaces),
                 default(TSymbol));
         }
 
-        //TODO: pub
         internal static bool IsAnyInterfaceMemberExplicitlyImplemented(this INamedTypeSymbol symbol, ISymbol interfaceSymbol)
         {
             foreach (ISymbol member in symbol.GetMembers())
@@ -262,30 +257,6 @@ namespace Roslynator
             return symbol?.Kind == SymbolKind.TypeParameter;
         }
 
-        //TODO: 
-        public static bool IsEnumField(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Field
-                && symbol.ContainingType?.TypeKind == TypeKind.Enum;
-        }
-
-        //TODO: int
-        public static IEnumerable<INamespaceSymbol> ContainingNamespaces(this ISymbol symbol)
-        {
-            if (symbol == null)
-                throw new ArgumentNullException(nameof(symbol));
-
-            INamespaceSymbol containingNamespace = symbol.ContainingNamespace;
-
-            do
-            {
-                yield return containingNamespace;
-
-                containingNamespace = containingNamespace.ContainingNamespace;
-
-            } while (containingNamespace != null);
-        }
-
         public static bool IsAsyncMethod(this ISymbol symbol)
         {
             return IsMethod(symbol)
@@ -450,7 +421,6 @@ namespace Roslynator
             }
         }
 
-        //TODO: int, OrDefault
         public static ISymbol OverriddenSymbol(this ISymbol symbol)
         {
             if (symbol == null)
@@ -507,8 +477,7 @@ namespace Roslynator
             }
         }
 
-        //TODO: int
-        public static IEnumerable<IEventSymbol> OverriddenEvents(this IEventSymbol eventSymbol)
+        internal static IEnumerable<IEventSymbol> OverriddenEvents(this IEventSymbol eventSymbol)
         {
             if (eventSymbol == null)
                 throw new ArgumentNullException(nameof(eventSymbol));
@@ -768,8 +737,7 @@ namespace Roslynator
             }
         }
 
-        //TODO: int
-        public static IEnumerable<IMethodSymbol> OverriddenMethods(this IMethodSymbol methodSymbol)
+        internal static IEnumerable<IMethodSymbol> OverriddenMethods(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
                 throw new ArgumentNullException(nameof(methodSymbol));
@@ -894,8 +862,7 @@ namespace Roslynator
             }
         }
 
-        //TODO: int
-        public static IEnumerable<IPropertySymbol> OverriddenProperties(this IPropertySymbol propertySymbol)
+        internal static IEnumerable<IPropertySymbol> OverriddenProperties(this IPropertySymbol propertySymbol)
         {
             if (propertySymbol == null)
                 throw new ArgumentNullException(nameof(propertySymbol));
@@ -1341,6 +1308,7 @@ namespace Roslynator
                 || InheritsFrom(type, baseType, includeInterfaces);
         }
 
+        //TODO: 
         public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name)
         {
             if (typeSymbol == null)
@@ -1381,7 +1349,6 @@ namespace Roslynator
             return default(ISymbol);
         }
 
-        //TODO: 
         public static IEventSymbol FindEvent(this ITypeSymbol typeSymbol, string name)
         {
             return (IEventSymbol)FindMember(typeSymbol, name, IsEvent);

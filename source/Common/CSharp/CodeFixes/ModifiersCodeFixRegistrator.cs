@@ -421,7 +421,8 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Add modifier '{Modifier.GetName(modifierKind)}'";
+            //XTODO: test
+            return $"Add modifier '{SyntaxFacts.GetText(modifierKind)}'";
         }
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind, SyntaxNode node)
@@ -441,7 +442,8 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetRemoveModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Remove modifier '{Modifier.GetName(modifierKind)}'";
+            //XTODO: test
+            return $"Remove modifier '{SyntaxFacts.GetText(modifierKind)}'";
         }
     }
 }

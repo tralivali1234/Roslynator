@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!eventSymbol.IsOverride
                 && eventSymbol.ExplicitInterfaceImplementations.IsDefaultOrEmpty
-                && eventSymbol.FindImplementedInterfaceMember<IEventSymbol>(allInterfaces: true) == null)
+                && eventSymbol.FindFirstImplementedInterfaceMember<IEventSymbol>(allInterfaces: true) == null)
             {
                 var namedType = eventSymbol.Type as INamedTypeSymbol;
 

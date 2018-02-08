@@ -2,10 +2,11 @@
 
 namespace Roslynator.CSharp.Documentation
 {
+    //TODO: DocumentationCommentOrigin
     public enum BaseDocumentationCommentOrigin
     {
         None,
-        BaseMember, //TODO: BaseSymbol, InterfaceSymbol
+        BaseMember, //TODO: BaseSymbol, InterfaceSymbol, 
         InterfaceMember
     }
 }

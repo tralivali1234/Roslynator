@@ -59,6 +59,8 @@
     <Compile Include="CSharp\Refactorings\ReduceIfNesting\ReduceIfNestingRewriter.cs" />
     <Compile Include="CSharp\Refactorings\RefactoringHelper.cs" />
     <Compile Include="CSharp\Refactorings\CallExtensionMethodAsInstanceMethodRefactoring.cs" />
+    <Compile Include="CSharp\Refactorings\RefactoringIdentifierSet.cs" />
+    <Compile Include="CSharp\Refactorings\RefactoringSettings.cs" />
     <Compile Include="CSharp\Refactorings\ReplaceAsWithCastRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\ReplaceCommentWithDocumentationCommentRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\ReplaceConstantWithFieldRefactoring.cs" />
