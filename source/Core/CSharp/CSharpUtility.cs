@@ -366,7 +366,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        public static bool IsImplicitNumericConversion(ITypeSymbol from, ITypeSymbol to)
+        public static bool ExistsImplicitNumericConversion(ITypeSymbol from, ITypeSymbol to)
         {
             if (from == null)
                 throw new ArgumentNullException(nameof(from));
@@ -374,11 +374,11 @@ namespace Roslynator.CSharp
             if (to == null)
                 throw new ArgumentNullException(nameof(to));
 
-            return IsImplicitNumericConversion(from.SpecialType, to.SpecialType);
+            return ExistsImplicitNumericConversion(from.SpecialType, to.SpecialType);
         }
 
         // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/implicit-numeric-conversions-table
-        public static bool IsImplicitNumericConversion(SpecialType from, SpecialType to)
+        public static bool ExistsImplicitNumericConversion(SpecialType from, SpecialType to)
         {
             switch (from)
             {

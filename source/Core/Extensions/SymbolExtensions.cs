@@ -974,6 +974,12 @@ namespace Roslynator
                 || IsConstructedFromIEnumerableOfT(namedTypeSymbol);
         }
 
+        //TODO: int
+        internal static bool IsConstructedFromNullableOfT(this INamedTypeSymbol namedTypeSymbol)
+        {
+            return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Nullable_T);
+        }
+
         //TODO: pub
         internal static bool IsConstructedFromTaskOfT(this INamedTypeSymbol namedTypeSymbol, SemanticModel semanticModel)
         {
@@ -1669,6 +1675,12 @@ namespace Roslynator
         {
             return IsIEnumerable(typeSymbol)
                 || IsConstructedFromIEnumerableOfT(typeSymbol);
+        }
+
+        //TODO: pub
+        internal static bool IsConstructedFromNullableOfT(this ITypeSymbol typeSymbol)
+        {
+            return IsConstructedFrom(typeSymbol, SpecialType.System_Nullable_T);
         }
 
         public static bool IsReferenceTypeOrNullableType(this ITypeSymbol typeSymbol)

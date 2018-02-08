@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
+    //TODO: Roslynator.CSharp.Syntax
     public struct IfStatementOrElseClause : IEquatable<IfStatementOrElseClause>
     {
         internal IfStatementOrElseClause(SyntaxNode node)
@@ -84,8 +85,8 @@ namespace Roslynator.CSharp
 
         public override bool Equals(object obj)
         {
-            return obj is IfStatementOrElseClause
-                && Equals((IfStatementOrElseClause)obj);
+            return obj is IfStatementOrElseClause other
+                && Equals(other);
         }
 
         public override int GetHashCode()

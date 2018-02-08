@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Helpers.ModifierHelpers
+namespace Roslynator.CSharp.ModifierHelpers
 {
     internal class EventFieldDeclarationModifierHelper : AbstractModifierHelper<EventFieldDeclarationSyntax>
     {

@@ -21,7 +21,7 @@ namespace Roslynator.CSharp
 
         public static bool TryParse(string text, int start, int length, bool isVerbatim, bool isInterpolatedText, out string result)
         {
-            StringLiteralParseResult parseResult = (isVerbatim)
+            StringLiteralParserResult parseResult = (isVerbatim)
                 ? ParseVerbatim(text, start, length, isInterpolatedText)
                 : ParseRegular(text, start, length, isInterpolatedText);
 
@@ -47,7 +47,7 @@ namespace Roslynator.CSharp
                 : ParseRegular(text, start, length, throwOnError: true, isInterpolatedText: isInterpolatedText).Text;
         }
 
-        private static StringLiteralParseResult ParseRegular(
+        private static StringLiteralParserResult ParseRegular(
             string text,
             int start,
             int length,
@@ -236,12 +236,12 @@ namespace Roslynator.CSharp
                 (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult((sb != null)
+            return new StringLiteralParserResult((sb != null)
                 ? StringBuilderCache.GetStringAndFree(sb)
                 : text.Substring(start, length));
         }
 
-        private static StringLiteralParseResult ParseVerbatim(
+        private static StringLiteralParserResult ParseVerbatim(
             string text,
             int start,
             int length,
@@ -288,7 +288,7 @@ namespace Roslynator.CSharp
                 (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult((sb != null)
+            return new StringLiteralParserResult((sb != null)
                 ? StringBuilderCache.GetStringAndFree(sb)
                 : text.Substring(start, length));
         }
@@ -509,11 +509,30 @@ namespace Roslynator.CSharp
                 || (ch >= 'A' && ch <= 'F');
         }
 
-        private static StringLiteralParseResult Fail(bool throwOnError, string message)
+        private static StringLiteralParserResult Fail(bool throwOnError, string message)
         {
             return (throwOnError)
                 ? throw new ArgumentException(message)
-                : default(StringLiteralParseResult);
+                : default(StringLiteralParserResult);
+        }
+
+        private struct StringLiteralParserResult
+        {
+            private StringLiteralParserResult(string text, bool success)
+            {
+                Text = text;
+                Success = success;
+            }
+
+            public StringLiteralParserResult(string text)
+            {
+                Text = text;
+                Success = true;
+            }
+
+            public string Text { get; }
+
+            public bool Success { get; }
         }
     }
 }

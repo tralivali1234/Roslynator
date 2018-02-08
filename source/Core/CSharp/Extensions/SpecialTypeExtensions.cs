@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator.CSharp
 {
+    //TODO: pub
     internal static class SpecialTypeExtensions
     {
         public static bool SupportsPredefinedType(SpecialType specialType)

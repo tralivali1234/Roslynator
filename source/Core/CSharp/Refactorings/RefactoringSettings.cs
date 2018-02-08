@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: move to common
     internal sealed class RefactoringSettings
     {
         public RefactoringSettings()

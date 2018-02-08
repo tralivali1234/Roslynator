@@ -7,16 +7,17 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
+    //TODO: pub
     internal class TriviaRemover : CSharpSyntaxRewriter
     {
-        private static readonly TriviaRemover _defaultInstance = new TriviaRemover();
-
         private readonly TextSpan? _span;
 
         private TriviaRemover(TextSpan? span = null)
         {
             _span = span;
         }
+
+        private static TriviaRemover DefaultInstance { get; } = new TriviaRemover();
 
         public static TNode RemoveTrivia<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
@@ -25,7 +26,7 @@ namespace Roslynator.CSharp.SyntaxRewriters
 
             if (span == null)
             {
-                return (TNode)_defaultInstance.Visit(node);
+                return (TNode)DefaultInstance.Visit(node);
             }
             else
             {

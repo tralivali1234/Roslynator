@@ -18,6 +18,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: celé
     public static class SyntaxExtensions
     {
         #region AccessorDeclarationSyntax

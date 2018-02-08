@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,6 +8,9 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: celé
+    //TODO: DefaultRemoveOptions?
+    //TODO: přesunout do Helpers
     internal static class RemoveHelper
     {
         public static SyntaxRemoveOptions DefaultRemoveOptions
@@ -186,6 +190,9 @@ namespace Roslynator.CSharp
             SyntaxNode node,
             SyntaxNode newNode = null) where TRoot : SyntaxNode
         {
+            if (root == null)
+                throw new ArgumentNullException(nameof(root));
+
             if (newNode == null)
                 return root.RemoveNode(node);
 

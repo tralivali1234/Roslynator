@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Roslynator.CSharp.Helpers;
 
+//TODO: celé
 namespace Roslynator.CSharp.Syntax
 {
     public struct AccessibilityInfo

@@ -4,12 +4,12 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Helpers.ModifierHelpers;
+using Roslynator.CSharp.ModifierHelpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    internal static class Modifier
+    public static class Modifier
     {
         public static TNode Insert<TNode>(TNode node, SyntaxKind modifierKind, IModifierComparer comparer = null) where TNode : SyntaxNode
         {
@@ -999,7 +999,9 @@ namespace Roslynator.CSharp
             return ParameterModifierHelper.Instance.RemoveModifiers(parameter);
         }
 
-        public static string GetName(SyntaxKind modifierKind)
+        //TODO: použít SyntaxFacts.GetText
+        //TODO: GetText
+        internal static string GetName(SyntaxKind modifierKind)
         {
             switch (modifierKind)
             {
@@ -1055,7 +1057,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static string GetTitle(SyntaxKind modifierKind)
+        internal static string GetTitle(SyntaxKind modifierKind)
         {
             if (modifierKind == SyntaxKind.ReadOnlyKeyword)
                 return "read-only";
