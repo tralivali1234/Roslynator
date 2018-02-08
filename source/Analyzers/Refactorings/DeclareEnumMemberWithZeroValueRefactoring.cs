@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
 
-            if (namedTypeSymbol.IsEnumWithFlagsAttribute(context.Compilation)
+            if (namedTypeSymbol.IsEnumWithFlags(context.Compilation)
                 && !ContainsMemberWithZeroValue(namedTypeSymbol))
             {
                 SyntaxReference syntaxReference = namedTypeSymbol.DeclaringSyntaxReferences.FirstOrDefault();

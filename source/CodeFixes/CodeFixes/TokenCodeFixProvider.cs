@@ -210,7 +210,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Return default value",
                                 cancellationToken =>
                                 {
-                                    ExpressionSyntax expression = typeSymbol.ToDefaultValueSyntax(semanticModel, returnStatement.SpanStart);
+                                    ExpressionSyntax expression = typeSymbol.GetDefaultValueSyntax(semanticModel, returnStatement.SpanStart);
 
                                     ReturnStatementSyntax newNode = returnStatement.WithExpression(expression);
 

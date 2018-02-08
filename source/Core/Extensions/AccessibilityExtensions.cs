@@ -98,8 +98,7 @@ namespace Roslynator
             return AccessibilityFlags.None;
         }
 
-        //TODO: pub
-        internal static bool IsMoreRestrictiveThan(this Accessibility accessibility, Accessibility other)
+        public static bool IsMoreRestrictiveThan(this Accessibility accessibility, Accessibility other)
         {
             switch (other)
             {
@@ -135,28 +134,6 @@ namespace Roslynator
             }
 
             return false;
-        }
-
-        //TODO: SyntaxFacts.GetText
-        internal static string GetName(this Accessibility accessibility)
-        {
-            switch (accessibility)
-            {
-                case Accessibility.Private:
-                    return "private";
-                case Accessibility.Protected:
-                    return "protected";
-                case Accessibility.ProtectedAndInternal:
-                    return "private protected";
-                case Accessibility.Internal:
-                    return "internal";
-                case Accessibility.ProtectedOrInternal:
-                    return "protected internal";
-                case Accessibility.Public:
-                    return "public";
-            }
-
-            throw new ArgumentException("", nameof(accessibility));
         }
     }
 }

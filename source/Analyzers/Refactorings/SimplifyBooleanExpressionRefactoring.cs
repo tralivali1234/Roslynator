@@ -61,25 +61,29 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression1,
             ExpressionSyntax expression2)
         {
-            if (IsPropertyOfNullableOfT(expression2, "Value", context.SemanticModel, context.CancellationToken)
-                && SyntaxComparer.AreEquivalent(
-                    ((MemberAccessExpressionSyntax)expression1).Expression,
-                    ((MemberAccessExpressionSyntax)expression2).Expression,
-                    requireNotNull: true))
+            if (IsPropertyOfNullableOfT(expression2, "Value", context.SemanticModel, context.CancellationToken))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.SimplifyBooleanExpression, logicalAnd);
+                expression1 = ((MemberAccessExpressionSyntax)expression1).Expression;
+                expression2 = ((MemberAccessExpressionSyntax)expression2).Expression;
+
+                if (expression1 != null
+                    && expression2 != null
+                    && SyntaxComparer.AreEquivalent(expression1, expression2))
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.SimplifyBooleanExpression, logicalAnd);
+                }
             }
         }
 
         private static bool IsPropertyOfNullableOfT(ExpressionSyntax expression, string name, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            if (expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+            if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
             {
                 var memberAccessExpression = (MemberAccessExpressionSyntax)expression;
 
                 SimpleNameSyntax simpleName = memberAccessExpression.Name;
 
-                if (simpleName?.IsKind(SyntaxKind.IdentifierName) == true)
+                if (simpleName?.Kind() == SyntaxKind.IdentifierName)
                 {
                     var identifierName = (IdentifierNameSyntax)simpleName;
 

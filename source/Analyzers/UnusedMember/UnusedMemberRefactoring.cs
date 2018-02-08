@@ -224,11 +224,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                 {
                     SyntaxNode parent = variableDeclaration.Parent;
 
-                    return document.RemoveNodeAsync(parent, RemoveHelper.GetRemoveOptions(parent), cancellationToken);
+                    return document.RemoveNodeAsync(parent, RemoveOptions.Get(parent), cancellationToken);
                 }
             }
 
-            return document.RemoveNodeAsync(node, RemoveHelper.GetRemoveOptions(node), cancellationToken);
+            return document.RemoveNodeAsync(node, RemoveOptions.Get(node), cancellationToken);
         }
     }
 }

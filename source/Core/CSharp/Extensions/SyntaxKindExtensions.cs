@@ -36,7 +36,6 @@ namespace Roslynator.CSharp
                 || kind == kind5;
         }
 
-        //TODO: del
         public static bool Is(this SyntaxKind kind, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             return kind == kind1
@@ -47,7 +46,7 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
-        //TODO: IsFunction, IsNestedFunction
+        //TODO: IsFunction
         internal static bool IsNestedMethod(this SyntaxKind kind)
         {
             return kind.Is(

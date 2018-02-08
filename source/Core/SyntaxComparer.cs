@@ -11,31 +11,14 @@ namespace Roslynator
             SyntaxNode node1,
             SyntaxNode node2,
             bool disregardTrivia = true,
-            bool topLevel = false,
-            bool requireNotNull = false) //TODO: ren
+            bool topLevel = false)
         {
             if (disregardTrivia)
             {
-                if (requireNotNull)
-                {
-                    if (node1 == null || node2 == null)
-                    {
-                        return false;
-                    }
-                }
-
                 return SyntaxFactory.AreEquivalent(node1, node2, topLevel: topLevel);
             }
             else
             {
-                if (requireNotNull)
-                {
-                    if (node1 == null || node2 == null)
-                    {
-                        return false;
-                    }
-                }
-
                 if (node1 == null)
                 {
                     return node2 == null;
@@ -50,11 +33,10 @@ namespace Roslynator
             SyntaxNode node2,
             SyntaxNode node3,
             bool disregardTrivia = true,
-            bool topLevel = false,
-            bool requireNotNull = false)
+            bool topLevel = false)
         {
-            return AreEquivalent(node1, node2, disregardTrivia: disregardTrivia, topLevel: topLevel, requireNotNull: requireNotNull)
-                && AreEquivalent(node1, node3, disregardTrivia: disregardTrivia, topLevel: topLevel, requireNotNull: requireNotNull);
+            return AreEquivalent(node1, node2, disregardTrivia: disregardTrivia, topLevel: topLevel)
+                && AreEquivalent(node1, node3, disregardTrivia: disregardTrivia, topLevel: topLevel);
         }
     }
 }

@@ -165,7 +165,7 @@ namespace Roslynator.CSharp.CodeFixes
         {
             int position = body.OpenBraceToken.FullSpan.End;
 
-            ExpressionSyntax returnExpression = typeSymbol.ToDefaultValueSyntax(semanticModel, position);
+            ExpressionSyntax returnExpression = typeSymbol.GetDefaultValueSyntax(semanticModel, position);
 
             ReturnStatementSyntax returnStatement = SyntaxFactory.ReturnStatement(returnExpression);
 

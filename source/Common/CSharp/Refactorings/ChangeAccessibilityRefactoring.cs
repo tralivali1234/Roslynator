@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static string GetTitle(Accessibility accessibility)
         {
-            return $"Change accessibility to '{accessibility.GetName()}'";
+            return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
         public static AccessibilityFlags GetAllowedAccessibilityFlags(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)

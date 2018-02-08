@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.CodeFixes
                 if (CSharpUtility.IsAllowedAccessibility(memberDeclaration, accessibility))
                 {
                     CodeAction codeAction = CodeAction.Create(
-                        $"Change accessibility to '{accessibility.GetName()}'",
+                        $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'",
                         cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Solution(), memberDeclarations, accessibility, cancellationToken),
                         GetEquivalenceKey(CompilerDiagnosticIdentifiers.PartialDeclarationsHaveConfictingAccessibilityModifiers, accessibility.ToString()));
 

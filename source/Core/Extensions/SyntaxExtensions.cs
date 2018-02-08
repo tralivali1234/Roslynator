@@ -62,7 +62,6 @@ namespace Roslynator
             return (shouldthrow) ? list.SingleOrDefault() : (list.Count == 1) ? list[0] : default(TNode);
         }
 
-        //TODO: int
         public static bool SpanContainsDirectives<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
         {
             int count = list.Count;
@@ -83,13 +82,11 @@ namespace Roslynator
                 || list.Last().SpanOrLeadingTriviaContainsDirectives();
         }
 
-        //TODO: pub
         internal static TNode LastButOne<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return list[list.Count - 2];
         }
 
-        //TODO: pub
         internal static TNode LastButOneOrDefault<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return (list.Count > 1) ? list.LastButOne() : default(TNode);
@@ -152,7 +149,6 @@ namespace Roslynator
             return (shouldThrow) ? list.SingleOrDefault() : ((list.Count == 1) ? list[0] : default(TNode));
         }
 
-        //TODO: int
         public static bool SpanContainsDirectives<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
         {
             int count = list.Count;
@@ -173,13 +169,11 @@ namespace Roslynator
                 || list.Last().SpanOrLeadingTriviaContainsDirectives();
         }
 
-        //TODO: pub
         internal static TNode LastButOne<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return list[list.Count - 2];
         }
 
-        //TODO: pub
         internal static TNode LastButOneOrDefault<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return (list.Count > 1) ? list.LastButOne() : default(TNode);
@@ -285,7 +279,6 @@ namespace Roslynator
             return node.WithTrailingTrivia(node.GetTrailingTrivia().Add(trivia));
         }
 
-        //TODO: int
         public static bool SpanContainsDirectives(this SyntaxNode node)
         {
             if (node == null)
@@ -334,8 +327,6 @@ namespace Roslynator
                 .WithTrailingTrivia(token.TrailingTrivia);
         }
 
-        //TODO: int
-        //TODO: odmazat Get
         public static int GetSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (node == null)
@@ -407,7 +398,7 @@ namespace Roslynator
             return node.Parent?.FirstAncestorOrSelf(predicate, ascendOutOfTrivia);
         }
 
-        //TODO: test
+        //XTODO: test
         internal static string ToString(this SyntaxNode node, TextSpan span)
         {
             if (node == null)
@@ -425,7 +416,6 @@ namespace Roslynator
             return node.ToString().Substring(span.Start - nodeSpan.Start, span.Length);
         }
 
-        //TODO: pub
         internal static TextSpan LeadingTriviaSpan(this SyntaxNode node)
         {
             if (node == null)
@@ -434,7 +424,6 @@ namespace Roslynator
             return TextSpan.FromBounds(node.FullSpan.Start, node.Span.Start);
         }
 
-        //TODO: pub
         internal static TextSpan TrailingTriviaSpan(this SyntaxNode node)
         {
             if (node == null)
@@ -448,8 +437,7 @@ namespace Roslynator
             return (condition) ? node.WithAdditionalAnnotations(annotations) : node;
         }
 
-        //TODO: pub +3 dolů
-        internal static TNode FirstDescendant<TNode>(
+        public static TNode FirstDescendant<TNode>(
             this SyntaxNode node,
             Func<SyntaxNode, bool> descendIntoChildren = null,
             bool descendIntoTrivia = false) where TNode : SyntaxNode
@@ -463,7 +451,7 @@ namespace Roslynator
             return default(TNode);
         }
 
-        internal static TNode FirstDescendant<TNode>(
+        public static TNode FirstDescendant<TNode>(
             this SyntaxNode node,
             TextSpan span,
             Func<SyntaxNode, bool> descendIntoChildren = null,
@@ -478,7 +466,7 @@ namespace Roslynator
             return default(TNode);
         }
 
-        internal static TNode FirstDescendantOrSelf<TNode>(
+        public static TNode FirstDescendantOrSelf<TNode>(
             this SyntaxNode node,
             Func<SyntaxNode, bool> descendIntoChildren = null,
             bool descendIntoTrivia = false) where TNode : SyntaxNode
@@ -492,7 +480,7 @@ namespace Roslynator
             return default(TNode);
         }
 
-        internal static TNode FirstDescendantOrSelf<TNode>(
+        public static TNode FirstDescendantOrSelf<TNode>(
             this SyntaxNode node,
             TextSpan span,
             Func<SyntaxNode, bool> descendIntoChildren = null,
@@ -620,8 +608,6 @@ namespace Roslynator
 
         public static int GetSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            //TODO: throw ex
-
             if (token.SyntaxTree != null)
             {
                 return token.SyntaxTree.GetLineSpan(token.Span, cancellationToken).StartLine();

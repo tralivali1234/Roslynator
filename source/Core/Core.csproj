@@ -44,7 +44,6 @@
     <Compile Include="AccessibilityFlags.cs" />
     <Compile Include="AsyncMethodNameGenerator.cs" />
     <Compile Include="CSharp\BracesAnalysis.cs" />
-    <Compile Include="CSharp\Documentation\DocumentationCommentProvider.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentTriviaRewriter.cs" />
     <Compile Include="CSharp\Extensions\SpecialTypeExtensions.cs" />
     <Compile Include="CSharp\Helpers\AllowedAccessibilityHelper.cs" />
@@ -117,9 +116,9 @@
     <Compile Include="CSharp\TypeAnalysis.cs" />
     <Compile Include="CSharp\CompilerDiagnosticIdentifiers.cs" />
     <Compile Include="CSharp\Documentation\AddBaseOrNewDocumentationCommentRewriter.cs" />
-    <Compile Include="CSharp\Documentation\BaseDocumentationCommentData.cs" />
+    <Compile Include="CSharp\Documentation\DocumentationCommentData.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentInserter.cs" />
-    <Compile Include="CSharp\Documentation\BaseDocumentationCommentOrigin.cs" />
+    <Compile Include="CSharp\Documentation\DocumentationCommentOrigin.cs" />
     <Compile Include="CSharp\SyntaxRewriters\WhitespaceOrEndOfLineTriviaRewriter.cs" />
     <Compile Include="CSharp\Syntax\StatementsInfo.cs" />
     <Compile Include="CSharp\Syntax\SingleLocalDeclarationStatementInfo.cs" />
@@ -164,7 +163,7 @@
     <Compile Include="Text\SyntaxNodeTextBuilder.cs" />
     <Compile Include="CSharp\SyntaxRewriters\CommentRemover.cs" />
     <Compile Include="CSharp\TypeAnalysisFlags.cs" />
-    <Compile Include="CSharp\RemoveHelper.cs" />
+    <Compile Include="CSharp\RemoveOptions.cs" />
     <Compile Include="CSharp\Comparers\MemberDeclarationComparer.cs" />
     <Compile Include="NumberSuffixNameGenerator.cs" />
     <Compile Include="UnderscoreSuffixNameGenerator.cs" />

@@ -111,7 +111,6 @@ namespace Roslynator.CSharp
                 .Type;
         }
 
-        //TODO: pub
         internal static bool IsExplicitConversion(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
@@ -141,7 +140,6 @@ namespace Roslynator.CSharp
             return conversion.IsExplicit;
         }
 
-        //TODO: pub
         internal static bool IsImplicitConversion(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,

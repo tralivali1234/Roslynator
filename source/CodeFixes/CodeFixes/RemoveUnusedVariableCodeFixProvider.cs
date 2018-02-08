@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             {
                                                 CodeAction codeAction = CodeAction.Create(
                                                     "Remove unused variable",
-                                                    cancellationToken => context.Document.RemoveNodeAsync(localDeclarationStatement, RemoveHelper.GetRemoveOptions(localDeclarationStatement), cancellationToken),
+                                                    cancellationToken => context.Document.RemoveNodeAsync(localDeclarationStatement, RemoveOptions.Get(localDeclarationStatement), cancellationToken),
                                                     GetEquivalenceKey(diagnostic));
 
                                                 context.RegisterCodeFix(codeAction, diagnostic);
@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.CodeFixes
                                         {
                                             CodeAction codeAction = CodeAction.Create(
                                                 "Remove unused variable",
-                                                cancellationToken => context.Document.RemoveNodeAsync(variableDeclarator, RemoveHelper.GetRemoveOptions(variableDeclarator), cancellationToken),
+                                                cancellationToken => context.Document.RemoveNodeAsync(variableDeclarator, RemoveOptions.Get(variableDeclarator), cancellationToken),
                                                 GetEquivalenceKey(diagnostic));
 
                                             context.RegisterCodeFix(codeAction, diagnostic);

@@ -5,11 +5,9 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Documentation
 {
-    //TODO: DocumentationCommentData
-    //TODO: int
-    public struct BaseDocumentationCommentData
+    internal struct DocumentationCommentData
     {
-        internal BaseDocumentationCommentData(SyntaxTrivia comment, BaseDocumentationCommentOrigin origin)
+        internal DocumentationCommentData(SyntaxTrivia comment, DocumentationCommentOrigin origin)
         {
             Comment = comment;
             Origin = origin;
@@ -17,7 +15,7 @@ namespace Roslynator.CSharp.Documentation
 
         public SyntaxTrivia Comment { get; }
 
-        public BaseDocumentationCommentOrigin Origin { get; }
+        public DocumentationCommentOrigin Origin { get; }
 
         public bool Success
         {

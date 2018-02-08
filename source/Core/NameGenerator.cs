@@ -140,8 +140,7 @@ namespace Roslynator
             return IsUniqueName(name, containingType.GetMembers(), isCaseSensitive);
         }
 
-        //TODO: public
-        internal static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
+        public static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
 
@@ -154,8 +153,7 @@ namespace Roslynator
             return true;
         }
 
-        //TODO: public
-        internal static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
+        public static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
 

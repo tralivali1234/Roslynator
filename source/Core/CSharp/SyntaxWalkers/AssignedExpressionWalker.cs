@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.SyntaxWalkers
 {
-    //TODO: pub
     internal class AssignedExpressionWalker : CSharpSyntaxWalker
     {
         public virtual void VisitAssignedExpression(ExpressionSyntax expression)

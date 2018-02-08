@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            if (namedType.IsEnumWithFlagsAttribute(context.Compilation))
+            if (namedType.IsEnumWithFlags(context.Compilation))
                 Analyze(context, namedType);
         }
 

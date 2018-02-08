@@ -291,7 +291,7 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 
             TypeSyntax type = typeArgument.ToMinimalTypeSyntax(semanticModel, position);
 
-            ExpressionSyntax defaultValue = typeArgument.ToDefaultValueSyntax(type);
+            ExpressionSyntax defaultValue = typeArgument.GetDefaultValueSyntax(type);
 
             SimpleNameSyntax name;
 

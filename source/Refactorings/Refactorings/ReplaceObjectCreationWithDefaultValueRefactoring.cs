@@ -87,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             int position = localDeclarationStatement.SpanStart;
 
-            ExpressionSyntax defaultValue = typeSymbol.ToDefaultValueSyntax(semanticModel, position);
+            ExpressionSyntax defaultValue = typeSymbol.GetDefaultValueSyntax(semanticModel, position);
 
             LocalDeclarationStatementSyntax newNode = localDeclarationStatement.ReplaceNode(
                 value,

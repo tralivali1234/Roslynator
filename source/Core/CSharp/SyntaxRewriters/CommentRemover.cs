@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
-    //TODO: pub
     internal class CommentRemover : CSharpSyntaxRewriter
     {
         private CommentRemover(SyntaxNode node, CommentRemoveOptions removeOptions, TextSpan span)

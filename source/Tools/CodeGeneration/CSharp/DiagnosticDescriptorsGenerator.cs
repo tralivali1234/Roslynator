@@ -80,7 +80,7 @@ namespace Roslynator.CodeGeneration.CSharp
                 {
                     var settings = new DocumentationCommentGeneratorSettings(
                         comments: new string[] { analyzer.Id },
-                        indent: "        ",
+                        indentation: "        ",
                         singleLineSummary: true);
 
                     fieldDeclaration = fieldDeclaration.WithNewSingleLineDocumentationComment(settings);

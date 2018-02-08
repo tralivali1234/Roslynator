@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.CodeFixes
                             cancellationToken =>
                             {
                                 PropertyDeclarationSyntax newNode = propertyDeclaration
-                                    .RemoveNode(initializer, RemoveHelper.GetRemoveOptions(initializer))
+                                    .RemoveNode(initializer, RemoveOptions.Get(initializer))
                                     .WithSemicolonToken(default(SyntaxToken))
                                     .AppendToTrailingTrivia(propertyDeclaration.SemicolonToken.GetAllTrivia())
                                     .WithFormatterAnnotation();
@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.CodeFixes
                             cancellationToken =>
                             {
                                 VariableDeclaratorSyntax newNode = variableDeclarator
-                                    .RemoveNode(initializer, RemoveHelper.GetRemoveOptions(initializer))
+                                    .RemoveNode(initializer, RemoveOptions.Get(initializer))
                                     .WithFormatterAnnotation();
 
                                 return context.Document.ReplaceNodeAsync(variableDeclarator, newNode, cancellationToken);

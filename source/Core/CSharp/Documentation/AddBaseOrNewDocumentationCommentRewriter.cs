@@ -4,7 +4,6 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-//TODO: int
 namespace Roslynator.CSharp.Documentation
 {
     internal class AddBaseOrNewDocumentationCommentRewriter : AddNewDocumentationCommentRewriter

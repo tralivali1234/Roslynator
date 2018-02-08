@@ -156,7 +156,7 @@ namespace Roslynator
                 if (symbol != null)
                 {
                     if (!excludeAnonymousTypeProperty
-                        || !symbol.IsAnonymousTypeProperty())
+                        || !symbol.IsPropertyOfAnonymousType())
                     {
                         (symbols ?? (symbols = new HashSet<ISymbol>())).Add(symbol);
                     }

@@ -312,8 +312,7 @@ namespace Roslynator
             return false;
         }
 
-        //TODO: IsPropertyOfAnonymousType
-        internal static bool IsAnonymousTypeProperty(this ISymbol symbol)
+        internal static bool IsPropertyOfAnonymousType(this ISymbol symbol)
         {
             return symbol.IsProperty()
                 && symbol.ContainingType.IsAnonymousType;
@@ -439,7 +438,6 @@ namespace Roslynator
             return null;
         }
 
-        //TODO: pub
         internal static ISymbol BaseOverriddenSymbol(this ISymbol symbol)
         {
             if (symbol == null)
@@ -460,7 +458,6 @@ namespace Roslynator
         #endregion ISymbol
 
         #region IEventSymbol
-        //TODO: pub
         internal static IEventSymbol BaseOverriddenEvent(this IEventSymbol eventSymbol)
         {
             if (eventSymbol == null)
@@ -720,7 +717,6 @@ namespace Roslynator
         #endregion IFieldSymbol
 
         #region IMethodSymbol
-        //TODO: pub
         internal static IMethodSymbol BaseOverriddenMethod(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
@@ -774,19 +770,14 @@ namespace Roslynator
         }
         #endregion IMethodSymbol
 
-        //TODO: int
         #region IParameterSymbol
         public static bool IsParamsOf(this IParameterSymbol parameterSymbol, SpecialType elementType)
         {
             if (parameterSymbol == null)
                 throw new ArgumentNullException(nameof(parameterSymbol));
 
-            if (parameterSymbol.IsParams)
-            {
-                return (parameterSymbol.Type as IArrayTypeSymbol)?.ElementType.SpecialType == elementType;
-            }
-
-            return false;
+            return parameterSymbol.IsParams
+                && (parameterSymbol.Type as IArrayTypeSymbol)?.ElementType.SpecialType == elementType;
         }
 
         public static bool IsParamsOf(
@@ -797,15 +788,11 @@ namespace Roslynator
             if (parameterSymbol == null)
                 throw new ArgumentNullException(nameof(parameterSymbol));
 
-            if (parameterSymbol.IsParams)
-            {
-                return (parameterSymbol.Type as IArrayTypeSymbol)?
+            return parameterSymbol.IsParams
+                && (parameterSymbol.Type as IArrayTypeSymbol)?
                     .ElementType
                     .SpecialType
                     .Is(elementType1, elementType2) == true;
-            }
-
-            return false;
         }
 
         public static bool IsParamsOf(
@@ -817,15 +804,11 @@ namespace Roslynator
             if (parameterSymbol == null)
                 throw new ArgumentNullException(nameof(parameterSymbol));
 
-            if (parameterSymbol.IsParams)
-            {
-                return (parameterSymbol.Type as IArrayTypeSymbol)?
+            return parameterSymbol.IsParams
+                && (parameterSymbol.Type as IArrayTypeSymbol)?
                     .ElementType
                     .SpecialType
                     .Is(elementType1, elementType2, elementType3) == true;
-            }
-
-            return false;
         }
 
         public static bool IsRef(this IParameterSymbol parameterSymbol)
@@ -844,7 +827,6 @@ namespace Roslynator
         }
         #endregion IParameterSymbol
 
-        //TODO: pub
         #region IPropertySymbol
         internal static IPropertySymbol BaseOverriddenProperty(this IPropertySymbol propertySymbol)
         {
@@ -941,13 +923,6 @@ namespace Roslynator
                 || IsConstructedFromIEnumerableOfT(namedTypeSymbol);
         }
 
-        //TODO: int
-        internal static bool IsConstructedFromNullableOfT(this INamedTypeSymbol namedTypeSymbol)
-        {
-            return IsConstructedFrom(namedTypeSymbol, SpecialType.System_Nullable_T);
-        }
-
-        //TODO: pub
         internal static bool IsConstructedFromTaskOfT(this INamedTypeSymbol namedTypeSymbol, SemanticModel semanticModel)
         {
             return namedTypeSymbol
@@ -1021,22 +996,20 @@ namespace Roslynator
             return typeSymbol?.SpecialType == SpecialType.System_Char;
         }
 
-        //TODO: int
         public static IEnumerable<INamedTypeSymbol> BaseTypes(this ITypeSymbol type)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            INamedTypeSymbol baseType2 = type.BaseType;
+            INamedTypeSymbol baseType = type.BaseType;
 
-            while (baseType2 != null)
+            while (baseType != null)
             {
-                yield return baseType2;
-                baseType2 = baseType2.BaseType;
+                yield return baseType;
+                baseType = baseType.BaseType;
             }
         }
 
-        //TODO: int
         public static IEnumerable<ITypeSymbol> BaseTypesAndSelf(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
@@ -1051,7 +1024,7 @@ namespace Roslynator
             }
         }
 
-        //TODO: rename
+        //TODO: IsImplemented
         public static bool Implements(this ITypeSymbol typeSymbol, SpecialType specialType, bool allInterfaces = false)
         {
             if (typeSymbol == null)
@@ -1105,7 +1078,7 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            //TODO: nullcheck
+            //TODO: null check
 
             if (interfaceSymbol != null)
             {
@@ -1136,7 +1109,6 @@ namespace Roslynator
             return typeSymbol?.TypeKind == TypeKind.Struct;
         }
 
-        //TODO: TypeKind.Enum vs SpecialType.System_Enum
         public static bool IsEnum(this ITypeSymbol typeSymbol)
         {
             return typeSymbol?.TypeKind == TypeKind.Enum;
@@ -1147,16 +1119,15 @@ namespace Roslynator
             return typeSymbol?.TypeKind == TypeKind.Delegate;
         }
 
-        //TODO: IsFlagsEnum
-        internal static bool IsEnumWithFlagsAttribute(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
+        internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return IsEnumWithFlagsAttribute(typeSymbol, semanticModel.Compilation);
+            return IsEnumWithFlags(typeSymbol, semanticModel.Compilation);
         }
 
-        internal static bool IsEnumWithFlagsAttribute(this ITypeSymbol typeSymbol, Compilation compilation)
+        internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, Compilation compilation)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
@@ -1542,7 +1513,6 @@ namespace Roslynator
             return typeSymbol.EqualsOrInheritsFrom(taskSymbol);
         }
 
-        //TODO: pub
         internal static bool IsConstructedFromTaskOfT(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
             if (typeSymbol == null)
@@ -1644,16 +1614,12 @@ namespace Roslynator
                 || IsConstructedFromIEnumerableOfT(typeSymbol);
         }
 
-        //TODO: pub
-        internal static bool IsConstructedFromNullableOfT(this ITypeSymbol typeSymbol)
-        {
-            return IsConstructedFrom(typeSymbol, SpecialType.System_Nullable_T);
-        }
-
         public static bool IsReferenceTypeOrNullableType(this ITypeSymbol typeSymbol)
         {
-            //TODO: null check
-            return typeSymbol?.IsReferenceType == true
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            return typeSymbol.IsReferenceType
                 || IsConstructedFrom(typeSymbol, SpecialType.System_Nullable_T);
         }
 

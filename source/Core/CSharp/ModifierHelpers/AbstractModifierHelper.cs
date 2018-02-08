@@ -11,7 +11,6 @@ namespace Roslynator.CSharp.ModifierHelpers
 {
     internal abstract class AbstractModifierHelper<TNode> where TNode : SyntaxNode
     {
-        //TODO: ren Modifiers
         public abstract SyntaxTokenList GetModifiers(TNode node);
 
         public abstract TNode WithModifiers(TNode node, SyntaxTokenList modifiers);

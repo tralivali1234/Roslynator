@@ -18,7 +18,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
-    //TODO: celé
     public static class SyntaxExtensions
     {
         #region AccessorDeclarationSyntax
@@ -284,7 +283,7 @@ namespace Roslynator.CSharp
                 .WithMembers(classDeclaration.Members.Replace(member, newMember));
 
             return classDeclaration
-                .RemoveNode(classDeclaration.Members[index], RemoveHelper.GetRemoveOptions(newMember));
+                .RemoveNode(classDeclaration.Members[index], RemoveOptions.Get(newMember));
         }
 
         public static ClassDeclarationSyntax InsertMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer)
@@ -405,7 +404,7 @@ namespace Roslynator.CSharp
                 .WithMembers(compilationUnit.Members.Replace(member, newMember));
 
             return compilationUnit
-                .RemoveNode(compilationUnit.Members[index], RemoveHelper.GetRemoveOptions(newMember));
+                .RemoveNode(compilationUnit.Members[index], RemoveOptions.Get(newMember));
         }
 
         public static CompilationUnitSyntax InsertMember(this CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer)
@@ -925,7 +924,7 @@ namespace Roslynator.CSharp
                 .WithMembers(interfaceDeclaration.Members.Replace(member, newMember));
 
             return interfaceDeclaration
-                .RemoveNode(interfaceDeclaration.Members[index], RemoveHelper.GetRemoveOptions(newMember));
+                .RemoveNode(interfaceDeclaration.Members[index], RemoveOptions.Get(newMember));
         }
 
         internal static InterfaceDeclarationSyntax WithMembers(
@@ -1610,7 +1609,7 @@ namespace Roslynator.CSharp
 
             settings = settings ?? DocumentationCommentGeneratorSettings.Default;
 
-            settings = settings.WithIndent(inserter.Indent);
+            settings = settings.WithIndentation(inserter.Indent);
 
             SyntaxTriviaList comment = DocumentationCommentGenerator.Generate(member, settings);
 
@@ -1630,7 +1629,7 @@ namespace Roslynator.CSharp
 
             if (DocumentationCommentGenerator.CanGenerateFromBase(member.Kind()))
             {
-                BaseDocumentationCommentData info = DocumentationCommentGenerator.GenerateFromBase(member, semanticModel, cancellationToken);
+                DocumentationCommentData info = DocumentationCommentGenerator.GenerateFromBase(member, semanticModel, cancellationToken);
 
                 if (info.Success)
                     return member.WithDocumentationComment(info.Comment, indent: true);
@@ -1765,7 +1764,7 @@ namespace Roslynator.CSharp
                 .WithMembers(namespaceDeclaration.Members.Replace(member, newMember));
 
             return namespaceDeclaration
-                .RemoveNode(namespaceDeclaration.Members[index], RemoveHelper.GetRemoveOptions(newMember));
+                .RemoveNode(namespaceDeclaration.Members[index], RemoveOptions.Get(newMember));
         }
 
         internal static NamespaceDeclarationSyntax WithMembers(
@@ -2210,7 +2209,7 @@ namespace Roslynator.CSharp
                 .WithMembers(structDeclaration.Members.Replace(member, newMember));
 
             return structDeclaration
-                .RemoveNode(structDeclaration.Members[index], RemoveHelper.GetRemoveOptions(newMember));
+                .RemoveNode(structDeclaration.Members[index], RemoveOptions.Get(newMember));
         }
 
         public static StructDeclarationSyntax InsertMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer)
@@ -2964,6 +2963,12 @@ namespace Roslynator.CSharp
             return parent;
         }
 
+        //TODO: 
+        internal static TRoot RemoveNode<TRoot>(this TRoot root, SyntaxNode node) where TRoot : SyntaxNode
+        {
+            return root.RemoveNode(node, RemoveOptions.Get(node));
+        }
+
         internal static TNode RemoveStatement<TNode>(this TNode node, StatementSyntax statement) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2972,7 +2977,7 @@ namespace Roslynator.CSharp
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
 
-            return node.RemoveNode(statement, RemoveHelper.GetRemoveOptions(statement));
+            return node.RemoveNode(statement, RemoveOptions.Get(statement));
         }
 
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode

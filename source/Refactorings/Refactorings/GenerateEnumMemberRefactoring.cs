@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 
             INamedTypeSymbol enumSymbol = semanticModel.GetDeclaredSymbol(enumDeclaration, context.CancellationToken);
 
-            if (enumSymbol.IsEnumWithFlagsAttribute(semanticModel))
+            if (enumSymbol.IsEnumWithFlags(semanticModel))
             {
                 List<object> values = GetConstantValues(enumSymbol);
 

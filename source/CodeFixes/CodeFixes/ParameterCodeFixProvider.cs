@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 cancellationToken =>
                                 {
                                     ParameterSyntax newParameter = parameter
-                                        .RemoveNode(defaultValue, RemoveHelper.GetRemoveOptions(defaultValue))
+                                        .RemoveNode(defaultValue, RemoveOptions.Get(defaultValue))
                                         .WithFormatterAnnotation();
 
                                     return context.Document.ReplaceNodeAsync(parameter, newParameter, cancellationToken);

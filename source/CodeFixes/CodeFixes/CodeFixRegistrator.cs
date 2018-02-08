@@ -146,7 +146,7 @@ namespace Roslynator.CSharp.CodeFixes
                 "Replace 'null' with default value",
                 cancellationToken =>
                 {
-                    ExpressionSyntax newNode = typeSymbol.ToDefaultValueSyntax(semanticModel, expression.SpanStart);
+                    ExpressionSyntax newNode = typeSymbol.GetDefaultValueSyntax(semanticModel, expression.SpanStart);
 
                     return document.ReplaceNodeAsync(expression, newNode, cancellationToken);
                 },

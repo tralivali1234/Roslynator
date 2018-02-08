@@ -92,14 +92,14 @@ namespace Roslynator.CSharp.Refactorings
                         var compilationUnit = (CompilationUnitSyntax)node;
 
                         UsingDirectiveSyntax usingDirective = compilationUnit.Usings[index];
-                        return compilationUnit.RemoveNode(usingDirective, RemoveHelper.GetRemoveOptions(usingDirective));
+                        return compilationUnit.RemoveNode(usingDirective, RemoveOptions.Get(usingDirective));
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var namespaceDeclaration = (NamespaceDeclarationSyntax)node;
 
                         UsingDirectiveSyntax usingDirective = namespaceDeclaration.Usings[index];
-                        return namespaceDeclaration.RemoveNode(usingDirective, RemoveHelper.GetRemoveOptions(usingDirective));
+                        return namespaceDeclaration.RemoveNode(usingDirective, RemoveOptions.Get(usingDirective));
                     }
             }
 

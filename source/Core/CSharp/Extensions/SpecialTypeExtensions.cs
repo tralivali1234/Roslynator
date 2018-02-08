@@ -4,8 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator.CSharp
 {
-    //TODO: pub
-    internal static class SpecialTypeExtensions
+    public static class SpecialTypeExtensions
     {
         //TODO: IsBuiltInType
         public static bool IsPredefinedType(this SpecialType specialType)
@@ -55,7 +54,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        internal static bool IsPredefinedValueType(this SpecialType specialType)
+        public static bool IsPredefinedValueType(this SpecialType specialType)
         {
             switch (specialType)
             {

@@ -155,8 +155,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentException($"Type '{typeSymbol.ToDisplayString()}' does not support explicit declaration.", nameof(typeSymbol));
         }
 
-        //TODO: GetDefaultValueSyntax
-        public static ExpressionSyntax ToDefaultValueSyntax(this ITypeSymbol typeSymbol, TypeSyntax type)
+        public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, TypeSyntax type)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
@@ -164,10 +163,10 @@ namespace Roslynator.CSharp
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            return ToDefaultValueSyntax(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
+            return GetDefaultValueSyntax(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
         }
 
-        public static ExpressionSyntax ToDefaultValueSyntax(this ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
+        public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
@@ -175,11 +174,11 @@ namespace Roslynator.CSharp
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return ToDefaultValueSyntax(typeSymbol, default(TypeSyntax), semanticModel, position, format);
+            return GetDefaultValueSyntax(typeSymbol, default(TypeSyntax), semanticModel, position, format);
         }
 
         // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/default-values-table
-        private static ExpressionSyntax ToDefaultValueSyntax(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
+        private static ExpressionSyntax GetDefaultValueSyntax(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (typeSymbol.Kind == SymbolKind.ErrorType)
                 return null;
@@ -235,7 +234,6 @@ namespace Roslynator.CSharp
             return DefaultExpression(type);
         }
 
-        //TODO: del
         public static bool IsPredefinedType(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
