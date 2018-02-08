@@ -9,8 +9,8 @@ namespace Roslynator.CSharp
 {
     public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
-        private MemberDeclarationsSelection(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int startIndex, int endIndex)
-             : base(members, span, startIndex, endIndex)
+        private MemberDeclarationsSelection(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int firstIndex, int lastIndex)
+             : base(members, span, firstIndex, lastIndex)
         {
             ContainingDeclaration = containingDeclaration;
         }
@@ -51,9 +51,9 @@ namespace Roslynator.CSharp
 
         private static MemberDeclarationsSelection Create(MemberDeclarationSyntax memberDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(members, span);
+            (int firstIndex, int lastIndex) = GetIndexes(members, span);
 
-            return new MemberDeclarationsSelection(memberDeclaration, members, span, startIndex, endIndex);
+            return new MemberDeclarationsSelection(memberDeclaration, members, span, firstIndex, lastIndex);
         }
 
         public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
@@ -118,12 +118,12 @@ namespace Roslynator.CSharp
             if (span.IsEmpty)
                 return false;
 
-            (int startIndex, int endIndex) = GetIndexes(members, span);
+            (int firstIndex, int lastIndex) = GetIndexes(members, span);
 
-            if (startIndex == -1)
+            if (firstIndex == -1)
                 return false;
 
-            selectedMembers = new MemberDeclarationsSelection(containingDeclaration, members, span, startIndex, endIndex);
+            selectedMembers = new MemberDeclarationsSelection(containingDeclaration, members, span, firstIndex, lastIndex);
             return true;
         }
     }

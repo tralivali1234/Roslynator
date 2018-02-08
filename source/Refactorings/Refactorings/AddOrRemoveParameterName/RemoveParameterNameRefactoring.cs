@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -24,9 +25,9 @@ namespace Roslynator.CSharp.Refactorings.AddOrRemoveParameterName
 
         private static bool CanRefactor(SeparatedSyntaxListSelection<ArgumentSyntax> selection)
         {
-            for (int i = selection.StartIndex; i <= selection.EndIndex; i++)
+            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
             {
-                NameColonSyntax nameColon = selection.Items[i].NameColon;
+                NameColonSyntax nameColon = selection.UnderlyingList[i].NameColon;
 
                 if (nameColon?.IsMissing == false)
                     return true;
@@ -41,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings.AddOrRemoveParameterName
             SeparatedSyntaxListSelection<ArgumentSyntax> selection,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var rewriter = new RemoveParameterNameRewriter(selection.SelectedItems);
+            var rewriter = new RemoveParameterNameRewriter(selection.ToImmutableArray());
 
             SyntaxNode newNode = rewriter
                 .Visit(argumentList)

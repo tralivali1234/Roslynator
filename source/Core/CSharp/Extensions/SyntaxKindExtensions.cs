@@ -46,8 +46,7 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
-        //TODO: IsFunction
-        internal static bool IsNestedMethod(this SyntaxKind kind)
+        public static bool IsNestedMethod(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.SimpleLambdaExpression,

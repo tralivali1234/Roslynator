@@ -7,12 +7,12 @@ namespace Roslynator.Text
 {
     public class TextLineCollectionSelection : Selection<TextLine>
     {
-        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int startIndex, int endIndex)
-            : base(lines, span, startIndex, endIndex)
+        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int firstIndex, int lastIndex)
+            : base(lines, span, firstIndex, lastIndex)
         {
         }
 
-        private static (int startIndex, int endIndex) GetIndexes(TextLineCollection lines, TextSpan span)
+        private static (int firstIndex, int lastIndex) GetIndexes(TextLineCollection lines, TextSpan span)
         {
             using (TextLineCollection.Enumerator en = lines.GetEnumerator())
             {
@@ -53,9 +53,9 @@ namespace Roslynator.Text
             if (lines == null)
                 throw new ArgumentNullException(nameof(lines));
 
-            (int startIndex, int endIndex) = GetIndexes(lines, span);
+            (int firstIndex, int lastIndex) = GetIndexes(lines, span);
 
-            return new TextLineCollectionSelection(lines, span, startIndex, endIndex);
+            return new TextLineCollectionSelection(lines, span, firstIndex, lastIndex);
         }
 
         public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selection)
@@ -68,12 +68,12 @@ namespace Roslynator.Text
             if (span.IsEmpty)
                 return false;
 
-            (int startIndex, int endIndex) = GetIndexes(lines, span);
+            (int firstIndex, int lastIndex) = GetIndexes(lines, span);
 
-            if (startIndex == -1)
+            if (firstIndex == -1)
                 return false;
 
-            selection = new TextLineCollectionSelection(lines, span, startIndex, endIndex);
+            selection = new TextLineCollectionSelection(lines, span, firstIndex, lastIndex);
             return true;
         }
     }

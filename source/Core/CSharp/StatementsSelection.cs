@@ -10,14 +10,14 @@ namespace Roslynator.CSharp
 {
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
-        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, int startIndex, int endIndex)
-             : base(statements, span, startIndex, endIndex)
+        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, int firstIndex, int lastIndex)
+             : base(statements, span, firstIndex, lastIndex)
         {
         }
 
         public SyntaxList<StatementSyntax> Statements
         {
-            get { return (SyntaxList<StatementSyntax>)Items; }
+            get { return (SyntaxList<StatementSyntax>)UnderlyingList; }
         }
 
         public static StatementsSelection Create(BlockSyntax block, TextSpan span)
@@ -43,9 +43,9 @@ namespace Roslynator.CSharp
 
         private static StatementsSelection CreateCore(SyntaxList<StatementSyntax> statements, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(statements, span);
+            (int firstIndex, int lastIndex) = GetIndexes(statements, span);
 
-            return new StatementsSelection(statements, span, startIndex, endIndex);
+            return new StatementsSelection(statements, span, firstIndex, lastIndex);
         }
 
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
@@ -80,12 +80,12 @@ namespace Roslynator.CSharp
             if (!statements.Any())
                 return false;
 
-            (int startIndex, int endIndex) = GetIndexes(statements, span);
+            (int firstIndex, int lastIndex) = GetIndexes(statements, span);
 
-            if (startIndex == -1)
+            if (firstIndex == -1)
                 return false;
 
-            selectedStatements = new StatementsSelection(statements, span, startIndex, endIndex);
+            selectedStatements = new StatementsSelection(statements, span, firstIndex, lastIndex);
             return true;
         }
     }

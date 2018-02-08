@@ -7,12 +7,12 @@ namespace Roslynator
 {
     public class SyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
-        protected SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, int startIndex, int endIndex)
-            : base(list, span, startIndex, endIndex)
+        protected SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
+            : base(list, span, firstIndex, lastIndex)
         {
         }
 
-        internal static (int startIndex, int endIndex) GetIndexes(SyntaxList<TNode> list, TextSpan span)
+        internal static (int firstIndex, int lastIndex) GetIndexes(SyntaxList<TNode> list, TextSpan span)
         {
             SyntaxList<TNode>.Enumerator en = list.GetEnumerator();
 
@@ -50,9 +50,9 @@ namespace Roslynator
 
         public static SyntaxListSelection<TNode> Create(SyntaxList<TNode> list, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(list, span);
+            (int firstIndex, int lastIndex) = GetIndexes(list, span);
 
-            return new SyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+            return new SyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
         }
 
         public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, out SyntaxListSelection<TNode> selection)
@@ -65,12 +65,12 @@ namespace Roslynator
             if (span.IsEmpty)
                 return false;
 
-            (int startIndex, int endIndex) = GetIndexes(list, span);
+            (int firstIndex, int lastIndex) = GetIndexes(list, span);
 
-            if (startIndex == -1)
+            if (firstIndex == -1)
                 return false;
 
-            selection = new SyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+            selection = new SyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
             return true;
         }
     }

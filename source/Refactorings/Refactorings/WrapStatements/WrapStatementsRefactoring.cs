@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
         {
             StatementSyntax[] statements = selectedStatements.ToArray();
 
-            int index = selectedStatements.StartIndex;
+            int index = selectedStatements.FirstIndex;
 
             SyntaxTriviaList leadingTrivia = statements[0].GetLeadingTrivia();
             SyntaxTriviaList trailingTrivia = statements[statements.Length - 1].GetTrailingTrivia();

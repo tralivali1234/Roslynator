@@ -234,12 +234,20 @@ namespace Roslynator.CSharp
             return DefaultExpression(type);
         }
 
-        public static bool IsPredefinedType(this ITypeSymbol typeSymbol)
+        public static bool IsBuiltInType(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return typeSymbol.SpecialType.IsPredefinedType();
+            return typeSymbol.SpecialType.IsBuiltInType();
+        }
+
+        public static bool IsSimpleType(this ITypeSymbol typeSymbol)
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            return typeSymbol.SpecialType.IsSimpleType();
         }
 
         public static bool SupportsConstantValue(this ITypeSymbol typeSymbol)

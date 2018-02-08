@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -7,26 +8,23 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
-    public abstract class Selection<T> : IEnumerable, IEnumerable<T>
+    public abstract class Selection<T> : IReadOnlyList<T>
     {
-        protected Selection(IReadOnlyList<T> items, TextSpan span, int startIndex, int endIndex)
+        protected Selection(IReadOnlyList<T> items, TextSpan span, int firstIndex, int lastIndex)
         {
-            Items = items;
+            UnderlyingList = items;
             Span = span;
-            StartIndex = startIndex;
-            EndIndex = endIndex;
+            FirstIndex = firstIndex;
+            LastIndex = lastIndex;
         }
 
         public TextSpan Span { get; }
 
-        //TODO: rename
-        public IReadOnlyList<T> Items { get; }
+        public IReadOnlyList<T> UnderlyingList { get; }
 
-        //TODO: FirstIndex
-        public int StartIndex { get; }
+        public int FirstIndex { get; }
 
-        //TODO: LastIndex
-        public int EndIndex { get; }
+        public int LastIndex { get; }
 
         public int Count
         {
@@ -34,7 +32,7 @@ namespace Roslynator
             {
                 if (Any())
                 {
-                    return EndIndex - StartIndex + 1;
+                    return LastIndex - FirstIndex + 1;
                 }
                 else
                 {
@@ -43,37 +41,35 @@ namespace Roslynator
             }
         }
 
-        public ImmutableArray<T> SelectedItems
+        public T this[int index]
         {
             get
             {
-                if (!Any())
-                    return ImmutableArray<T>.Empty;
+                if (index < FirstIndex
+                    || index > LastIndex)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), index, "");
+                }
 
-                ImmutableArray<T>.Builder builder = ImmutableArray.CreateBuilder<T>(Count);
-
-                for (int i = StartIndex; i <= EndIndex; i++)
-                    builder.Add(Items[i]);
-
-                return builder.ToImmutable();
+                return UnderlyingList[index];
             }
         }
 
         public bool Any()
         {
-            return StartIndex != -1;
+            return FirstIndex != -1;
         }
 
         public T First()
         {
-            return Items[StartIndex];
+            return UnderlyingList[FirstIndex];
         }
 
         public T FirstOrDefault()
         {
             if (Any())
             {
-                return Items[StartIndex];
+                return UnderlyingList[FirstIndex];
             }
             else
             {
@@ -83,14 +79,14 @@ namespace Roslynator
 
         public T Last()
         {
-            return Items[EndIndex];
+            return UnderlyingList[LastIndex];
         }
 
         public T LastOrDefault()
         {
             if (Any())
             {
-                return Items[EndIndex];
+                return UnderlyingList[LastIndex];
             }
             else
             {
@@ -102,8 +98,8 @@ namespace Roslynator
         {
             if (Any())
             {
-                for (int i = StartIndex; i <= EndIndex; i++)
-                    yield return Items[i];
+                for (int i = FirstIndex; i <= LastIndex; i++)
+                    yield return UnderlyingList[i];
             }
         }
 

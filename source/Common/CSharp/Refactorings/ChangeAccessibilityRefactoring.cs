@@ -150,12 +150,12 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            var members = (SyntaxList<MemberDeclarationSyntax>)selectedMembers.Items;
+            var members = (SyntaxList<MemberDeclarationSyntax>)selectedMembers.UnderlyingList;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
-                .Take(selectedMembers.StartIndex)
+                .Take(selectedMembers.FirstIndex)
                 .Concat(selectedMembers.Select(f => f.WithAccessibility(newAccessibility)))
-                .Concat(members.Skip(selectedMembers.EndIndex + 1))
+                .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
             MemberDeclarationSyntax containingDeclaration = selectedMembers.ContainingDeclaration;

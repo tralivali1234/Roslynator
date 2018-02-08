@@ -7,12 +7,12 @@ namespace Roslynator
 {
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
-        protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int startIndex, int endIndex)
-            : base(list, span, startIndex, endIndex)
+        protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
+            : base(list, span, firstIndex, lastIndex)
         {
         }
 
-        internal static (int startIndex, int endIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
+        internal static (int firstIndex, int lastIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
             SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
 
@@ -31,14 +31,14 @@ namespace Roslynator
                 {
                     int j = i;
 
-                    while (span.End > GetEndIndex(list, en.Current, j)
+                    while (span.End > GetLastIndex(list, en.Current, j)
                         && en.MoveNext())
                     {
                         j++;
                     }
 
                     if (span.End >= en.Current.Span.End
-                        && span.End <= GetEndIndex(list, en.Current, j))
+                        && span.End <= GetLastIndex(list, en.Current, j))
                     {
                         return (i, j);
                     }
@@ -48,16 +48,16 @@ namespace Roslynator
             return (-1, -1);
         }
 
-        private static int GetEndIndex(SeparatedSyntaxList<TNode> list, TNode node, int i)
+        private static int GetLastIndex(SeparatedSyntaxList<TNode> list, TNode node, int i)
         {
             return (i == list.Count - 1) ? node.FullSpan.End : list.GetSeparator(i).FullSpan.End;
         }
 
         public static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(list, span);
+            (int firstIndex, int lastIndex) = GetIndexes(list, span);
 
-            return new SeparatedSyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+            return new SeparatedSyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
         }
 
         public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, out SeparatedSyntaxListSelection<TNode> selection)
@@ -70,12 +70,12 @@ namespace Roslynator
             if (span.IsEmpty)
                 return false;
 
-            (int startIndex, int endIndex) = GetIndexes(list, span);
+            (int firstIndex, int lastIndex) = GetIndexes(list, span);
 
-            if (startIndex == -1)
+            if (firstIndex == -1)
                 return false;
 
-            selection = new SeparatedSyntaxListSelection<TNode>(list, span, startIndex, endIndex);
+            selection = new SeparatedSyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
             return true;
         }
     }

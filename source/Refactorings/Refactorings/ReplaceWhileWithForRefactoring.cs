@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ITypeSymbol typeSymbol = null;
 
-            for (int i = selectedStatements.StartIndex; i < selectedStatements.EndIndex; i++)
+            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
                 StatementSyntax statement = statements[i];
 
@@ -106,7 +106,7 @@ namespace Roslynator.CSharp.Refactorings
                         return false;
                     }
 
-                    for (int j = selectedStatements.EndIndex + 1; j < statements.Count; j++)
+                    for (int j = selectedStatements.LastIndex + 1; j < statements.Count; j++)
                     {
                         foreach (SyntaxNode node in statements[j].DescendantNodes())
                         {
@@ -125,7 +125,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool VerifyExpressionStatements(StatementsSelection selectedStatements)
         {
-            for (int i = selectedStatements.StartIndex; i < selectedStatements.EndIndex; i++)
+            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
                 StatementSyntax statement = selectedStatements.Statements[i];
 

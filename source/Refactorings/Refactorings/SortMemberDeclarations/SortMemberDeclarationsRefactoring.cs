@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
         {
             if (selectedMembers.Count > 1)
             {
-                ImmutableArray<MemberDeclarationSyntax> members = selectedMembers.SelectedItems;
+                ImmutableArray<MemberDeclarationSyntax> members = selectedMembers.ToImmutableArray();
 
                 SyntaxKind kind = GetSingleKindOrDefault(members);
 
@@ -106,9 +106,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             SyntaxList<MemberDeclarationSyntax> members = containingDeclaration.GetMembers();
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
-                .Take(selectedMembers.StartIndex)
+                .Take(selectedMembers.FirstIndex)
                 .Concat(selectedMembers.OrderBy(f => f, comparer))
-                .Concat(members.Skip(selectedMembers.EndIndex + 1))
+                .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
             MemberDeclarationSyntax newNode = containingDeclaration.WithMembers(newMembers);

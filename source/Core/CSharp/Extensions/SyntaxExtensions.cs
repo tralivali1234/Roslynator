@@ -2963,7 +2963,7 @@ namespace Roslynator.CSharp
             return parent;
         }
 
-        //TODO: 
+        //TODO: RemoveNode
         internal static TRoot RemoveNode<TRoot>(this TRoot root, SyntaxNode node) where TRoot : SyntaxNode
         {
             return root.RemoveNode(node, RemoveOptions.Get(node));

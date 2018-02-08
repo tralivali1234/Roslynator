@@ -134,7 +134,7 @@ namespace Roslynator.CSharp.Refactorings
                     objectCreation.WithInitializer(CreateInitializer(objectCreation, expressionStatements))));
 
             int count = expressionStatements.Length;
-            int index = selectedStatements.StartIndex + 1;
+            int index = selectedStatements.FirstIndex + 1;
 
             while (count > 0)
             {

@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxList<SwitchLabelSyntax> labels = section.Labels;
 
-            int lastIndex = selectedLabels.EndIndex;
+            int lastIndex = selectedLabels.LastIndex;
 
             if (selectedLabels.Last() == labels.Last())
                 lastIndex--;
@@ -71,7 +71,7 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxListSelection<SwitchLabelSyntax> selectedLabels,
             int lastIndex)
         {
-            int firstIndex = selectedLabels.StartIndex;
+            int firstIndex = selectedLabels.FirstIndex;
 
             if (firstIndex > 0)
             {
@@ -83,7 +83,7 @@ namespace Roslynator.CSharp.Refactorings
 
             for (int i = firstIndex; i <= lastIndex; i++)
             {
-                yield return SwitchSection(selectedLabels.Items[i], BreakStatement())
+                yield return SwitchSection(selectedLabels.UnderlyingList[i], BreakStatement())
                     .WithFormatterAnnotation();
             }
         }

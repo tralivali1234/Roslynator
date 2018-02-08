@@ -6,8 +6,8 @@ namespace Roslynator.CSharp
 {
     public static class SpecialTypeExtensions
     {
-        //TODO: IsBuiltInType
-        public static bool IsPredefinedType(this SpecialType specialType)
+        // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table
+        public static bool IsBuiltInType(this SpecialType specialType)
         {
             switch (specialType)
             {
@@ -32,29 +32,8 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        public static bool SupportsPrefixOrPostfixUnaryOperator(this SpecialType specialType)
-        {
-            switch (specialType)
-            {
-                case SpecialType.System_SByte:
-                case SpecialType.System_Byte:
-                case SpecialType.System_Int16:
-                case SpecialType.System_UInt16:
-                case SpecialType.System_Int32:
-                case SpecialType.System_UInt32:
-                case SpecialType.System_Int64:
-                case SpecialType.System_UInt64:
-                case SpecialType.System_Char:
-                case SpecialType.System_Single:
-                case SpecialType.System_Double:
-                case SpecialType.System_Decimal:
-                    return true;
-            }
-
-            return false;
-        }
-
-        public static bool IsPredefinedValueType(this SpecialType specialType)
+        // https://docs.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/types-and-variables
+        public static bool IsSimpleType(this SpecialType specialType)
         {
             switch (specialType)
             {
@@ -71,6 +50,28 @@ namespace Roslynator.CSharp
                 case SpecialType.System_Decimal:
                 case SpecialType.System_Single:
                 case SpecialType.System_Double:
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool SupportsPrefixOrPostfixUnaryOperator(this SpecialType specialType)
+        {
+            switch (specialType)
+            {
+                case SpecialType.System_SByte:
+                case SpecialType.System_Byte:
+                case SpecialType.System_Int16:
+                case SpecialType.System_UInt16:
+                case SpecialType.System_Int32:
+                case SpecialType.System_UInt32:
+                case SpecialType.System_Int64:
+                case SpecialType.System_UInt64:
+                case SpecialType.System_Char:
+                case SpecialType.System_Single:
+                case SpecialType.System_Double:
+                case SpecialType.System_Decimal:
                     return true;
             }
 

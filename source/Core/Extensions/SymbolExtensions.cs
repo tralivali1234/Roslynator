@@ -1024,7 +1024,6 @@ namespace Roslynator
             }
         }
 
-        //TODO: IsImplemented
         public static bool Implements(this ITypeSymbol typeSymbol, SpecialType specialType, bool allInterfaces = false)
         {
             if (typeSymbol == null)

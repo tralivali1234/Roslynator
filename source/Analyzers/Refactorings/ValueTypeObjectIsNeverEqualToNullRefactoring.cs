@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax newNode = null;
 
-            if (typeSymbol.SpecialType.IsPredefinedValueType()
+            if (typeSymbol.IsSimpleType()
                 || typeSymbol.ExistsMethod(WellKnownMemberNames.EqualityOperatorName))
             {
                 newNode = typeSymbol.GetDefaultValueSyntax(semanticModel, right.SpanStart)

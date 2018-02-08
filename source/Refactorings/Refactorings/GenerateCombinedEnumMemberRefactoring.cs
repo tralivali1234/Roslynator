@@ -40,9 +40,9 @@ namespace Roslynator.CSharp.Refactorings
                         string.Concat(selection.Select(f => f.Identifier.ValueText)),
                         enumSymbol);
 
-                    EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.SelectedItems);
+                    EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.ToImmutableArray());
 
-                    int insertIndex = selection.EndIndex + 1;
+                    int insertIndex = selection.LastIndex + 1;
 
                     context.RegisterRefactoring(
                         $"Generate enum member '{name}'",

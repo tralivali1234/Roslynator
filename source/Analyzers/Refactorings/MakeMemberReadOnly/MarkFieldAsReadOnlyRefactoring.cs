@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
                         && !fieldSymbol.IsVolatile
                         && !fieldSymbol.IsImplicitlyDeclared
                         && (fieldSymbol.Type.IsReferenceType
-                            || fieldSymbol.Type.SpecialType.IsPredefinedValueType()
+                            || fieldSymbol.Type.IsSimpleType()
                             || fieldSymbol.Type.IsEnum()))
                     {
                         (analyzableFields ?? (analyzableFields = new HashSet<ISymbol>())).Add(fieldSymbol);

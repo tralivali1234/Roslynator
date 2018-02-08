@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Syntax
 
         internal static StatementsInfo Create(StatementsSelection selectedStatements)
         {
-            return Create(selectedStatements?.Items.FirstOrDefault());
+            return Create(selectedStatements?.UnderlyingList.FirstOrDefault());
         }
 
         public static bool CanCreate(StatementSyntax statement)

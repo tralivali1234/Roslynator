@@ -16,9 +16,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             int count = 0;
 
-            for (int i = selection.StartIndex; i <= selection.EndIndex; i++)
+            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
             {
-                if (selection.Items[i].EqualsValue?.Value != null)
+                if (selection.UnderlyingList[i].EqualsValue?.Value != null)
                 {
                     count++;
 
@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> newMembers = members;
 
-            for (int i = selection.StartIndex; i <= selection.EndIndex; i++)
+            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
             {
                 EnumMemberDeclarationSyntax newMember = members[i]
                     .WithEqualsValue(null)
