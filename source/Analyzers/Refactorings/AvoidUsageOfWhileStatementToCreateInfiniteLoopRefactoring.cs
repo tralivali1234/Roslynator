@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, WhileStatementSyntax whileStatement)
         {
-            if (whileStatement.Condition?.IsKind(SyntaxKind.TrueLiteralExpression) == true)
+            if (whileStatement.Condition?.Kind() == SyntaxKind.TrueLiteralExpression)
             {
                 TextSpan span = TextSpan.FromBounds(
                     whileStatement.OpenParenToken.Span.End,

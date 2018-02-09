@@ -91,7 +91,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         PropertyDeclarationSyntax newNode = propertyDeclaration
                             .WithExpressionBody(null)
-                            .WithoutSemicolonToken()
+                            .WithSemicolonToken(default(SyntaxToken))
                             .WithAccessorList(AccessorList(AutoGetAccessorDeclaration()).WithTriviaFrom(expressionBody))
                             .WithFormatterAnnotation();
 
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         IndexerDeclarationSyntax newNode = indexerDeclaration
                             .WithExpressionBody(null)
-                            .WithoutSemicolonToken()
+                            .WithSemicolonToken(default(SyntaxToken))
                             .WithAccessorList(AccessorList(AutoGetAccessorDeclaration()).WithTriviaFrom(expressionBody))
                             .WithFormatterAnnotation();
 

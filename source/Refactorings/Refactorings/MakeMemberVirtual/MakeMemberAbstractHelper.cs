@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -14,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
         {
             IEnumerable<AccessorDeclarationSyntax> accessors = accessorList
                 .Accessors
-                .Select(f => f.WithBody(Block()).WithoutSemicolonToken());
+                .Select(f => f.WithBody(Block()).WithSemicolonToken(default(SyntaxToken)));
 
             AccessorListSyntax newAccessorList = AccessorList(List(accessors));
 

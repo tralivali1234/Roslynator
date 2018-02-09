@@ -29,16 +29,16 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public bool IsYield { get; }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
             get
             {
                 if (IsYield)
-                    return RefactoringKind.IfElseToYieldReturnWithCoalesceExpression;
+                    return IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression;
 
                 return (IfStatement.IsSimpleIf())
-                    ? RefactoringKind.IfReturnToReturnWithCoalesceExpression
-                    : RefactoringKind.IfElseToReturnWithCoalesceExpression;
+                    ? IfRefactoringKind.IfReturnToReturnWithCoalesceExpression
+                    : IfRefactoringKind.IfElseToReturnWithCoalesceExpression;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
             ITypeSymbol targetType = GetTargetType(position, semanticModel, cancellationToken);
 
-            BinaryExpressionSyntax coalesceExpression = RefactoringHelper.CreateCoalesceExpression(
+            BinaryExpressionSyntax coalesceExpression = RefactoringUtility.CreateCoalesceExpression(
                 targetType,
                 Left.WithoutTrivia(),
                 Right.WithoutTrivia(),

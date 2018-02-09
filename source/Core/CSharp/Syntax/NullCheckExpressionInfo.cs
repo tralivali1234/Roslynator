@@ -223,7 +223,7 @@ namespace Roslynator.CSharp.Syntax
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return expression?.IsKind(SyntaxKind.IdentifierName) == true
+            return expression?.Kind() == SyntaxKind.IdentifierName
                 && string.Equals(((IdentifierNameSyntax)expression).Identifier.ValueText, name, StringComparison.Ordinal)
                 && SyntaxUtility.IsPropertyOfNullableOfT(expression, name, semanticModel, cancellationToken);
         }

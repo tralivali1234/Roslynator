@@ -21,9 +21,9 @@ namespace Roslynator.CSharp.Refactorings.If
             Right2 = right2;
         }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
-            get { return RefactoringKind.IfElseToAssignmentWithCoalesceExpression; }
+            get { return IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression; }
         }
 
         public override string Title
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings.If
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            BinaryExpressionSyntax coalesceExpression = RefactoringHelper.CreateCoalesceExpression(
+            BinaryExpressionSyntax coalesceExpression = RefactoringUtility.CreateCoalesceExpression(
                 semanticModel.GetTypeSymbol(Left, cancellationToken),
                 Right1.WithoutTrivia(),
                 Right2.WithoutTrivia(),

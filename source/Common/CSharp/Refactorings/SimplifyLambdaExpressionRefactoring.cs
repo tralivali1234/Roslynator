@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             CSharpSyntaxNode body = lambda.Body;
 
-            if (body?.IsKind(SyntaxKind.Block) == true)
+            if (body?.Kind() == SyntaxKind.Block)
             {
                 var block = (BlockSyntax)body;
 

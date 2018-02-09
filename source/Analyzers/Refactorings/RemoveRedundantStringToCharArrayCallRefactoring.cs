@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = invocation.Expression;
 
-                if (expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 {
                     var memberAccess = (MemberAccessExpressionSyntax)expression;
 

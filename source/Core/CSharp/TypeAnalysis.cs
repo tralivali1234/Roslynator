@@ -98,7 +98,7 @@ namespace Roslynator.CSharp
             {
                 VariableDesignationSyntax designation = declarationExpression.Designation;
 
-                if (designation?.IsKind(SyntaxKind.SingleVariableDesignation) == true)
+                if (designation?.Kind() == SyntaxKind.SingleVariableDesignation)
                 {
                     var symbol = semanticModel.GetDeclaredSymbol((SingleVariableDesignationSyntax)designation, cancellationToken) as ILocalSymbol;
 

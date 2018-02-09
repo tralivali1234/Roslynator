@@ -163,11 +163,11 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
             {
                 SyntaxNode parent = parameter.Parent;
 
-                if (parent?.IsKind(SyntaxKind.ParameterList) == true)
+                if (parent?.Kind() == SyntaxKind.ParameterList)
                 {
                     parent = parent.Parent;
 
-                    return parent?.IsKind(SyntaxKind.ConstructorDeclaration) == true
+                    return parent?.Kind() == SyntaxKind.ConstructorDeclaration
                         && !((ConstructorDeclarationSyntax)parent).IsStatic();
                 }
             }

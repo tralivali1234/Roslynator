@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax right = binaryExpression.Right;
 
-            if (right?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+            if (right?.Kind() == SyntaxKind.NullLiteralExpression)
             {
                 ExpressionSyntax left = binaryExpression.Left;
 
@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     left = left.WalkDownParentheses();
 
-                    if (left?.IsKind(SyntaxKind.AsExpression) == true)
+                    if (left?.Kind() == SyntaxKind.AsExpression)
                     {
                         var asExpression = (BinaryExpressionSyntax)left;
 

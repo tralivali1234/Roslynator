@@ -471,7 +471,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                if (statement?.IsKind(SyntaxKind.ReturnStatement) == true)
+                if (statement?.Kind() == SyntaxKind.ReturnStatement)
                     return ((ReturnStatementSyntax)statement).Expression;
             }
             else
@@ -490,7 +490,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                if (statement?.IsKind(SyntaxKind.ExpressionStatement) == true)
+                if (statement?.Kind() == SyntaxKind.ExpressionStatement)
                     return ((ExpressionStatementSyntax)statement).Expression;
             }
             else

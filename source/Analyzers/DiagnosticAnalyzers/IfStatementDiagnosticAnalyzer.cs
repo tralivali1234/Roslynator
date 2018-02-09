@@ -49,33 +49,33 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             foreach (IfRefactoring refactoring in IfRefactoring.Analyze(ifStatement, AnalysisOptions, context.SemanticModel, context.CancellationToken))
             {
-                Debug.Assert(refactoring.Kind == RefactoringKind.IfElseToAssignmentWithCoalesceExpression
-                    || refactoring.Kind == RefactoringKind.IfElseToAssignmentWithExpression
-                    || refactoring.Kind == RefactoringKind.IfElseToReturnWithCoalesceExpression
-                    || refactoring.Kind == RefactoringKind.IfElseToYieldReturnWithCoalesceExpression
-                    || refactoring.Kind == RefactoringKind.IfReturnToReturnWithCoalesceExpression
-                    || refactoring.Kind == RefactoringKind.IfElseToReturnWithExpression
-                    || refactoring.Kind == RefactoringKind.IfElseToYieldReturnWithExpression
-                    || refactoring.Kind == RefactoringKind.IfReturnToReturnWithExpression, refactoring.Kind.ToString());
+                Debug.Assert(refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToReturnWithCoalesceExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression
+                    || refactoring.Kind == IfRefactoringKind.IfReturnToReturnWithCoalesceExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToReturnWithExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToYieldReturnWithExpression
+                    || refactoring.Kind == IfRefactoringKind.IfReturnToReturnWithExpression, refactoring.Kind.ToString());
 
                 switch (refactoring.Kind)
                 {
-                    case RefactoringKind.IfElseToAssignmentWithCoalesceExpression:
-                    case RefactoringKind.IfElseToReturnWithCoalesceExpression:
-                    case RefactoringKind.IfElseToYieldReturnWithCoalesceExpression:
-                    case RefactoringKind.IfReturnToReturnWithCoalesceExpression:
+                    case IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression:
+                    case IfRefactoringKind.IfElseToReturnWithCoalesceExpression:
+                    case IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression:
+                    case IfRefactoringKind.IfReturnToReturnWithCoalesceExpression:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.UseCoalesceExpressionInsteadOfIf, ifStatement);
                             break;
                         }
-                    case RefactoringKind.IfElseToReturnWithExpression:
-                    case RefactoringKind.IfElseToYieldReturnWithExpression:
-                    case RefactoringKind.IfReturnToReturnWithExpression:
+                    case IfRefactoringKind.IfElseToReturnWithExpression:
+                    case IfRefactoringKind.IfElseToYieldReturnWithExpression:
+                    case IfRefactoringKind.IfReturnToReturnWithExpression:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.ReplaceIfStatementWithReturnStatement, ifStatement);
                             break;
                         }
-                    case RefactoringKind.IfElseToAssignmentWithExpression:
+                    case IfRefactoringKind.IfElseToAssignmentWithExpression:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.ReplaceIfStatementWithAssignment, ifStatement);
                             break;

@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                 }
             }
             else if (methodKind == MethodKind.ReducedExtension
-                && node.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                && node.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
             {
                 return methodSymbol;
             }

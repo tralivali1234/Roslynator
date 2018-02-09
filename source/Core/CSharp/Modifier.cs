@@ -1004,7 +1004,6 @@ namespace Roslynator.CSharp
             if (modifierKind == SyntaxKind.ReadOnlyKeyword)
                 return "read-only";
 
-            //XTODO: test
             return SyntaxFacts.GetText(modifierKind);
         }
     }

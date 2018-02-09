@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
                 .Value;
 
             if (value?.IsNumericLiteralExpression("0") == true
-                && forStatement.Condition?.IsKind(SyntaxKind.LessThanExpression) == true)
+                && forStatement.Condition?.Kind() == SyntaxKind.LessThanExpression)
             {
                 SeparatedSyntaxList<ExpressionSyntax> incrementors = forStatement.Incrementors;
 

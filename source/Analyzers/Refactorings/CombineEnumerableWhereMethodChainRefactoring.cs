@@ -27,12 +27,12 @@ namespace Roslynator.CSharp.Refactorings
             InvocationExpressionSyntax invocation,
             MemberAccessExpressionSyntax memberAccess)
         {
-            if (memberAccess.Expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+            if (memberAccess.Expression?.Kind() == SyntaxKind.InvocationExpression)
             {
                 var invocation2 = (InvocationExpressionSyntax)memberAccess.Expression;
 
                 if (invocation2.ArgumentList?.Arguments.Count == 1
-                    && invocation2.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                    && invocation2.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 {
                     var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
 
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 case SyntaxKind.SimpleLambdaExpression:
                     {
-                        if (expression2?.IsKind(SyntaxKind.SimpleLambdaExpression) == true)
+                        if (expression2?.Kind() == SyntaxKind.SimpleLambdaExpression)
                         {
                             var lambda1 = (SimpleLambdaExpressionSyntax)expression1;
                             var lambda2 = (SimpleLambdaExpressionSyntax)expression2;
@@ -132,7 +132,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SyntaxKind.ParenthesizedLambdaExpression:
                     {
-                        if (expression2?.IsKind(SyntaxKind.ParenthesizedLambdaExpression) == true)
+                        if (expression2?.Kind() == SyntaxKind.ParenthesizedLambdaExpression)
                         {
                             var lambda1 = (ParenthesizedLambdaExpressionSyntax)expression1;
                             var lambda2 = (ParenthesizedLambdaExpressionSyntax)expression2;

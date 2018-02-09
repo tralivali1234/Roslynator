@@ -386,11 +386,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             StatementSyntax statement = body?.Statements.SingleOrDefault(shouldThrow: false);
 
-            if (statement?.IsKind(SyntaxKind.ThrowStatement) == true)
+            if (statement?.Kind() == SyntaxKind.ThrowStatement)
             {
                 var throwStatement = (ThrowStatementSyntax)statement;
 
-                return throwStatement.Expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true;
+                return throwStatement.Expression?.Kind() == SyntaxKind.ObjectCreationExpression;
             }
 
             return false;
@@ -400,11 +400,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             ExpressionSyntax expression = expressionBody?.Expression;
 
-            if (expression?.IsKind(SyntaxKind.ThrowExpression) == true)
+            if (expression?.Kind() == SyntaxKind.ThrowExpression)
             {
                 var throwExpression = (ThrowExpressionSyntax)expression;
 
-                return throwExpression.Expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true;
+                return throwExpression.Expression?.Kind() == SyntaxKind.ObjectCreationExpression;
             }
 
             return false;

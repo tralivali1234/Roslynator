@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
-using static Roslynator.CSharp.RefactoringHelper;
+using static Roslynator.CSharp.RefactoringUtility;
 
 namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
 {

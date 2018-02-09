@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax right = binaryExpression.Right;
 
-                if (right?.IsKind(SyntaxKind.NullLiteralExpression) == true
+                if (right?.Kind() == SyntaxKind.NullLiteralExpression
                     && IsStructButNotNullableOfT(context.SemanticModel.GetTypeSymbol(left, context.CancellationToken))
                     && !binaryExpression.SpanContainsDirectives())
                 {

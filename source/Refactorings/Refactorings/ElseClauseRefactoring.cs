@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBraces)
-                && elseClause.Statement?.IsKind(SyntaxKind.IfStatement) == true)
+                && elseClause.Statement?.Kind() == SyntaxKind.IfStatement)
             {
                 var ifStatement = (IfStatementSyntax)elseClause.Statement;
 

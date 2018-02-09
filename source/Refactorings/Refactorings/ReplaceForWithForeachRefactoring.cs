@@ -70,11 +70,11 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax condition = forStatement.Condition;
 
-                    if (condition?.IsKind(SyntaxKind.LessThanExpression) == true)
+                    if (condition?.Kind() == SyntaxKind.LessThanExpression)
                     {
                         ExpressionSyntax right = ((BinaryExpressionSyntax)condition).Right;
 
-                        if (right?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                        if (right?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                         {
                             var memberAccess = (MemberAccessExpressionSyntax)right;
 
@@ -139,15 +139,15 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = node.Parent;
 
-                if (parent?.IsKind(SyntaxKind.Argument) == true)
+                if (parent?.Kind() == SyntaxKind.Argument)
                 {
                     parent = parent.Parent;
 
-                    if (parent?.IsKind(SyntaxKind.BracketedArgumentList) == true)
+                    if (parent?.Kind() == SyntaxKind.BracketedArgumentList)
                     {
                         parent = parent.Parent;
 
-                        if (parent?.IsKind(SyntaxKind.ElementAccessExpression) == true)
+                        if (parent?.Kind() == SyntaxKind.ElementAccessExpression)
                         {
                             var elementAccess = (ElementAccessExpressionSyntax)parent;
 

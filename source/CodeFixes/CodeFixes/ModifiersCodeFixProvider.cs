@@ -307,7 +307,7 @@ namespace Roslynator.CSharp.CodeFixes
                             var classDeclaration = (ClassDeclarationSyntax)node;
 
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddStaticModifier)
-                                && !classDeclaration.IsStatic())
+                                && !classDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
                             {
                                 AddStaticModifier(context, diagnostic, node, CodeFixIdentifiers.AddStaticModifier);
                             }

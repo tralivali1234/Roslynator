@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                    if (statement?.IsKind(SyntaxKind.ExpressionStatement) == true)
+                    if (statement?.Kind() == SyntaxKind.ExpressionStatement)
                     {
                         var expressionStatement = (ExpressionStatementSyntax)statement;
 
@@ -58,15 +58,15 @@ namespace Roslynator.CSharp.Refactorings
             PropertyDeclarationSyntax property,
             ExpressionSyntax expression)
         {
-            if (expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+            if (expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
             {
                 var assignment = (AssignmentExpressionSyntax)expression;
 
                 ExpressionSyntax left = assignment.Left;
                 ExpressionSyntax right = assignment.Right;
 
-                if (left?.IsKind(SyntaxKind.IdentifierName) == true
-                    && right?.IsKind(SyntaxKind.IdentifierName) == true)
+                if (left?.Kind() == SyntaxKind.IdentifierName
+                    && right?.Kind() == SyntaxKind.IdentifierName)
                 {
                     var identifierName = (IdentifierNameSyntax)right;
 

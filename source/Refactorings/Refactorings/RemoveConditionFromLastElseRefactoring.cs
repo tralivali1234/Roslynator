@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactorings(RefactoringContext context, ElseClauseSyntax elseClause)
         {
-            if (elseClause.Statement?.IsKind(SyntaxKind.IfStatement) == true
+            if (elseClause.Statement?.Kind() == SyntaxKind.IfStatement
                 && ((IfStatementSyntax)elseClause.Statement).Else == null)
             {
                 context.RegisterRefactoring(

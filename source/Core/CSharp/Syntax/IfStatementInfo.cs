@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Syntax
                 {
                     StatementSyntax statement = elseClause?.Statement;
 
-                    if (statement?.IsKind(SyntaxKind.IfStatement) == true)
+                    if (statement?.Kind() == SyntaxKind.IfStatement)
                     {
                         ifStatement = (IfStatementSyntax)statement;
 

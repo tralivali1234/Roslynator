@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = expression.Parent;
 
-                if (parent?.IsKind(SyntaxKind.ParenthesizedExpression) == true)
+                if (parent?.Kind() == SyntaxKind.ParenthesizedExpression)
                 {
                     if (parent.IsParentKind(SyntaxKind.LogicalNotExpression))
                     {

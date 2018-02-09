@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     SyntaxNode parent = expression.Parent;
 
-                    if (parent?.IsKind(SyntaxKind.AddExpression) == true
+                    if (parent?.Kind() == SyntaxKind.AddExpression
                         && !parent.ContainsDiagnostics
                         && IsNotHidden(methodInfo.Symbol, containingType))
                     {

@@ -199,7 +199,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static StatementSyntax GetLastStatementOrDefault(StatementSyntax statement)
         {
-            if (statement?.IsKind(SyntaxKind.Block) == true)
+            if (statement?.Kind() == SyntaxKind.Block)
             {
                 return ((BlockSyntax)statement).Statements.LastOrDefault();
             }

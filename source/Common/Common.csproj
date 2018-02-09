@@ -57,7 +57,7 @@
     <Compile Include="CSharp\Refactorings\ReduceIfNesting\ReduceIfNestingOptionsExtensions.cs" />
     <Compile Include="CSharp\Refactorings\ReduceIfNesting\ReduceIfNestingRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\ReduceIfNesting\ReduceIfNestingRewriter.cs" />
-    <Compile Include="CSharp\Refactorings\RefactoringHelper.cs" />
+    <Compile Include="CSharp\Refactorings\RefactoringUtility.cs" />
     <Compile Include="CSharp\Refactorings\CallExtensionMethodAsInstanceMethodRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\RefactoringIdentifierSet.cs" />
     <Compile Include="CSharp\Refactorings\RefactoringSettings.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="CSharp\Refactorings\If\IfReturnToReturnWithConditionalExpression.cs" />
     <Compile Include="CSharp\Refactorings\If\ToAssignmentWithConditionalExpression`1.cs" />
     <Compile Include="CSharp\Refactorings\If\ToAssignmentWithConditionalExpression.cs" />
-    <Compile Include="CSharp\Refactorings\RefactoringKind.cs" />
+    <Compile Include="CSharp\Refactorings\If\IfRefactoringKind.cs" />
     <Compile Include="CSharp\Refactorings\If\IfToReturnWithBooleanExpression.cs" />
     <Compile Include="CSharp\Refactorings\If\IfElseToReturnWithBooleanExpression.cs" />
     <Compile Include="CSharp\Refactorings\If\IfToReturnWithCoalesceExpression.cs" />

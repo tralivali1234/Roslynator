@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return propertyDeclaration
                 .WithInitializer(null)
-                .WithoutSemicolonToken()
+                .WithSemicolonToken(default(SyntaxToken))
                 .WithAccessorList(accessorList);
         }
 
@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         yield return accessor
                             .WithBody(Block(ReturnStatement(value)))
-                            .WithoutSemicolonToken();
+                            .WithSemicolonToken(default(SyntaxToken));
 
                         continue;
                     }
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 yield return accessor
                     .WithBody(body)
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
             }
         }
     }

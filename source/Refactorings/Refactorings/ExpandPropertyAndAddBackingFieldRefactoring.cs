@@ -84,12 +84,12 @@ namespace Roslynator.CSharp.Refactorings
             {
                 AccessorDeclarationSyntax newGetter = getter
                     .WithBody(Block(ReturnStatement(IdentifierName(name))))
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
 
                 propertyDeclaration = propertyDeclaration
                     .ReplaceNode(getter, newGetter)
                     .WithInitializer(null)
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
             }
 
             AccessorDeclarationSyntax setter = propertyDeclaration.Setter();
@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Refactorings
                         SimpleAssignmentStatement(
                                 IdentifierName(name),
                                 IdentifierName("value"))))
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
 
                 propertyDeclaration = propertyDeclaration.ReplaceNode(setter, newSetter);
             }

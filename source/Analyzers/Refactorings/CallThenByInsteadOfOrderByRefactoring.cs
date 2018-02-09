@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             string newName,
             CancellationToken cancellationToken)
         {
-            InvocationExpressionSyntax newInvocationExpression = RefactoringHelper.ChangeInvokedMethodName(invocationExpression, newName);
+            InvocationExpressionSyntax newInvocationExpression = RefactoringUtility.ChangeInvokedMethodName(invocationExpression, newName);
 
             return document.ReplaceNodeAsync(invocationExpression, newInvocationExpression, cancellationToken);
         }

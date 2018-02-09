@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    internal static class RefactoringHelper
+    internal static class RefactoringUtility
     {
         public static InvocationExpressionSyntax ChangeInvokedMethodName(InvocationExpressionSyntax invocation, string newName)
         {

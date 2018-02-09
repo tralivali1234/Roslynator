@@ -1454,7 +1454,6 @@ namespace Roslynator
                 {
                     var fieldSymbol = (IFieldSymbol)symbol;
 
-                    //XTODO: test
                     if (fieldSymbol.HasConstantValue
                         && object.Equals(fieldSymbol.ConstantValue, value))
                     {

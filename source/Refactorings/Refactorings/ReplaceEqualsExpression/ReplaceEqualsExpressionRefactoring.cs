@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceEqualsExpression
                 {
                     ExpressionSyntax right = binaryExpression.Right;
 
-                    if (right?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                    if (right?.Kind() == SyntaxKind.NullLiteralExpression)
                     {
                         SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 

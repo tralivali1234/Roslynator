@@ -89,11 +89,11 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var expressionStatement = (ExpressionStatementSyntax)statement;
 
-                if (expressionStatement.Expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+                if (expressionStatement.Expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
                 {
                     var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
-                    if (assignment.Left?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                    if (assignment.Left?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                     {
                         var memberAccess = (MemberAccessExpressionSyntax)assignment.Left;
 

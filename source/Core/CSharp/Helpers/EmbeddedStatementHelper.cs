@@ -152,7 +152,7 @@ namespace Roslynator.CSharp.Helpers
                     {
                         var forStatement = (ForStatementSyntax)containingNode;
 
-                        return forStatement.Statement?.IsKind(SyntaxKind.EmptyStatement) == true
+                        return forStatement.Statement?.Kind() == SyntaxKind.EmptyStatement
                             || forStatement.SyntaxTree.IsSingleLineSpan(forStatement.ParenthesesSpan());
                     }
                 case SyntaxKind.UsingStatement:
@@ -164,7 +164,7 @@ namespace Roslynator.CSharp.Helpers
                         var whileStatement = (WhileStatementSyntax)containingNode;
 
                         return whileStatement.Condition?.IsMultiLine() != true
-                            || whileStatement.Statement?.IsKind(SyntaxKind.EmptyStatement) == true;
+                            || whileStatement.Statement?.Kind() == SyntaxKind.EmptyStatement;
                     }
                 case SyntaxKind.LockStatement:
                     {

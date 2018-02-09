@@ -46,19 +46,12 @@ namespace Roslynator.CSharp
                 && accessorDeclaration.BodyOrExpressionBody() == null;
         }
 
-        internal static AccessorDeclarationSyntax WithoutSemicolonToken(this AccessorDeclarationSyntax accessorDeclaration)
-        {
-            return accessorDeclaration.WithSemicolonToken(default(SyntaxToken));
-        }
-
         public static CSharpSyntaxNode BodyOrExpressionBody(this AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
                 throw new ArgumentNullException(nameof(accessorDeclaration));
 
-            BlockSyntax body = accessorDeclaration.Body;
-
-            return body ?? (CSharpSyntaxNode)accessorDeclaration.ExpressionBody;
+            return accessorDeclaration.Body ?? (CSharpSyntaxNode)accessorDeclaration.ExpressionBody;
         }
         #endregion AccessorDeclarationSyntax
 
@@ -130,29 +123,39 @@ namespace Roslynator.CSharp
             return TextSpan.FromBounds(block.OpenBraceToken.SpanStart, block.CloseBraceToken.Span.End);
         }
 
-        internal static BlockSyntax InsertStatement(this BlockSyntax block, StatementSyntax statement)
+        //TODO: new
+        public static BlockSyntax AddStatement(this BlockSyntax block, StatementSyntax statement, bool beforeLocalFunction = false)
         {
+            if (block == null)
+                throw new ArgumentNullException(nameof(block));
+
+            if (statement == null)
+                throw new ArgumentNullException(nameof(statement));
+
             SyntaxList<StatementSyntax> statements = block.Statements;
 
-            int insertIndex = statements.Count;
+            if (!beforeLocalFunction)
+                return block.WithStatements(statements.Add(statement));
 
-            if (!statement.IsKind(SyntaxKind.LocalFunctionStatement))
+            int count = statements.Count;
+
+            int index = count;
+
+            for (int i = count - 1; i >= 0; i--)
             {
-                for (int i = statements.Count - 1; i >= 0; i--)
-                {
-                    if (statements[i].IsKind(SyntaxKind.LocalFunctionStatement))
-                        insertIndex--;
-                }
+                if (statements[i].IsKind(SyntaxKind.LocalFunctionStatement))
+                    index--;
             }
 
-            return block.WithStatements(statements.Insert(insertIndex, statement));
+            return block.WithStatements(statements.Insert(index, statement));
         }
 
+        //TODO: opt
         internal static bool ContainsYield(this BlockSyntax block)
         {
             return block?
                 .DescendantNodes(block.Span, node => !node.IsNestedMethod())
-                .Any(f => f.IsKind(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement)) == true;
+                .Any(f => f.Kind().IsYieldStatement()) == true;
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -214,6 +217,7 @@ namespace Roslynator.CSharp
         #endregion CastExpressionSyntax
 
         #region ClassDeclarationSyntax
+        //TODO: del
         internal static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             MemberDeclarationSyntax member)
@@ -221,6 +225,7 @@ namespace Roslynator.CSharp
             return classDeclaration.WithMembers(SingletonList(member));
         }
 
+        //TODO: del
         internal static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             IEnumerable<MemberDeclarationSyntax> memberDeclarations)
@@ -236,11 +241,6 @@ namespace Roslynator.CSharp
             return TextSpan.FromBounds(
                 classDeclaration.Span.Start,
                 classDeclaration.Identifier.Span.End);
-        }
-
-        public static bool IsStatic(this ClassDeclarationSyntax classDeclaration)
-        {
-            return classDeclaration?.Modifiers.Contains(SyntaxKind.StaticKeyword) == true;
         }
 
         public static TextSpan BracesSpan(this ClassDeclarationSyntax classDeclaration)
@@ -572,7 +572,7 @@ namespace Roslynator.CSharp
             if (elseClause == null)
                 throw new ArgumentNullException(nameof(elseClause));
 
-            return elseClause.Statement?.IsKind(SyntaxKind.IfStatement) == true;
+            return elseClause.Statement?.Kind() == SyntaxKind.IfStatement;
         }
         #endregion ElseClauseSyntax
 
@@ -742,7 +742,7 @@ namespace Roslynator.CSharp
                 {
                     StatementSyntax statement = elseClause.Statement;
 
-                    if (statement?.IsKind(SyntaxKind.IfStatement) == true)
+                    if (statement?.Kind() == SyntaxKind.IfStatement)
                     {
                         ifStatement = (IfStatementSyntax)statement;
                         yield return ifStatement;
@@ -794,7 +794,7 @@ namespace Roslynator.CSharp
         {
             StatementSyntax statement = ifStatement.Else?.Statement;
 
-            if (statement?.IsKind(SyntaxKind.IfStatement) == true)
+            if (statement?.Kind() == SyntaxKind.IfStatement)
                 return (IfStatementSyntax)statement;
 
             return null;
@@ -804,11 +804,11 @@ namespace Roslynator.CSharp
         {
             SyntaxNode parent = ifStatement.Parent;
 
-            if (parent?.IsKind(SyntaxKind.ElseClause) == true)
+            if (parent?.Kind() == SyntaxKind.ElseClause)
             {
                 parent = parent.Parent;
 
-                if (parent?.IsKind(SyntaxKind.IfStatement) == true)
+                if (parent?.Kind() == SyntaxKind.IfStatement)
                     return (IfStatementSyntax)parent;
             }
 
@@ -862,14 +862,6 @@ namespace Roslynator.CSharp
             return indexerDeclaration
                 .AccessorList?
                 .Setter();
-        }
-
-        internal static IndexerDeclarationSyntax WithoutSemicolonToken(this IndexerDeclarationSyntax indexerDeclaration)
-        {
-            if (indexerDeclaration == null)
-                throw new ArgumentNullException(nameof(indexerDeclaration));
-
-            return indexerDeclaration.WithSemicolonToken(default(SyntaxToken));
         }
         #endregion IndexerDeclarationSyntax
 
@@ -1125,7 +1117,7 @@ namespace Roslynator.CSharp
             {
                 var comment = trivia.GetStructure() as DocumentationCommentTriviaSyntax;
 
-                if (comment?.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia) == true)
+                if (comment?.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia)
                     return comment;
             }
 
@@ -1867,12 +1859,6 @@ namespace Roslynator.CSharp
             return propertyDeclaration.WithAttributeLists(List(attributeLists));
         }
 
-        internal static PropertyDeclarationSyntax WithoutSemicolonToken(
-            this PropertyDeclarationSyntax propertyDeclaration)
-        {
-            return propertyDeclaration.WithSemicolonToken(default(SyntaxToken));
-        }
-
         public static TextSpan HeaderSpan(this PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -2037,7 +2023,7 @@ namespace Roslynator.CSharp
         #region StatementSyntax
         private static StatementSyntax GetSingleStatementOrDefault(StatementSyntax statement)
         {
-            if (statement?.IsKind(SyntaxKind.Block) == true)
+            if (statement?.Kind() == SyntaxKind.Block)
             {
                 return ((BlockSyntax)statement).Statements.SingleOrDefault(shouldThrow: false);
             }
@@ -3681,7 +3667,7 @@ namespace Roslynator.CSharp
         #region TypeSyntax
         public static bool IsVoid(this TypeSyntax type)
         {
-            return type?.IsKind(SyntaxKind.PredefinedType) == true
+            return type?.Kind() == SyntaxKind.PredefinedType
                 && ((PredefinedTypeSyntax)type).Keyword.IsKind(SyntaxKind.VoidKeyword);
         }
         #endregion TypeSyntax

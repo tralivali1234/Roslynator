@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (invocation.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true
+            if (invocation.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression
                 && invocation.ArgumentList?.Arguments.Count == 1)
             {
                 MemberAccessExpressionSyntax memberAccess = GetTopmostMemberAccessExpression((MemberAccessExpressionSyntax)invocation.Expression);

@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = enumMemberDeclaration.Parent;
 
-                if (parent?.IsKind(SyntaxKind.EnumDeclaration) == true)
+                if (parent?.Kind() == SyntaxKind.EnumDeclaration)
                 {
                     var enumDeclaration = (EnumDeclarationSyntax)parent;
 

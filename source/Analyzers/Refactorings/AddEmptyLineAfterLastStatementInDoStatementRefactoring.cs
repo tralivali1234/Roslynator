@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             StatementSyntax statement = doStatement.Statement;
 
-            if (statement?.IsKind(SyntaxKind.Block) == true)
+            if (statement?.Kind() == SyntaxKind.Block)
             {
                 var block = (BlockSyntax)statement;
 

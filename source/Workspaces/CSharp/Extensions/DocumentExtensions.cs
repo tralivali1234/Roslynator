@@ -29,7 +29,7 @@ namespace Roslynator.CSharp
 
             SyntaxNode parent = member.Parent;
 
-            if (parent?.IsKind(SyntaxKind.CompilationUnit) == true)
+            if (parent?.Kind() == SyntaxKind.CompilationUnit)
             {
                 var compilationUnit = (CompilationUnitSyntax)parent;
 

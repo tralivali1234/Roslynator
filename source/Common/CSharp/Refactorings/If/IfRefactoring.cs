@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfStatement = ifStatement;
         }
 
-        public abstract RefactoringKind Kind { get; }
+        public abstract IfRefactoringKind Kind { get; }
 
         public abstract string Title { get; }
 

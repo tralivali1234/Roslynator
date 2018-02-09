@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax right = binaryExpression.Right.WalkDownParentheses();
 
-                    if (right?.IsKind(SyntaxKind.EqualsExpression) == true)
+                    if (right?.Kind() == SyntaxKind.EqualsExpression)
                     {
                         var equalsExpression = (BinaryExpressionSyntax)right;
 

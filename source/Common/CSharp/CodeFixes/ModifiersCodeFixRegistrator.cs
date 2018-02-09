@@ -406,7 +406,6 @@ namespace Roslynator.CSharp.CodeFixes
             if (!CSharpUtility.IsAllowedAccessibility(node, accessibility))
                 return;
 
-            //XTODO: test
             CodeAction codeAction = CodeAction.Create(
                 $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'",
                 cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Document, node, accessibility, cancellationToken),
@@ -422,7 +421,6 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind)
         {
-            //XTODO: test
             return $"Add modifier '{SyntaxFacts.GetText(modifierKind)}'";
         }
 
@@ -443,7 +441,6 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetRemoveModifierTitle(SyntaxKind modifierKind)
         {
-            //XTODO: test
             return $"Remove modifier '{SyntaxFacts.GetText(modifierKind)}'";
         }
     }

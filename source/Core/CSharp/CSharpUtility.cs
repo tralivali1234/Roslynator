@@ -356,7 +356,7 @@ namespace Roslynator.CSharp
         {
             ExpressionSyntax expression = invocationExpression.Expression;
 
-            if (expression?.IsKind(SyntaxKind.IdentifierName) == true)
+            if (expression?.Kind() == SyntaxKind.IdentifierName)
             {
                 var identifierName = (IdentifierNameSyntax)expression;
 

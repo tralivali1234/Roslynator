@@ -394,7 +394,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = expressionBody.Expression;
 
-                if (expression?.IsKind(SyntaxKind.IdentifierName) == true)
+                if (expression?.Kind() == SyntaxKind.IdentifierName)
                     return ((IdentifierNameSyntax)expression).Identifier;
             }
             else

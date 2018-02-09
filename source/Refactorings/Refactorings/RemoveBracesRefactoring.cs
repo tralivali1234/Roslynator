@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 StatementSyntax statement = ifOrElse.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     yield return (BlockSyntax)statement;
             }
         }

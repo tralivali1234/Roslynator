@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = interpolation.Expression;
 
-            if (expression?.IsKind(SyntaxKind.StringLiteralExpression) == true
+            if (expression?.Kind() == SyntaxKind.StringLiteralExpression
                 && (interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
             {
                 var literalExpression = (LiteralExpressionSyntax)expression;

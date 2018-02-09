@@ -21,12 +21,12 @@ namespace Roslynator.CSharp.Refactorings
             MemberAccessExpressionSyntax memberAccess,
             string methodName)
         {
-            if (memberAccess.Expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+            if (memberAccess.Expression?.Kind() == SyntaxKind.InvocationExpression)
             {
                 var invocation2 = (InvocationExpressionSyntax)memberAccess.Expression;
 
                 if (invocation2.ArgumentList?.Arguments.Count == 1
-                    && invocation2.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                    && invocation2.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 {
                     var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
 

@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = awaitExpression.Expression;
 
-            if (expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+            if (expression?.Kind() == SyntaxKind.InvocationExpression)
             {
                 var methodSymbol = semanticModel.GetSymbol(expression, cancellationToken) as IMethodSymbol;
 

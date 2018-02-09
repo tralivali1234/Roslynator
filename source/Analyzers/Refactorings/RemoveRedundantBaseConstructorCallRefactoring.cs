@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ConstructorInitializerSyntax initializer = constructor.Initializer;
 
-            if (initializer?.IsKind(SyntaxKind.BaseConstructorInitializer) == true
+            if (initializer?.Kind() == SyntaxKind.BaseConstructorInitializer
                 && initializer.ArgumentList?.Arguments.Count == 0
                 && initializer
                     .DescendantTrivia(initializer.Span)

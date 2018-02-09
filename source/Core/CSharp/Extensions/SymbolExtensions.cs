@@ -101,7 +101,6 @@ namespace Roslynator.CSharp
                 if (value == null)
                     return NullLiteralExpression();
 
-                //XTODO: test
                 IFieldSymbol fieldSymbol = typeSymbol.FindFieldWithConstantValue(value);
 
                 TypeSyntax type = typeSymbol.ToMinimalTypeSyntax(semanticModel, position, format);

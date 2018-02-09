@@ -21,9 +21,9 @@ namespace Roslynator.CSharp.Refactorings.If
             Negate = negate;
         }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
-            get { return RefactoringKind.IfElseToAssignmentWithExpression; }
+            get { return IfRefactoringKind.IfElseToAssignmentWithExpression; }
         }
 
         public override string Title

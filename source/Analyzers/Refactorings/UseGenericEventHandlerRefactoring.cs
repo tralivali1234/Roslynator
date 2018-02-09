@@ -70,7 +70,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         SyntaxNode parent = declarator.Parent;
 
-                        if (parent?.IsKind(SyntaxKind.VariableDeclaration) == true)
+                        if (parent?.Kind() == SyntaxKind.VariableDeclaration)
                         {
                             var declaration = (VariableDeclarationSyntax)parent;
 

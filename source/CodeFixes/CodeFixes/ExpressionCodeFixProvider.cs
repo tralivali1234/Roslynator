@@ -406,7 +406,7 @@ namespace Roslynator.CSharp.CodeFixes
                             }
 
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.ReplaceStringLiteralWithCharacterLiteral)
-                                && expression?.IsKind(SyntaxKind.StringLiteralExpression) == true)
+                                && expression?.Kind() == SyntaxKind.StringLiteralExpression)
                             {
                                 var literalExpression = (LiteralExpressionSyntax)expression;
 

@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 VariableDesignationSyntax designation = declarationExpression.Designation;
 
-                if (designation?.IsKind(SyntaxKind.SingleVariableDesignation) == true)
+                if (designation?.Kind() == SyntaxKind.SingleVariableDesignation)
                 {
                     var singleVariableDesignation = (SingleVariableDesignationSyntax)designation;
 

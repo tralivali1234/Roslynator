@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.Refactorings
                         var memberAccess = (MemberAccessExpressionSyntax)expression.Expression;
 
                         if (memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression)
-                            && memberAccess.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                            && memberAccess.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                         {
                             ISymbol symbol = semanticModel.GetSymbol(memberAccess.Expression, cancellationToken);
 
@@ -156,10 +156,10 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         SyntaxNode node = expression.Parent.Parent;
 
-                        if (node?.IsKind(SyntaxKind.ElementAccessExpression) == true)
+                        if (node?.Kind() == SyntaxKind.ElementAccessExpression)
                             node = node.Parent;
 
-                        if (node?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                        if (node?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                             return (MemberAccessExpressionSyntax)node;
 
                         break;

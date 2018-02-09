@@ -46,6 +46,11 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        public static bool IsYieldStatement(this SyntaxKind kind)
+        {
+            return kind.Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);
+        }
+
         public static bool IsNestedMethod(this SyntaxKind kind)
         {
             return kind.Is(

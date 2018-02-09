@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsReturnStatementWithExpression(StatementSyntax statement)
         {
-            if (statement?.IsKind(SyntaxKind.ReturnStatement) == true)
+            if (statement?.Kind() == SyntaxKind.ReturnStatement)
             {
                 var returnStatement = (ReturnStatementSyntax)statement;
 
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax newStatement = null;
 
             if (selectedStatements.Count == 1
-                && !ifStatementInfo.Nodes.Any(f => f.Statement?.IsKind(SyntaxKind.Block) == true))
+                && !ifStatementInfo.Nodes.Any(f => f.Statement?.Kind() == SyntaxKind.Block))
             {
                 newStatement = selectedStatements.First();
             }

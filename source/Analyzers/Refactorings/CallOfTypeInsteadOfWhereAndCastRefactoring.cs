@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = memberAccess?.Expression;
 
-            if (expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+            if (expression?.Kind() == SyntaxKind.InvocationExpression)
             {
                 var invocation2 = (InvocationExpressionSyntax)expression;
 
@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
                     SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
 
                     if (arguments.Count == 1
-                        && invocation2.Expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                        && invocation2.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                     {
                         var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
 
@@ -141,13 +141,13 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         StatementSyntax statement = ((BlockSyntax)body).Statements.SingleOrDefault(shouldThrow: false);
 
-                        if (statement?.IsKind(SyntaxKind.ReturnStatement) == true)
+                        if (statement?.Kind() == SyntaxKind.ReturnStatement)
                         {
                             var returnStatement = (ReturnStatementSyntax)statement;
 
                             ExpressionSyntax returnExpression = returnStatement.Expression;
 
-                            if (returnExpression?.IsKind(SyntaxKind.IsExpression) == true)
+                            if (returnExpression?.Kind() == SyntaxKind.IsExpression)
                                 return (BinaryExpressionSyntax)returnExpression;
                         }
 

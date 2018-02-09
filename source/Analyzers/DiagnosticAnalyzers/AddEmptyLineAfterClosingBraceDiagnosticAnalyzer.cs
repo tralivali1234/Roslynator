@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = whileStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, whileStatement, (BlockSyntax)statement);
             }
         }
@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = forStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, forStatement, (BlockSyntax)statement);
             }
         }
@@ -85,7 +85,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = forEachStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, forEachStatement, (BlockSyntax)statement);
             }
         }
@@ -98,7 +98,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = usingStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, usingStatement, (BlockSyntax)statement);
             }
         }
@@ -111,7 +111,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = fixedStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, fixedStatement, (BlockSyntax)statement);
             }
         }
@@ -140,7 +140,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = lockStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, lockStatement, (BlockSyntax)statement);
             }
         }
@@ -153,7 +153,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 StatementSyntax statement = ifStatement.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     AnalyzeStatement(context, ifStatement, (BlockSyntax)statement);
             }
         }

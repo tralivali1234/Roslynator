@@ -459,7 +459,7 @@ namespace Roslynator.CSharp.Documentation
         {
             ConstructorInitializerSyntax initializer = constructorDeclaration.Initializer;
 
-            if (initializer?.IsKind(SyntaxKind.BaseConstructorInitializer) == true)
+            if (initializer?.Kind() == SyntaxKind.BaseConstructorInitializer)
             {
                 ISymbol baseConstructor = semanticModel.GetSymbol(initializer, cancellationToken);
 

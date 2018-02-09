@@ -13,12 +13,12 @@ namespace Roslynator.CSharp.Refactorings.If
     {
         public static bool IsNullLiteral(SyntaxNode node)
         {
-            return node?.IsKind(SyntaxKind.NullLiteralExpression) == true;
+            return node?.Kind() == SyntaxKind.NullLiteralExpression;
         }
 
         public static bool IsSimpleAssignment(SyntaxNode node)
         {
-            return node?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true;
+            return node?.Kind() == SyntaxKind.SimpleAssignmentExpression;
         }
 
         public static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)

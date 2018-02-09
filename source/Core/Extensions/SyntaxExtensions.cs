@@ -398,7 +398,6 @@ namespace Roslynator
             return node.Parent?.FirstAncestorOrSelf(predicate, ascendOutOfTrivia);
         }
 
-        //XTODO: test
         internal static string ToString(this SyntaxNode node, TextSpan span)
         {
             if (node == null)
@@ -406,12 +405,12 @@ namespace Roslynator
 
             TextSpan nodeSpan = node.Span;
 
-            TextSpan? overlap = nodeSpan.Overlap(span);
+            TextSpan? intersection = nodeSpan.Intersection(span);
 
-            if (overlap == null)
-                throw new ArgumentException("Span has no overlap with node span.", nameof(span));
+            if (intersection == null)
+                throw new ArgumentException("Span has no intersection with node span.", nameof(span));
 
-            span = overlap.Value;
+            span = intersection.Value;
 
             return node.ToString().Substring(span.Start - nodeSpan.Start, span.Length);
         }

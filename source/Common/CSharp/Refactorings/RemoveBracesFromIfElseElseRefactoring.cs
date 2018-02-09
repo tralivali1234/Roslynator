@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (_previousIf == null
                     || _previousIf.Equals(node.GetPreviousIf()))
                 {
-                    if (node.Statement?.IsKind(SyntaxKind.Block) == true)
+                    if (node.Statement?.Kind() == SyntaxKind.Block)
                     {
                         IfStatementSyntax ifStatement = node.WithStatement(((BlockSyntax)node.Statement).Statements[0]);
 

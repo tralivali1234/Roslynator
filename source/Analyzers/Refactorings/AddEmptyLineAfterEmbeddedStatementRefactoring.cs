@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = containingStatement.Parent;
 
-                if (parent?.IsKind(SyntaxKind.Block) == true)
+                if (parent?.Kind() == SyntaxKind.Block)
                 {
                     var block = (BlockSyntax)parent;
 

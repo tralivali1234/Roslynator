@@ -122,7 +122,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxNode parent = elseClause.Parent;
 
-            if (parent?.IsKind(SyntaxKind.IfStatement) == true)
+            if (parent?.Kind() == SyntaxKind.IfStatement)
             {
                 var ifStatement = (IfStatementSyntax)parent;
 
@@ -347,11 +347,11 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxNode parent = node.Parent;
 
-            if (parent?.IsKind(SyntaxKind.Block) == true)
+            if (parent?.Kind() == SyntaxKind.Block)
             {
                 parent = parent.Parent;
 
-                if (parent?.IsKind(SyntaxKind.DoStatement) == true)
+                if (parent?.Kind() == SyntaxKind.DoStatement)
                 {
                     var doStatement = (DoStatementSyntax)parent;
 

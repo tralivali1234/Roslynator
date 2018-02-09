@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax right = assignment.Right;
 
-            if (right?.IsKind(SyntaxKind.ObjectCreationExpression) == true)
+            if (right?.Kind() == SyntaxKind.ObjectCreationExpression)
             {
                 var objectCreation = (ObjectCreationExpressionSyntax)right;
 

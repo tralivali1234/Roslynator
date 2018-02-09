@@ -20,11 +20,11 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
         {
             SyntaxNode parent = Node.Parent;
 
-            if (parent?.IsKind(SyntaxKind.CoalesceExpression) == true)
+            if (parent?.Kind() == SyntaxKind.CoalesceExpression)
             {
                 parent = parent.Parent;
 
-                if (parent?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+                if (parent?.Kind() == SyntaxKind.SimpleAssignmentExpression)
                 {
                     var assignment = (AssignmentExpressionSyntax)parent;
 

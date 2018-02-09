@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var memberAccess = (MemberAccessExpressionSyntax)identifierName.Parent;
 
-                return memberAccess.Expression?.IsKind(SyntaxKind.ThisExpression) == true;
+                return memberAccess.Expression?.Kind() == SyntaxKind.ThisExpression;
             }
 
             return false;

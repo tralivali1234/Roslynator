@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
 
                     return AppendToTrailingTrivia(expression, node);
                 }
-                else if (expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                else if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 {
                     var memberAccess = (MemberAccessExpressionSyntax)expression;
 

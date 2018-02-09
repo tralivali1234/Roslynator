@@ -226,7 +226,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             ExpressionSyntax expression = ((ReturnStatementSyntax)descendant).Expression;
 
-                            if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                            if (expression?.Kind() == SyntaxKind.AwaitExpression)
                             {
                                 if (!awaitExpressions.Contains((AwaitExpressionSyntax)expression))
                                     return true;
@@ -374,7 +374,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression = returnStatement.Expression;
 
-            if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+            if (expression?.Kind() == SyntaxKind.AwaitExpression)
             {
                 var awaitExpression = (AwaitExpressionSyntax)expression;
 
@@ -396,7 +396,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = expressionBody.Expression;
 
-                if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                if (expression?.Kind() == SyntaxKind.AwaitExpression)
                 {
                     var awaitExpression = (AwaitExpressionSyntax)expression;
 
@@ -541,7 +541,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax expression = ((ReturnStatementSyntax)node).Expression;
 
-                    if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                    if (expression?.Kind() == SyntaxKind.AwaitExpression)
                     {
                         var awaitExpression = (AwaitExpressionSyntax)expression;
 

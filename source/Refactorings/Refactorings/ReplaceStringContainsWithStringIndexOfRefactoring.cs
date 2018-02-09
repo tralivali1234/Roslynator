@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxNode parent = invocation.Parent;
 
-            if (parent?.IsKind(SyntaxKind.LogicalNotExpression) == true)
+            if (parent?.Kind() == SyntaxKind.LogicalNotExpression)
             {
                 BinaryExpressionSyntax equalsExpression = EqualsExpression(newInvocationExpression, NumericLiteralExpression(-1))
                     .WithTriviaFrom(parent)
