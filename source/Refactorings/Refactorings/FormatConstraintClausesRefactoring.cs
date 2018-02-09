@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings
                     span = TextSpan.FromBounds(constraintClause.FullSpan.Start, constraintClause.Span.End);
 
                 TypeParameterConstraintClauseSyntax newNode = constraintClause
-                    .RemoveWhitespaceOrEndOfLineTrivia(span)
+                    .RemoveWhitespace(span)
                     .WithFormatterAnnotation();
 
                 constraintClauses = constraintClauses.ReplaceAt(i, newNode);

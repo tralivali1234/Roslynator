@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
             AccessorListSyntax newAccessorList = AccessorList(List(accessors));
 
             return newAccessorList
-                .RemoveWhitespaceOrEndOfLineTrivia()
+                .RemoveWhitespace()
                 .WithCloseBraceToken(newAccessorList.CloseBraceToken.WithLeadingTrivia(NewLine()));
         }
     }

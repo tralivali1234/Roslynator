@@ -2374,7 +2374,6 @@ namespace Roslynator.CSharp
             return node?.Kind().IsNestedMethod() == true;
         }
 
-        //TODO: pub? (spíše ne)
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantDirectives(this SyntaxNode node, Func<DirectiveTriviaSyntax, bool> predicate = null)
         {
             return DescendantDirectives(node, node.FullSpan, predicate);
@@ -2829,16 +2828,16 @@ namespace Roslynator.CSharp
             return SyntaxRemover.RemoveTrivia(node, span);
         }
 
-        //TODO: RemoveWhitespace
-        public static TNode RemoveWhitespaceOrEndOfLineTrivia<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
+        //TODO: int
+        public static TNode RemoveWhitespace<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
-            return WhitespaceRewriter.RemoveWhitespaceOrEndOfLineTrivia(node, span);
+            return WhitespaceRewriter.RemoveWhitespace(node, span);
         }
 
-        //TODO: int, ReplaceWhitespace
-        public static TNode ReplaceWhitespaceOrEndOfLineTrivia<TNode>(this TNode node, SyntaxTrivia replacementTrivia, TextSpan? span = null) where TNode : SyntaxNode
+        //TODO: int
+        public static TNode ReplaceWhitespace<TNode>(this TNode node, SyntaxTrivia replacement, TextSpan? span = null) where TNode : SyntaxNode
         {
-            return WhitespaceRewriter.ReplaceWhitespaceOrEndOfLineTrivia(node, replacementTrivia, span);
+            return WhitespaceRewriter.ReplaceWhitespace(node, replacement, span);
         }
 
         internal static bool IsPartOfDocumentationComment(this SyntaxNode node)
@@ -3043,15 +3042,34 @@ namespace Roslynator.CSharp
             return tokenList.IndexOf(kind) != -1;
         }
 
-        //TODO: pub
-        internal static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2)
+        public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2)
+        {
+            return ContainsAny(tokenList, (int)kind1, (int)kind2);
+        }
+
+        public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
+        {
+            return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3);
+        }
+
+        public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
+        {
+            return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3, (int)kind4);
+        }
+
+        public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
+        {
+            return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3, (int)kind4, (int)kind5);
+        }
+
+        internal static bool ContainsAny(this SyntaxTokenList tokenList, int rawKind1, int rawKind2)
         {
             foreach (SyntaxToken token in tokenList)
             {
-                SyntaxKind kind = token.Kind();
+                int rawKind = token.RawKind;
 
-                if (kind == kind1
-                    || kind == kind2)
+                if (rawKind == rawKind1
+                    || rawKind == rawKind2)
                 {
                     return true;
                 }
@@ -3060,15 +3078,15 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        internal static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
+        internal static bool ContainsAny(this SyntaxTokenList tokenList, int rawKind1, int rawKind2, int rawKind3)
         {
             foreach (SyntaxToken token in tokenList)
             {
-                SyntaxKind kind = token.Kind();
+                int rawKind = token.RawKind;
 
-                if (kind == kind1
-                    || kind == kind2
-                    || kind == kind3)
+                if (rawKind == rawKind1
+                    || rawKind == rawKind2
+                    || rawKind == rawKind3)
                 {
                     return true;
                 }
@@ -3077,16 +3095,16 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        internal static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
+        internal static bool ContainsAny(this SyntaxTokenList tokenList, int rawKind1, int rawKind2, int rawKind3, int rawKind4)
         {
             foreach (SyntaxToken token in tokenList)
             {
-                SyntaxKind kind = token.Kind();
+                int rawKind = token.RawKind;
 
-                if (kind == kind1
-                    || kind == kind2
-                    || kind == kind3
-                    || kind == kind4)
+                if (rawKind == rawKind1
+                    || rawKind == rawKind2
+                    || rawKind == rawKind3
+                    || rawKind == rawKind4)
                 {
                     return true;
                 }
@@ -3095,17 +3113,17 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        internal static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
+        internal static bool ContainsAny(this SyntaxTokenList tokenList, int rawKind1, int rawKind2, int rawKind3, int rawKind4, int rawKind5)
         {
             foreach (SyntaxToken token in tokenList)
             {
-                SyntaxKind kind = token.Kind();
+                int rawKind = token.RawKind;
 
-                if (kind == kind1
-                    || kind == kind2
-                    || kind == kind3
-                    || kind == kind4
-                    || kind == kind5)
+                if (rawKind == rawKind1
+                    || rawKind == rawKind2
+                    || rawKind == rawKind3
+                    || rawKind == rawKind4
+                    || rawKind == rawKind5)
                 {
                     return true;
                 }
@@ -3146,7 +3164,7 @@ namespace Roslynator.CSharp
         #endregion SyntaxToken
 
         #region SyntaxTokenList
-        //TODO: pub?
+        //TODO: pub
         internal static Accessibility GetAccessibility(this SyntaxTokenList tokenList)
         {
             int count = tokenList.Count;
@@ -3517,14 +3535,18 @@ namespace Roslynator.CSharp
         #region YieldStatementSyntax
         public static bool IsYieldReturn(this YieldStatementSyntax yieldStatement)
         {
-            //TODO: throw ex?
-            return yieldStatement?.ReturnOrBreakKeyword.IsKind(SyntaxKind.ReturnKeyword) == true;
+            if (yieldStatement == null)
+                throw new ArgumentNullException(nameof(yieldStatement));
+
+            return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.ReturnKeyword);
         }
 
         public static bool IsYieldBreak(this YieldStatementSyntax yieldStatement)
         {
-            //TODO: throw ex?
-            return yieldStatement?.ReturnOrBreakKeyword.IsKind(SyntaxKind.BreakKeyword) == true;
+            if (yieldStatement == null)
+                throw new ArgumentNullException(nameof(yieldStatement));
+
+            return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.BreakKeyword);
         }
         #endregion YieldStatementSyntax
     }

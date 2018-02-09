@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             AccessorListSyntax accessorList = AccessorList(GetAccessorDeclaration(block));
 
             if (singleline)
-                accessorList = accessorList.RemoveWhitespaceOrEndOfLineTrivia();
+                accessorList = accessorList.RemoveWhitespace();
 
             return accessorList;
         }

@@ -29,7 +29,7 @@ namespace Roslynator.CSharp
         private static TNode ToSingleLine<TNode>(TNode node) where TNode : SyntaxNode
         {
             return node
-                .RemoveWhitespaceOrEndOfLineTrivia(node.Span)
+                .RemoveWhitespace(node.Span)
                 .WithFormatterAnnotation();
         }
 
@@ -39,7 +39,7 @@ namespace Roslynator.CSharp
             CancellationToken cancellationToken = default(CancellationToken))
         {
             InitializerExpressionSyntax newInitializer = initializer
-                .ReplaceWhitespaceOrEndOfLineTrivia(ElasticSpace, TextSpan.FromBounds(initializer.FullSpan.Start, initializer.Span.End))
+                .ReplaceWhitespace(ElasticSpace, TextSpan.FromBounds(initializer.FullSpan.Start, initializer.Span.End))
                 .WithFormatterAnnotation();
 
             SyntaxNode parent = initializer.Parent;

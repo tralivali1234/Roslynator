@@ -12,9 +12,9 @@ namespace Roslynator.CSharp.SyntaxRewriters
         private readonly SyntaxTrivia _replacementTrivia;
         private readonly TextSpan? _span;
 
-        private static readonly SyntaxTrivia _defaultReplacementTrivia = CSharpFactory.EmptyWhitespace();
+        private static WhitespaceRewriter DefaultInstance { get; } = new WhitespaceRewriter(DefaultReplacementTrivia);
 
-        private static WhitespaceRewriter DefaultInstance { get; } = new WhitespaceRewriter(_defaultReplacementTrivia);
+        public static SyntaxTrivia DefaultReplacementTrivia { get; } = CSharpFactory.EmptyWhitespace();
 
         private WhitespaceRewriter(SyntaxTrivia replacementTrivia, TextSpan? span = null)
         {
@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.SyntaxRewriters
             _span = span;
         }
 
-        public static TNode RemoveWhitespaceOrEndOfLineTrivia<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
+        public static TNode RemoveWhitespace<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -33,18 +33,18 @@ namespace Roslynator.CSharp.SyntaxRewriters
             }
             else
             {
-                var remover = new WhitespaceRewriter(_defaultReplacementTrivia, span);
+                var remover = new WhitespaceRewriter(DefaultReplacementTrivia, span);
 
                 return (TNode)remover.Visit(node);
             }
         }
 
-        public static TNode ReplaceWhitespaceOrEndOfLineTrivia<TNode>(TNode node, SyntaxTrivia replacementTrivia, TextSpan? span = null) where TNode : SyntaxNode
+        public static TNode ReplaceWhitespace<TNode>(TNode node, SyntaxTrivia replacement, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            var rewriter = new WhitespaceRewriter(replacementTrivia, span);
+            var rewriter = new WhitespaceRewriter(replacement, span);
 
             return (TNode)rewriter.Visit(node);
         }

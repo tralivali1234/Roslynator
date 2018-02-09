@@ -220,7 +220,7 @@ namespace Roslynator.CSharp.Refactorings
             if (expression.IsSingleLine())
             {
                 accessorList = accessorList
-                    .RemoveWhitespaceOrEndOfLineTrivia()
+                    .RemoveWhitespace()
                     .WithCloseBraceToken(accessorList.CloseBraceToken.WithLeadingTrivia(NewLine()));
             }
 

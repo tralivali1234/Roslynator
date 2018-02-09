@@ -570,7 +570,7 @@ namespace Roslynator.CSharp.Refactorings
                 .DescendantTrivia()
                 .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {
-                accessorList = accessorList.RemoveWhitespaceOrEndOfLineTrivia();
+                accessorList = accessorList.RemoveWhitespace();
             }
 
             PropertyDeclarationSyntax newProperty = propertyDeclaration
