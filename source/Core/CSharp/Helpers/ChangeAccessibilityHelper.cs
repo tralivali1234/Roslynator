@@ -147,6 +147,7 @@ namespace Roslynator.CSharp.Helpers
             }
         }
 
+        //TODO: AccessibilityExtensions
         private static bool IsSingleTokenAccessibility(Accessibility accessibility)
         {
             switch (accessibility)

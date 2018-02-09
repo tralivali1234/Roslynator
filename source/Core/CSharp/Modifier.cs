@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.ModifierHelpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -522,6 +523,42 @@ namespace Roslynator.CSharp
         public static ParameterSyntax Insert(ParameterSyntax parameter, SyntaxKind modifierKind, IModifierComparer comparer = null)
         {
             return ParameterModifierHelper.Instance.InsertModifier(parameter, modifierKind, comparer);
+        }
+
+        public static SyntaxTokenList Insert(SyntaxTokenList modifiers, SyntaxKind modifierKind, IModifierComparer comparer = null)
+        {
+            return Insert(modifiers, Token(modifierKind), comparer);
+        }
+
+        public static SyntaxTokenList Insert(SyntaxTokenList modifiers, SyntaxToken modifier, IModifierComparer comparer = null)
+        {
+            int index = 0;
+
+            if (modifiers.Any())
+            {
+                index = (comparer ?? ModifierComparer.Instance).GetInsertIndex(modifiers, modifier);
+
+                if (index == 0)
+                {
+                    SyntaxToken firstModifier = modifiers[index];
+
+                    SyntaxTriviaList trivia = firstModifier.LeadingTrivia;
+
+                    if (trivia.Any())
+                    {
+                        SyntaxTriviaList leadingTrivia = modifier.LeadingTrivia;
+
+                        if (!leadingTrivia.IsSingleElasticMarker())
+                            trivia = trivia.AddRange(leadingTrivia);
+
+                        modifier = modifier.WithLeadingTrivia(trivia);
+
+                        modifiers = modifiers.ReplaceAt(index, firstModifier.WithoutLeadingTrivia());
+                    }
+                }
+            }
+
+            return modifiers.Insert(index, modifier);
         }
 
         public static ClassDeclarationSyntax Remove(ClassDeclarationSyntax classDeclaration, SyntaxToken modifier)

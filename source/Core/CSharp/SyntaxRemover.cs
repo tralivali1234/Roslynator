@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.SyntaxRewriters;
 
 namespace Roslynator.CSharp
 {
@@ -76,6 +78,38 @@ namespace Roslynator.CSharp
             }
 
             return declaration;
+        }
+
+        public static TNode RemoveComments<TNode>(TNode node, CommentRemoveOptions removeOptions) where TNode : SyntaxNode
+        {
+            return RemoveComments(node, node.FullSpan, removeOptions);
+        }
+
+        public static TNode RemoveComments<TNode>(TNode node, TextSpan span, CommentRemoveOptions removeOptions) where TNode : SyntaxNode
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            var remover = new CommentRemover(node, removeOptions, span);
+
+            return (TNode)remover.Visit(node);
+        }
+
+        public static TNode RemoveTrivia<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (span == null)
+            {
+                return (TNode)TriviaRemover.DefaultInstance.Visit(node);
+            }
+            else
+            {
+                var remover = new TriviaRemover(span);
+
+                return (TNode)remover.Visit(node);
+            }
         }
     }
 }

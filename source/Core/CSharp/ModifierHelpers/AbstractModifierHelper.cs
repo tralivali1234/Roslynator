@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.ModifierHelpers
                 }
             }
 
-            return WithModifiers(node, modifiers.InsertModifier(modifier, comparer ?? ModifierComparer.Instance));
+            return WithModifiers(node, Modifier.Insert(modifiers, modifier, comparer));
         }
 
         public TNode RemoveModifier(TNode node, SyntaxKind modifierKind)

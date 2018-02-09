@@ -7,16 +7,16 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
-    internal class WhitespaceOrEndOfLineTriviaRewriter : CSharpSyntaxRewriter
+    internal class WhitespaceRewriter : CSharpSyntaxRewriter
     {
         private readonly SyntaxTrivia _replacementTrivia;
         private readonly TextSpan? _span;
 
         private static readonly SyntaxTrivia _defaultReplacementTrivia = CSharpFactory.EmptyWhitespace();
 
-        public static WhitespaceOrEndOfLineTriviaRewriter Default { get; } = new WhitespaceOrEndOfLineTriviaRewriter(_defaultReplacementTrivia);
+        private static WhitespaceRewriter DefaultInstance { get; } = new WhitespaceRewriter(_defaultReplacementTrivia);
 
-        private WhitespaceOrEndOfLineTriviaRewriter(SyntaxTrivia replacementTrivia, TextSpan? span = null)
+        private WhitespaceRewriter(SyntaxTrivia replacementTrivia, TextSpan? span = null)
         {
             _replacementTrivia = replacementTrivia;
             _span = span;
@@ -29,11 +29,11 @@ namespace Roslynator.CSharp.SyntaxRewriters
 
             if (span == null)
             {
-                return (TNode)Default.Visit(node);
+                return (TNode)DefaultInstance.Visit(node);
             }
             else
             {
-                var remover = new WhitespaceOrEndOfLineTriviaRewriter(_defaultReplacementTrivia, span);
+                var remover = new WhitespaceRewriter(_defaultReplacementTrivia, span);
 
                 return (TNode)remover.Visit(node);
             }
@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.SyntaxRewriters
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            var rewriter = new WhitespaceOrEndOfLineTriviaRewriter(replacementTrivia, span);
+            var rewriter = new WhitespaceRewriter(replacementTrivia, span);
 
             return (TNode)rewriter.Visit(node);
         }

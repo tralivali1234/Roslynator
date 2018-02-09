@@ -282,7 +282,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             if (node is ParameterSyntax parameter)
             {
-                if (parameter.IsThis())
+                if (parameter.Modifiers.Contains(SyntaxKind.ThisKeyword))
                 {
                     context.ReportDiagnostic(DiagnosticDescriptors.UnusedThisParameter, parameter, parameter.Identifier.ValueText);
                 }

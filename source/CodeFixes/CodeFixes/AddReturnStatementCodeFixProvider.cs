@@ -169,7 +169,10 @@ namespace Roslynator.CSharp.CodeFixes
 
             ReturnStatementSyntax returnStatement = SyntaxFactory.ReturnStatement(returnExpression);
 
-            BlockSyntax newBody = body.AddStatement(returnStatement, beforeLocalFunction: true);
+            SyntaxList<StatementSyntax> newStatements = body.Statements.Add(returnStatement, beforeLocalFunction: true);
+
+            //XTODO: test
+            BlockSyntax newBody = body.WithStatements(newStatements);
 
             return document.ReplaceNodeAsync(body, newBody, cancellationToken);
         }

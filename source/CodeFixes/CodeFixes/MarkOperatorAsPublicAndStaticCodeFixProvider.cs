@@ -44,15 +44,15 @@ namespace Roslynator.CSharp.CodeFixes
 
                             if (modifiers.Contains(SyntaxKind.PublicKeyword))
                             {
-                                title += "'static' modifier";
+                                title += "modifier 'static'";
                             }
                             else if (modifiers.Contains(SyntaxKind.StaticKeyword))
                             {
-                                title += "'public' modifier";
+                                title += "modifier 'public'";
                             }
                             else
                             {
-                                title += "'public static' modifiers";
+                                title += "modifiers 'public static'";
                             }
 
                             CodeAction codeAction = CodeAction.Create(
@@ -62,10 +62,10 @@ namespace Roslynator.CSharp.CodeFixes
                                     SyntaxTokenList newModifiers = modifiers;
 
                                     if (!modifiers.Contains(SyntaxKind.PublicKeyword))
-                                        newModifiers = newModifiers.InsertModifier(SyntaxKind.PublicKeyword, ModifierComparer.Instance);
+                                        newModifiers = Modifier.Insert(newModifiers, SyntaxKind.PublicKeyword);
 
                                     if (!modifiers.Contains(SyntaxKind.StaticKeyword))
-                                        newModifiers = newModifiers.InsertModifier(SyntaxKind.StaticKeyword, ModifierComparer.Instance);
+                                        newModifiers = Modifier.Insert(newModifiers, SyntaxKind.StaticKeyword);
 
                                     MemberDeclarationSyntax newMemberDeclaration = memberDeclaration.WithModifiers(newModifiers);
 

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -9,7 +8,7 @@ namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class CommentRemover : CSharpSyntaxRewriter
     {
-        private CommentRemover(SyntaxNode node, CommentRemoveOptions removeOptions, TextSpan span)
+        internal CommentRemover(SyntaxNode node, CommentRemoveOptions removeOptions, TextSpan span)
             : base(visitIntoStructuredTrivia: true)
         {
             Node = node;
@@ -22,21 +21,6 @@ namespace Roslynator.CSharp.SyntaxRewriters
         public CommentRemoveOptions RemoveOptions { get; }
 
         public TextSpan Span { get; }
-
-        public static TNode RemoveComments<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
-        {
-            return RemoveComments(node, CommentRemoveOptions.All, span);
-        }
-
-        public static TNode RemoveComments<TNode>(TNode node, CommentRemoveOptions removeOptions, TextSpan? span = null) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            var remover = new CommentRemover(node, removeOptions, span ?? node.FullSpan);
-
-            return (TNode)remover.Visit(node);
-        }
 
         public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
         {

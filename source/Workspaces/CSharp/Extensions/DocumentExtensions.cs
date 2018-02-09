@@ -102,7 +102,7 @@ namespace Roslynator.CSharp
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
             SyntaxNode newRoot = root
-                .RemoveComments(removeOptions, span)
+                .RemoveComments(span, removeOptions)
                 .WithFormatterAnnotation();
 
             return document.WithSyntaxRoot(newRoot);
@@ -135,7 +135,7 @@ namespace Roslynator.CSharp
 
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            SyntaxNode newRoot = TriviaRemover.RemoveTrivia(root, span);
+            SyntaxNode newRoot = SyntaxRemover.RemoveTrivia(root, span);
 
             return document.WithSyntaxRoot(newRoot);
         }

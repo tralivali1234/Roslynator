@@ -119,7 +119,7 @@
     <Compile Include="CSharp\Documentation\DocumentationCommentData.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentInserter.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentOrigin.cs" />
-    <Compile Include="CSharp\SyntaxRewriters\WhitespaceOrEndOfLineTriviaRewriter.cs" />
+    <Compile Include="CSharp\SyntaxRewriters\WhitespaceRewriter.cs" />
     <Compile Include="CSharp\Syntax\StatementsInfo.cs" />
     <Compile Include="CSharp\Syntax\SingleLocalDeclarationStatementInfo.cs" />
     <Compile Include="DirectiveRemoveOptions.cs" />
