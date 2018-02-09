@@ -191,7 +191,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var returnStatement = (ReturnStatementSyntax)statements[1];
 
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault();
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 

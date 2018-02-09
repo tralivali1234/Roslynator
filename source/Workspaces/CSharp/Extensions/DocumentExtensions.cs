@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,19 +30,44 @@ namespace Roslynator.CSharp
 
             SyntaxNode parent = member.Parent;
 
-            if (parent?.Kind() == SyntaxKind.CompilationUnit)
+            switch (parent?.Kind())
             {
-                var compilationUnit = (CompilationUnitSyntax)parent;
+                case SyntaxKind.CompilationUnit:
+                    {
+                        var compilationUnit = (CompilationUnitSyntax)parent;
 
-                return document.ReplaceNodeAsync(compilationUnit, compilationUnit.RemoveMember(member), cancellationToken);
-            }
-            else if (parent is MemberDeclarationSyntax parentMember)
-            {
-                return document.ReplaceNodeAsync(parentMember, parentMember.RemoveMember(member), cancellationToken);
-            }
-            else
-            {
-                return document.RemoveNodeAsync(member, SyntaxRemover.DefaultOptions, cancellationToken);
+                        return document.ReplaceNodeAsync(compilationUnit, compilationUnit.RemoveMember(member), cancellationToken);
+                    }
+                case SyntaxKind.NamespaceDeclaration:
+                    {
+                        var namespaceDeclaration = (NamespaceDeclarationSyntax)parent;
+
+                        return document.ReplaceNodeAsync(namespaceDeclaration, namespaceDeclaration.RemoveMember(member), cancellationToken);
+                    }
+                case SyntaxKind.ClassDeclaration:
+                    {
+                        var classDeclaration = (ClassDeclarationSyntax)parent;
+
+                        return document.ReplaceNodeAsync(classDeclaration, classDeclaration.RemoveMember(member), cancellationToken);
+                    }
+                case SyntaxKind.StructDeclaration:
+                    {
+                        var structDeclaration = (StructDeclarationSyntax)parent;
+
+                        return document.ReplaceNodeAsync(structDeclaration, structDeclaration.RemoveMember(member), cancellationToken);
+                    }
+                case SyntaxKind.InterfaceDeclaration:
+                    {
+                        var interfaceDeclaration = (InterfaceDeclarationSyntax)parent;
+
+                        return document.ReplaceNodeAsync(interfaceDeclaration, interfaceDeclaration.RemoveMember(member), cancellationToken);
+                    }
+                default:
+                    {
+                        Debug.Assert(parent == null, parent.Kind().ToString());
+
+                        return document.RemoveNodeAsync(member, SyntaxRemover.DefaultOptions, cancellationToken);
+                    }
             }
         }
 
@@ -142,8 +168,7 @@ namespace Roslynator.CSharp
                 case DirectiveRemoveOptions.AllExceptRegion:
                     {
                         return root
-                            .DescendantDirectives()
-                            .Where(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                            .DescendantDirectives(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
                     }
                 case DirectiveRemoveOptions.Region:
                     {

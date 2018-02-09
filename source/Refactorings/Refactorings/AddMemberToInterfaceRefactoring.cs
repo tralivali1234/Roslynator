@@ -213,7 +213,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationSyntax interfaceMember = CreateInterfaceMemberDeclaration(memberDeclaration).WithFormatterAnnotation();
 
-            return interfaceDeclaration.InsertMember(interfaceMember, MemberDeclarationComparer.ByKind);
+            return interfaceDeclaration.InsertMember(interfaceMember);
         }
 
         private static MemberDeclarationSyntax CreateInterfaceMemberDeclaration(MemberDeclarationSyntax memberDeclaration)

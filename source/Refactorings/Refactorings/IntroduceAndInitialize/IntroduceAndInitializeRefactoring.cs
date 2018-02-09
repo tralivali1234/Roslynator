@@ -168,7 +168,7 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
                     parent = parent.Parent;
 
                     return parent?.Kind() == SyntaxKind.ConstructorDeclaration
-                        && !((ConstructorDeclarationSyntax)parent).IsStatic();
+                        && !((ConstructorDeclarationSyntax)parent).Modifiers.Contains(SyntaxKind.StaticKeyword);
                 }
             }
 

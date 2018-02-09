@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.Refactorings.If
                 if (!options.CheckSpanDirectives(ifStatement))
                     return Empty;
 
-                StatementSyntax statement1 = ifStatement.GetSingleStatementOrDefault();
+                StatementSyntax statement1 = ifStatement.SingleStatementOrDefault();
 
                 if (statement1 == null)
                     return Empty;
@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     SyntaxKind.ReturnStatement,
                     SyntaxKind.YieldReturnStatement))
                 {
-                    StatementSyntax statement2 = elseClause.GetSingleStatementOrDefault();
+                    StatementSyntax statement2 = elseClause.SingleStatementOrDefault();
 
                     if (statement2?.Kind() == kind1)
                     {
@@ -160,7 +160,7 @@ namespace Roslynator.CSharp.Refactorings.If
                         if (ifStatement.IsSimpleIf()
                             && (ifStatement.PreviousStatementOrDefault() is IfStatementSyntax previousIf)
                             && previousIf.IsSimpleIf()
-                            && (previousIf.GetSingleStatementOrDefault() is ReturnStatementSyntax returnStatement)
+                            && (previousIf.SingleStatementOrDefault() is ReturnStatementSyntax returnStatement)
                             && returnStatement.Expression?.WalkDownParentheses().Kind() == kind1)
                         {
                             return Empty;
@@ -448,12 +448,12 @@ namespace Roslynator.CSharp.Refactorings.If
             if (elseClause?.Statement?.IsKind(SyntaxKind.IfStatement) != false)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleStatementOrDefault());
 
             if (!assignment1.Success)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.SingleStatementOrDefault());
 
             if (!assignment2.Success)
                 return Empty;
@@ -494,12 +494,12 @@ namespace Roslynator.CSharp.Refactorings.If
             if (elseClause?.Statement?.IsKind(SyntaxKind.IfStatement) != false)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleStatementOrDefault());
 
             if (!assignment1.Success)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.SingleStatementOrDefault());
 
             if (!assignment2.Success)
                 return Empty;
@@ -525,7 +525,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (condition?.IsMissing != false)
                 return Empty;
 
-            StatementSyntax statement = ifStatement.GetSingleStatementOrDefault();
+            StatementSyntax statement = ifStatement.SingleStatementOrDefault();
 
             if (statement?.IsKind(SyntaxKind.ReturnStatement) != true)
                 return Empty;

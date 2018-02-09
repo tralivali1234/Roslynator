@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     SyntaxList<MemberDeclarationSyntax> newMembers = newTypeDeclaration
                         .GetMembers()
-                        .InsertMember(fieldDeclaration, MemberDeclarationComparer.ByKind);
+                        .InsertMember(fieldDeclaration);
 
                     newTypeDeclaration = newTypeDeclaration.WithMembers(newMembers);
 

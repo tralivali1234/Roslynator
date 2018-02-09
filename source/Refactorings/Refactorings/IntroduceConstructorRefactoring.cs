@@ -291,9 +291,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<MemberDeclarationSyntax> members = parentMember.GetMembers();
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = members.InsertMember(
-                CreateConstructor(GetConstructorIdentifierText(parentMember), assignableMembers),
-                MemberDeclarationComparer.ByKind);
+            SyntaxList<MemberDeclarationSyntax> newMembers = members.InsertMember(CreateConstructor(GetConstructorIdentifierText(parentMember), assignableMembers));
 
             MemberDeclarationSyntax newNode = parentMember.WithMembers(newMembers)
                 .WithFormatterAnnotation();

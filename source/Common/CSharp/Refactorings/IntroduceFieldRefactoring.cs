@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeDeclarationSyntax newNode = containingType
                 .ReplaceNode(expressionStatement, newExpressionStatement)
-                .InsertMember(fieldDeclaration, MemberDeclarationComparer.ByKind);
+                .InsertMember(fieldDeclaration);
 
             return document.ReplaceNodeAsync(containingType, newNode, cancellationToken);
         }

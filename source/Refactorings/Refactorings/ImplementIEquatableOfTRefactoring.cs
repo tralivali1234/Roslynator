@@ -125,7 +125,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeSyntax classType = typeSymbol.ToMinimalTypeSyntax(semanticModel, position);
 
-            newNode = newNode.InsertMember(CreateEqualsMethod(classType, semanticModel, position), MemberDeclarationComparer.ByKind);
+            newNode = newNode.InsertMember(CreateEqualsMethod(classType, semanticModel, position));
 
             return document.ReplaceNodeAsync(classDeclaration, newNode, cancellationToken);
         }
@@ -203,7 +203,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeSyntax classType = typeSymbol.ToMinimalTypeSyntax(semanticModel, position);
 
-            newNode = newNode.InsertMember(CreateEqualsMethod(classType, semanticModel, position), MemberDeclarationComparer.ByKind);
+            newNode = newNode.InsertMember(CreateEqualsMethod(classType, semanticModel, position));
 
             return document.ReplaceNodeAsync(structDeclaration, newNode, cancellationToken);
         }

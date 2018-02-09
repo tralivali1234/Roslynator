@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
             if (parent == null)
                 return false;
 
-            if (!block.Statements.IsLastStatement(statement, skipLocalFunction: true))
+            if (!block.Statements.IsLast(statement, skipLocalFunction: true))
                 return false;
 
             SyntaxKind kind = parent.Kind();
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
                 || parentKind == SyntaxKind.MethodDeclaration
                 || parentKind == SyntaxKind.LocalFunctionStatement;
 
-            return block.Statements.IsLastStatement(statement, skipLocalFunction: skipLocalFunction);
+            return block.Statements.IsLast(statement, skipLocalFunction: skipLocalFunction);
         }
     }
 }

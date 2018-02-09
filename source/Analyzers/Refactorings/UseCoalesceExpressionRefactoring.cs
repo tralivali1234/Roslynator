@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
                 NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, semanticModel: context.SemanticModel, cancellationToken: context.CancellationToken);
                 if (nullCheck.Success)
                 {
-                    SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+                    SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleStatementOrDefault());
                     if (assignmentInfo.Success
                         && SyntaxComparer.AreEquivalent(assignmentInfo.Left, nullCheck.Expression)
                         && assignmentInfo.Right.IsSingleLine()
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = invocationInfo.Expression;
 
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo((ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo((ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault());
 
             BinaryExpressionSyntax coalesceExpression = CSharpFactory.CoalesceExpression(expression.WithoutTrivia(), ParenthesizedExpression(assignmentInfo.AssignmentExpression));
 
@@ -201,7 +201,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         var ifStatement = (IfStatementSyntax)statement;
 
-                        var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+                        var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault();
 
                         var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
@@ -274,7 +274,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault();
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 

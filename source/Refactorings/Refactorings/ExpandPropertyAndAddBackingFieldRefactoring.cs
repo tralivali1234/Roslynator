@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceAt(propertyIndex, newPropertyDeclaration);
 
-            newMembers = newMembers.InsertMember(fieldDeclaration, MemberDeclarationComparer.ByKind);
+            newMembers = newMembers.InsertMember(fieldDeclaration);
 
             return await document.ReplaceNodeAsync(parentMember, parentMember.WithMembers(newMembers), cancellationToken).ConfigureAwait(false);
         }
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxTokenList modifiers = Modifiers.Private();
 
-            if (propertyDeclaration.IsStatic())
+            if (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
                 modifiers = modifiers.Add(StaticKeyword());
 
             return FieldDeclaration(

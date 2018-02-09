@@ -46,6 +46,23 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        //TODO: new
+        public static bool IsAccessModifier(this SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.PublicKeyword,
+                SyntaxKind.InternalKeyword,
+                SyntaxKind.ProtectedKeyword,
+                SyntaxKind.PrivateKeyword);
+        }
+
+        //TODO: new
+        public static bool IsDocumentationCommentTrivia(this SyntaxKind kind)
+        {
+            return kind.Is(SyntaxKind.SingleLineDocumentationCommentTrivia, SyntaxKind.MultiLineDocumentationCommentTrivia);
+        }
+
+        //TODO: new
         public static bool IsYieldStatement(this SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);

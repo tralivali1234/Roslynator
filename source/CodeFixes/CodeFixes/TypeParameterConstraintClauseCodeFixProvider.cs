@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                             int index = genericInfo.ConstraintClauses.IndexOf(constraintClause);
 
-                            string name = constraintClause.NameText();
+                            string name = constraintClause.Name.Identifier.ValueText;
 
                             TypeParameterConstraintClauseSyntax constraintClause2 = genericInfo.FindConstraintClause(name);
 

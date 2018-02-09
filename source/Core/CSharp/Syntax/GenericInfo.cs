@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.Syntax
         {
             foreach (TypeParameterConstraintClauseSyntax constraintClause in ConstraintClauses)
             {
-                if (string.Equals(name, constraintClause.NameText(), StringComparison.Ordinal))
+                if (string.Equals(name, constraintClause.Name.Identifier.ValueText, StringComparison.Ordinal))
                     return constraintClause;
             }
 

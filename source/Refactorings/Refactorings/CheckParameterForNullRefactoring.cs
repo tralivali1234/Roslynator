@@ -214,7 +214,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (left.IsKind(SyntaxKind.IdentifierName))
                     {
-                        var throwStatement = ifStatement.GetSingleStatementOrDefault() as ThrowStatementSyntax;
+                        var throwStatement = ifStatement.SingleStatementOrDefault() as ThrowStatementSyntax;
 
                         if (throwStatement?.Expression?.Kind() == SyntaxKind.ObjectCreationExpression)
                         {
