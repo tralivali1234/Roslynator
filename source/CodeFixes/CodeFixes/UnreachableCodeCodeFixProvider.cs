@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.CodeFixes
                                         }
                                         else
                                         {
-                                            SyntaxRemoveOptions removeOptions = RemoveOptions.Default;
+                                            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultOptions;
 
                                             if (statement.GetLeadingTrivia().IsEmptyOrWhitespace())
                                                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         return CodeAction.Create(
                             Title,
-                            cancellationToken => document.RemoveNodeAsync(elseClause, RemoveOptions.Get(elseClause), cancellationToken),
+                            cancellationToken => document.RemoveNodeAsync(elseClause, SyntaxRemover.GetOptions(elseClause), cancellationToken),
                             GetEquivalenceKey(diagnostic));
                     }
                 case SyntaxKind.Block:

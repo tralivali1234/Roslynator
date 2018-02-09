@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             BaseTypeSyntax baseType,
             CancellationToken cancellationToken)
         {
-            SyntaxRemoveOptions removeOptions = RemoveOptions.Default;
+            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultOptions;
 
             if (baseType.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

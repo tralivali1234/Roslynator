@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression = throwStatement.Expression;
 
             ThrowStatementSyntax newThrowStatement = throwStatement
-                .RemoveNode(expression, RemoveOptions.Get(expression))
+                .RemoveNode(expression, SyntaxRemover.GetOptions(expression))
                 .WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(throwStatement, newThrowStatement, cancellationToken);

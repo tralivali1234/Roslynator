@@ -41,7 +41,7 @@ namespace Roslynator.CSharp
             }
             else
             {
-                return document.RemoveNodeAsync(member, RemoveOptions.Default, cancellationToken);
+                return document.RemoveNodeAsync(member, SyntaxRemover.DefaultOptions, cancellationToken);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
 
-            return document.RemoveNodeAsync(statement, RemoveOptions.Get(statement), cancellationToken);
+            return document.RemoveNodeAsync(statement, SyntaxRemover.GetOptions(statement), cancellationToken);
         }
 
         public static Task<Document> RemoveCommentAsync(

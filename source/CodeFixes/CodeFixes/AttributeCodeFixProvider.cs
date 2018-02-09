@@ -52,11 +52,11 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     if (attributes.Count == 1)
                                     {
-                                        return context.Document.RemoveNodeAsync(attributeList, RemoveOptions.Get(attributeList), cancellationToken);
+                                        return context.Document.RemoveNodeAsync(attributeList, SyntaxRemover.GetOptions(attributeList), cancellationToken);
                                     }
                                     else
                                     {
-                                        return context.Document.RemoveNodeAsync(attribute, RemoveOptions.Get(attributeList), cancellationToken);
+                                        return context.Document.RemoveNodeAsync(attribute, SyntaxRemover.GetOptions(attributeList), cancellationToken);
                                     }
                                 },
                                 GetEquivalenceKey(diagnostic));

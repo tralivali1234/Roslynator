@@ -117,7 +117,7 @@ namespace Roslynator.CSharp.Refactorings
                 GetCastExpression(lambdaExpression.Body).Type);
 
             InvocationExpressionSyntax newInvocationExpression = invocationExpression
-                .RemoveNode(lastArgument, RemoveOptions.Get(lastArgument))
+                .RemoveNode(lastArgument, SyntaxRemover.GetOptions(lastArgument))
                 .WithExpression(memberAccessExpression.WithName(newName));
 
             return document.ReplaceNodeAsync(invocationExpression, newInvocationExpression, cancellationToken);

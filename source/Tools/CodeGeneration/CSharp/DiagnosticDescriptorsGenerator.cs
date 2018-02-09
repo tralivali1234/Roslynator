@@ -79,7 +79,7 @@ namespace Roslynator.CodeGeneration.CSharp
                 if (!analyzer.IsObsolete)
                 {
                     var settings = new DocumentationCommentGeneratorSettings(
-                        comments: new string[] { analyzer.Id },
+                        summary: new string[] { analyzer.Id },
                         indentation: "        ",
                         singleLineSummary: true);
 

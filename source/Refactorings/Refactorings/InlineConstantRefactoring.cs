@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxNode nodeToRemove = newRoot.GetAnnotatedNodes(_removeAnnotation).FirstOrDefault();
 
                 if (nodeToRemove != null)
-                    newRoot = newRoot.RemoveNode(nodeToRemove, RemoveOptions.Get(nodeToRemove));
+                    newRoot = newRoot.RemoveNode(nodeToRemove, SyntaxRemover.GetOptions(nodeToRemove));
 
                 newDocuments.Add(new KeyValuePair<DocumentId, SyntaxNode>(grouping.Key.Id, newRoot));
             }

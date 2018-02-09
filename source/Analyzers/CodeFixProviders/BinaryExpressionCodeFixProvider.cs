@@ -154,7 +154,7 @@ namespace Roslynator.CSharp.CodeFixes
                             string title = null;
 
                             if (typeSymbol.IsSimpleType()
-                                || typeSymbol.ExistsMethod(WellKnownMemberNames.EqualityOperatorName))
+                                || typeSymbol.ExistsMember<IMethodSymbol>(WellKnownMemberNames.EqualityOperatorName))
                             {
                                 ExpressionSyntax expression = typeSymbol.GetDefaultValueSyntax(semanticModel, binaryExpression.Right.SpanStart);
 

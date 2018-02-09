@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    //TODO: 
     internal static class SymbolDisplay
     {
         public static string GetString(ISymbol symbol)

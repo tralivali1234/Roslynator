@@ -163,7 +163,7 @@
     <Compile Include="Text\SyntaxNodeTextBuilder.cs" />
     <Compile Include="CSharp\SyntaxRewriters\CommentRemover.cs" />
     <Compile Include="CSharp\TypeAnalysisFlags.cs" />
-    <Compile Include="CSharp\RemoveOptions.cs" />
+    <Compile Include="CSharp\SyntaxRemover.cs" />
     <Compile Include="CSharp\Comparers\MemberDeclarationComparer.cs" />
     <Compile Include="NumberSuffixNameGenerator.cs" />
     <Compile Include="UnderscoreSuffixNameGenerator.cs" />

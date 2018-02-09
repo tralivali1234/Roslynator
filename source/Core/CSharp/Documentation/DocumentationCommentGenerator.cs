@@ -18,8 +18,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Documentation
 {
-    //TODO: DocumentationCommentFactory, DocumentationFactory
-    public static class DocumentationCommentGenerator
+    internal static class DocumentationCommentGenerator
     {
         private static readonly Regex _commentedEmptyLineRegex = new Regex(@"^///\s*(\r?\n|$)", RegexOptions.Multiline);
 
@@ -262,7 +261,7 @@ namespace Roslynator.CSharp.Documentation
         {
             settings = settings ?? DocumentationCommentGeneratorSettings.Default;
 
-            ImmutableArray<string> comments = settings.Comments;
+            ImmutableArray<string> summary = settings.Summary;
 
             StringBuilder sb = StringBuilderCache.GetInstance();
 
@@ -270,10 +269,10 @@ namespace Roslynator.CSharp.Documentation
             sb.Append("/// <summary>");
 
             if (settings.SingleLineSummary
-                && comments.Length <= 1)
+                && summary.Length <= 1)
             {
-                if (comments.Length == 1)
-                    sb.Append(comments[0]);
+                if (summary.Length == 1)
+                    sb.Append(summary[0]);
 
                 sb.AppendLine("</summary>");
             }
@@ -281,9 +280,9 @@ namespace Roslynator.CSharp.Documentation
             {
                 sb.AppendLine();
 
-                if (comments.Any())
+                if (summary.Any())
                 {
-                    foreach (string comment in comments)
+                    foreach (string comment in summary)
                     {
                         sb.Append(settings.Indentation);
                         sb.Append("/// ");
@@ -323,7 +322,7 @@ namespace Roslynator.CSharp.Documentation
                 sb.AppendLine("/// <returns></returns>");
             }
 
-            return SyntaxFactory.ParseLeadingTrivia(StringBuilderCache.GetStringAndFree(sb));
+            return ParseLeadingTrivia(StringBuilderCache.GetStringAndFree(sb));
         }
 
         internal static bool CanGenerateFromBase(SyntaxKind kind)

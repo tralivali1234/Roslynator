@@ -5,17 +5,21 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp
 {
-    //TODO: doladit
-    internal static class RemoveOptions
+    internal static class SyntaxRemover
     {
-        public static SyntaxRemoveOptions Default
+        public static SyntaxRemoveOptions DefaultOptions
         {
             get { return SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepUnbalancedDirectives; }
         }
 
-        public static SyntaxRemoveOptions Get(SyntaxNode node)
+        internal static TRoot RemoveNode<TRoot>(this TRoot root, SyntaxNode node) where TRoot : SyntaxNode
         {
-            SyntaxRemoveOptions removeOptions = Default;
+            return root.RemoveNode(node, GetOptions(node));
+        }
+
+        public static SyntaxRemoveOptions GetOptions(SyntaxNode node)
+        {
+            SyntaxRemoveOptions removeOptions = DefaultOptions;
 
             if (node.GetLeadingTrivia().IsEmptyOrWhitespace())
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
@@ -26,9 +30,9 @@ namespace Roslynator.CSharp
             return removeOptions;
         }
 
-        public static SyntaxRemoveOptions Get(CSharpSyntaxNode node)
+        public static SyntaxRemoveOptions GetOptions(CSharpSyntaxNode node)
         {
-            SyntaxRemoveOptions removeOptions = Default;
+            SyntaxRemoveOptions removeOptions = DefaultOptions;
 
             if (node.GetLeadingTrivia().IsEmptyOrWhitespace())
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

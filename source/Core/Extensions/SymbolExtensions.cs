@@ -758,14 +758,18 @@ namespace Roslynator
 
         public static bool IsReducedExtensionMethod(this IMethodSymbol methodSymbol)
         {
-            //TODO: null check
-            return methodSymbol?.MethodKind == MethodKind.ReducedExtension;
+            if (methodSymbol == null)
+                throw new ArgumentNullException(nameof(methodSymbol));
+
+            return methodSymbol.MethodKind == MethodKind.ReducedExtension;
         }
 
         public static bool IsNonReducedExtensionMethod(this IMethodSymbol methodSymbol)
         {
-            //TODO: null check
-            return methodSymbol?.IsExtensionMethod == true
+            if (methodSymbol == null)
+                throw new ArgumentNullException(nameof(methodSymbol));
+
+            return methodSymbol.IsExtensionMethod
                 && methodSymbol.MethodKind != MethodKind.ReducedExtension;
         }
         #endregion IMethodSymbol
@@ -881,14 +885,18 @@ namespace Roslynator
 
         public static bool IsConstructedFrom(this INamedTypeSymbol namedTypeSymbol, SpecialType specialType)
         {
-            //TODO: null check
-            return namedTypeSymbol?.ConstructedFrom.SpecialType == specialType;
+            if (namedTypeSymbol == null)
+                throw new ArgumentNullException(nameof(namedTypeSymbol));
+
+            return namedTypeSymbol.ConstructedFrom.SpecialType == specialType;
         }
 
         public static bool IsConstructedFrom(this INamedTypeSymbol namedTypeSymbol, ISymbol symbol)
         {
-            //TODO: null check
-            return namedTypeSymbol?.ConstructedFrom.Equals(symbol) == true;
+            if (namedTypeSymbol == null)
+                throw new ArgumentNullException(nameof(namedTypeSymbol));
+
+            return namedTypeSymbol.ConstructedFrom.Equals(symbol);
         }
 
         public static bool IsIEnumerableOf(this INamedTypeSymbol namedTypeSymbol, ITypeSymbol typeArgument)
@@ -1076,8 +1084,6 @@ namespace Roslynator
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
-
-            //TODO: null check
 
             if (interfaceSymbol != null)
             {
@@ -1278,7 +1284,6 @@ namespace Roslynator
                 || InheritsFrom(type, baseType, includeInterfaces);
         }
 
-        //TODO: 
         public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name)
         {
             if (typeSymbol == null)
@@ -1292,15 +1297,10 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers();
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
 
-            for (int i = 0; i < members.Length; i++)
-            {
-                if (predicate(members[i]))
-                    return members[i];
-            }
-
-            return default(ISymbol);
+            return typeSymbol.GetMembers().FirstOrDefault(predicate);
         }
 
         public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate)
@@ -1308,75 +1308,64 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
 
-            for (int i = 0; i < members.Length; i++)
+            return typeSymbol.GetMembers(name).FirstOrDefault(predicate);
+        }
+
+        public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, string name = null) where TSymbol : ISymbol
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            foreach (ISymbol symbol in typeSymbol.GetMembers(name))
             {
-                if (predicate(members[i]))
-                    return members[i];
+                if (symbol is TSymbol tsymbol)
+                    return tsymbol;
             }
 
-            return default(ISymbol);
+            return default(TSymbol);
         }
 
-        public static IEventSymbol FindEvent(this ITypeSymbol typeSymbol, string name)
+        public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
-            return (IEventSymbol)FindMember(typeSymbol, name, IsEvent);
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            foreach (ISymbol symbol in typeSymbol.GetMembers())
+            {
+                if (symbol is TSymbol tsymbol
+                    && predicate(tsymbol))
+                {
+                    return tsymbol;
+                }
+            }
+
+            return default(TSymbol);
         }
 
-        public static IEventSymbol FindEvent(this ITypeSymbol typeSymbol, Func<IEventSymbol, bool> predicate)
+        public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
-            return (IEventSymbol)FindMember(typeSymbol, f => f.IsEvent() && predicate((IEventSymbol)f));
-        }
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
 
-        public static IEventSymbol FindEvent(this ITypeSymbol typeSymbol, string name, Func<IEventSymbol, bool> predicate)
-        {
-            return (IEventSymbol)FindMember(typeSymbol, name, f => f.IsEvent() && predicate((IEventSymbol)f));
-        }
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
 
-        public static IFieldSymbol FindField(this ITypeSymbol typeSymbol, string name)
-        {
-            return (IFieldSymbol)FindMember(typeSymbol, name, IsField);
-        }
+            foreach (ISymbol symbol in typeSymbol.GetMembers(name))
+            {
+                if (symbol is TSymbol tsymbol
+                    && predicate(tsymbol))
+                {
+                    return tsymbol;
+                }
+            }
 
-        public static IFieldSymbol FindField(this ITypeSymbol typeSymbol, Func<IFieldSymbol, bool> predicate)
-        {
-            return (IFieldSymbol)FindMember(typeSymbol, f => f.IsField() && predicate((IFieldSymbol)f));
-        }
-
-        public static IFieldSymbol FindField(this ITypeSymbol typeSymbol, string name, Func<IFieldSymbol, bool> predicate)
-        {
-            return (IFieldSymbol)FindMember(typeSymbol, name, f => f.IsField() && predicate((IFieldSymbol)f));
-        }
-
-        public static IMethodSymbol FindMethod(this ITypeSymbol typeSymbol, string name)
-        {
-            return (IMethodSymbol)FindMember(typeSymbol, name, IsMethod);
-        }
-
-        public static IMethodSymbol FindMethod(this ITypeSymbol typeSymbol, Func<IMethodSymbol, bool> predicate)
-        {
-            return (IMethodSymbol)FindMember(typeSymbol, f => f.IsMethod() && predicate((IMethodSymbol)f));
-        }
-
-        public static IMethodSymbol FindMethod(this ITypeSymbol typeSymbol, string name, Func<IMethodSymbol, bool> predicate)
-        {
-            return (IMethodSymbol)FindMember(typeSymbol, name, f => f.IsMethod() && predicate((IMethodSymbol)f));
-        }
-
-        public static IPropertySymbol FindProperty(this ITypeSymbol typeSymbol, string name)
-        {
-            return (IPropertySymbol)FindMember(typeSymbol, name, IsProperty);
-        }
-
-        public static IPropertySymbol FindProperty(this ITypeSymbol typeSymbol, Func<IPropertySymbol, bool> predicate)
-        {
-            return (IPropertySymbol)FindMember(typeSymbol, f => f.IsProperty() && predicate((IPropertySymbol)f));
-        }
-
-        public static IPropertySymbol FindProperty(this ITypeSymbol typeSymbol, string name, Func<IPropertySymbol, bool> predicate)
-        {
-            return (IPropertySymbol)FindMember(typeSymbol, name, f => f.IsProperty() && predicate((IPropertySymbol)f));
+            return default(TSymbol);
         }
 
         public static bool ExistsMember(this ITypeSymbol typeSymbol, string name)
@@ -1392,15 +1381,10 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers();
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
 
-            for (int i = 0; i < members.Length; i++)
-            {
-                if (predicate(members[i]))
-                    return true;
-            }
-
-            return false;
+            return typeSymbol.GetMembers().Any(predicate);
         }
 
         public static bool ExistsMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate)
@@ -1408,74 +1392,61 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
 
-            for (int i = 0; i < members.Length; i++)
+            return typeSymbol.GetMembers(name).Any(predicate);
+        }
+
+        public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, string name = null) where TSymbol : ISymbol
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            return typeSymbol.GetMembers(name).Any(symbol => symbol is TSymbol);
+        }
+
+        public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            foreach (ISymbol symbol in typeSymbol.GetMembers())
             {
-                if (predicate(members[i]))
+                if (symbol is TSymbol tsymbol
+                    && predicate(tsymbol))
+                {
                     return true;
+                }
             }
 
             return false;
         }
 
-        public static bool ExistsEvent(this ITypeSymbol typeSymbol, Func<IEventSymbol, bool> predicate = null)
+        public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, f => f.IsEvent() && predicate((IEventSymbol)f))
-                : ExistsMember(typeSymbol, IsEvent);
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            foreach (ISymbol symbol in typeSymbol.GetMembers(name))
+            {
+                if (symbol is TSymbol tsymbol
+                    && predicate(tsymbol))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        public static bool ExistsEvent(this ITypeSymbol typeSymbol, string name, Func<IEventSymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, name, f => f.IsEvent() && predicate((IEventSymbol)f))
-                : ExistsMember(typeSymbol, name, IsEvent);
-        }
-
-        public static bool ExistsField(this ITypeSymbol typeSymbol, Func<IFieldSymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, f => f.IsField() && predicate((IFieldSymbol)f))
-                : ExistsMember(typeSymbol, IsField);
-        }
-
-        public static bool ExistsField(this ITypeSymbol typeSymbol, string name, Func<IFieldSymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, name, f => f.IsField() && predicate((IFieldSymbol)f))
-                : ExistsMember(typeSymbol, name, IsField);
-        }
-
-        public static bool ExistsMethod(this ITypeSymbol typeSymbol, Func<IMethodSymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, f => f.IsMethod() && predicate((IMethodSymbol)f))
-                : ExistsMember(typeSymbol, IsMethod);
-        }
-
-        public static bool ExistsMethod(this ITypeSymbol typeSymbol, string name, Func<IMethodSymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, name, f => f.IsMethod() && predicate((IMethodSymbol)f))
-                : ExistsMember(typeSymbol, name, IsMethod);
-        }
-
-        public static bool ExistsProperty(this ITypeSymbol typeSymbol, Func<IPropertySymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, f => f.IsProperty() && predicate((IPropertySymbol)f))
-                : ExistsMember(typeSymbol, IsProperty);
-        }
-
-        public static bool ExistsProperty(this ITypeSymbol typeSymbol, string name, Func<IPropertySymbol, bool> predicate = null)
-        {
-            return (predicate != null)
-                ? ExistsMember(typeSymbol, name, f => f.IsProperty() && predicate((IPropertySymbol)f))
-                : ExistsMember(typeSymbol, name, IsProperty);
-        }
-
-        internal static IFieldSymbol FindFieldWithConstantValue(this ITypeSymbol typeSymbol, int value)
+        internal static IFieldSymbol FindFieldWithConstantValue(this ITypeSymbol typeSymbol, object value)
         {
             foreach (ISymbol symbol in typeSymbol.GetMembers())
             {
@@ -1483,15 +1454,11 @@ namespace Roslynator
                 {
                     var fieldSymbol = (IFieldSymbol)symbol;
 
-                    if (fieldSymbol.HasConstantValue)
+                    //XTODO: test
+                    if (fieldSymbol.HasConstantValue
+                        && object.Equals(fieldSymbol.ConstantValue, value))
                     {
-                        object constantValue = fieldSymbol.ConstantValue;
-
-                        if (constantValue is int value2
-                            && value == value2)
-                        {
-                            return fieldSymbol;
-                        }
+                        return fieldSymbol;
                     }
                 }
             }

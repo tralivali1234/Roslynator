@@ -5,17 +5,15 @@ using System.Collections.Immutable;
 
 namespace Roslynator.CSharp.Documentation
 {
-    //TODO: DocumentationCommentSettings
-    public class DocumentationCommentGeneratorSettings
+    internal class DocumentationCommentGeneratorSettings
     {
         public DocumentationCommentGeneratorSettings(
-            IEnumerable<string> comments = null,
+            IEnumerable<string> summary = null,
             string indentation = null,
             bool singleLineSummary = false,
-            bool returns = true
-            )
+            bool returns = true)
         {
-            Comments = (comments != null) ? ImmutableArray.CreateRange(comments) : ImmutableArray<string>.Empty;
+            Summary = (summary != null) ? ImmutableArray.CreateRange(summary) : ImmutableArray<string>.Empty;
             Indentation = indentation ?? "";
             SingleLineSummary = singleLineSummary;
             Returns = returns;
@@ -23,8 +21,7 @@ namespace Roslynator.CSharp.Documentation
 
         public static DocumentationCommentGeneratorSettings Default { get; } = new DocumentationCommentGeneratorSettings();
 
-        //TODO: Lines
-        public ImmutableArray<string> Comments { get; }
+        public ImmutableArray<string> Summary { get; }
 
         public string Indentation { get; }
 
@@ -32,10 +29,10 @@ namespace Roslynator.CSharp.Documentation
 
         public bool Returns { get; }
 
-        public DocumentationCommentGeneratorSettings WithComments(IEnumerable<string> comments)
+        public DocumentationCommentGeneratorSettings WithSummary(IEnumerable<string> summary)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: comments,
+                summary: summary,
                 indentation: Indentation,
                 singleLineSummary: SingleLineSummary,
                 returns: Returns);
@@ -44,7 +41,7 @@ namespace Roslynator.CSharp.Documentation
         public DocumentationCommentGeneratorSettings WithIndentation(string indentation)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
+                summary: Summary,
                 indentation: indentation,
                 singleLineSummary: SingleLineSummary,
                 returns: Returns);
@@ -53,7 +50,7 @@ namespace Roslynator.CSharp.Documentation
         public DocumentationCommentGeneratorSettings WithSingleLineSummary(bool singleLineSummary)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
+                summary: Summary,
                 indentation: Indentation,
                 singleLineSummary: singleLineSummary,
                 returns: Returns);
@@ -62,7 +59,7 @@ namespace Roslynator.CSharp.Documentation
         public DocumentationCommentGeneratorSettings WithReturns(bool returns)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
+                summary: Summary,
                 indentation: Indentation,
                 singleLineSummary: SingleLineSummary,
                 returns: returns);

@@ -366,12 +366,12 @@ namespace Roslynator.CSharp.Refactorings
 
                                 if (declarators.Count == 1)
                                 {
-                                    statementsInfo = statementsInfo.RemoveNode(localDeclarationStatement, RemoveOptions.Get(localDeclarationStatement));
+                                    statementsInfo = statementsInfo.RemoveNode(localDeclarationStatement, SyntaxRemover.GetOptions(localDeclarationStatement));
                                     index--;
                                 }
                                 else
                                 {
-                                    statementsInfo = statementsInfo.ReplaceNode(localDeclarationStatement, localDeclarationStatement.RemoveNode(declarator, RemoveOptions.Get(declarator)));
+                                    statementsInfo = statementsInfo.ReplaceNode(localDeclarationStatement, localDeclarationStatement.RemoveNode(declarator, SyntaxRemover.GetOptions(declarator)));
                                 }
 
                                 returnStatement = FindReturnStatementBelow(statementsInfo.Statements, index);
@@ -383,7 +383,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (removeReturnStatement)
             {
-                statementsInfo = statementsInfo.RemoveNode(returnStatement, RemoveOptions.Get(returnStatement));
+                statementsInfo = statementsInfo.RemoveNode(returnStatement, SyntaxRemover.GetOptions(returnStatement));
             }
             else if (newExpression != null)
             {
