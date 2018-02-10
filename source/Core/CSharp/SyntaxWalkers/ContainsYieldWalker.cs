@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.SyntaxWalkers
@@ -9,15 +11,56 @@ namespace Roslynator.CSharp.SyntaxWalkers
     {
         private bool _success;
 
-        private ContainsYieldWalker()
-        {
-        }
-
         public static bool ContainsYield(SyntaxNode node)
         {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            if (node.Kind() == SyntaxKind.LocalFunctionStatement)
+                return ContainsYield((LocalFunctionStatementSyntax)node);
+
             var walker = new ContainsYieldWalker();
 
             walker.Visit(node);
+
+            return walker._success;
+        }
+
+        public static bool ContainsYield(MethodDeclarationSyntax methodDeclaration)
+        {
+            if (methodDeclaration == null)
+                throw new ArgumentNullException(nameof(methodDeclaration));
+
+            BlockSyntax block = methodDeclaration.Body;
+
+            return block != null
+                && ContainsYieldCore(block);
+        }
+
+        public static bool ContainsYield(LocalFunctionStatementSyntax localFunctionStatement)
+        {
+            if (localFunctionStatement == null)
+                throw new ArgumentNullException(nameof(localFunctionStatement));
+
+            BlockSyntax block = localFunctionStatement.Body;
+
+            return block != null
+                && ContainsYieldCore(block);
+        }
+
+        public static bool ContainsYield(BlockSyntax block)
+        {
+            if (block == null)
+                throw new ArgumentNullException(nameof(block));
+
+            return ContainsYieldCore(block);
+        }
+
+        private static bool ContainsYieldCore(BlockSyntax block)
+        {
+            var walker = new ContainsYieldWalker();
+
+            walker.VisitBlock(block);
 
             return walker._success;
         }
