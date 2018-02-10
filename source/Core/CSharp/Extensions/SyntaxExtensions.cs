@@ -124,9 +124,10 @@ namespace Roslynator.CSharp
             return TextSpan.FromBounds(block.OpenBraceToken.SpanStart, block.CloseBraceToken.Span.End);
         }
 
-        //TODO: test
+        //XTODO: test
         internal static bool ContainsYield(this BlockSyntax block)
         {
+#if DEBUG
             Stopwatch sw = Stopwatch.StartNew();
 
             bool containsYield = block
@@ -134,21 +135,25 @@ namespace Roslynator.CSharp
                 .Any(f => f.Kind().IsYieldStatement());
 
             sw.Stop();
-            Debug.WriteLine($"DescendantNodes: {sw.Elapsed}");
+
+            TimeSpan elapsed = sw.Elapsed;
 
             sw = Stopwatch.StartNew();
 
-            bool containsYield2 = YieldWalker.ContainsYield(block);
+            bool containsYield2 = ContainsYieldWalker.ContainsYield(block);
 
             sw.Stop();
-            Debug.WriteLine($"YieldWalker: {sw.Elapsed}");
 
-            if (containsYield != containsYield2)
-                throw new InvalidOperationException();
+            Debug.WriteLine($"ContainsYield: {(decimal)sw.Elapsed.Ticks / elapsed.Ticks}");
 
-            Debug.WriteLine("");
+            Debug.Assert(containsYield == containsYield2, "ContainsYield\n\n" + block);
 
             return containsYield;
+#else
+            return block
+                .DescendantNodes(block.Span, node => !node.IsNestedMethod())
+                .Any(f => f.Kind().IsYieldStatement());
+#endif
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)

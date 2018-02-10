@@ -166,7 +166,6 @@ namespace Roslynator
             return true;
         }
 
-        //TODO: rename, extension method ITypeSymbol.CreateIdentifier
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);

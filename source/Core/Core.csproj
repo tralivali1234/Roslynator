@@ -52,7 +52,7 @@
     <Compile Include="CSharp\SyntaxRewriters\WhitespaceRemover.cs" />
     <Compile Include="CSharp\SyntaxWalkers\AssignedExpressionWalker.cs" />
     <Compile Include="CSharp\SyntaxWalkers\SkipNestedMethodWalker.cs" />
-    <Compile Include="CSharp\SyntaxWalkers\YieldWalker.cs" />
+    <Compile Include="CSharp\SyntaxWalkers\ContainsYieldWalker.cs" />
     <Compile Include="CSharp\Syntax\AccessibilityInfo.cs" />
     <Compile Include="CSharp\BracesAnalysisResult.cs" />
     <Compile Include="CSharp\Syntax\MemberDeclarationsInfo.cs" />

@@ -107,6 +107,4 @@ namespace Roslynator.CSharp
                 && statement.IsSingleLine();
         }
     }
-
-
 }
