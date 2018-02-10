@@ -3,7 +3,6 @@
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Roslynator.CSharp.Helpers;
 
 namespace Roslynator.CSharp.Syntax
 {
@@ -154,7 +153,7 @@ namespace Roslynator.CSharp.Syntax
 
         public AccessibilityInfo WithAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
         {
-            return ChangeAccessibilityHelper.ChangeAccessibility(this, newAccessibility, comparer);
+            return CSharpAccessibility.ChangeAccessibility(this, newAccessibility, comparer);
         }
 
         private SyntaxToken GetTokenOrDefault(int index)

@@ -151,7 +151,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (variable != null)
             {
-                MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingMember(fieldDeclaration));
+                MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(fieldDeclaration));
 
                 if (info.Success)
                 {
@@ -285,7 +285,7 @@ namespace Roslynator.CSharp.Refactorings
             List<MemberDeclarationSyntax> assignableMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingMember(declaration));
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(declaration));
 
             SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.InsertMember(CreateConstructor(GetConstructorIdentifierText(info.Declaration), assignableMembers));
 
@@ -307,8 +307,7 @@ namespace Roslynator.CSharp.Refactorings
             return null;
         }
 
-        //TODO: GetContainingDeclaration
-        private static MemberDeclarationSyntax GetContainingMember(MemberDeclarationSyntax declaration)
+        private static MemberDeclarationSyntax GetContainingDeclaration(MemberDeclarationSyntax declaration)
         {
             switch (declaration.Kind())
             {

@@ -15,12 +15,6 @@ namespace Roslynator.CSharp
         {
         }
 
-        //TODO: del
-        public SyntaxList<StatementSyntax> Statements
-        {
-            get { return (SyntaxList<StatementSyntax>)UnderlyingList; }
-        }
-
         public static StatementsSelection Create(BlockSyntax block, TextSpan span)
         {
             if (block == null)

@@ -117,10 +117,10 @@ namespace Roslynator.CSharp.Helpers
                             if (!CheckProtectedInStaticOrSealedClass(memberDeclaration, accessibility))
                                 return false;
 
-                            Accessibility declarationAccessibility = memberDeclaration.GetModifiers().GetAccessibility();
+                            Accessibility declarationAccessibility = CSharpAccessibility.GetExplicitAccessibility(memberDeclaration);
 
                             if (declarationAccessibility == Accessibility.NotApplicable)
-                                declarationAccessibility = memberDeclaration.GetDefaultExplicitAccessibility();
+                                declarationAccessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(memberDeclaration);
 
                             return accessibility.IsMoreRestrictiveThan(declarationAccessibility);
                         }
@@ -153,7 +153,7 @@ namespace Roslynator.CSharp.Helpers
             {
                 foreach (AccessorDeclarationSyntax accessor in accessorList.Accessors)
                 {
-                    Accessibility accessorAccessibility = accessor.Modifiers.GetAccessibility();
+                    Accessibility accessorAccessibility = CSharpAccessibility.GetAccessibility(accessor.Modifiers);
 
                     if (accessorAccessibility != Accessibility.NotApplicable)
                         return accessorAccessibility.IsMoreRestrictiveThan(accessibility);

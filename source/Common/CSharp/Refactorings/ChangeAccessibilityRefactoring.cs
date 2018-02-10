@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (accessibility == Accessibility.NotApplicable)
                 {
-                    accessibility = member.GetDefaultExplicitAccessibility();
+                    accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(member);
 
                     if (accessibility == Accessibility.NotApplicable)
                         return AccessibilityFlags.None;
@@ -150,7 +150,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            var members = (SyntaxList<MemberDeclarationSyntax>)selectedMembers.UnderlyingList;
+            SyntaxList<MemberDeclarationSyntax> members = selectedMembers.UnderlyingList;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.FirstIndex)

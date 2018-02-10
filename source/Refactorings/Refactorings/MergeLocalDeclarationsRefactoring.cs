@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
 
             LocalDeclarationStatementSyntax localDeclaration = localDeclarations[0];
 
-            SyntaxList<StatementSyntax> statements = selectedStatements.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
 
             int index = statements.IndexOf(localDeclaration);
 

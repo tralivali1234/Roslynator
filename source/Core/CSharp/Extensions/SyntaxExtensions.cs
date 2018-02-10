@@ -12,7 +12,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Documentation;
-using Roslynator.CSharp.Helpers;
 using Roslynator.CSharp.SyntaxRewriters;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -653,7 +652,7 @@ namespace Roslynator.CSharp
         }
 
         //TODO: GetIfElse
-        public static IEnumerable<IfStatementOrElseClause> GetChain(this IfStatementSyntax ifStatement)
+        public static IEnumerable<IfStatementOrElseClause> GetIfElse(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
                 throw new ArgumentNullException(nameof(ifStatement));
@@ -1114,253 +1113,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: pub
-        internal static Accessibility GetDefaultExplicitAccessibility(this MemberDeclarationSyntax member)
-        {
-            switch (member.Kind())
-            {
-                case SyntaxKind.ConstructorDeclaration:
-                    {
-                        if (((ConstructorDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.StaticKeyword))
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.DestructorDeclaration:
-                    {
-                        return Accessibility.NotApplicable;
-                    }
-                case SyntaxKind.MethodDeclaration:
-                    {
-                        var methodDeclaration = (MethodDeclarationSyntax)member;
-
-                        if (methodDeclaration.Modifiers.Contains(SyntaxKind.PartialKeyword)
-                            || methodDeclaration.ExplicitInterfaceSpecifier != null
-                            || methodDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.PropertyDeclaration:
-                    {
-                        var propertyDeclaration = (PropertyDeclarationSyntax)member;
-
-                        if (propertyDeclaration.ExplicitInterfaceSpecifier != null
-                            || propertyDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.IndexerDeclaration:
-                    {
-                        var indexerDeclaration = (IndexerDeclarationSyntax)member;
-
-                        if (indexerDeclaration.ExplicitInterfaceSpecifier != null
-                            || indexerDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.EventDeclaration:
-                    {
-                        var eventDeclaration = (EventDeclarationSyntax)member;
-
-                        if (eventDeclaration.ExplicitInterfaceSpecifier != null)
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.EventFieldDeclaration:
-                    {
-                        if (member.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.NotApplicable;
-                        }
-                        else
-                        {
-                            return Accessibility.Private;
-                        }
-                    }
-                case SyntaxKind.FieldDeclaration:
-                    {
-                        return Accessibility.Private;
-                    }
-                case SyntaxKind.OperatorDeclaration:
-                case SyntaxKind.ConversionOperatorDeclaration:
-                    {
-                        return Accessibility.Public;
-                    }
-                case SyntaxKind.ClassDeclaration:
-                case SyntaxKind.StructDeclaration:
-                case SyntaxKind.InterfaceDeclaration:
-                case SyntaxKind.EnumDeclaration:
-                case SyntaxKind.DelegateDeclaration:
-                    {
-                        if (member.IsParentKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration))
-                        {
-                            return Accessibility.Private;
-                        }
-                        else
-                        {
-                            return Accessibility.Internal;
-                        }
-                    }
-            }
-
-            return Accessibility.NotApplicable;
-        }
-
-        //TODO: GetAccessibility
-        public static Accessibility GetDeclaredAccessibility(this MemberDeclarationSyntax member)
-        {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            switch (member.Kind())
-            {
-                case SyntaxKind.ConstructorDeclaration:
-                    {
-                        var constructorDeclaration = (ConstructorDeclarationSyntax)member;
-
-                        if (constructorDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
-                        {
-                            return Accessibility.Private;
-                        }
-                        else
-                        {
-                            return AccessibilityOrDefault(constructorDeclaration, constructorDeclaration.Modifiers);
-                        }
-                    }
-                case SyntaxKind.MethodDeclaration:
-                    {
-                        var methodDeclaration = (MethodDeclarationSyntax)member;
-
-                        SyntaxTokenList modifiers = methodDeclaration.Modifiers;
-
-                        if (modifiers.Contains(SyntaxKind.PartialKeyword))
-                        {
-                            return Accessibility.Private;
-                        }
-                        else if (methodDeclaration.ExplicitInterfaceSpecifier != null
-                            || methodDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.Public;
-                        }
-                        else
-                        {
-                            return AccessibilityOrDefault(methodDeclaration, modifiers);
-                        }
-                    }
-                case SyntaxKind.PropertyDeclaration:
-                    {
-                        var propertyDeclaration = (PropertyDeclarationSyntax)member;
-
-                        if (propertyDeclaration.ExplicitInterfaceSpecifier != null
-                            || propertyDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.Public;
-                        }
-                        else
-                        {
-                            return AccessibilityOrDefault(propertyDeclaration, propertyDeclaration.Modifiers);
-                        }
-                    }
-                case SyntaxKind.IndexerDeclaration:
-                    {
-                        var indexerDeclaration = (IndexerDeclarationSyntax)member;
-
-                        if (indexerDeclaration.ExplicitInterfaceSpecifier != null
-                            || indexerDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.Public;
-                        }
-                        else
-                        {
-                            return AccessibilityOrDefault(indexerDeclaration, indexerDeclaration.Modifiers);
-                        }
-                    }
-                case SyntaxKind.EventDeclaration:
-                    {
-                        var eventDeclaration = (EventDeclarationSyntax)member;
-
-                        if (eventDeclaration.ExplicitInterfaceSpecifier != null)
-                        {
-                            return Accessibility.Public;
-                        }
-                        else
-                        {
-                            return AccessibilityOrDefault(eventDeclaration, eventDeclaration.Modifiers);
-                        }
-                    }
-                case SyntaxKind.EventFieldDeclaration:
-                    {
-                        if (member.IsParentKind(SyntaxKind.InterfaceDeclaration))
-                        {
-                            return Accessibility.Public;
-                        }
-                        else
-                        {
-                            var eventFieldDeclaration = (EventFieldDeclarationSyntax)member;
-
-                            return AccessibilityOrDefault(eventFieldDeclaration, eventFieldDeclaration.Modifiers);
-                        }
-                    }
-                case SyntaxKind.FieldDeclaration:
-                case SyntaxKind.ClassDeclaration:
-                case SyntaxKind.StructDeclaration:
-                case SyntaxKind.InterfaceDeclaration:
-                case SyntaxKind.EnumDeclaration:
-                case SyntaxKind.DelegateDeclaration:
-                    {
-                        return AccessibilityOrDefault(member, member.GetModifiers());
-                    }
-                case SyntaxKind.DestructorDeclaration:
-                case SyntaxKind.OperatorDeclaration:
-                case SyntaxKind.ConversionOperatorDeclaration:
-                case SyntaxKind.EnumMemberDeclaration:
-                case SyntaxKind.NamespaceDeclaration:
-                    {
-                        return Accessibility.Public;
-                    }
-            }
-
-            return Accessibility.NotApplicable;
-        }
-
-        private static Accessibility AccessibilityOrDefault(MemberDeclarationSyntax member, SyntaxTokenList modifiers)
-        {
-            Accessibility accessibility = modifiers.GetAccessibility();
-
-            if (accessibility != Accessibility.NotApplicable)
-            {
-                return accessibility;
-            }
-            else
-            {
-                return GetDefaultExplicitAccessibility(member);
-            }
-        }
-
         public static bool IsPubliclyVisible(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -1371,7 +1123,7 @@ namespace Roslynator.CSharp
                 if (member.IsKind(SyntaxKind.NamespaceDeclaration))
                     return true;
 
-                Accessibility accessibility = member.GetDeclaredAccessibility();
+                Accessibility accessibility = CSharpAccessibility.GetAccessibility(member);
 
                 if (accessibility == Accessibility.Public
                     || accessibility == Accessibility.Protected
@@ -2821,8 +2573,7 @@ namespace Roslynator.CSharp
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            //TODO: přesunout do AccessibilityUtility
-            return ChangeAccessibilityHelper.ChangeAccessibility(node, newAccessibility, comparer);
+            return CSharpAccessibility.ChangeAccessibility(node, newAccessibility, comparer);
         }
 
         internal static SyntaxTrivia GetIndentation(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
@@ -3086,60 +2837,6 @@ namespace Roslynator.CSharp
         #endregion SyntaxToken
 
         #region SyntaxTokenList
-        //TODO: pub
-        internal static Accessibility GetAccessibility(this SyntaxTokenList tokenList)
-        {
-            int count = tokenList.Count;
-
-            for (int i = 0; i < count; i++)
-            {
-                switch (tokenList[i].Kind())
-                {
-                    case SyntaxKind.PublicKeyword:
-                        {
-                            return Accessibility.Public;
-                        }
-                    case SyntaxKind.PrivateKeyword:
-                        {
-                            for (int j = i + 1; j < count; j++)
-                            {
-                                if (tokenList[j].Kind() == SyntaxKind.ProtectedKeyword)
-                                    return Accessibility.ProtectedAndInternal;
-                            }
-
-                            return Accessibility.Private;
-                        }
-                    case SyntaxKind.InternalKeyword:
-                        {
-                            for (int j = i + 1; j < count; j++)
-                            {
-                                if (tokenList[j].Kind() == SyntaxKind.ProtectedKeyword)
-                                    return Accessibility.ProtectedOrInternal;
-                            }
-
-                            return Accessibility.Internal;
-                        }
-                    case SyntaxKind.ProtectedKeyword:
-                        {
-                            for (int j = i + 1; j < count; j++)
-                            {
-                                switch (tokenList[j].Kind())
-                                {
-                                    case SyntaxKind.InternalKeyword:
-                                        return Accessibility.ProtectedOrInternal;
-                                    case SyntaxKind.PrivateKeyword:
-                                        return Accessibility.ProtectedAndInternal;
-                                }
-                            }
-
-                            return Accessibility.Protected;
-                        }
-                }
-            }
-
-            return Accessibility.NotApplicable;
-        }
-
         public static SyntaxToken Find(this SyntaxTokenList tokenList, SyntaxKind kind)
         {
             foreach (SyntaxToken token in tokenList)

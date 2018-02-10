@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
             statements[0] = statements[0].WithLeadingTrivia();
             statements[statements.Length - 1] = statements[statements.Length - 1].WithTrailingTrivia();
 
-            SyntaxList<StatementSyntax> newStatements = selectedStatements.Statements;
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList;
 
             int cnt = statements.Length;
 

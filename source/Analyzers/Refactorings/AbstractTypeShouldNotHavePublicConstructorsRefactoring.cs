@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
-            Accessibility accessibility = constructorDeclaration.Modifiers.GetAccessibility();
+            Accessibility accessibility = CSharpAccessibility.GetAccessibility(constructorDeclaration.Modifiers);
 
             if (accessibility == Accessibility.Public
                 || accessibility == Accessibility.ProtectedOrInternal)

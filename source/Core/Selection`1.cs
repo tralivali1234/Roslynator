@@ -9,21 +9,20 @@ namespace Roslynator
 {
     public abstract class Selection<T> : IReadOnlyList<T>
     {
-        protected Selection(IReadOnlyList<T> items, TextSpan span, int firstIndex, int lastIndex)
+        protected Selection(TextSpan span, int firstIndex, int lastIndex)
         {
-            UnderlyingList = items;
             Span = span;
             FirstIndex = firstIndex;
             LastIndex = lastIndex;
         }
 
-        public TextSpan Span { get; }
+        protected abstract IReadOnlyList<T> List { get; }
 
-        public IReadOnlyList<T> UnderlyingList { get; }
+        public virtual TextSpan Span { get; }
 
-        public int FirstIndex { get; }
+        public virtual int FirstIndex { get; }
 
-        public int LastIndex { get; }
+        public virtual int LastIndex { get; }
 
         public int Count
         {
@@ -50,7 +49,7 @@ namespace Roslynator
                     throw new ArgumentOutOfRangeException(nameof(index), index, "");
                 }
 
-                return UnderlyingList[index];
+                return List[index];
             }
         }
 
@@ -61,14 +60,14 @@ namespace Roslynator
 
         public T First()
         {
-            return UnderlyingList[FirstIndex];
+            return List[FirstIndex];
         }
 
         public T FirstOrDefault()
         {
             if (Any())
             {
-                return UnderlyingList[FirstIndex];
+                return List[FirstIndex];
             }
             else
             {
@@ -78,14 +77,14 @@ namespace Roslynator
 
         public T Last()
         {
-            return UnderlyingList[LastIndex];
+            return List[LastIndex];
         }
 
         public T LastOrDefault()
         {
             if (Any())
             {
-                return UnderlyingList[LastIndex];
+                return List[LastIndex];
             }
             else
             {
@@ -98,7 +97,7 @@ namespace Roslynator
             if (Any())
             {
                 for (int i = FirstIndex; i <= LastIndex; i++)
-                    yield return UnderlyingList[i];
+                    yield return List[i];
             }
         }
 

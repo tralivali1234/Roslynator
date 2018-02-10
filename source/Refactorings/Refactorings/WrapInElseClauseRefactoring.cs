@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax lastStatement = selectedStatements.Last();
 
             if (lastStatement.IsKind(SyntaxKind.ReturnStatement)
-                && selectedStatements.LastIndex == selectedStatements.Statements.IndexOf(lastStatement)
+                && selectedStatements.LastIndex == selectedStatements.UnderlyingList.IndexOf(lastStatement)
                 && selectedStatements.FirstIndex > 0)
             {
                 var returnStatement = (ReturnStatementSyntax)lastStatement;
@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (expression != null)
                 {
-                    StatementSyntax prevStatement = selectedStatements.Statements[selectedStatements.FirstIndex - 1];
+                    StatementSyntax prevStatement = selectedStatements.UnderlyingList[selectedStatements.FirstIndex - 1];
 
                     if (prevStatement.IsKind(SyntaxKind.IfStatement))
                     {
@@ -105,7 +105,7 @@ namespace Roslynator.CSharp.Refactorings
                 lastIfStatement,
                 lastIfStatement.WithElse(elseClause));
 
-            SyntaxList<StatementSyntax> newStatements = selectedStatements.Statements.Replace(ifStatement, newIfStatement);
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList.Replace(ifStatement, newIfStatement);
 
             for (int i = newStatements.Count - 1; i >= selectedStatements.FirstIndex; i--)
                 newStatements = newStatements.RemoveAt(i);

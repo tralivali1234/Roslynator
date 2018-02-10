@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax firstStatement = selectedStatements.First();
 
-            SyntaxList<StatementSyntax> newStatements = selectedStatements.Statements.Replace(
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList.Replace(
                 firstStatement,
                 firstStatement.ReplaceNode(
                     objectCreation,

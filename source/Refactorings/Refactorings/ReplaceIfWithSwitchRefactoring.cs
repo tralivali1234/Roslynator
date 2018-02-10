@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetIfElse())
             {
                 if (ifOrElse.IsIf)
                 {
@@ -221,7 +221,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static IEnumerable<SwitchSectionSyntax> CreateSwitchSections(IfStatementSyntax ifStatement)
         {
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetIfElse())
             {
                 if (ifOrElse.IsIf)
                 {

@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.CodeFixes
                 f => (MemberDeclarationSyntax)f.GetSyntax(context.CancellationToken));
 
             foreach (Accessibility accessibility in memberDeclarations
-                .Select(f => f.GetModifiers().GetAccessibility())
+                .Select(CSharpAccessibility.GetExplicitAccessibility)
                 .Where(f => f != Accessibility.NotApplicable))
             {
                 if (CSharpUtility.IsAllowedAccessibility(memberDeclaration, accessibility))

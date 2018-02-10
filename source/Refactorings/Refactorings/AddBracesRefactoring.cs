@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static IEnumerable<StatementSyntax> GetEmbeddedStatements(IfStatementSyntax topmostIf)
         {
-            foreach (IfStatementOrElseClause ifOrElse in topmostIf.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in topmostIf.GetIfElse())
             {
                 StatementSyntax statement = ifOrElse.Statement;
 

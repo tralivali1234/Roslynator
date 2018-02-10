@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -8,9 +9,14 @@ namespace Roslynator
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
         protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
-            : base(list, span, firstIndex, lastIndex)
+            : base(span, firstIndex, lastIndex)
         {
+            UnderlyingList = list;
         }
+
+        public SeparatedSyntaxList<TNode> UnderlyingList { get; }
+
+        protected override IReadOnlyList<TNode> List => UnderlyingList;
 
         internal static (int firstIndex, int lastIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
         {

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Text
@@ -8,9 +9,14 @@ namespace Roslynator.Text
     public class TextLineCollectionSelection : Selection<TextLine>
     {
         private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int firstIndex, int lastIndex)
-            : base(lines, span, firstIndex, lastIndex)
+            : base(span, firstIndex, lastIndex)
         {
+            UnderlyingLines = lines;
         }
+
+        public TextLineCollection UnderlyingLines { get; }
+
+        protected override IReadOnlyList<TextLine> List => UnderlyingLines;
 
         private static (int firstIndex, int lastIndex) GetIndexes(TextLineCollection lines, TextSpan span)
         {

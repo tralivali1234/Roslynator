@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            SyntaxList<StatementSyntax> statements = selectedStatements.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
 
             ITypeSymbol typeSymbol = null;
 
@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
-                StatementSyntax statement = selectedStatements.Statements[i];
+                StatementSyntax statement = selectedStatements.UnderlyingList[i];
 
                 if (!(statement is ExpressionStatementSyntax expressionStatement))
                     return false;

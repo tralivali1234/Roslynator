@@ -180,10 +180,10 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
         private static bool IsPrivate(MemberDeclarationSyntax memberDeclaration, SyntaxTokenList modifiers)
         {
-            Accessibility accessibility = modifiers.GetAccessibility();
+            Accessibility accessibility = CSharpAccessibility.GetAccessibility(modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
-                accessibility = memberDeclaration.GetDefaultExplicitAccessibility();
+                accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(memberDeclaration);
 
             return accessibility == Accessibility.Private;
         }

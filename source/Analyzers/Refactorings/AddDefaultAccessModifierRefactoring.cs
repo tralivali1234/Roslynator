@@ -51,7 +51,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             if (accessibility == Accessibility.NotApplicable)
                             {
-                                return declaration.GetDefaultExplicitAccessibility();
+                                return CSharpAccessibility.GetDefaultExplicitAccessibility(declaration);
                             }
                             else
                             {
@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
                 else
                 {
-                    return declaration.GetDefaultExplicitAccessibility();
+                    return CSharpAccessibility.GetDefaultExplicitAccessibility(declaration);
                 }
             }
 
@@ -83,7 +83,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     if (syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax declaration2)
                     {
-                        Accessibility accessibility2 = declaration2.GetModifiers().GetAccessibility();
+                        Accessibility accessibility2 = CSharpAccessibility.GetExplicitAccessibility(declaration2);
 
                         if (accessibility2 != Accessibility.NotApplicable)
                         {

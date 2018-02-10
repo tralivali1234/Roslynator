@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Refactorings
                 BinaryExpression(SyntaxKind.LogicalOrExpression, ifStatements.Select(f => f.Condition)),
                 Block(CreateStatements(ifStatements)));
 
-            SyntaxList<StatementSyntax> statements = selectedStatements.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
 
             int index = statements.IndexOf(ifStatements[0]);
 
