@@ -191,7 +191,7 @@ namespace Roslynator.CSharp
         #endregion CastExpressionSyntax
 
         #region ClassDeclarationSyntax
-        //TODO: del
+        //TODO: pub
         internal static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             MemberDeclarationSyntax member)
@@ -505,7 +505,7 @@ namespace Roslynator.CSharp
             return null;
         }
 
-        //TODO: int
+        //TODO: int, IsElseIf
         public static bool ContinuesWithIf(this ElseClauseSyntax elseClause)
         {
             if (elseClause == null)
@@ -1511,8 +1511,7 @@ namespace Roslynator.CSharp
             return WithNewSingleLineDocumentationComment(member, settings);
         }
 
-        //TODO: int
-        public static TMember WithDocumentationComment<TMember>(
+        internal static TMember WithDocumentationComment<TMember>(
             this TMember member,
             SyntaxTrivia comment,
             bool indent = false) where TMember : MemberDeclarationSyntax
@@ -1786,7 +1785,7 @@ namespace Roslynator.CSharp
         public static bool IsSingleLine<TNode>(
             this SeparatedSyntaxList<TNode> list,
             bool includeExteriorTrivia = true,
-            bool trim = true,
+            bool trim = true, //TODO: trimExteriorTrivia
             CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
         {
             int count = list.Count;
@@ -2899,7 +2898,7 @@ namespace Roslynator.CSharp
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            //TODO: přesunout do Modifier
+            //TODO: přesunout do AccessibilityUtility
             return ChangeAccessibilityHelper.ChangeAccessibility(node, newAccessibility, comparer);
         }
 

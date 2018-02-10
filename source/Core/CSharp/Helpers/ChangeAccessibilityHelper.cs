@@ -40,8 +40,8 @@ namespace Roslynator.CSharp.Helpers
 
             SyntaxNode node = info.Node;
 
-            if (IsSingleTokenAccessibility(accessibility)
-                && IsSingleTokenAccessibility(newAccessibility))
+            if (accessibility.IsSingleTokenAccessibility()
+                && newAccessibility.IsSingleTokenAccessibility())
             {
                 int insertIndex = comparer.GetInsertIndex(info.Modifiers, GetKind(newAccessibility));
 
@@ -144,21 +144,6 @@ namespace Roslynator.CSharp.Helpers
                     return SyntaxKind.None;
                 default:
                     throw new ArgumentException("", nameof(accessibility));
-            }
-        }
-
-        //TODO: AccessibilityExtensions
-        private static bool IsSingleTokenAccessibility(Accessibility accessibility)
-        {
-            switch (accessibility)
-            {
-                case Accessibility.Private:
-                case Accessibility.Protected:
-                case Accessibility.Internal:
-                case Accessibility.Public:
-                    return true;
-                default:
-                    return false;
             }
         }
     }

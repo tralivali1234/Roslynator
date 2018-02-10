@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -56,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (memberDeclaration != null)
             {
-                BaseTypeDeclarationSyntax typeDeclaration = memberDeclaration.FirstAncestor<BaseTypeDeclarationSyntax>();
+                TypeDeclarationSyntax typeDeclaration = memberDeclaration.FirstAncestor<TypeDeclarationSyntax>();
 
                 Debug.Assert(typeDeclaration != null, "");
 
@@ -74,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
                         .WithExpression(newMemberAccess)
                         .WithArgumentList(pair.ArgumentList1);
 
-                    MemberDeclarationSyntax newTypeDeclaration = typeDeclaration.ReplaceNode(invocationExpression, newInvocationExpression);
+                    TypeDeclarationSyntax newTypeDeclaration = typeDeclaration.ReplaceNode(invocationExpression, newInvocationExpression);
 
                     TypeSyntax regexType = semanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex).ToMinimalTypeSyntax(semanticModel, typeDeclaration.SpanStart);
 
@@ -88,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
                             ObjectCreationExpression(regexType, pair.ArgumentList2)));
 
                     SyntaxList<MemberDeclarationSyntax> newMembers = newTypeDeclaration
-                        .GetMembers()
+                        .Members
                         .InsertMember(fieldDeclaration);
 
                     newTypeDeclaration = newTypeDeclaration.WithMembers(newMembers);
