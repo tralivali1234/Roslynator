@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var typeSymbol = context.SemanticModel.GetSymbol(qualifiedName, context.CancellationToken) as INamedTypeSymbol;
 
-                if (typeSymbol?.IsBuiltInType() == false
+                if (typeSymbol?.IsPredefinedType() == false
                     && typeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
                 {
                     context.ReportDiagnostic(DiagnosticDescriptors.SimplifyNullableOfT, qualifiedName);

@@ -6,9 +6,9 @@ namespace Roslynator.CSharp
 {
     public static class SpecialTypeExtensions
     {
-        //TODO: IsPredefinedType, void?
+        //XTODO: System_Void
         // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table
-        public static bool IsBuiltInType(this SpecialType specialType)
+        public static bool IsPredefinedType(this SpecialType specialType)
         {
             switch (specialType)
             {

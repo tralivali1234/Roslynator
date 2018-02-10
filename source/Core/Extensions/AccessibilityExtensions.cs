@@ -135,7 +135,6 @@ namespace Roslynator
             return false;
         }
 
-        //TODO: new
         internal static bool IsSingleTokenAccessibility(this Accessibility accessibility)
         {
             return accessibility.Is(

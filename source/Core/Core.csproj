@@ -50,6 +50,7 @@
     <Compile Include="CSharp\Helpers\ChangeAccessibilityHelper.cs" />
     <Compile Include="CSharp\ModifierFlags.cs" />
     <Compile Include="CSharp\Extensions\ModifierFlagsExtensions.cs" />
+    <Compile Include="CSharp\SyntaxRewriters\WhitespaceRemover.cs" />
     <Compile Include="CSharp\SyntaxWalkers\AssignedExpressionWalker.cs" />
     <Compile Include="CSharp\Syntax\AccessibilityInfo.cs" />
     <Compile Include="CSharp\BracesAnalysisResult.cs" />
@@ -120,7 +121,7 @@
     <Compile Include="CSharp\Documentation\DocumentationCommentData.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentInserter.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentOrigin.cs" />
-    <Compile Include="CSharp\SyntaxRewriters\WhitespaceRewriter.cs" />
+    <Compile Include="CSharp\SyntaxRewriters\WhitespaceReplacer.cs" />
     <Compile Include="CSharp\Syntax\StatementsInfo.cs" />
     <Compile Include="CSharp\Syntax\SingleLocalDeclarationStatementInfo.cs" />
     <Compile Include="DirectiveRemoveOptions.cs" />

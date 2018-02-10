@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSyntax member)
         {
-            if (!member.Kind().CanContainMemberDeclarations())
+            if (!member.Kind().CanContainMembers())
                 return;
 
             if (!CanRefactor(member, context.Span))

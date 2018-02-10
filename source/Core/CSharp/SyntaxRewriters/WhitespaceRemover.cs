@@ -6,24 +6,24 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
-    internal class TriviaRemover : CSharpSyntaxRewriter
+    internal class WhitespaceRemover : CSharpSyntaxRewriter
     {
-        private TriviaRemover(TextSpan? span = null)
+        private WhitespaceRemover(TextSpan? span = null)
         {
             Span = span;
         }
 
-        private static TriviaRemover Default { get; } = new TriviaRemover();
+        private static WhitespaceRemover Default { get; } = new WhitespaceRemover();
 
         public TextSpan? Span { get; }
 
         public static SyntaxTrivia Replacement { get; } = CSharpFactory.EmptyWhitespace();
 
-        public static TriviaRemover GetInstance(TextSpan? span = null)
+        public static WhitespaceRemover GetInstance(TextSpan? span = null)
         {
             if (span != null)
             {
-                return new TriviaRemover(span);
+                return new WhitespaceRemover(span);
             }
             else
             {
@@ -33,7 +33,8 @@ namespace Roslynator.CSharp.SyntaxRewriters
 
         public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
         {
-            if (Span == null || Span.Value.Contains(trivia.Span))
+            if (trivia.IsWhitespaceOrEndOfLineTrivia()
+                && (Span == null || Span.Value.Contains(trivia.Span)))
             {
                 return Replacement;
             }

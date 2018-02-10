@@ -65,8 +65,7 @@ namespace Roslynator.CSharp
             return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
         }
 
-        //TODO: CanContainMembers
-        public static bool CanContainMemberDeclarations(this SyntaxKind kind)
+        public static bool CanContainMembers(this SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.NamespaceDeclaration,

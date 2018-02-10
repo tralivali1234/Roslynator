@@ -191,19 +191,24 @@ namespace Roslynator.CSharp
         #endregion CastExpressionSyntax
 
         #region ClassDeclarationSyntax
-        //TODO: pub
-        internal static ClassDeclarationSyntax WithMembers(
+        public static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             MemberDeclarationSyntax member)
         {
+            if (classDeclaration == null)
+                throw new ArgumentNullException(nameof(classDeclaration));
+
             return classDeclaration.WithMembers(SingletonList(member));
         }
 
-        internal static ClassDeclarationSyntax WithMembers(
+        public static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
-            IEnumerable<MemberDeclarationSyntax> memberDeclarations)
+            IEnumerable<MemberDeclarationSyntax> members)
         {
-            return classDeclaration.WithMembers(List(memberDeclarations));
+            if (classDeclaration == null)
+                throw new ArgumentNullException(nameof(classDeclaration));
+
+            return classDeclaration.WithMembers(List(members));
         }
 
         public static TextSpan HeaderSpan(this ClassDeclarationSyntax classDeclaration)
@@ -226,25 +231,12 @@ namespace Roslynator.CSharp
                 classDeclaration.CloseBraceToken.Span.End);
         }
 
-        //TODO: přesunout do SyntaxRemover
+        //TODO: int
         public static MemberDeclarationSyntax RemoveMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
         {
-            if (classDeclaration == null)
-                throw new ArgumentNullException(nameof(classDeclaration));
-
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            int index = classDeclaration.Members.IndexOf(member);
-
-            MemberDeclarationSyntax newMember = SyntaxRemover.RemoveSingleLineDocumentationComment(member);
-
-            classDeclaration = classDeclaration.WithMembers(classDeclaration.Members.ReplaceAt(index, newMember));
-
-            return classDeclaration.RemoveNode(classDeclaration.Members[index], SyntaxRemover.GetOptions(newMember));
+            return SyntaxRemover.RemoveMember(classDeclaration, member);
         }
 
-        //TODO: 
         public static ClassDeclarationSyntax InsertMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (classDeclaration == null)
@@ -268,18 +260,24 @@ namespace Roslynator.CSharp
         #endregion CommonForEachStatementSyntax
 
         #region CompilationUnitSyntax
-        internal static CompilationUnitSyntax WithMembers(
+        public static CompilationUnitSyntax WithMembers(
             this CompilationUnitSyntax compilationUnit,
             MemberDeclarationSyntax member)
         {
+            if (compilationUnit == null)
+                throw new ArgumentNullException(nameof(compilationUnit));
+
             return compilationUnit.WithMembers(SingletonList(member));
         }
 
-        internal static CompilationUnitSyntax WithMembers(
+        public static CompilationUnitSyntax WithMembers(
             this CompilationUnitSyntax compilationUnit,
-            IEnumerable<MemberDeclarationSyntax> memberDeclarations)
+            IEnumerable<MemberDeclarationSyntax> members)
         {
-            return compilationUnit.WithMembers(List(memberDeclarations));
+            if (compilationUnit == null)
+                throw new ArgumentNullException(nameof(compilationUnit));
+
+            return compilationUnit.WithMembers(List(members));
         }
 
         public static CompilationUnitSyntax AddUsings(this CompilationUnitSyntax compilationUnit, bool keepSingleLineCommentsOnTop, params UsingDirectiveSyntax[] usings)
@@ -338,19 +336,7 @@ namespace Roslynator.CSharp
 
         public static CompilationUnitSyntax RemoveMember(this CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member)
         {
-            if (compilationUnit == null)
-                throw new ArgumentNullException(nameof(compilationUnit));
-
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            int index = compilationUnit.Members.IndexOf(member);
-
-            MemberDeclarationSyntax newMember = SyntaxRemover.RemoveSingleLineDocumentationComment(member);
-
-            compilationUnit = compilationUnit.WithMembers(compilationUnit.Members.ReplaceAt(index, newMember));
-
-            return compilationUnit.RemoveNode(compilationUnit.Members[index], SyntaxRemover.GetOptions(newMember));
+            return SyntaxRemover.RemoveMember(compilationUnit, member);
         }
 
         public static CompilationUnitSyntax InsertMember(this CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
@@ -505,8 +491,7 @@ namespace Roslynator.CSharp
             return null;
         }
 
-        //TODO: int, IsElseIf
-        public static bool ContinuesWithIf(this ElseClauseSyntax elseClause)
+        public static bool IsElseIf(this ElseClauseSyntax elseClause)
         {
             if (elseClause == null)
                 throw new ArgumentNullException(nameof(elseClause));
@@ -667,7 +652,7 @@ namespace Roslynator.CSharp
                 && ifStatement.Else?.Statement?.IsKind(SyntaxKind.IfStatement) == false;
         }
 
-        //TODO: GetIfElseChain
+        //TODO: GetIfElse
         public static IEnumerable<IfStatementOrElseClause> GetChain(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -829,19 +814,7 @@ namespace Roslynator.CSharp
 
         public static MemberDeclarationSyntax RemoveMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
         {
-            if (interfaceDeclaration == null)
-                throw new ArgumentNullException(nameof(interfaceDeclaration));
-
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            int index = interfaceDeclaration.Members.IndexOf(member);
-
-            MemberDeclarationSyntax newMember = SyntaxRemover.RemoveSingleLineDocumentationComment(member);
-
-            interfaceDeclaration = interfaceDeclaration.WithMembers(interfaceDeclaration.Members.ReplaceAt(index, newMember));
-
-            return interfaceDeclaration.RemoveNode(interfaceDeclaration.Members[index], SyntaxRemover.GetOptions(newMember));
+            return SyntaxRemover.RemoveMember(interfaceDeclaration, member);
         }
 
         public static InterfaceDeclarationSyntax InsertMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
@@ -855,18 +828,24 @@ namespace Roslynator.CSharp
             return interfaceDeclaration.WithMembers(interfaceDeclaration.Members.InsertMember(member, comparer));
         }
 
-        internal static InterfaceDeclarationSyntax WithMembers(
+        public static InterfaceDeclarationSyntax WithMembers(
             this InterfaceDeclarationSyntax interfaceDeclaration,
             MemberDeclarationSyntax member)
         {
+            if (interfaceDeclaration == null)
+                throw new ArgumentNullException(nameof(interfaceDeclaration));
+
             return interfaceDeclaration.WithMembers(SingletonList(member));
         }
 
-        internal static InterfaceDeclarationSyntax WithMembers(
+        public static InterfaceDeclarationSyntax WithMembers(
             this InterfaceDeclarationSyntax interfaceDeclaration,
-            IEnumerable<MemberDeclarationSyntax> memberDeclarations)
+            IEnumerable<MemberDeclarationSyntax> members)
         {
-            return interfaceDeclaration.WithMembers(List(memberDeclarations));
+            if (interfaceDeclaration == null)
+                throw new ArgumentNullException(nameof(interfaceDeclaration));
+
+            return interfaceDeclaration.WithMembers(List(members));
         }
         #endregion InterfaceDeclarationSyntax
 
@@ -1524,19 +1503,7 @@ namespace Roslynator.CSharp
         #region NamespaceDeclarationSyntax
         public static MemberDeclarationSyntax RemoveMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
         {
-            if (namespaceDeclaration == null)
-                throw new ArgumentNullException(nameof(namespaceDeclaration));
-
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            int index = namespaceDeclaration.Members.IndexOf(member);
-
-            MemberDeclarationSyntax newMember = SyntaxRemover.RemoveSingleLineDocumentationComment(member);
-
-            namespaceDeclaration = namespaceDeclaration.WithMembers(namespaceDeclaration.Members.ReplaceAt(index, newMember));
-
-            return namespaceDeclaration.RemoveNode(namespaceDeclaration.Members[index], SyntaxRemover.GetOptions(newMember));
+            return SyntaxRemover.RemoveMember(namespaceDeclaration, member);
         }
 
         public static NamespaceDeclarationSyntax InsertMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
@@ -1550,18 +1517,24 @@ namespace Roslynator.CSharp
             return namespaceDeclaration.WithMembers(namespaceDeclaration.Members.InsertMember(member, comparer));
         }
 
-        internal static NamespaceDeclarationSyntax WithMembers(
+        public static NamespaceDeclarationSyntax WithMembers(
             this NamespaceDeclarationSyntax namespaceDeclaration,
             MemberDeclarationSyntax member)
         {
+            if (namespaceDeclaration == null)
+                throw new ArgumentNullException(nameof(namespaceDeclaration));
+
             return namespaceDeclaration.WithMembers(SingletonList(member));
         }
 
-        internal static NamespaceDeclarationSyntax WithMembers(
+        public static NamespaceDeclarationSyntax WithMembers(
             this NamespaceDeclarationSyntax namespaceDeclaration,
-            IEnumerable<MemberDeclarationSyntax> memberDeclarations)
+            IEnumerable<MemberDeclarationSyntax> members)
         {
-            return namespaceDeclaration.WithMembers(List(memberDeclarations));
+            if (namespaceDeclaration == null)
+                throw new ArgumentNullException(nameof(namespaceDeclaration));
+
+            return namespaceDeclaration.WithMembers(List(members));
         }
 
         public static TextSpan HeaderSpan(this NamespaceDeclarationSyntax namespaceDeclaration)
@@ -1901,18 +1874,24 @@ namespace Roslynator.CSharp
         #endregion StatementSyntax
 
         #region StructDeclarationSyntax
-        internal static StructDeclarationSyntax WithMembers(
+        public static StructDeclarationSyntax WithMembers(
             this StructDeclarationSyntax structDeclaration,
             MemberDeclarationSyntax member)
         {
+            if (structDeclaration == null)
+                throw new ArgumentNullException(nameof(structDeclaration));
+
             return structDeclaration.WithMembers(SingletonList(member));
         }
 
-        internal static StructDeclarationSyntax WithMembers(
+        public static StructDeclarationSyntax WithMembers(
             this StructDeclarationSyntax structDeclaration,
-            IEnumerable<MemberDeclarationSyntax> memberDeclarations)
+            IEnumerable<MemberDeclarationSyntax> members)
         {
-            return structDeclaration.WithMembers(List(memberDeclarations));
+            if (structDeclaration == null)
+                throw new ArgumentNullException(nameof(structDeclaration));
+
+            return structDeclaration.WithMembers(List(members));
         }
 
         public static TextSpan HeaderSpan(this StructDeclarationSyntax structDeclaration)
@@ -1937,19 +1916,7 @@ namespace Roslynator.CSharp
 
         public static MemberDeclarationSyntax RemoveMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
         {
-            if (structDeclaration == null)
-                throw new ArgumentNullException(nameof(structDeclaration));
-
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            int index = structDeclaration.Members.IndexOf(member);
-
-            MemberDeclarationSyntax newMember = SyntaxRemover.RemoveSingleLineDocumentationComment(member);
-
-            structDeclaration = structDeclaration.WithMembers(structDeclaration.Members.ReplaceAt(index, newMember));
-
-            return structDeclaration.RemoveNode(structDeclaration.Members[index], SyntaxRemover.GetOptions(newMember));
+            return SyntaxRemover.RemoveMember(structDeclaration, member);
         }
 
         public static StructDeclarationSyntax InsertMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
@@ -1992,7 +1959,7 @@ namespace Roslynator.CSharp
             return default(TNode);
         }
 
-        //TODO: přesunout do MemberDeclarationsInfo
+        //TODO: Insert, přesunout do MemberDeclarationsInfo
         public static SyntaxList<MemberDeclarationSyntax> InsertMember(this SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (member == null)
@@ -2060,8 +2027,7 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
-        //TODO: pub
-        internal static bool IsLast(
+        public static bool IsLast(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
             bool beforeLocalFunction)
@@ -2080,8 +2046,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        //TODO: pub
-        internal static SyntaxList<StatementSyntax> Add(
+        public static SyntaxList<StatementSyntax> Add(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
             bool beforeLocalFunction)
@@ -2779,16 +2744,22 @@ namespace Roslynator.CSharp
             return SyntaxRemover.RemoveTrivia(node, span);
         }
 
-        //TODO: int
         public static TNode RemoveWhitespace<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
-            return WhitespaceRewriter.RemoveWhitespace(node, span);
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            return SyntaxRemover.RemoveWhitespace(node, span);
         }
 
-        //TODO: int
         public static TNode ReplaceWhitespace<TNode>(this TNode node, SyntaxTrivia replacement, TextSpan? span = null) where TNode : SyntaxNode
         {
-            return WhitespaceRewriter.ReplaceWhitespace(node, replacement, span);
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            var replacer = new WhitespaceReplacer(replacement, span);
+
+            return (TNode)replacer.Visit(node);
         }
 
         internal static bool IsPartOfDocumentationComment(this SyntaxNode node)
