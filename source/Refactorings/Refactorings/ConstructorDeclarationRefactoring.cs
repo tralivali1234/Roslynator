@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.CopyDocumentationCommentFromBaseMember)
-                && constructorDeclaration.HeaderSpan(includeInitializer: true).Contains(context.Span))
+                && constructorDeclaration.HeaderSpanIncludingInitializer().Contains(context.Span))
             {
                 await CopyDocumentationCommentFromBaseMemberRefactoring.ComputeRefactoringAsync(context, constructorDeclaration).ConfigureAwait(false);
             }

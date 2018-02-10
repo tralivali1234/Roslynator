@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Documentation;
 using Roslynator.CSharp.SyntaxRewriters;
+using Roslynator.CSharp.SyntaxWalkers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -123,12 +124,31 @@ namespace Roslynator.CSharp
             return TextSpan.FromBounds(block.OpenBraceToken.SpanStart, block.CloseBraceToken.Span.End);
         }
 
+        //TODO: test
         internal static bool ContainsYield(this BlockSyntax block)
         {
-            //XTODO: optimize
-            return block
+            Stopwatch sw = Stopwatch.StartNew();
+
+            bool containsYield = block
                 .DescendantNodes(block.Span, node => !node.IsNestedMethod())
                 .Any(f => f.Kind().IsYieldStatement());
+
+            sw.Stop();
+            Debug.WriteLine($"DescendantNodes: {sw.Elapsed}");
+
+            sw = Stopwatch.StartNew();
+
+            bool containsYield2 = YieldWalker.ContainsYield(block);
+
+            sw.Stop();
+            Debug.WriteLine($"YieldWalker: {sw.Elapsed}");
+
+            if (containsYield != containsYield2)
+                throw new InvalidOperationException();
+
+            Debug.WriteLine("");
+
+            return containsYield;
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -230,7 +250,6 @@ namespace Roslynator.CSharp
                 classDeclaration.CloseBraceToken.Span.End);
         }
 
-        //TODO: int
         public static MemberDeclarationSyntax RemoveMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(classDeclaration, member);
@@ -244,7 +263,7 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return classDeclaration.WithMembers(classDeclaration.Members.InsertMember(member, comparer));
+            return classDeclaration.WithMembers(classDeclaration.Members.Insert(member, comparer));
         }
         #endregion ClassDeclarationSyntax
 
@@ -346,31 +365,31 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return compilationUnit.WithMembers(compilationUnit.Members.InsertMember(member, comparer));
+            return compilationUnit.WithMembers(compilationUnit.Members.Insert(member, comparer));
         }
         #endregion CompilationUnitSyntax
 
         #region ConstructorDeclarationSyntax
-        //TODO: HeaderSpan?
-        public static TextSpan HeaderSpan(this ConstructorDeclarationSyntax constructorDeclaration, bool includeInitializer = false)
+        public static TextSpan HeaderSpan(this ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
                 throw new ArgumentNullException(nameof(constructorDeclaration));
 
-            if (includeInitializer)
-            {
-                return TextSpan.FromBounds(
-                    constructorDeclaration.Span.Start,
-                    constructorDeclaration.Initializer?.Span.End
-                        ?? constructorDeclaration.ParameterList?.Span.End
-                        ?? constructorDeclaration.Identifier.Span.End);
-            }
-            else
-            {
-                return TextSpan.FromBounds(
-                    constructorDeclaration.Span.Start,
-                    constructorDeclaration.ParameterList?.Span.End ?? constructorDeclaration.Identifier.Span.End);
-            }
+            return TextSpan.FromBounds(
+                constructorDeclaration.Span.Start,
+                constructorDeclaration.ParameterList?.Span.End ?? constructorDeclaration.Identifier.Span.End);
+        }
+
+        public static TextSpan HeaderSpanIncludingInitializer(this ConstructorDeclarationSyntax constructorDeclaration)
+        {
+            if (constructorDeclaration == null)
+                throw new ArgumentNullException(nameof(constructorDeclaration));
+
+            return TextSpan.FromBounds(
+                constructorDeclaration.Span.Start,
+                constructorDeclaration.Initializer?.Span.End
+                    ?? constructorDeclaration.ParameterList?.Span.End
+                    ?? constructorDeclaration.Identifier.Span.End);
         }
 
         public static CSharpSyntaxNode BodyOrExpressionBody(this ConstructorDeclarationSyntax constructorDeclaration)
@@ -651,8 +670,7 @@ namespace Roslynator.CSharp
                 && ifStatement.Else?.Statement?.IsKind(SyntaxKind.IfStatement) == false;
         }
 
-        //TODO: GetIfElse
-        public static IEnumerable<IfStatementOrElseClause> GetIfElse(this IfStatementSyntax ifStatement)
+        public static IEnumerable<IfStatementOrElseClause> GetCascade(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
                 throw new ArgumentNullException(nameof(ifStatement));
@@ -824,7 +842,7 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return interfaceDeclaration.WithMembers(interfaceDeclaration.Members.InsertMember(member, comparer));
+            return interfaceDeclaration.WithMembers(interfaceDeclaration.Members.Insert(member, comparer));
         }
 
         public static InterfaceDeclarationSyntax WithMembers(
@@ -1266,7 +1284,7 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return namespaceDeclaration.WithMembers(namespaceDeclaration.Members.InsertMember(member, comparer));
+            return namespaceDeclaration.WithMembers(namespaceDeclaration.Members.Insert(member, comparer));
         }
 
         public static NamespaceDeclarationSyntax WithMembers(
@@ -1457,11 +1475,10 @@ namespace Roslynator.CSharp
             return default(TNode);
         }
 
-        //TODO: int
-        public static bool IsSingleLine<TNode>(
+        internal static bool IsSingleLine<TNode>(
             this SeparatedSyntaxList<TNode> list,
             bool includeExteriorTrivia = true,
-            bool trim = true, //TODO: trimExteriorTrivia
+            bool trim = true,
             CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
         {
             int count = list.Count;
@@ -1486,7 +1503,7 @@ namespace Roslynator.CSharp
             return tree.IsSingleLineSpan(span, cancellationToken);
         }
 
-        public static bool IsMultiLine<TNode>(
+        internal static bool IsMultiLine<TNode>(
             this SeparatedSyntaxList<TNode> list,
             bool includeExteriorTrivia = true,
             bool trim = true,
@@ -1679,7 +1696,7 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return structDeclaration.WithMembers(structDeclaration.Members.InsertMember(member, comparer));
+            return structDeclaration.WithMembers(structDeclaration.Members.Insert(member, comparer));
         }
         #endregion StructDeclarationSyntax
 
@@ -1711,8 +1728,7 @@ namespace Roslynator.CSharp
             return default(TNode);
         }
 
-        //TODO: Insert, přesunout do MemberDeclarationsInfo
-        public static SyntaxList<MemberDeclarationSyntax> InsertMember(this SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
+        public static SyntaxList<MemberDeclarationSyntax> Insert(this SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
@@ -1723,7 +1739,7 @@ namespace Roslynator.CSharp
             return members.Insert(comparer.GetInsertIndex(members, member), member);
         }
 
-        public static bool IsSingleLine<TNode>(
+        internal static bool IsSingleLine<TNode>(
             this SyntaxList<TNode> list,
             bool includeExteriorTrivia = true,
             bool trim = true,
@@ -1751,7 +1767,7 @@ namespace Roslynator.CSharp
             return tree.IsSingleLineSpan(span, cancellationToken);
         }
 
-        public static bool IsMultiLine<TNode>(
+        internal static bool IsMultiLine<TNode>(
             this SyntaxList<TNode> list,
             bool includeExteriorTrivia = true,
             bool trim = true,
@@ -2176,7 +2192,7 @@ namespace Roslynator.CSharp
             return IsKind(node?.Parent, kind1, kind2, kind3, kind4, kind5, kind6);
         }
 
-        public static bool IsSingleLine(
+        internal static bool IsSingleLine(
             this SyntaxNode node,
             bool includeExteriorTrivia = true,
             bool trim = true,
@@ -2199,7 +2215,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool IsMultiLine(
+        internal static bool IsMultiLine(
             this SyntaxNode node,
             bool includeExteriorTrivia = true,
             bool trim = true,
@@ -2471,23 +2487,6 @@ namespace Roslynator.CSharp
             return Modifier.Insert(node, modifier, comparer);
         }
 
-        //TODO: int
-        public static TNode RemoveComments<TNode>(this TNode node, CommentRemoveOptions removeOptions) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            return SyntaxRemover.RemoveComments(node, removeOptions);
-        }
-
-        public static TNode RemoveComments<TNode>(this TNode node, TextSpan span, CommentRemoveOptions removeOptions) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            return SyntaxRemover.RemoveComments(node, span, removeOptions);
-        }
-
         public static TNode RemoveTrivia<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2563,17 +2562,6 @@ namespace Roslynator.CSharp
             }
 
             return false;
-        }
-
-        internal static TNode WithAccessibility<TNode>(
-            this TNode node,
-            Accessibility newAccessibility,
-            IModifierComparer comparer = null) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            return CSharpAccessibility.ChangeAccessibility(node, newAccessibility, comparer);
         }
 
         internal static SyntaxTrivia GetIndentation(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
@@ -3038,7 +3026,7 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            return typeDeclaration.WithMembers(typeDeclaration.Members.InsertMember(member, comparer));
+            return typeDeclaration.WithMembers(typeDeclaration.Members.Insert(member, comparer));
         }
 
         internal static TypeDeclarationSyntax WithMembers(this TypeDeclarationSyntax typeDeclaration, SyntaxList<MemberDeclarationSyntax> newMembers)

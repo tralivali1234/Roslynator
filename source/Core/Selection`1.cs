@@ -16,7 +16,7 @@ namespace Roslynator
             LastIndex = lastIndex;
         }
 
-        protected abstract IReadOnlyList<T> List { get; }
+        protected abstract IReadOnlyList<T> Items { get; }
 
         public virtual TextSpan Span { get; }
 
@@ -49,7 +49,7 @@ namespace Roslynator
                     throw new ArgumentOutOfRangeException(nameof(index), index, "");
                 }
 
-                return List[index];
+                return Items[index];
             }
         }
 
@@ -60,14 +60,14 @@ namespace Roslynator
 
         public T First()
         {
-            return List[FirstIndex];
+            return Items[FirstIndex];
         }
 
         public T FirstOrDefault()
         {
             if (Any())
             {
-                return List[FirstIndex];
+                return Items[FirstIndex];
             }
             else
             {
@@ -77,14 +77,14 @@ namespace Roslynator
 
         public T Last()
         {
-            return List[LastIndex];
+            return Items[LastIndex];
         }
 
         public T LastOrDefault()
         {
             if (Any())
             {
-                return List[LastIndex];
+                return Items[LastIndex];
             }
             else
             {
@@ -97,7 +97,7 @@ namespace Roslynator
             if (Any())
             {
                 for (int i = FirstIndex; i <= LastIndex; i++)
-                    yield return List[i];
+                    yield return Items[i];
             }
         }
 

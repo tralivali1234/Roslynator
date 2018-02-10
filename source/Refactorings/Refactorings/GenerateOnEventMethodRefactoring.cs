@@ -100,7 +100,7 @@ namespace Roslynator.CSharp.Refactorings
             MethodDeclarationSyntax method = CreateOnEventMethod(eventSymbol, eventArgsSymbol, supportsCSharp6)
                 .WithFormatterAnnotation();
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.InsertMember(method);
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.Insert(method);
 
             return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }

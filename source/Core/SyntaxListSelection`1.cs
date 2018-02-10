@@ -16,8 +16,7 @@ namespace Roslynator
 
         public SyntaxList<TNode> UnderlyingList { get; }
 
-        //TODO: Items
-        protected override IReadOnlyList<TNode> List => UnderlyingList;
+        protected override IReadOnlyList<TNode> Items => UnderlyingList;
 
         internal static (int firstIndex, int lastIndex) GetIndexes(SyntaxList<TNode> list, TextSpan span)
         {

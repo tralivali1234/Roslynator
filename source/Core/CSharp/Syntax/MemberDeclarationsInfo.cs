@@ -11,7 +11,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: CompilationUnitSyntax
     public struct MemberDeclarationsInfo : IReadOnlyList<MemberDeclarationSyntax>
     {
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();

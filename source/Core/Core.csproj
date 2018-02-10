@@ -47,11 +47,12 @@
     <Compile Include="CSharp\CSharpAccessibility.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentTriviaRewriter.cs" />
     <Compile Include="CSharp\Extensions\SpecialTypeExtensions.cs" />
-    <Compile Include="CSharp\Helpers\AllowedAccessibilityHelper.cs" />
     <Compile Include="CSharp\ModifierFlags.cs" />
     <Compile Include="CSharp\Extensions\ModifierFlagsExtensions.cs" />
     <Compile Include="CSharp\SyntaxRewriters\WhitespaceRemover.cs" />
     <Compile Include="CSharp\SyntaxWalkers\AssignedExpressionWalker.cs" />
+    <Compile Include="CSharp\SyntaxWalkers\SkipNestedMethodWalker.cs" />
+    <Compile Include="CSharp\SyntaxWalkers\YieldWalker.cs" />
     <Compile Include="CSharp\Syntax\AccessibilityInfo.cs" />
     <Compile Include="CSharp\BracesAnalysisResult.cs" />
     <Compile Include="CSharp\Syntax\MemberDeclarationsInfo.cs" />

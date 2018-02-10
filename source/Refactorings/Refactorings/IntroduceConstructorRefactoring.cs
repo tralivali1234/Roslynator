@@ -287,7 +287,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(declaration));
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.InsertMember(CreateConstructor(GetConstructorIdentifierText(info.Declaration), assignableMembers));
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.Insert(CreateConstructor(GetConstructorIdentifierText(info.Declaration), assignableMembers));
 
             MemberDeclarationSyntax newNode = info.WithMembers(newMembers).Declaration.WithFormatterAnnotation();
 

@@ -171,7 +171,6 @@ namespace Roslynator.CSharp.CodeFixes
 
             SyntaxList<StatementSyntax> newStatements = body.Statements.Add(returnStatement, beforeLocalFunction: true);
 
-            //XTODO: test
             BlockSyntax newBody = body.WithStatements(newStatements);
 
             return document.ReplaceNodeAsync(body, newBody, cancellationToken);

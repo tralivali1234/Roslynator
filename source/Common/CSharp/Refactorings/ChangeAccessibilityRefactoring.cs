@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.Refactorings
                 foreach (Accessibility accessibility2 in Accessibilities)
                 {
                     if (accessibility != accessibility2
-                        && !CSharpUtility.IsAllowedAccessibility(member, accessibility2, allowOverride: allowOverride))
+                        && !CSharpAccessibility.IsAllowedAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
                         allowedFlags &= ~accessibility2.GetAccessibilityFlag();
                     }
@@ -154,7 +154,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.FirstIndex)
-                .Concat(selectedMembers.Select(f => f.WithAccessibility(newAccessibility)))
+                .Concat(selectedMembers.Select(f => CSharpAccessibility.ChangeAccessibility(f, newAccessibility)))
                 .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
@@ -208,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return await solution.ReplaceNodesAsync(
                 members,
-                (node, _) => node.WithAccessibility(newAccessibility),
+                (node, _) => CSharpAccessibility.ChangeAccessibility(node, newAccessibility),
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -218,7 +218,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            SyntaxNode newNode = node.WithAccessibility(newAccessibility, ModifierComparer.Instance);
+            SyntaxNode newNode = CSharpAccessibility.ChangeAccessibility(node, newAccessibility);
 
             return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }

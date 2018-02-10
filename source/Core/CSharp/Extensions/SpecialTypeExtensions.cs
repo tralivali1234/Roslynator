@@ -6,7 +6,6 @@ namespace Roslynator.CSharp
 {
     public static class SpecialTypeExtensions
     {
-        //XTODO: System_Void
         // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table
         public static bool IsPredefinedType(this SpecialType specialType)
         {
@@ -27,6 +26,7 @@ namespace Roslynator.CSharp
                 case SpecialType.System_Single:
                 case SpecialType.System_Double:
                 case SpecialType.System_String:
+                case SpecialType.System_Void:
                     return true;
             }
 

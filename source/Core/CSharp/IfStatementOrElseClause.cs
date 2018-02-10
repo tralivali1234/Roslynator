@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    //TODO: Roslynator.CSharp.Syntax
+    //TODO: přesunout do Roslynator.CSharp.Syntax
     public struct IfStatementOrElseClause : IEquatable<IfStatementOrElseClause>
     {
         internal IfStatementOrElseClause(SyntaxNode node)

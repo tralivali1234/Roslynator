@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
             ConstructorDeclarationSyntax constructorDeclaration,
             CancellationToken cancellationToken)
         {
-            ConstructorDeclarationSyntax newNode = constructorDeclaration.WithAccessibility(Accessibility.Protected, ModifierComparer.Instance);
+            ConstructorDeclarationSyntax newNode = CSharpAccessibility.ChangeAccessibility(constructorDeclaration, Accessibility.Protected);
 
             return document.ReplaceNodeAsync(constructorDeclaration, newNode, cancellationToken);
         }

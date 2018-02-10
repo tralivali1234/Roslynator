@@ -16,7 +16,7 @@ namespace Roslynator.Text
 
         public TextLineCollection UnderlyingLines { get; }
 
-        protected override IReadOnlyList<TextLine> List => UnderlyingLines;
+        protected override IReadOnlyList<TextLine> Items => UnderlyingLines;
 
         private static (int firstIndex, int lastIndex) GetIndexes(TextLineCollection lines, TextSpan span)
         {

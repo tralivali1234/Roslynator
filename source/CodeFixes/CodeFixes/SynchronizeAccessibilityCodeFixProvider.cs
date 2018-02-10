@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.CodeFixes
                 .Select(CSharpAccessibility.GetExplicitAccessibility)
                 .Where(f => f != Accessibility.NotApplicable))
             {
-                if (CSharpUtility.IsAllowedAccessibility(memberDeclaration, accessibility))
+                if (CSharpAccessibility.IsAllowedAccessibility(memberDeclaration, accessibility))
                 {
                     CodeAction codeAction = CodeAction.Create(
                         $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'",

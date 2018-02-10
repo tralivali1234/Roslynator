@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 if (getter != null)
                 {
                     if (CSharpAccessibility.GetAccessibility(getter.Modifiers) == Accessibility.Private)
-                        getter = getter.WithAccessibility(Accessibility.Protected);
+                        getter = CSharpAccessibility.ChangeAccessibility(getter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(getter
                        .WithBody(null)
@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 if (setter != null)
                 {
                     if (CSharpAccessibility.GetAccessibility(setter.Modifiers) == Accessibility.Private)
-                        setter = setter.WithAccessibility(Accessibility.Protected);
+                        setter = CSharpAccessibility.ChangeAccessibility(setter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(setter
                        .WithBody(null)

@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
 
                             if (IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken)
                                 && ifStatement
-                                    .GetIfElse()
+                                    .GetCascade()
                                     .All(ifOrElse => IsSymbolAssignedInLastStatement(ifOrElse, symbol, semanticModel, cancellationToken)))
                             {
                                 context.ReportDiagnostic(DiagnosticDescriptors.UseReturnInsteadOfAssignment, ifStatement);
