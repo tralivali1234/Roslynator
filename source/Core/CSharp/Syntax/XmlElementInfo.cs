@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct XmlElementInfo
+    public struct XmlElementInfo : IEquatable<XmlElementInfo>
     {
         private static XmlElementInfo Default { get; } = new XmlElementInfo();
 
@@ -103,6 +104,31 @@ namespace Roslynator.CSharp.Syntax
         {
             return IsLocalName(localName1)
                 || IsLocalName(localName2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is XmlElementInfo other && Equals(other);
+        }
+
+        public bool Equals(XmlElementInfo other)
+        {
+            return EqualityComparer<XmlNodeSyntax>.Default.Equals(Element, other.Element);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<XmlNodeSyntax>.Default.GetHashCode(Element);
+        }
+
+        public static bool operator ==(XmlElementInfo info1, XmlElementInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(XmlElementInfo info1, XmlElementInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct TypeParameterConstraintInfo
+    public struct TypeParameterConstraintInfo : IEquatable<TypeParameterConstraintInfo>
     {
         private static TypeParameterConstraintInfo Default { get; } = new TypeParameterConstraintInfo();
 
@@ -197,6 +198,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return Constraint?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TypeParameterConstraintInfo other && Equals(other);
+        }
+
+        public bool Equals(TypeParameterConstraintInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
+        }
+
+        public static bool operator ==(TypeParameterConstraintInfo info1, TypeParameterConstraintInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(TypeParameterConstraintInfo info1, TypeParameterConstraintInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

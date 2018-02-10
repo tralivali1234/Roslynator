@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct NullCheckExpressionInfo
+    public struct NullCheckExpressionInfo : IEquatable<NullCheckExpressionInfo>
     {
         private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
 
@@ -231,6 +232,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return ContainingExpression?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NullCheckExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(NullCheckExpressionInfo other)
+        {
+            return EqualityComparer<ExpressionSyntax>.Default.Equals(ContainingExpression, other.ContainingExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<ExpressionSyntax>.Default.GetHashCode(ContainingExpression);
+        }
+
+        public static bool operator ==(NullCheckExpressionInfo info1, NullCheckExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(NullCheckExpressionInfo info1, NullCheckExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

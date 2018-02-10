@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct ConditionalExpressionInfo
+    public struct ConditionalExpressionInfo : IEquatable<ConditionalExpressionInfo>
     {
         private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
 
@@ -84,6 +86,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return ConditionalExpression?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ConditionalExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(ConditionalExpressionInfo other)
+        {
+            return EqualityComparer<ConditionalExpressionSyntax>.Default.Equals(ConditionalExpression, other.ConditionalExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<ConditionalExpressionSyntax>.Default.GetHashCode(ConditionalExpression);
+        }
+
+        public static bool operator ==(ConditionalExpressionInfo info1, ConditionalExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(ConditionalExpressionInfo info1, ConditionalExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

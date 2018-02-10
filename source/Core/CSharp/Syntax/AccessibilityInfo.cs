@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct AccessibilityInfo
+    // AccessModifiersInfo
+    public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
         private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
 
@@ -164,6 +167,32 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return Node?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AccessibilityInfo other
+                && Equals(other);
+        }
+
+        public bool Equals(AccessibilityInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
+        }
+
+        public static bool operator ==(AccessibilityInfo info1, AccessibilityInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(AccessibilityInfo info1, AccessibilityInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

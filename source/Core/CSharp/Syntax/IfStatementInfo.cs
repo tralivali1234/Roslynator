@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -8,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct IfStatementInfo
+    public struct IfStatementInfo : IEquatable<IfStatementInfo>
     {
         private readonly ImmutableArray<IfStatementOrElseClause> _nodes;
 
@@ -95,9 +97,34 @@ namespace Roslynator.CSharp.Syntax
             return new IfStatementInfo(ifStatement);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is IfStatementInfo other && Equals(other);
+        }
+
+        public bool Equals(IfStatementInfo other)
+        {
+            return EqualityComparer<IfStatementSyntax>.Default.Equals(TopmostIf, other.TopmostIf);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<IfStatementSyntax>.Default.GetHashCode(TopmostIf);
+        }
+
         public override string ToString()
         {
             return Nodes.FirstOrDefault().Node?.ToString() ?? base.ToString();
+        }
+
+        public static bool operator ==(IfStatementInfo info1, IfStatementInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(IfStatementInfo info1, IfStatementInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

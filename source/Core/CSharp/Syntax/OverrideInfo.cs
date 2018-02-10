@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct OverrideInfo
+    internal struct OverrideInfo : IEquatable<OverrideInfo>
     {
         private static OverrideInfo Default { get; } = new OverrideInfo();
 
@@ -211,6 +212,32 @@ namespace Roslynator.CSharp.Syntax
                 return Default;
 
             return new OverrideInfo(eventSymbol, overriddenEvent);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is OverrideInfo other && Equals(other);
+        }
+
+        public bool Equals(OverrideInfo other)
+        {
+            return EqualityComparer<ISymbol>.Default.Equals(Symbol, other.Symbol)
+                && EqualityComparer<ISymbol>.Default.Equals(OverriddenSymbol, other.OverriddenSymbol);
+        }
+
+        public override int GetHashCode()
+        {
+            return Hash.Combine(Symbol, Hash.Create(OverriddenSymbol));
+        }
+
+        public static bool operator ==(OverrideInfo info1, OverrideInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(OverrideInfo info1, OverrideInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

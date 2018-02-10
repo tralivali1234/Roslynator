@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct BinaryExpressionInfo
+    public struct BinaryExpressionInfo : IEquatable<BinaryExpressionInfo>
     {
         private static BinaryExpressionInfo Default { get; } = new BinaryExpressionInfo();
 
@@ -80,6 +82,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return BinaryExpression?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BinaryExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(BinaryExpressionInfo other)
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(BinaryExpression, other.BinaryExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.GetHashCode(BinaryExpression);
+        }
+
+        public static bool operator ==(BinaryExpressionInfo info1, BinaryExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(BinaryExpressionInfo info1, BinaryExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

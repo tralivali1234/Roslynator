@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct MemberDeclarationsInfo : IReadOnlyList<MemberDeclarationSyntax>
+    public struct MemberDeclarationsInfo : IReadOnlyList<MemberDeclarationSyntax>, IEquatable<MemberDeclarationsInfo>
     {
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
@@ -337,6 +337,31 @@ namespace Roslynator.CSharp.Syntax
         {
             if (Declaration == null)
                 throw new InvalidOperationException($"{nameof(MemberDeclarationsInfo)} is not initalized.");
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MemberDeclarationsInfo other && Equals(other);
+        }
+
+        public bool Equals(MemberDeclarationsInfo other)
+        {
+            return EqualityComparer<MemberDeclarationSyntax>.Default.Equals(Declaration, other.Declaration);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<MemberDeclarationSyntax>.Default.GetHashCode(Declaration);
+        }
+
+        public static bool operator ==(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

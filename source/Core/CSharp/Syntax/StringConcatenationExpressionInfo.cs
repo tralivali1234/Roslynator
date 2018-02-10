@@ -15,7 +15,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct StringConcatenationExpressionInfo
+    internal struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
     {
         private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
 
@@ -415,6 +415,32 @@ namespace Roslynator.CSharp.Syntax
             return (s[0] == '@')
                 ? s.Substring(2, s.Length - 3)
                 : s.Substring(1, s.Length - 2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is StringConcatenationExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(StringConcatenationExpressionInfo other)
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(OriginalExpression, other.OriginalExpression)
+                && EqualityComparer<TextSpan?>.Default.Equals(Span, other.Span);
+        }
+
+        public override int GetHashCode()
+        {
+            return Hash.Combine(Span.GetHashCode(), Hash.Create(OriginalExpression));
+        }
+
+        public static bool operator ==(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

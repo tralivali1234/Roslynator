@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -7,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct ModifiersInfo
+    internal struct ModifiersInfo : IEquatable<ModifiersInfo>
     {
         private readonly ModifierFlags _flags;
 
@@ -270,6 +272,31 @@ namespace Roslynator.CSharp.Syntax
             }
 
             return flags;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ModifiersInfo other && Equals(other);
+        }
+
+        public bool Equals(ModifiersInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
+        }
+
+        public static bool operator ==(ModifiersInfo info1, ModifiersInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(ModifiersInfo info1, ModifiersInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

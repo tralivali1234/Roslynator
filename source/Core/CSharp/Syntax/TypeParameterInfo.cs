@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct TypeParameterInfo
+    public struct TypeParameterInfo : IEquatable<TypeParameterInfo>
     {
         private static TypeParameterInfo Default { get; } = new TypeParameterInfo();
 
@@ -214,6 +215,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return TypeParameter?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TypeParameterInfo other && Equals(other);
+        }
+
+        public bool Equals(TypeParameterInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
+        }
+
+        public static bool operator ==(TypeParameterInfo info1, TypeParameterInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(TypeParameterInfo info1, TypeParameterInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

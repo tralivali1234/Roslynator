@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct SimpleIfStatementInfo
+    public struct SimpleIfStatementInfo : IEquatable<SimpleIfStatementInfo>
     {
         private static SimpleIfStatementInfo Default { get; } = new SimpleIfStatementInfo();
 
@@ -63,6 +65,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return IfStatement?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SimpleIfStatementInfo other && Equals(other);
+        }
+
+        public bool Equals(SimpleIfStatementInfo other)
+        {
+            return EqualityComparer<IfStatementSyntax>.Default.Equals(IfStatement, other.IfStatement);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<IfStatementSyntax>.Default.GetHashCode(IfStatement);
+        }
+
+        public static bool operator ==(SimpleIfStatementInfo info1, SimpleIfStatementInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(SimpleIfStatementInfo info1, SimpleIfStatementInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct SingleParameterLambdaExpressionInfo
+    public struct SingleParameterLambdaExpressionInfo : IEquatable<SingleParameterLambdaExpressionInfo>
     {
         private static SingleParameterLambdaExpressionInfo Default { get; } = new SingleParameterLambdaExpressionInfo();
 
@@ -116,6 +118,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return LambdaExpression?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SingleParameterLambdaExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(SingleParameterLambdaExpressionInfo other)
+        {
+            return EqualityComparer<LambdaExpressionSyntax>.Default.Equals(LambdaExpression, other.LambdaExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<LambdaExpressionSyntax>.Default.GetHashCode(LambdaExpression);
+        }
+
+        public static bool operator ==(SingleParameterLambdaExpressionInfo info1, SingleParameterLambdaExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(SingleParameterLambdaExpressionInfo info1, SingleParameterLambdaExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct GenericInfo
+    public struct GenericInfo : IEquatable<GenericInfo>
     {
         private static GenericInfo Default { get; } = new GenericInfo();
 
@@ -361,6 +362,31 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return Declaration?.ToString() ?? base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is GenericInfo other && Equals(other);
+        }
+
+        public bool Equals(GenericInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
+        }
+
+        public static bool operator ==(GenericInfo info1, GenericInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(GenericInfo info1, GenericInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }
