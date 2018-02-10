@@ -127,9 +127,9 @@ namespace Roslynator.CSharp
         internal static bool ContainsYield(this BlockSyntax block)
         {
             //XTODO: optimize
-            return block?
+            return block
                 .DescendantNodes(block.Span, node => !node.IsNestedMethod())
-                .Any(f => f.Kind().IsYieldStatement()) == true;
+                .Any(f => f.Kind().IsYieldStatement());
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -1135,55 +1135,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: int, GetMembersOrDefault
-        public static SyntaxList<MemberDeclarationSyntax> GetMembers(this MemberDeclarationSyntax member)
-        {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            switch (member.Kind())
-            {
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)member).Members;
-                case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)member).Members;
-                case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)member).Members;
-                case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)member).Members;
-                default:
-                    {
-                        //TODO: throw ex?
-                        Debug.Fail(member.Kind().ToString());
-                        return default(SyntaxList<MemberDeclarationSyntax>);
-                    }
-            }
-        }
-
-        internal static MemberDeclarationSyntax WithMembers(this MemberDeclarationSyntax member, SyntaxList<MemberDeclarationSyntax> newMembers)
-        {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            switch (member.Kind())
-            {
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)member).WithMembers(newMembers);
-                case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)member).WithMembers(newMembers);
-                case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)member).WithMembers(newMembers);
-                case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)member).WithMembers(newMembers);
-                default:
-                    {
-                        //TODO: throw ex?
-                        Debug.Fail(member.Kind().ToString());
-                        return member;
-                    }
-            }
-        }
-
         //TODO: pub
         internal static Accessibility GetDefaultExplicitAccessibility(this MemberDeclarationSyntax member)
         {
@@ -2041,6 +1992,7 @@ namespace Roslynator.CSharp
             return default(TNode);
         }
 
+        //TODO: přesunout do MemberDeclarationsInfo
         public static SyntaxList<MemberDeclarationSyntax> InsertMember(this SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (member == null)

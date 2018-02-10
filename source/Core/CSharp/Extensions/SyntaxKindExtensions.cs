@@ -60,6 +60,21 @@ namespace Roslynator.CSharp
             return kind.Is(SyntaxKind.SingleLineDocumentationCommentTrivia, SyntaxKind.MultiLineDocumentationCommentTrivia);
         }
 
+        public static bool CanContainStatements(this SyntaxKind kind)
+        {
+            return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
+        }
+
+        //TODO: CanContainMembers
+        public static bool CanContainMemberDeclarations(this SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.NamespaceDeclaration,
+                SyntaxKind.ClassDeclaration,
+                SyntaxKind.StructDeclaration,
+                SyntaxKind.InterfaceDeclaration);
+        }
+
         public static bool IsYieldStatement(this SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);

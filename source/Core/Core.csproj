@@ -53,6 +53,7 @@
     <Compile Include="CSharp\SyntaxWalkers\AssignedExpressionWalker.cs" />
     <Compile Include="CSharp\Syntax\AccessibilityInfo.cs" />
     <Compile Include="CSharp\BracesAnalysisResult.cs" />
+    <Compile Include="CSharp\Syntax\MemberDeclarationsInfo.cs" />
     <Compile Include="EquivalenceKey.cs" />
     <Compile Include="CSharp\Extensions\SyntaxKindExtensions.cs" />
     <Compile Include="CSharp\Helpers\DetermineParameterTypeHelper.cs" />

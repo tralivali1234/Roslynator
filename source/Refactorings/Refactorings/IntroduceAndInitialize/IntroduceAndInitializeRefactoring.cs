@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
 {
@@ -109,9 +110,9 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
         {
             ConstructorDeclarationSyntax constructor = Constructor;
 
-            var containingMember = constructor.Parent as MemberDeclarationSyntax;
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(constructor.Parent);
 
-            SyntaxList<MemberDeclarationSyntax> members = containingMember.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members.Replace(
                 constructor,
@@ -123,10 +124,7 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
                 GetDeclarationIndex(members),
                 CreateDeclarations(constructor, semanticModel, cancellationToken));
 
-            return await document.ReplaceNodeAsync(
-                containingMember,
-                containingMember.WithMembers(newMembers),
-                cancellationToken).ConfigureAwait(false);
+            return await document.ReplaceMembersAsync(info, newMembers, cancellationToken).ConfigureAwait(false);
         }
 
         private IEnumerable<ExpressionStatementSyntax> CreateAssignments()

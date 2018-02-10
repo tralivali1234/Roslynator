@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -41,12 +42,13 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsSingleInstanceConstructor(ConstructorDeclarationSyntax constructor)
         {
-            var parent = constructor.Parent as MemberDeclarationSyntax;
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(constructor.Parent);
 
-            return parent?
-                    .GetMembers()
+            return info.Success
+                && info
+                    .Members
                     .OfType<ConstructorDeclarationSyntax>()
-                    .All(f => f.Equals(constructor) || f.Modifiers.Contains(SyntaxKind.StaticKeyword)) == true;
+                    .All(f => f.Equals(constructor) || f.Modifiers.Contains(SyntaxKind.StaticKeyword));
         }
 
         public static Task<Document> RefactorAsync(

@@ -158,11 +158,9 @@ namespace Roslynator.CSharp.Refactorings
                 .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
-            MemberDeclarationSyntax containingDeclaration = selectedMembers.ContainingDeclaration;
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
-            MemberDeclarationSyntax newNode = containingDeclaration.WithMembers(newMembers);
-
-            return document.ReplaceNodeAsync(containingDeclaration, newNode, cancellationToken);
+            return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         public static async Task<Solution> RefactorAsync(

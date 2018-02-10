@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -42,10 +43,9 @@ namespace Roslynator.CSharp.Refactorings
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
-            var parentMember = (MemberDeclarationSyntax)propertyDeclaration.Parent;
-            SyntaxList<MemberDeclarationSyntax> members = parentMember.GetMembers();
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(propertyDeclaration.Parent);
 
-            int propertyIndex = members.IndexOf(propertyDeclaration);
+            int propertyIndex = info.IndexOf(propertyDeclaration);
 
             if (IsReadOnlyAutoProperty(propertyDeclaration))
             {
@@ -55,16 +55,14 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                MemberDeclarationSyntax newParentMember = parentMember.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f));
-
-                members = newParentMember.GetMembers();
+                info = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
             }
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceAt(propertyIndex, newPropertyDeclaration);
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members
+                .ReplaceAt(propertyIndex, newPropertyDeclaration)
+                .InsertMember(fieldDeclaration);
 
-            newMembers = newMembers.InsertMember(fieldDeclaration);
-
-            return await document.ReplaceNodeAsync(parentMember, parentMember.WithMembers(newMembers), cancellationToken).ConfigureAwait(false);
+            return await document.ReplaceMembersAsync(info, newMembers, cancellationToken).ConfigureAwait(false);
         }
 
         private static bool IsReadOnlyAutoProperty(PropertyDeclarationSyntax propertyDeclaration)

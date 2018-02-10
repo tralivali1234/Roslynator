@@ -127,6 +127,18 @@ namespace Roslynator
             return document.ReplaceNodeAsync(statementsInfo.Node, statementsInfo.WithStatements(newStatements).Node, cancellationToken);
         }
 
+        internal static Task<Document> ReplaceMembersAsync(
+            this Document document,
+            MemberDeclarationsInfo info,
+            IEnumerable<MemberDeclarationSyntax> newMembers,
+            CancellationToken cancellationToken)
+        {
+            return document.ReplaceNodeAsync(
+                info.Declaration,
+                info.WithMembers(newMembers).Declaration,
+                cancellationToken);
+        }
+
         public static async Task<Document> ReplaceNodesAsync<TNode>(
             this Document document,
             IEnumerable<TNode> nodes,

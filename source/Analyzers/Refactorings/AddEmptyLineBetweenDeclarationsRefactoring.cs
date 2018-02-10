@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -64,9 +65,11 @@ namespace Roslynator.CSharp.Refactorings
 
         private static MemberDeclarationSyntax GetNextDeclaration(MemberDeclarationSyntax declaration)
         {
-            if (declaration.Parent is MemberDeclarationSyntax containingDeclaration)
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(declaration.Parent);
+
+            if (info.Success)
             {
-                SyntaxList<MemberDeclarationSyntax> members = containingDeclaration.GetMembers();
+                SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
                 if (members.Count > 1)
                 {

@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -104,14 +105,6 @@ namespace Roslynator.CSharp.Syntax
             return Create(selectedStatements?.UnderlyingList.FirstOrDefault());
         }
 
-        public static bool CanCreate(StatementSyntax statement)
-        {
-            return statement?
-                .Parent?
-                .Kind()
-                .Is(SyntaxKind.Block, SyntaxKind.SwitchSection) == true;
-        }
-
         public StatementsInfo WithStatements(IEnumerable<StatementSyntax> statements)
         {
             return WithStatements(List(statements));
@@ -119,34 +112,43 @@ namespace Roslynator.CSharp.Syntax
 
         public StatementsInfo WithStatements(SyntaxList<StatementSyntax> statements)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (IsInBlock)
                 return new StatementsInfo(Block.WithStatements(statements));
 
             if (IsInSwitchSection)
                 return new StatementsInfo(SwitchSection.WithStatements(statements));
 
-            return default(StatementsInfo);
+            Debug.Fail("");
+            return this;
         }
 
         public StatementsInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (IsInBlock)
                 return new StatementsInfo(Block.RemoveNode(node, options));
 
             if (IsInSwitchSection)
                 return new StatementsInfo(SwitchSection.RemoveNode(node, options));
 
+            Debug.Fail("");
             return this;
         }
 
         public StatementsInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (IsInBlock)
                 return new StatementsInfo(Block.ReplaceNode(oldNode, newNode));
 
             if (IsInSwitchSection)
                 return new StatementsInfo(SwitchSection.ReplaceNode(oldNode, newNode));
 
+            Debug.Fail("");
             return this;
         }
 
@@ -248,6 +250,12 @@ namespace Roslynator.CSharp.Syntax
         public StatementsInfo ReplaceRange(StatementSyntax nodeInList, IEnumerable<StatementSyntax> newNodes)
         {
             return WithStatements(Statements.ReplaceRange(nodeInList, newNodes));
+        }
+
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (Node == null)
+                throw new InvalidOperationException($"{nameof(StatementsInfo)} is not initalized.");
         }
     }
 }

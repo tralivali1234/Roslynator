@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -94,16 +95,14 @@ namespace Roslynator.CSharp.Refactorings
             bool supportsCSharp6,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var containingMember = (MemberDeclarationSyntax)eventFieldDeclaration.Parent;
-
-            SyntaxList<MemberDeclarationSyntax> members = containingMember.GetMembers();
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(eventFieldDeclaration.Parent);
 
             MethodDeclarationSyntax method = CreateOnEventMethod(eventSymbol, eventArgsSymbol, supportsCSharp6)
                 .WithFormatterAnnotation();
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = members.InsertMember(method);
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.InsertMember(method);
 
-            return document.ReplaceNodeAsync(containingMember, containingMember.WithMembers(newMembers), cancellationToken);
+            return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         private static MethodDeclarationSyntax CreateOnEventMethod(

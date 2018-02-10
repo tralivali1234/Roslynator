@@ -15,6 +15,7 @@ namespace Roslynator.CSharp
             ContainingDeclaration = containingDeclaration;
         }
 
+        //TODO: Declaration
         public MemberDeclarationSyntax ContainingDeclaration { get; }
 
         public static MemberDeclarationsSelection Create(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span)

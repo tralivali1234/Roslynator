@@ -174,6 +174,36 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.LocalDeclarationStatementInfo.Create(expression, allowMissing);
         }
 
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(SyntaxNode declaration)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(declaration);
+        }
+
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(NamespaceDeclarationSyntax declaration)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(declaration);
+        }
+
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(ClassDeclarationSyntax declaration)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(declaration);
+        }
+
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(StructDeclarationSyntax declaration)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(declaration);
+        }
+
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(InterfaceDeclarationSyntax declaration)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(declaration);
+        }
+
+        internal static MemberDeclarationsInfo MemberDeclarationsInfo(MemberDeclarationsSelection selectedMembers)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(selectedMembers);
+        }
+
         public static MemberInvocationExpressionInfo MemberInvocationExpressionInfo(
             SyntaxNode node,
             bool walkDownParentheses = true,

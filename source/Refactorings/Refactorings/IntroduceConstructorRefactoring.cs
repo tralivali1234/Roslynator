@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -44,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 List<MemberDeclarationSyntax> list = null;
 
-                foreach (MemberDeclarationSyntax member in declaration.GetMembers())
+                foreach (MemberDeclarationSyntax member in SyntaxInfo.MemberDeclarationsInfo(declaration).Members)
                 {
                     if (await CanBeAssignedFromConstructorAsync(context, member).ConfigureAwait(false))
                     {
@@ -150,18 +151,16 @@ namespace Roslynator.CSharp.Refactorings
 
             if (variable != null)
             {
-                MemberDeclarationSyntax parentMember = GetContainingMember(fieldDeclaration);
+                MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingMember(fieldDeclaration));
 
-                if (parentMember != null)
+                if (info.Success)
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
 
                     return symbol?.IsStatic == false
-                        && !parentMember
-                            .GetMembers()
-                            .Any(member => IsBackingField(member, symbol, context, semanticModel));
+                        && !info.Members.Any(member => IsBackingField(member, symbol, context, semanticModel));
                 }
             }
 
@@ -286,16 +285,13 @@ namespace Roslynator.CSharp.Refactorings
             List<MemberDeclarationSyntax> assignableMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationSyntax parentMember = GetContainingMember(declaration);
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingMember(declaration));
 
-            SyntaxList<MemberDeclarationSyntax> members = parentMember.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.InsertMember(CreateConstructor(GetConstructorIdentifierText(info.Declaration), assignableMembers));
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = members.InsertMember(CreateConstructor(GetConstructorIdentifierText(parentMember), assignableMembers));
+            MemberDeclarationSyntax newNode = info.WithMembers(newMembers).Declaration.WithFormatterAnnotation();
 
-            MemberDeclarationSyntax newNode = parentMember.WithMembers(newMembers)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(parentMember, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(info.Declaration, newNode, cancellationToken);
         }
 
         private static string GetConstructorIdentifierText(MemberDeclarationSyntax declaration)
@@ -311,6 +307,7 @@ namespace Roslynator.CSharp.Refactorings
             return null;
         }
 
+        //TODO: GetContainingDeclaration
         private static MemberDeclarationSyntax GetContainingMember(MemberDeclarationSyntax declaration)
         {
             switch (declaration.Kind())

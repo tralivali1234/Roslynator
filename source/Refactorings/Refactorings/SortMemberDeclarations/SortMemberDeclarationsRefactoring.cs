@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Comparers;
+using Roslynator.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxRewriters.SortMembers;
 
 namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
@@ -101,9 +102,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
         {
             MemberDeclarationComparer comparer = MemberDeclarationComparer.GetInstance(sortMode);
 
-            MemberDeclarationSyntax containingDeclaration = selectedMembers.ContainingDeclaration;
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
-            SyntaxList<MemberDeclarationSyntax> members = containingDeclaration.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.FirstIndex)
@@ -111,9 +112,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
                 .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
-            MemberDeclarationSyntax newNode = containingDeclaration.WithMembers(newMembers);
-
-            return document.ReplaceNodeAsync(containingDeclaration, newNode, cancellationToken);
+            return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         public static async Task<Document> RefactorAsync(

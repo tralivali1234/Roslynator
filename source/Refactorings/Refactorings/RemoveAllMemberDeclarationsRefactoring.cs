@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,23 +14,15 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSyntax member)
         {
-            switch (member.Kind())
-            {
-                case SyntaxKind.NamespaceDeclaration:
-                case SyntaxKind.ClassDeclaration:
-                case SyntaxKind.StructDeclaration:
-                case SyntaxKind.InterfaceDeclaration:
-                    {
-                        if (CanRefactor(member, context.Span))
-                        {
-                            context.RegisterRefactoring(
-                                "Remove all members",
-                                cancellationToken => RefactorAsync(context.Document, member, cancellationToken));
-                        }
+            if (!member.Kind().CanContainMemberDeclarations())
+                return;
 
-                        break;
-                    }
-            }
+            if (!CanRefactor(member, context.Span))
+                return;
+
+            context.RegisterRefactoring(
+                "Remove all members",
+                cancellationToken => RefactorAsync(context.Document, member, cancellationToken));
         }
 
         public static bool CanRefactor(MemberDeclarationSyntax member, TextSpan span)
@@ -78,11 +71,14 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax member,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationSyntax newNode = member
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(member);
+
+            MemberDeclarationSyntax newNode = info
                 .WithMembers(default(SyntaxList<MemberDeclarationSyntax>))
+                .Declaration
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(member, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(info.Declaration, newNode, cancellationToken);
         }
     }
 }
