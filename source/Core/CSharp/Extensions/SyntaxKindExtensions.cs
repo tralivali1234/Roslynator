@@ -255,6 +255,15 @@ namespace Roslynator.CSharp
             }
         }
 
+        internal static bool CanContainContinueStatement(this SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.WhileStatement,
+                SyntaxKind.DoStatement,
+                SyntaxKind.ForStatement,
+                SyntaxKind.ForEachStatement);
+        }
+
         internal static bool IsSingleTokenExpression(this SyntaxKind kind)
         {
             switch (kind)
