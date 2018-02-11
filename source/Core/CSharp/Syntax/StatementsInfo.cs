@@ -13,19 +13,19 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct StatementsInfo : IReadOnlyList<StatementSyntax>, IEquatable<StatementsInfo>
     {
-        private static StatementsInfo Default { get; } = new StatementsInfo();
-
         internal StatementsInfo(BlockSyntax block)
-            : this()
         {
             Block = block;
+            SwitchSection = null;
             Statements = block.Statements;
         }
 
+        private static StatementsInfo Default { get; } = new StatementsInfo();
+
         internal StatementsInfo(SwitchSectionSyntax switchSection)
-            : this()
         {
             SwitchSection = switchSection;
+            Block = null;
             Statements = switchSection.Statements;
         }
 
@@ -40,6 +40,7 @@ namespace Roslynator.CSharp.Syntax
             get { return Block ?? (CSharpSyntaxNode)SwitchSection; }
         }
 
+        //TODO: ren
         public bool IsInBlock
         {
             get { return Block != null; }
@@ -255,6 +256,11 @@ namespace Roslynator.CSharp.Syntax
         {
             if (Node == null)
                 throw new InvalidOperationException($"{nameof(StatementsInfo)} is not initalized.");
+        }
+
+        public override string ToString()
+        {
+            return Node?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)

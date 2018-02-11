@@ -10,8 +10,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct SimpleIfStatementInfo : IEquatable<SimpleIfStatementInfo>
     {
-        private static SimpleIfStatementInfo Default { get; } = new SimpleIfStatementInfo();
-
         private SimpleIfStatementInfo(
             IfStatementSyntax ifStatement,
             ExpressionSyntax condition,
@@ -21,6 +19,8 @@ namespace Roslynator.CSharp.Syntax
             Condition = condition;
             Statement = statement;
         }
+
+        private static SimpleIfStatementInfo Default { get; } = new SimpleIfStatementInfo();
 
         public IfStatementSyntax IfStatement { get; }
 

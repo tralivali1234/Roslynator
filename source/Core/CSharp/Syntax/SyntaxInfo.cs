@@ -8,9 +8,94 @@ namespace Roslynator.CSharp.Syntax
 {
     public static class SyntaxInfo
     {
-        public static AccessibilityInfo AccessibilityInfo(SyntaxNode node)
+        public static AccessibilityInfo AccessibilityInfo(SyntaxNode declaration)
         {
-            return Syntax.AccessibilityInfo.Create(node);
+            return Syntax.AccessibilityInfo.Create(declaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(ClassDeclarationSyntax classDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(classDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(ConstructorDeclarationSyntax constructorDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(constructorDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(conversionOperatorDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(DelegateDeclarationSyntax delegateDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(delegateDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(DestructorDeclarationSyntax destructorDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(destructorDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(EnumDeclarationSyntax enumDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(enumDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(EventDeclarationSyntax eventDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(eventDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(EventFieldDeclarationSyntax eventFieldDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(eventFieldDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(FieldDeclarationSyntax fieldDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(fieldDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(IndexerDeclarationSyntax indexerDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(indexerDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(interfaceDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(MethodDeclarationSyntax methodDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(methodDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(OperatorDeclarationSyntax operatorDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(operatorDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(PropertyDeclarationSyntax propertyDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(propertyDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(StructDeclarationSyntax structDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(structDeclaration);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(IncompleteMemberSyntax incompleteMember)
+        {
+            return Syntax.AccessibilityInfo.Create(incompleteMember);
+        }
+
+        public static AccessibilityInfo AccessibilityInfo(AccessorDeclarationSyntax accessorDeclaration)
+        {
+            return Syntax.AccessibilityInfo.Create(accessorDeclaration);
         }
 
         public static AsExpressionInfo AsExpressionInfo(
@@ -256,19 +341,34 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.ModifiersInfo.Create(node);
         }
 
-        internal static ModifiersInfo ModifiersInfo(MethodDeclarationSyntax methodDeclaration)
+        internal static ModifiersInfo ModifiersInfo(ClassDeclarationSyntax classDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(methodDeclaration);
+            return Syntax.ModifiersInfo.Create(classDeclaration);
         }
 
-        internal static ModifiersInfo ModifiersInfo(PropertyDeclarationSyntax propertyDeclaration)
+        internal static ModifiersInfo ModifiersInfo(ConstructorDeclarationSyntax constructorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(propertyDeclaration);
+            return Syntax.ModifiersInfo.Create(constructorDeclaration);
         }
 
-        internal static ModifiersInfo ModifiersInfo(IndexerDeclarationSyntax indexerDeclaration)
+        internal static ModifiersInfo ModifiersInfo(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(indexerDeclaration);
+            return Syntax.ModifiersInfo.Create(conversionOperatorDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(DelegateDeclarationSyntax delegateDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(delegateDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(DestructorDeclarationSyntax destructorDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(destructorDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(EnumDeclarationSyntax enumDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(enumDeclaration);
         }
 
         internal static ModifiersInfo ModifiersInfo(EventDeclarationSyntax eventDeclaration)
@@ -279,6 +379,66 @@ namespace Roslynator.CSharp.Syntax
         internal static ModifiersInfo ModifiersInfo(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
             return Syntax.ModifiersInfo.Create(eventFieldDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(FieldDeclarationSyntax fieldDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(fieldDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(IndexerDeclarationSyntax indexerDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(indexerDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(interfaceDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(MethodDeclarationSyntax methodDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(methodDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(OperatorDeclarationSyntax operatorDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(operatorDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(PropertyDeclarationSyntax propertyDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(propertyDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(StructDeclarationSyntax structDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(structDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(IncompleteMemberSyntax incompleteMember)
+        {
+            return Syntax.ModifiersInfo.Create(incompleteMember);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(AccessorDeclarationSyntax accessorDeclaration)
+        {
+            return Syntax.ModifiersInfo.Create(accessorDeclaration);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(LocalDeclarationStatementSyntax localDeclarationStatement)
+        {
+            return Syntax.ModifiersInfo.Create(localDeclarationStatement);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(LocalFunctionStatementSyntax localFunctionStatement)
+        {
+            return Syntax.ModifiersInfo.Create(localFunctionStatement);
+        }
+
+        internal static ModifiersInfo ModifiersInfo(ParameterSyntax parameter)
+        {
+            return Syntax.ModifiersInfo.Create(parameter);
         }
 
         public static NullCheckExpressionInfo NullCheckExpressionInfo(

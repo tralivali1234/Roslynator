@@ -16,37 +16,41 @@ namespace Roslynator.CSharp.Syntax
 
         private IfStatementInfo(IfStatementSyntax ifStatement)
         {
+            _nodes = GetCascade(ifStatement);
+        }
+
+        private static ImmutableArray<IfStatementOrElseClause> GetCascade(IfStatementSyntax ifStatement)
+        {
+            ElseClauseSyntax elseClause = ifStatement.Else;
+
+            if (elseClause == null)
+                return ImmutableArray.Create<IfStatementOrElseClause>(ifStatement);
+
             ImmutableArray<IfStatementOrElseClause>.Builder builder = ImmutableArray.CreateBuilder<IfStatementOrElseClause>();
 
             builder.Add(ifStatement);
 
             while (true)
             {
-                ElseClauseSyntax elseClause = ifStatement.Else;
+                StatementSyntax statement = elseClause.Statement;
 
-                if (elseClause != null)
+                if (statement?.Kind() == SyntaxKind.IfStatement)
                 {
-                    StatementSyntax statement = elseClause?.Statement;
+                    ifStatement = (IfStatementSyntax)statement;
 
-                    if (statement?.Kind() == SyntaxKind.IfStatement)
-                    {
-                        ifStatement = (IfStatementSyntax)statement;
+                    builder.Add(ifStatement);
 
-                        builder.Add(ifStatement);
-                    }
-                    else
-                    {
-                        builder.Add(elseClause);
-                        break;
-                    }
+                    elseClause = ifStatement.Else;
+
+                    if (elseClause == null)
+                        return builder.ToImmutableArray();
                 }
                 else
                 {
-                    break;
+                    builder.Add(elseClause);
+                    return builder.ToImmutableArray();
                 }
             }
-
-            _nodes = builder.ToImmutableArray();
         }
 
         public ImmutableArray<IfStatementOrElseClause> Nodes
@@ -97,6 +101,11 @@ namespace Roslynator.CSharp.Syntax
             return new IfStatementInfo(ifStatement);
         }
 
+        public override string ToString()
+        {
+            return Nodes.FirstOrDefault().Node?.ToString() ?? base.ToString();
+        }
+
         public override bool Equals(object obj)
         {
             return obj is IfStatementInfo other && Equals(other);
@@ -110,11 +119,6 @@ namespace Roslynator.CSharp.Syntax
         public override int GetHashCode()
         {
             return EqualityComparer<IfStatementSyntax>.Default.GetHashCode(TopmostIf);
-        }
-
-        public override string ToString()
-        {
-            return Nodes.FirstOrDefault().Node?.ToString() ?? base.ToString();
         }
 
         public static bool operator ==(IfStatementInfo info1, IfStatementInfo info2)

@@ -17,8 +17,6 @@ namespace Roslynator.CSharp.Syntax
 {
     internal struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
     {
-        private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
-
         private StringConcatenationExpressionInfo(BinaryExpressionSyntax addExpression, IEnumerable<ExpressionSyntax> expressions, TextSpan? span = null)
         {
             ContainsNonSpecificExpression = false;
@@ -63,6 +61,8 @@ namespace Roslynator.CSharp.Syntax
                 }
             }
         }
+
+        private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 

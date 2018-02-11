@@ -12,8 +12,6 @@ namespace Roslynator.CSharp.Syntax
 {
     internal struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>
     {
-        private static BinaryExpressionChainInfo Default { get; } = new BinaryExpressionChainInfo();
-
         private BinaryExpressionChainInfo(
             BinaryExpressionSyntax binaryExpression,
             SyntaxKind kind,
@@ -23,6 +21,8 @@ namespace Roslynator.CSharp.Syntax
             Kind = kind;
             Expressions = ImmutableArray.CreateRange(expressions);
         }
+
+        private static BinaryExpressionChainInfo Default { get; } = new BinaryExpressionChainInfo();
 
         public BinaryExpressionSyntax BinaryExpression { get; }
 

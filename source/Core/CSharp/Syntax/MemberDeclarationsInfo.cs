@@ -13,13 +13,13 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct MemberDeclarationsInfo : IReadOnlyList<MemberDeclarationSyntax>, IEquatable<MemberDeclarationsInfo>
     {
-        private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
-
         internal MemberDeclarationsInfo(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members)
         {
             Members = members;
             Declaration = declaration;
         }
+
+        private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
         public MemberDeclarationSyntax Declaration { get; }
 
@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxKind Kind
         {
-            get { return Declaration.Kind(); }
+            get { return Declaration?.Kind() ?? SyntaxKind.None; }
         }
 
         public bool Success
@@ -108,7 +108,7 @@ namespace Roslynator.CSharp.Syntax
 
         internal static MemberDeclarationsInfo Create(MemberDeclarationsSelection selectedMembers)
         {
-            return new MemberDeclarationsInfo(selectedMembers.Declaration, (SyntaxList<MemberDeclarationSyntax>)selectedMembers.UnderlyingList);
+            return new MemberDeclarationsInfo(selectedMembers.Declaration, selectedMembers.UnderlyingList);
         }
 
         public MemberDeclarationsInfo WithMembers(IEnumerable<MemberDeclarationSyntax> members)
@@ -337,6 +337,11 @@ namespace Roslynator.CSharp.Syntax
         {
             if (Declaration == null)
                 throw new InvalidOperationException($"{nameof(MemberDeclarationsInfo)} is not initalized.");
+        }
+
+        public override string ToString()
+        {
+            return Declaration?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)

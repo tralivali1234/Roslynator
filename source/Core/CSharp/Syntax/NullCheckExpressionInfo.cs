@@ -12,8 +12,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct NullCheckExpressionInfo : IEquatable<NullCheckExpressionInfo>
     {
-        private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
-
         private NullCheckExpressionInfo(
             ExpressionSyntax containingExpression,
             ExpressionSyntax expression,
@@ -24,6 +22,9 @@ namespace Roslynator.CSharp.Syntax
             Kind = kind;
         }
 
+        private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
+
+        //TODO: ren
         public ExpressionSyntax ContainingExpression { get; }
 
         public ExpressionSyntax Expression { get; }
@@ -53,6 +54,7 @@ namespace Roslynator.CSharp.Syntax
             SemanticModel semanticModel = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            //TODO: ?
             if (semanticModel == null
                 && (allowedKinds & NullCheckKind.HasValueProperty) != 0)
             {

@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct MemberInvocationExpressionInfo : IEquatable<MemberInvocationExpressionInfo>
     {
-        private static MemberInvocationExpressionInfo Default { get; } = new MemberInvocationExpressionInfo();
-
         private MemberInvocationExpressionInfo(
             ExpressionSyntax expression,
             SimpleNameSyntax name,
@@ -22,6 +20,8 @@ namespace Roslynator.CSharp.Syntax
             Name = name;
             ArgumentList = argumentList;
         }
+
+        private static MemberInvocationExpressionInfo Default { get; } = new MemberInvocationExpressionInfo();
 
         public ExpressionSyntax Expression { get; }
 

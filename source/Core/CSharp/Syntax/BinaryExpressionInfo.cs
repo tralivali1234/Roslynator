@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct BinaryExpressionInfo : IEquatable<BinaryExpressionInfo>
     {
-        private static BinaryExpressionInfo Default { get; } = new BinaryExpressionInfo();
-
         private BinaryExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
             ExpressionSyntax left,
@@ -23,12 +21,15 @@ namespace Roslynator.CSharp.Syntax
             Right = right;
         }
 
+        private static BinaryExpressionInfo Default { get; } = new BinaryExpressionInfo();
+
         public BinaryExpressionSyntax BinaryExpression { get; }
 
         public ExpressionSyntax Left { get; }
 
         public ExpressionSyntax Right { get; }
 
+        //TODO: cache
         public SyntaxKind Kind
         {
             get { return BinaryExpression?.Kind() ?? SyntaxKind.None; }

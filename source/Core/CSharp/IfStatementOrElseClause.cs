@@ -64,12 +64,12 @@ namespace Roslynator.CSharp
 
         public IfStatementSyntax AsIf()
         {
-            return (IfStatementSyntax)Node;
+            return (IsIf) ? (IfStatementSyntax)Node : null;
         }
 
         public ElseClauseSyntax AsElse()
         {
-            return (ElseClauseSyntax)Node;
+            return (IsElse) ? (ElseClauseSyntax)Node : null;
         }
 
         public override string ToString()

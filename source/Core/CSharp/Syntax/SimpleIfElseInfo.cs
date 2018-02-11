@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct SimpleIfElseInfo : IEquatable<SimpleIfElseInfo>
     {
-        private static SimpleIfElseInfo Default { get; } = new SimpleIfElseInfo();
-
         private SimpleIfElseInfo(
             IfStatementSyntax ifStatement,
             ExpressionSyntax condition,
@@ -24,6 +22,8 @@ namespace Roslynator.CSharp.Syntax
             WhenTrue = whenTrue;
             WhenFalse = whenFalse;
         }
+
+        private static SimpleIfElseInfo Default { get; } = new SimpleIfElseInfo();
 
         public IfStatementSyntax IfStatement { get; }
 

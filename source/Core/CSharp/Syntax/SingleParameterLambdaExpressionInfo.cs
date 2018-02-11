@@ -9,10 +9,9 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ren
     public struct SingleParameterLambdaExpressionInfo : IEquatable<SingleParameterLambdaExpressionInfo>
     {
-        private static SingleParameterLambdaExpressionInfo Default { get; } = new SingleParameterLambdaExpressionInfo();
-
         private SingleParameterLambdaExpressionInfo(
             LambdaExpressionSyntax lambdaExpression,
             ParameterSyntax parameter,
@@ -22,6 +21,8 @@ namespace Roslynator.CSharp.Syntax
             Parameter = parameter;
             Body = body;
         }
+
+        private static SingleParameterLambdaExpressionInfo Default { get; } = new SingleParameterLambdaExpressionInfo();
 
         public LambdaExpressionSyntax LambdaExpression { get; }
 
@@ -34,11 +35,13 @@ namespace Roslynator.CSharp.Syntax
             get { return (IsParenthesizedLambda) ? (ParameterListSyntax)Parameter.Parent : null; }
         }
 
+        //TODO: del
         public string ParameterName
         {
             get { return Parameter?.Identifier.ValueText; }
         }
 
+        //TODO: IsSimple
         public bool IsSimpleLambda
         {
             get { return LambdaExpression?.Kind() == SyntaxKind.SimpleLambdaExpression; }

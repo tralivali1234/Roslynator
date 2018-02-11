@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct SimpleAssignmentExpressionInfo : IEquatable<SimpleAssignmentExpressionInfo>
     {
-        private static SimpleAssignmentExpressionInfo Default { get; } = new SimpleAssignmentExpressionInfo();
-
         private SimpleAssignmentExpressionInfo(
             AssignmentExpressionSyntax assignmentExpression,
             ExpressionSyntax left,
@@ -22,6 +20,8 @@ namespace Roslynator.CSharp.Syntax
             Left = left;
             Right = right;
         }
+
+        private static SimpleAssignmentExpressionInfo Default { get; } = new SimpleAssignmentExpressionInfo();
 
         public AssignmentExpressionSyntax AssignmentExpression { get; }
 

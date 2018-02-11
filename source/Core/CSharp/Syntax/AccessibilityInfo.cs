@@ -5,23 +5,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    // AccessModifiersInfo
+    // TODO: AccessModifiersInfo
     public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
-        private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
-
-        private AccessibilityInfo(SyntaxNode node, SyntaxTokenList modifiers, int index, int secondIndex = -1)
+        private AccessibilityInfo(SyntaxNode declaration, SyntaxTokenList modifiers, int index, int secondIndex = -1)
         {
-            Node = node;
+            Declaration = declaration;
             Modifiers = modifiers;
             TokenIndex = index;
             SecondTokenIndex = secondIndex;
         }
 
-        public SyntaxNode Node { get; }
+        private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
+
+        public SyntaxNode Declaration { get; }
 
         public SyntaxToken Token
         {
@@ -41,7 +42,7 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Success
         {
-            get { return Node != null; }
+            get { return Declaration != null; }
         }
 
         public Accessibility Accessibility
@@ -92,24 +93,163 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
-        public bool CanHaveAccessibility
+        internal static AccessibilityInfo Create(SyntaxNode declaration)
         {
-            get { return Node?.Kind().CanHaveAccessibility() == true; }
-        }
-
-        internal static AccessibilityInfo Create(SyntaxNode node)
-        {
-            if (node == null)
+            if (declaration == null)
                 return Default;
 
-            return Create(node, node.GetModifiers());
-        }
-
-        private static AccessibilityInfo Create(SyntaxNode node, SyntaxTokenList modifiers)
-        {
-            if (node == null)
+            if (!declaration.Kind().CanHaveAccessibility())
                 return Default;
 
+            return Create(declaration, declaration.GetModifiers());
+        }
+
+        internal static AccessibilityInfo Create(ClassDeclarationSyntax classDeclaration)
+        {
+            if (classDeclaration == null)
+                return Default;
+
+            return Create(classDeclaration, classDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(ConstructorDeclarationSyntax constructorDeclaration)
+        {
+            if (constructorDeclaration == null)
+                return Default;
+
+            return Create(constructorDeclaration, constructorDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
+        {
+            if (conversionOperatorDeclaration == null)
+                return Default;
+
+            return Create(conversionOperatorDeclaration, conversionOperatorDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(DelegateDeclarationSyntax delegateDeclaration)
+        {
+            if (delegateDeclaration == null)
+                return Default;
+
+            return Create(delegateDeclaration, delegateDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(DestructorDeclarationSyntax destructorDeclaration)
+        {
+            if (destructorDeclaration == null)
+                return Default;
+
+            return Create(destructorDeclaration, destructorDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(EnumDeclarationSyntax enumDeclaration)
+        {
+            if (enumDeclaration == null)
+                return Default;
+
+            return Create(enumDeclaration, enumDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(EventDeclarationSyntax eventDeclaration)
+        {
+            if (eventDeclaration == null)
+                return Default;
+
+            return Create(eventDeclaration, eventDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(EventFieldDeclarationSyntax eventFieldDeclaration)
+        {
+            if (eventFieldDeclaration == null)
+                return Default;
+
+            return Create(eventFieldDeclaration, eventFieldDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(FieldDeclarationSyntax fieldDeclaration)
+        {
+            if (fieldDeclaration == null)
+                return Default;
+
+            return Create(fieldDeclaration, fieldDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(IndexerDeclarationSyntax indexerDeclaration)
+        {
+            if (indexerDeclaration == null)
+                return Default;
+
+            return Create(indexerDeclaration, indexerDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            if (interfaceDeclaration == null)
+                return Default;
+
+            return Create(interfaceDeclaration, interfaceDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(MethodDeclarationSyntax methodDeclaration)
+        {
+            if (methodDeclaration == null)
+                return Default;
+
+            return Create(methodDeclaration, methodDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(OperatorDeclarationSyntax operatorDeclaration)
+        {
+            if (operatorDeclaration == null)
+                return Default;
+
+            return Create(operatorDeclaration, operatorDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(PropertyDeclarationSyntax propertyDeclaration)
+        {
+            if (propertyDeclaration == null)
+                return Default;
+
+            return Create(propertyDeclaration, propertyDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(StructDeclarationSyntax structDeclaration)
+        {
+            if (structDeclaration == null)
+                return Default;
+
+            return Create(structDeclaration, structDeclaration.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(IncompleteMemberSyntax incompleteMember)
+        {
+            if (incompleteMember == null)
+                return Default;
+
+            return Create(incompleteMember, incompleteMember.Modifiers);
+        }
+
+        internal static AccessibilityInfo Create(AccessorDeclarationSyntax accessorDeclaration)
+        {
+            if (accessorDeclaration == null)
+                return Default;
+
+            if (!accessorDeclaration.Kind().Is(
+                SyntaxKind.GetAccessorDeclaration,
+                SyntaxKind.SetAccessorDeclaration,
+                SyntaxKind.UnknownAccessorDeclaration))
+            {
+                return Default;
+            }
+
+            return Create(accessorDeclaration, accessorDeclaration.Modifiers);
+        }
+
+        private static AccessibilityInfo Create(SyntaxNode declaration, SyntaxTokenList modifiers)
+        {
             int count = modifiers.Count;
 
             for (int i = 0; i < count; i++)
@@ -118,7 +258,7 @@ namespace Roslynator.CSharp.Syntax
                 {
                     case SyntaxKind.PublicKeyword:
                         {
-                            return new AccessibilityInfo(node, modifiers, i);
+                            return new AccessibilityInfo(declaration, modifiers, i);
                         }
                     case SyntaxKind.PrivateKeyword:
                     case SyntaxKind.InternalKeyword:
@@ -126,36 +266,40 @@ namespace Roslynator.CSharp.Syntax
                             for (int j = i + 1; j < count; j++)
                             {
                                 if (modifiers[j].IsKind(SyntaxKind.ProtectedKeyword))
-                                    return new AccessibilityInfo(node, modifiers, i, j);
+                                    return new AccessibilityInfo(declaration, modifiers, i, j);
                             }
 
-                            return new AccessibilityInfo(node, modifiers, i);
+                            return new AccessibilityInfo(declaration, modifiers, i);
                         }
                     case SyntaxKind.ProtectedKeyword:
                         {
                             for (int j = i + 1; j < count; j++)
                             {
                                 if (modifiers[j].IsKind(SyntaxKind.InternalKeyword, SyntaxKind.PrivateKeyword))
-                                    return new AccessibilityInfo(node, modifiers, i, j);
+                                    return new AccessibilityInfo(declaration, modifiers, i, j);
                             }
 
-                            return new AccessibilityInfo(node, modifiers, i);
+                            return new AccessibilityInfo(declaration, modifiers, i);
                         }
                 }
             }
 
-            return new AccessibilityInfo(node, modifiers, -1);
+            return new AccessibilityInfo(declaration, modifiers, -1);
         }
 
         public AccessibilityInfo WithModifiers(SyntaxTokenList newModifiers)
         {
-            SyntaxNode newNode = Node.WithModifiers(newModifiers);
+            ThrowInvalidOperationIfNotInitialized();
+
+            SyntaxNode newNode = Declaration.WithModifiers(newModifiers);
 
             return Create(newNode, newModifiers);
         }
 
         public AccessibilityInfo WithAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             return CSharpAccessibility.ChangeAccessibility(this, newAccessibility, comparer);
         }
 
@@ -164,9 +308,15 @@ namespace Roslynator.CSharp.Syntax
             return (index == -1) ? default(SyntaxToken) : Modifiers[index];
         }
 
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (Declaration == null)
+                throw new InvalidOperationException($"{nameof(AccessibilityInfo)} is not initalized.");
+        }
+
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Declaration?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)
@@ -177,12 +327,12 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Equals(AccessibilityInfo other)
         {
-            return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
+            return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
         }
 
         public static bool operator ==(AccessibilityInfo info1, AccessibilityInfo info2)

@@ -9,11 +9,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: pub
     internal struct ModifiersInfo : IEquatable<ModifiersInfo>
     {
         private readonly ModifierFlags _flags;
-
-        private static ModifiersInfo Default { get; } = new ModifiersInfo();
 
         private ModifiersInfo(SyntaxNode node, SyntaxTokenList modifiers)
         {
@@ -22,14 +21,19 @@ namespace Roslynator.CSharp.Syntax
             _flags = GetModifierFlags(modifiers);
         }
 
+        private static ModifiersInfo Default { get; } = new ModifiersInfo();
+
         public SyntaxNode Node { get; }
 
         public SyntaxTokenList Modifiers { get; }
 
+        //TODO: pub
         internal bool Any(ModifierFlags flags) => _flags.Any(flags);
 
+        //TODO: pub
         internal bool All(ModifierFlags flags) => _flags.All(flags);
 
+        //TODO: ren
         public bool HasNew => Any(ModifierFlags.New);
 
         public bool HasPublic => Any(ModifierFlags.Public);
@@ -110,28 +114,52 @@ namespace Roslynator.CSharp.Syntax
             return new ModifiersInfo(node, node.GetModifiers());
         }
 
-        internal static ModifiersInfo Create(MethodDeclarationSyntax methodDeclaration)
+        internal static ModifiersInfo Create(ClassDeclarationSyntax classDeclaration)
         {
-            if (methodDeclaration == null)
+            if (classDeclaration == null)
                 return Default;
 
-            return new ModifiersInfo(methodDeclaration, methodDeclaration.Modifiers);
+            return new ModifiersInfo(classDeclaration, classDeclaration.Modifiers);
         }
 
-        internal static ModifiersInfo Create(PropertyDeclarationSyntax propertyDeclaration)
+        internal static ModifiersInfo Create(ConstructorDeclarationSyntax constructorDeclaration)
         {
-            if (propertyDeclaration == null)
+            if (constructorDeclaration == null)
                 return Default;
 
-            return new ModifiersInfo(propertyDeclaration, propertyDeclaration.Modifiers);
+            return new ModifiersInfo(constructorDeclaration, constructorDeclaration.Modifiers);
         }
 
-        internal static ModifiersInfo Create(IndexerDeclarationSyntax indexerDeclaration)
+        internal static ModifiersInfo Create(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
-            if (indexerDeclaration == null)
+            if (conversionOperatorDeclaration == null)
                 return Default;
 
-            return new ModifiersInfo(indexerDeclaration, indexerDeclaration.Modifiers);
+            return new ModifiersInfo(conversionOperatorDeclaration, conversionOperatorDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(DelegateDeclarationSyntax delegateDeclaration)
+        {
+            if (delegateDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(delegateDeclaration, delegateDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(DestructorDeclarationSyntax destructorDeclaration)
+        {
+            if (destructorDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(destructorDeclaration, destructorDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(EnumDeclarationSyntax enumDeclaration)
+        {
+            if (enumDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(enumDeclaration, enumDeclaration.Modifiers);
         }
 
         internal static ModifiersInfo Create(EventDeclarationSyntax eventDeclaration)
@@ -150,9 +178,100 @@ namespace Roslynator.CSharp.Syntax
             return new ModifiersInfo(eventFieldDeclaration, eventFieldDeclaration.Modifiers);
         }
 
-        public override string ToString()
+        internal static ModifiersInfo Create(FieldDeclarationSyntax fieldDeclaration)
         {
-            return Node?.ToString() ?? base.ToString();
+            if (fieldDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(fieldDeclaration, fieldDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(IndexerDeclarationSyntax indexerDeclaration)
+        {
+            if (indexerDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(indexerDeclaration, indexerDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            if (interfaceDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(interfaceDeclaration, interfaceDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(MethodDeclarationSyntax methodDeclaration)
+        {
+            if (methodDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(methodDeclaration, methodDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(OperatorDeclarationSyntax operatorDeclaration)
+        {
+            if (operatorDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(operatorDeclaration, operatorDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(PropertyDeclarationSyntax propertyDeclaration)
+        {
+            if (propertyDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(propertyDeclaration, propertyDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(StructDeclarationSyntax structDeclaration)
+        {
+            if (structDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(structDeclaration, structDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(IncompleteMemberSyntax incompleteMember)
+        {
+            if (incompleteMember == null)
+                return Default;
+
+            return new ModifiersInfo(incompleteMember, incompleteMember.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(AccessorDeclarationSyntax accessorDeclaration)
+        {
+            if (accessorDeclaration == null)
+                return Default;
+
+            return new ModifiersInfo(accessorDeclaration, accessorDeclaration.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(LocalDeclarationStatementSyntax localDeclarationStatement)
+        {
+            if (localDeclarationStatement == null)
+                return Default;
+
+            return new ModifiersInfo(localDeclarationStatement, localDeclarationStatement.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(LocalFunctionStatementSyntax localFunctionStatement)
+        {
+            if (localFunctionStatement == null)
+                return Default;
+
+            return new ModifiersInfo(localFunctionStatement, localFunctionStatement.Modifiers);
+        }
+
+        internal static ModifiersInfo Create(ParameterSyntax parameter)
+        {
+            if (parameter == null)
+                return Default;
+
+            return new ModifiersInfo(parameter, parameter.Modifiers);
         }
 
         private static ModifierFlags GetModifierFlags(SyntaxTokenList modifiers)
@@ -272,6 +391,11 @@ namespace Roslynator.CSharp.Syntax
             }
 
             return flags;
+        }
+
+        public override string ToString()
+        {
+            return Node?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)

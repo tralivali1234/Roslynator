@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct GenericInfo : IEquatable<GenericInfo>
     {
-        private static GenericInfo Default { get; } = new GenericInfo();
-
         private GenericInfo(ClassDeclarationSyntax classDeclaration)
             : this(classDeclaration, SyntaxKind.ClassDeclaration, classDeclaration.TypeParameterList, classDeclaration.ConstraintClauses)
         {
@@ -55,6 +53,8 @@ namespace Roslynator.CSharp.Syntax
             ConstraintClauses = constraintClauses;
         }
 
+        private static GenericInfo Default { get; } = new GenericInfo();
+
         public SyntaxNode Declaration { get; }
 
         public SyntaxKind Kind { get; }
@@ -68,6 +68,7 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
+        //TODO: ByName
         public TypeParameterSyntax FindTypeParameter(string name)
         {
             foreach (TypeParameterSyntax typeParameter in TypeParameters)
@@ -79,6 +80,7 @@ namespace Roslynator.CSharp.Syntax
             return null;
         }
 
+        //TODO: ByName
         public TypeParameterConstraintClauseSyntax FindConstraintClause(string name)
         {
             foreach (TypeParameterConstraintClauseSyntax constraintClause in ConstraintClauses)
@@ -238,6 +240,8 @@ namespace Roslynator.CSharp.Syntax
 
         public GenericInfo WithTypeParameterList(TypeParameterListSyntax typeParameterList)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             switch (Kind)
             {
                 case SyntaxKind.ClassDeclaration:
@@ -252,50 +256,51 @@ namespace Roslynator.CSharp.Syntax
                     return new GenericInfo(((MethodDeclarationSyntax)Declaration).WithTypeParameterList(typeParameterList));
                 case SyntaxKind.StructDeclaration:
                     return new GenericInfo(((StructDeclarationSyntax)Declaration).WithTypeParameterList(typeParameterList));
-                case SyntaxKind.None:
-                    return this;
             }
 
             Debug.Fail(Kind.ToString());
-
             return this;
         }
 
         public GenericInfo RemoveTypeParameter(TypeParameterSyntax typeParameter)
         {
-            switch (Kind)
+            ThrowInvalidOperationIfNotInitialized();
+
+            var self = this;
+
+            switch (self.Kind)
             {
                 case SyntaxKind.ClassDeclaration:
-                    return new GenericInfo(((ClassDeclarationSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
+                    return new GenericInfo(((ClassDeclarationSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
                 case SyntaxKind.DelegateDeclaration:
-                    return new GenericInfo(((DelegateDeclarationSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
+                    return new GenericInfo(((DelegateDeclarationSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
                 case SyntaxKind.InterfaceDeclaration:
-                    return new GenericInfo(((InterfaceDeclarationSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
+                    return new GenericInfo(((InterfaceDeclarationSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
                 case SyntaxKind.LocalFunctionStatement:
-                    return new GenericInfo(((LocalFunctionStatementSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
+                    return new GenericInfo(((LocalFunctionStatementSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
                 case SyntaxKind.MethodDeclaration:
-                    return new GenericInfo(((MethodDeclarationSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
+                    return new GenericInfo(((MethodDeclarationSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
                 case SyntaxKind.StructDeclaration:
-                    return new GenericInfo(((StructDeclarationSyntax)Declaration).WithTypeParameterList(RemoveTypeParameterHelper(typeParameter)));
-                case SyntaxKind.None:
-                    return this;
+                    return new GenericInfo(((StructDeclarationSyntax)self.Declaration).WithTypeParameterList(RemoveTypeParameter()));
             }
 
             Debug.Fail(Kind.ToString());
             return this;
-        }
 
-        private TypeParameterListSyntax RemoveTypeParameterHelper(TypeParameterSyntax typeParameter)
-        {
-            SeparatedSyntaxList<TypeParameterSyntax> parameters = TypeParameters;
+            TypeParameterListSyntax RemoveTypeParameter()
+            {
+                SeparatedSyntaxList<TypeParameterSyntax> parameters = self.TypeParameters;
 
-            return (parameters.Count == 1)
-                ? default(TypeParameterListSyntax)
-                : TypeParameterList.WithParameters(parameters.Remove(typeParameter));
+                return (parameters.Count == 1)
+                    ? default(TypeParameterListSyntax)
+                    : self.TypeParameterList.WithParameters(parameters.Remove(typeParameter));
+            }
         }
 
         public GenericInfo WithConstraintClauses(SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             switch (Kind)
             {
                 case SyntaxKind.ClassDeclaration:
@@ -310,8 +315,6 @@ namespace Roslynator.CSharp.Syntax
                     return new GenericInfo(((MethodDeclarationSyntax)Declaration).WithConstraintClauses(constraintClauses));
                 case SyntaxKind.StructDeclaration:
                     return new GenericInfo(((StructDeclarationSyntax)Declaration).WithConstraintClauses(constraintClauses));
-                case SyntaxKind.None:
-                    return this;
             }
 
             Debug.Fail(Kind.ToString());
@@ -320,6 +323,8 @@ namespace Roslynator.CSharp.Syntax
 
         public GenericInfo RemoveConstraintClause(TypeParameterConstraintClauseSyntax constraintClause)
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             switch (Kind)
             {
                 case SyntaxKind.ClassDeclaration:
@@ -334,16 +339,17 @@ namespace Roslynator.CSharp.Syntax
                     return new GenericInfo(((MethodDeclarationSyntax)Declaration).WithConstraintClauses(ConstraintClauses.Remove(constraintClause)));
                 case SyntaxKind.StructDeclaration:
                     return new GenericInfo(((StructDeclarationSyntax)Declaration).WithConstraintClauses(ConstraintClauses.Remove(constraintClause)));
-                case SyntaxKind.None:
-                    return this;
             }
 
             Debug.Fail(Kind.ToString());
             return this;
         }
 
+        //TODO: RemoveAllConstraintClauses
         public GenericInfo RemoveConstraintClauses()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (!ConstraintClauses.Any())
                 return this;
 
@@ -357,6 +363,12 @@ namespace Roslynator.CSharp.Syntax
 
             return Create(Declaration.ReplaceToken(token, token.WithTrailingTrivia(trivia)))
                 .WithConstraintClauses(default(SyntaxList<TypeParameterConstraintClauseSyntax>));
+        }
+
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (Declaration == null)
+                throw new InvalidOperationException($"{nameof(GenericInfo)} is not initalized.");
         }
 
         public override string ToString()

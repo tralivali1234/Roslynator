@@ -339,7 +339,7 @@ namespace Roslynator.CSharp
 
             AccessibilityInfo newInfo = ChangeAccessibility(info, newAccessibility, comparer);
 
-            return (TNode)newInfo.Node;
+            return (TNode)newInfo.Declaration;
         }
 
         public static AccessibilityInfo ChangeAccessibility(
@@ -357,7 +357,7 @@ namespace Roslynator.CSharp
 
             comparer = comparer ?? ModifierComparer.Instance;
 
-            SyntaxNode node = info.Node;
+            SyntaxNode declaration = info.Declaration;
 
             if (accessibility.IsSingleTokenAccessibility()
                 && newAccessibility.IsSingleTokenAccessibility())
@@ -377,18 +377,18 @@ namespace Roslynator.CSharp
 
             if (accessibility != Accessibility.NotApplicable)
             {
-                node = Modifier.RemoveAt(node, Math.Max(info.TokenIndex, info.SecondTokenIndex));
+                declaration = Modifier.RemoveAt(declaration, Math.Max(info.TokenIndex, info.SecondTokenIndex));
 
                 if (info.SecondTokenIndex != -1)
-                    node = Modifier.RemoveAt(node, Math.Min(info.TokenIndex, info.SecondTokenIndex));
+                    declaration = Modifier.RemoveAt(declaration, Math.Min(info.TokenIndex, info.SecondTokenIndex));
             }
 
             if (newAccessibility != Accessibility.NotApplicable)
             {
-                node = InsertModifier(node, newAccessibility, comparer);
+                declaration = InsertModifier(declaration, newAccessibility, comparer);
             }
 
-            return SyntaxInfo.AccessibilityInfo(node);
+            return SyntaxInfo.AccessibilityInfo(declaration);
         }
 
         private static SyntaxNode InsertModifier(SyntaxNode node, Accessibility accessibility, IModifierComparer comparer)

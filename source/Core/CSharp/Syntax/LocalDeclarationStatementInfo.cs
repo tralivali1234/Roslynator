@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct LocalDeclarationStatementInfo : IEquatable<LocalDeclarationStatementInfo>
     {
-        private static LocalDeclarationStatementInfo Default { get; } = new LocalDeclarationStatementInfo();
-
         private LocalDeclarationStatementInfo(
             LocalDeclarationStatementSyntax statement,
             VariableDeclarationSyntax declaration,
@@ -22,6 +20,8 @@ namespace Roslynator.CSharp.Syntax
             Declaration = declaration;
             Type = type;
         }
+
+        private static LocalDeclarationStatementInfo Default { get; } = new LocalDeclarationStatementInfo();
 
         public LocalDeclarationStatementSyntax Statement { get; }
 

@@ -10,8 +10,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct ConditionalExpressionInfo : IEquatable<ConditionalExpressionInfo>
     {
-        private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
-
         private ConditionalExpressionInfo(
             ExpressionSyntax condition,
             ExpressionSyntax whenTrue,
@@ -21,6 +19,8 @@ namespace Roslynator.CSharp.Syntax
             WhenTrue = whenTrue;
             WhenFalse = whenFalse;
         }
+
+        private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
 
         public ConditionalExpressionSyntax ConditionalExpression
         {

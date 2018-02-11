@@ -9,6 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: HexadecimalLiteralExpressionInfo
     public struct HexadecimalLiteralInfo : IEquatable<HexadecimalLiteralInfo>
     {
         private HexadecimalLiteralInfo(LiteralExpressionSyntax literalExpression, SyntaxToken token)
@@ -115,6 +116,11 @@ namespace Roslynator.CSharp.Syntax
                 return Default;
 
             return new HexadecimalLiteralInfo(literalExpression, token);
+        }
+
+        public override string ToString()
+        {
+            return LiteralExpression?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)

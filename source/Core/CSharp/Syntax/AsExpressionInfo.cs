@@ -11,8 +11,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct AsExpressionInfo : IEquatable<AsExpressionInfo>
     {
-        private static AsExpressionInfo Default { get; } = new AsExpressionInfo();
-
         private AsExpressionInfo(
             BinaryExpressionSyntax asExpression,
             ExpressionSyntax expression,
@@ -22,6 +20,8 @@ namespace Roslynator.CSharp.Syntax
             Expression = expression;
             Type = type;
         }
+
+        private static AsExpressionInfo Default { get; } = new AsExpressionInfo();
 
         public BinaryExpressionSyntax AsExpression { get; }
 

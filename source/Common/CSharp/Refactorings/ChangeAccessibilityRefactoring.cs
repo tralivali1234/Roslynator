@@ -298,7 +298,7 @@ namespace Roslynator.CSharp.Refactorings
 
             AccessibilityInfo newInfo = info.WithAccessibility(newAccessibility, ModifierComparer.Instance);
 
-            return newInfo.Node;
+            return newInfo.Declaration;
         }
     }
 }

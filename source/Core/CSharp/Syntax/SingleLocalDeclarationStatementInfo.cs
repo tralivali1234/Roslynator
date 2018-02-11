@@ -9,10 +9,9 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ren
     public struct SingleLocalDeclarationStatementInfo : IEquatable<SingleLocalDeclarationStatementInfo>
     {
-        private static SingleLocalDeclarationStatementInfo Default { get; } = new SingleLocalDeclarationStatementInfo();
-
         private SingleLocalDeclarationStatementInfo(
             LocalDeclarationStatementSyntax statement,
             VariableDeclarationSyntax declaration,
@@ -22,6 +21,8 @@ namespace Roslynator.CSharp.Syntax
             Declaration = declaration;
             Declarator = declarator;
         }
+
+        private static SingleLocalDeclarationStatementInfo Default { get; } = new SingleLocalDeclarationStatementInfo();
 
         public LocalDeclarationStatementSyntax Statement { get; }
 
@@ -51,7 +52,7 @@ namespace Roslynator.CSharp.Syntax
 
         public string IdentifierText
         {
-            get { return Declarator?.Identifier.ValueText; }
+            get { return Identifier.ValueText; }
         }
 
         public SyntaxToken EqualsToken
