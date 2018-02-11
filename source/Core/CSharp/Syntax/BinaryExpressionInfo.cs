@@ -29,7 +29,6 @@ namespace Roslynator.CSharp.Syntax
 
         public ExpressionSyntax Right { get; }
 
-        //TODO: cache
         public SyntaxKind Kind
         {
             get { return BinaryExpression?.Kind() ?? SyntaxKind.None; }

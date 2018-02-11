@@ -17,8 +17,7 @@ namespace Roslynator.CSharp
 {
     public static class DocumentExtensions
     {
-        //TODO: použít
-        internal static Task<Document> RemoveNode(
+        internal static Task<Document> RemoveNodeAsync(
             this Document document,
             SyntaxNode node,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -32,7 +31,6 @@ namespace Roslynator.CSharp
             return document.RemoveNodeAsync(node, SyntaxRemover.GetOptions(node), cancellationToken);
         }
 
-        //TODO: RemoveMemberDeclarationAsync
         public static Task<Document> RemoveMemberAsync(
             this Document document,
             MemberDeclarationSyntax member,
@@ -96,7 +94,7 @@ namespace Roslynator.CSharp
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
 
-            return document.RemoveNodeAsync(statement, SyntaxRemover.GetOptions(statement), cancellationToken);
+            return document.RemoveNodeAsync(statement, cancellationToken);
         }
 
         public static Task<Document> RemoveCommentAsync(
@@ -270,14 +268,14 @@ namespace Roslynator.CSharp
             if (regionDirective == null)
                 throw new ArgumentNullException(nameof(regionDirective));
 
-            RegionInfo info = SyntaxInfo.RegionInfo(regionDirective);
+            RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
 
-            if (!info.Success)
+            if (!region.Success)
                 return document;
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, info.EndRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, region.EndRegionDirective);
 
             return document.WithText(newSourceText);
         }
@@ -293,14 +291,14 @@ namespace Roslynator.CSharp
             if (endRegionDirective == null)
                 throw new ArgumentNullException(nameof(endRegionDirective));
 
-            RegionInfo info = SyntaxInfo.RegionInfo(endRegionDirective);
+            RegionInfo region = SyntaxInfo.RegionInfo(endRegionDirective);
 
-            if (!info.Success)
+            if (!region.Success)
                 return document;
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveRegion(sourceText, info.RegionDirective, endRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, region.RegionDirective, endRegionDirective);
 
             return document.WithText(newSourceText);
         }

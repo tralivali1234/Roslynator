@@ -9,8 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: pub
-    internal struct ModifiersInfo : IEquatable<ModifiersInfo>
+    public struct ModifiersInfo : IEquatable<ModifiersInfo>
     {
         private readonly ModifierFlags _flags;
 
@@ -27,11 +26,9 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxTokenList Modifiers { get; }
 
-        //TODO: pub
-        internal bool Any(ModifierFlags flags) => _flags.Any(flags);
+        public bool Any(ModifierFlags flags) => _flags.Any(flags);
 
-        //TODO: pub
-        internal bool All(ModifierFlags flags) => _flags.All(flags);
+        public bool All(ModifierFlags flags) => _flags.All(flags);
 
         //TODO: ren
         public bool HasNew => Any(ModifierFlags.New);

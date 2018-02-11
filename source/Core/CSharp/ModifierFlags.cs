@@ -4,8 +4,9 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    //TODO: ren Modifiers
     [Flags]
-    internal enum ModifierFlags
+    public enum ModifierFlags
     {
         None = 0,
         New = 1,

@@ -6,7 +6,7 @@ using System;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: PatternIsNull
+    //TODO: PatternIsNull, NotPatternIsNull
     //TODO: NullCheckKinds
     [Flags]
     public enum NullCheckKind

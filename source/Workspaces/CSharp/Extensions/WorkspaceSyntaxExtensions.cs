@@ -105,8 +105,7 @@ namespace Roslynator.CSharp
             return (condition) ? node.WithAdditionalAnnotations(_simplifierAnnotationArray) : node;
         }
 
-        //TODO: WithFormatterAndSimplifierAnnotation
-        internal static TNode WithFormatterAndSimplifierAnnotations<TNode>(this TNode node) where TNode : SyntaxNode
+        internal static TNode WithFormatterAndSimplifierAnnotation<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -131,8 +130,7 @@ namespace Roslynator.CSharp
             return token.WithAdditionalAnnotations(_navigationAnnotationArray);
         }
 
-        //TODO: WithFormatterAndSimplifierAnnotation
-        internal static SyntaxToken WithFormatterAndSimplifierAnnotations(this SyntaxToken token)
+        internal static SyntaxToken WithFormatterAndSimplifierAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_formatterAndSimplifierAnnotationArray);
         }

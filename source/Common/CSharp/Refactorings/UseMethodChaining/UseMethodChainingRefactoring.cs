@@ -204,7 +204,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
                 .ReplaceNode(invocationExpression, newInvocationExpression)
                 .WithLeadingTrivia(expressionStatement.GetLeadingTrivia())
                 .WithTrailingTrivia(trailingTrivia)
-                .WithFormatterAndSimplifierAnnotations();
+                .WithFormatterAndSimplifierAnnotation();
 
             newStatements = newStatements.ReplaceAt(index, newExpressionStatement);
 

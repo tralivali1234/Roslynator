@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
@@ -18,21 +17,21 @@ namespace Roslynator.CSharp.Refactorings
         {
             var regionDirective = (RegionDirectiveTriviaSyntax)context.Node;
 
-            RegionInfo info = SyntaxInfo.RegionInfo(regionDirective);
+            RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
 
-            if (!info.Success)
+            if (!region.Success)
                 return;
 
-            if (!info.IsEmpty)
+            if (!region.IsEmpty)
                 return;
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveEmptyRegion,
                 regionDirective.GetLocation(),
-                additionalLocations: ImmutableArray.Create(info.EndRegionDirective.GetLocation()));
+                additionalLocations: ImmutableArray.Create(region.EndRegionDirective.GetLocation()));
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, regionDirective.GetLocation());
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, info.EndRegionDirective.GetLocation());
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, region.EndRegionDirective.GetLocation());
         }
 
         public static Task<Document> RefactorAsync(

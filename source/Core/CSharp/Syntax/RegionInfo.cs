@@ -53,7 +53,8 @@ namespace Roslynator.CSharp.Syntax
         {
             get
             {
-                ThrowInvalidOperationIfNotInitialized();
+                if (!Success)
+                    return false;
 
                 SyntaxTrivia trivia = RegionDirective.ParentTrivia;
 
@@ -135,12 +136,6 @@ namespace Roslynator.CSharp.Syntax
                 return Default;
 
             return new RegionInfo((RegionDirectiveTriviaSyntax)list[0], endRegionDirective);
-        }
-
-        private void ThrowInvalidOperationIfNotInitialized()
-        {
-            if (RegionDirective == null)
-                throw new InvalidOperationException($"{nameof(RegionInfo)} is not initalized.");
         }
 
         public override string ToString()

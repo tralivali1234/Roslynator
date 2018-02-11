@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Syntax
     {
         private StringConcatenationExpressionInfo(
             BinaryExpressionSyntax addExpression,
-            IEnumerable<ExpressionSyntax> expressions,
+            ImmutableArray<ExpressionSyntax> expressions,
             TextSpan? span = null)
         {
             ContainsNonSpecificExpression = false;
@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Syntax
             ContainsVerbatimInterpolatedStringExpression = false;
 
             OriginalExpression = addExpression;
-            Expressions = ImmutableArray.CreateRange(expressions);
+            Expressions = expressions;
             Span = span;
 
             foreach (ExpressionSyntax expression in expressions)
@@ -126,13 +126,10 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            //TODO: immutablearray builder
-            List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
 
-            if (expressions == null)
+            if (expressions.IsDefault)
                 return Default;
-
-            expressions.Reverse();
 
             return new StringConcatenationExpressionInfo(binaryExpression, expressions);
         }
@@ -178,12 +175,12 @@ namespace Roslynator.CSharp.Syntax
                 .IsString() == true;
         }
 
-        private static List<ExpressionSyntax> GetExpressions(
+        private static ImmutableArray<ExpressionSyntax> GetExpressions(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            List<ExpressionSyntax> expressions = null;
+            ImmutableArray<ExpressionSyntax>.Builder builder = null;
 
             while (true)
             {
@@ -194,7 +191,7 @@ namespace Roslynator.CSharp.Syntax
                     && methodInfo.Name == WellKnownMemberNames.AdditionOperatorName
                     && methodInfo.IsContainingType(SpecialType.System_String))
                 {
-                    (expressions ?? (expressions = new List<ExpressionSyntax>())).Add(binaryExpression.Right);
+                    (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(binaryExpression.Right);
 
                     ExpressionSyntax left = binaryExpression.Left;
 
@@ -204,13 +201,14 @@ namespace Roslynator.CSharp.Syntax
                     }
                     else
                     {
-                        expressions.Add(left);
-                        return expressions;
+                        builder.Add(left);
+                        builder.Reverse();
+                        return builder.ToImmutable();
                     }
                 }
                 else
                 {
-                    return null;
+                    return default(ImmutableArray<ExpressionSyntax>);
                 }
             }
         }

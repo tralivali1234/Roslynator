@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         return CodeAction.Create(
                             Title,
-                            cancellationToken => document.RemoveNodeAsync(elseClause, SyntaxRemover.GetOptions(elseClause), cancellationToken),
+                            cancellationToken => document.RemoveNodeAsync(elseClause, cancellationToken),
                             GetEquivalenceKey(diagnostic));
                     }
                 case SyntaxKind.Block:

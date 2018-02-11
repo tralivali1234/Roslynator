@@ -16,11 +16,11 @@ namespace Roslynator.CSharp.Syntax
         private BinaryExpressionChainInfo(
             BinaryExpressionSyntax binaryExpression,
             SyntaxKind kind,
-            IEnumerable<ExpressionSyntax> expressions)
+            ImmutableArray<ExpressionSyntax> expressions)
         {
             BinaryExpression = binaryExpression;
             Kind = kind;
-            Expressions = ImmutableArray.CreateRange(expressions);
+            Expressions = expressions;
         }
 
         private static BinaryExpressionChainInfo Default { get; } = new BinaryExpressionChainInfo();
@@ -53,22 +53,19 @@ namespace Roslynator.CSharp.Syntax
 
         private static BinaryExpressionChainInfo CreateCore(BinaryExpressionSyntax binaryExpression, SyntaxKind kind)
         {
-            //TODO: immutablearray builder
-            List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
 
-            if (expressions == null)
+            if (expressions.IsDefault)
                 return Default;
-
-            expressions.Reverse();
 
             return new BinaryExpressionChainInfo(binaryExpression, kind, expressions);
         }
 
-        private static List<ExpressionSyntax> GetExpressions(
+        private static ImmutableArray<ExpressionSyntax> GetExpressions(
             BinaryExpressionSyntax binaryExpression,
             SyntaxKind kind)
         {
-            List<ExpressionSyntax> expressions = null;
+            ImmutableArray<ExpressionSyntax>.Builder builder = null;
             bool success = true;
 
             while (success)
@@ -81,7 +78,7 @@ namespace Roslynator.CSharp.Syntax
 
                     if (right?.IsMissing == false)
                     {
-                        (expressions ?? (expressions = new List<ExpressionSyntax>())).Add(right);
+                        (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(right);
 
                         ExpressionSyntax left = binaryExpression.Left;
 
@@ -94,15 +91,16 @@ namespace Roslynator.CSharp.Syntax
                             }
                             else
                             {
-                                expressions.Add(left);
-                                return expressions;
+                                builder.Add(left);
+                                builder.Reverse();
+                                return builder.ToImmutable();
                             }
                         }
                     }
                 }
             }
 
-            return null;
+            return default(ImmutableArray<ExpressionSyntax>);
         }
 
         public override string ToString()

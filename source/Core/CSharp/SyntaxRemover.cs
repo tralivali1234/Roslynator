@@ -17,7 +17,7 @@ namespace Roslynator.CSharp
             get { return SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepUnbalancedDirectives; }
         }
 
-        internal static TRoot RemoveNode<TRoot>(this TRoot root, SyntaxNode node) where TRoot : SyntaxNode
+        public static TRoot RemoveNode<TRoot>(TRoot root, SyntaxNode node) where TRoot : SyntaxNode
         {
             return root.RemoveNode(node, GetOptions(node));
         }

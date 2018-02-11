@@ -530,9 +530,9 @@ namespace Roslynator.CSharp
             if (endRegionDirective == null)
                 throw new ArgumentNullException(nameof(endRegionDirective));
 
-            RegionInfo info = SyntaxInfo.RegionInfo(endRegionDirective);
+            RegionInfo region = SyntaxInfo.RegionInfo(endRegionDirective);
 
-            return (info.Success) ? info.RegionDirective : null;
+            return (region.Success) ? region.RegionDirective : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
@@ -1406,9 +1406,9 @@ namespace Roslynator.CSharp
             if (regionDirective == null)
                 throw new ArgumentNullException(nameof(regionDirective));
 
-            RegionInfo info = SyntaxInfo.RegionInfo(regionDirective);
+            RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
 
-            return (info.Success) ? info.EndRegionDirective : null;
+            return (region.Success) ? region.EndRegionDirective : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)
@@ -2445,6 +2445,11 @@ namespace Roslynator.CSharp
             return parent;
         }
 
+        internal static TRoot RemoveNode<TRoot>(this TRoot root, SyntaxNode node) where TRoot : SyntaxNode
+        {
+            return SyntaxRemover.RemoveNode(root, node);
+        }
+
         internal static TNode RemoveStatement<TNode>(this TNode node, StatementSyntax statement) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2453,7 +2458,7 @@ namespace Roslynator.CSharp
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
 
-            return node.RemoveNode(statement, SyntaxRemover.GetOptions(statement));
+            return node.RemoveNode(statement);
         }
 
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode

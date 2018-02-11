@@ -513,7 +513,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             if (isTrue)
                             {
-                                return node.RemoveNode(expression, SyntaxRemover.GetOptions(expression));
+                                return node.RemoveNode(expression);
                             }
                             else
                             {
@@ -594,7 +594,7 @@ namespace Roslynator.CSharp.CodeFixes
                     if (nodeToRemove is StatementSyntax statement)
                         root.RemoveStatement(statement);
 
-                    return root.RemoveNode(nodeToRemove, SyntaxRemover.GetOptions(nodeToRemove));
+                    return root.RemoveNode(nodeToRemove);
                 }
 
                 if (newNode is BlockSyntax block)

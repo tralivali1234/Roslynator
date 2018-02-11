@@ -35,13 +35,12 @@ namespace Roslynator.CSharp.Syntax
             get { return (IsParenthesizedLambda) ? (ParameterListSyntax)Parameter.Parent : null; }
         }
 
-        //TODO: del
+        //TODO: del, ParameterText
         public string ParameterName
         {
             get { return Parameter?.Identifier.ValueText; }
         }
 
-        //TODO: IsSimple
         public bool IsSimpleLambda
         {
             get { return LambdaExpression?.Kind() == SyntaxKind.SimpleLambdaExpression; }
