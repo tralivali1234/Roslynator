@@ -15,6 +15,9 @@ namespace Roslynator.CSharp.Refactorings
             if (expression == null)
                 return;
 
+            if (expression.IsMissing)
+                return;
+
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
             (ISymbol memberSymbol, ITypeSymbol memberTypeSymbol) = GetContainingSymbolAndType(expression, semanticModel, context.CancellationToken);

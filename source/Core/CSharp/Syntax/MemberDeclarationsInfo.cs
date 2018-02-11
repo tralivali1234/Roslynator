@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct MemberDeclarationsInfo : IReadOnlyList<MemberDeclarationSyntax>, IEquatable<MemberDeclarationsInfo>
+    public struct MemberDeclarationsInfo : IEquatable<MemberDeclarationsInfo>, IReadOnlyList<MemberDeclarationSyntax>
     {
         internal MemberDeclarationsInfo(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members)
         {
@@ -43,6 +43,21 @@ namespace Roslynator.CSharp.Syntax
         public MemberDeclarationSyntax this[int index]
         {
             get { return Members[index]; }
+        }
+
+        IEnumerator<MemberDeclarationSyntax> IEnumerable<MemberDeclarationSyntax>.GetEnumerator()
+        {
+            return ((IReadOnlyList<MemberDeclarationSyntax>)Members).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IReadOnlyList<MemberDeclarationSyntax>)Members).GetEnumerator();
+        }
+
+        public SyntaxList<MemberDeclarationSyntax>.Enumerator GetEnumerator()
+        {
+            return Members.GetEnumerator();
         }
 
         internal static MemberDeclarationsInfo Create(NamespaceDeclarationSyntax namespaceDeclaration)
@@ -231,16 +246,6 @@ namespace Roslynator.CSharp.Syntax
 
             Debug.Fail(Kind.ToString());
             return this;
-        }
-
-        public IEnumerator<MemberDeclarationSyntax> GetEnumerator()
-        {
-            return ((IReadOnlyList<MemberDeclarationSyntax>)Members).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IReadOnlyList<MemberDeclarationSyntax>)Members).GetEnumerator();
         }
 
         public MemberDeclarationsInfo Add(MemberDeclarationSyntax member)

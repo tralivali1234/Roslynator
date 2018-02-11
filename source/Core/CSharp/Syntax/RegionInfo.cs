@@ -9,8 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: pub
-    internal struct RegionInfo : IEquatable<RegionInfo>
+    public struct RegionInfo : IEquatable<RegionInfo>
     {
         private RegionInfo(RegionDirectiveTriviaSyntax regionDirective, EndRegionDirectiveTriviaSyntax endRegionDirective)
         {

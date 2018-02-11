@@ -24,6 +24,12 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxNode Declaration { get; }
 
+        public SyntaxTokenList Modifiers { get; }
+
+        public int TokenIndex { get; }
+
+        public int SecondTokenIndex { get; }
+
         public SyntaxToken Token
         {
             get { return GetTokenOrDefault(TokenIndex); }
@@ -34,15 +40,34 @@ namespace Roslynator.CSharp.Syntax
             get { return GetTokenOrDefault(SecondTokenIndex); }
         }
 
-        public SyntaxTokenList Modifiers { get; }
-
-        public int TokenIndex { get; }
-
-        public int SecondTokenIndex { get; }
-
-        public bool Success
+        public bool IsPublic
         {
-            get { return Declaration != null; }
+            get { return Accessibility == Accessibility.Public; }
+        }
+
+        public bool IsInternal
+        {
+            get { return Accessibility == Accessibility.Internal; }
+        }
+
+        public bool IsProtectedInternal
+        {
+            get { return Accessibility == Accessibility.ProtectedOrInternal; }
+        }
+
+        public bool IsProtected
+        {
+            get { return Accessibility == Accessibility.Protected; }
+        }
+
+        public bool IsPrivateProtected
+        {
+            get { return Accessibility == Accessibility.ProtectedAndInternal; }
+        }
+
+        public bool IsPrivate
+        {
+            get { return Accessibility == Accessibility.Private; }
         }
 
         public Accessibility Accessibility
@@ -91,6 +116,11 @@ namespace Roslynator.CSharp.Syntax
 
                 return Accessibility.NotApplicable;
             }
+        }
+
+        public bool Success
+        {
+            get { return Declaration != null; }
         }
 
         internal static AccessibilityInfo Create(SyntaxNode declaration)

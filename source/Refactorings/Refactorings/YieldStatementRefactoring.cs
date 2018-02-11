@@ -16,7 +16,8 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = yieldStatement.Expression;
 
-                if (expression?.Span.Contains(context.Span) == true)
+                if (expression?.IsMissing == false
+                    && expression.Span.Contains(context.Span))
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 

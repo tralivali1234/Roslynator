@@ -11,49 +11,52 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct StatementsInfo : IReadOnlyList<StatementSyntax>, IEquatable<StatementsInfo>
+    public struct StatementsInfo : IEquatable<StatementsInfo>, IReadOnlyList<StatementSyntax>
     {
         internal StatementsInfo(BlockSyntax block)
         {
-            Block = block;
-            SwitchSection = null;
+            Debug.Assert(block != null);
+
+            Node = block;
+            IsBlock = true;
             Statements = block.Statements;
+        }
+
+        internal StatementsInfo(SwitchSectionSyntax switchSection)
+        {
+            Debug.Assert(switchSection != null);
+
+            Node = switchSection;
+            IsBlock = false;
+            Statements = switchSection.Statements;
         }
 
         private static StatementsInfo Default { get; } = new StatementsInfo();
 
-        internal StatementsInfo(SwitchSectionSyntax switchSection)
-        {
-            SwitchSection = switchSection;
-            Block = null;
-            Statements = switchSection.Statements;
-        }
-
-        public BlockSyntax Block { get; }
-
-        public SwitchSectionSyntax SwitchSection { get; }
+        public CSharpSyntaxNode Node { get; }
 
         public SyntaxList<StatementSyntax> Statements { get; }
 
-        public CSharpSyntaxNode Node
+        public bool IsBlock { get; }
+
+        public bool IsSwitchSection
         {
-            get { return Block ?? (CSharpSyntaxNode)SwitchSection; }
+            get { return Success && !IsBlock; }
         }
 
-        //TODO: IsBlock
-        public bool IsInBlock
+        public BlockSyntax Block
         {
-            get { return Block != null; }
+            get { return (IsBlock) ? (BlockSyntax)Node : null; }
         }
 
-        public bool IsInSwitchSection
+        public SwitchSectionSyntax SwitchSection
         {
-            get { return SwitchSection != null; }
+            get { return (IsSwitchSection) ? (SwitchSectionSyntax)Node : null; }
         }
 
         public bool Success
         {
-            get { return Block != null || SwitchSection != null; }
+            get { return Node != null; }
         }
 
         public int Count
@@ -64,6 +67,21 @@ namespace Roslynator.CSharp.Syntax
         public StatementSyntax this[int index]
         {
             get { return Statements[index]; }
+        }
+
+        IEnumerator<StatementSyntax> IEnumerable<StatementSyntax>.GetEnumerator()
+        {
+            return ((IReadOnlyList<StatementSyntax>)Statements).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IReadOnlyList<StatementSyntax>)Statements).GetEnumerator();
+        }
+
+        public SyntaxList<StatementSyntax>.Enumerator GetEnumerator()
+        {
+            return Statements.GetEnumerator();
         }
 
         internal static StatementsInfo Create(BlockSyntax block)
@@ -114,10 +132,10 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsInBlock)
+            if (IsBlock)
                 return new StatementsInfo(Block.WithStatements(statements));
 
-            if (IsInSwitchSection)
+            if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.WithStatements(statements));
 
             Debug.Fail("");
@@ -128,10 +146,10 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsInBlock)
+            if (IsBlock)
                 return new StatementsInfo(Block.RemoveNode(node, options));
 
-            if (IsInSwitchSection)
+            if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.RemoveNode(node, options));
 
             Debug.Fail("");
@@ -142,24 +160,14 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsInBlock)
+            if (IsBlock)
                 return new StatementsInfo(Block.ReplaceNode(oldNode, newNode));
 
-            if (IsInSwitchSection)
+            if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.ReplaceNode(oldNode, newNode));
 
             Debug.Fail("");
             return this;
-        }
-
-        public IEnumerator<StatementSyntax> GetEnumerator()
-        {
-            return ((IReadOnlyList<StatementSyntax>)Statements).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IReadOnlyList<StatementSyntax>)Statements).GetEnumerator();
         }
 
         public StatementsInfo Add(StatementSyntax statement)

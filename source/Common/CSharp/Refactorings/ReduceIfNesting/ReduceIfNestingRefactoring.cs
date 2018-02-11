@@ -54,10 +54,10 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
-            if (statementsInfo.IsInSwitchSection
+            if (statementsInfo.IsSwitchSection
                 || parentKind == SyntaxKind.SwitchSection)
             {
-                SyntaxNode switchSection = (statementsInfo.IsInSwitchSection) ? node : parent;
+                SyntaxNode switchSection = (statementsInfo.IsSwitchSection) ? node : parent;
 
                 if (!options.AllowSwitchSection())
                     return Fail(switchSection);

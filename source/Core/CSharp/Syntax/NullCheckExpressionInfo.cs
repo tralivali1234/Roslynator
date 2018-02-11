@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
 
-        //TODO: ren
+        //XTODO: ren
         public ExpressionSyntax ContainingExpression { get; }
 
         public ExpressionSyntax Expression { get; }

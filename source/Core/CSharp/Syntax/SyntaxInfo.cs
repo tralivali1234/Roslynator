@@ -531,12 +531,12 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.RegionInfo.Create(node);
         }
 
-        internal static RegionInfo RegionInfo(RegionDirectiveTriviaSyntax regionDirective)
+        public static RegionInfo RegionInfo(RegionDirectiveTriviaSyntax regionDirective)
         {
             return Syntax.RegionInfo.Create(regionDirective);
         }
 
-        internal static RegionInfo RegionInfo(EndRegionDirectiveTriviaSyntax endRegionDirective)
+        public static RegionInfo RegionInfo(EndRegionDirectiveTriviaSyntax endRegionDirective)
         {
             return Syntax.RegionInfo.Create(endRegionDirective);
         }
