@@ -36,7 +36,7 @@ namespace Roslynator.CSharp.Refactorings
                             "Format arguments on separate lines",
                             cancellationToken =>
                             {
-                                return DocumentFormatter.ToMultiLineAsync(
+                                return SyntaxFormatter.ToMultiLineAsync(
                                     context.Document,
                                     argumentList,
                                     cancellationToken);
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
                         "Format arguments on a single line",
                         cancellationToken =>
                         {
-                            return DocumentFormatter.ToSingleLineAsync(
+                            return SyntaxFormatter.ToSingleLineAsync(
                                 context.Document,
                                 argumentList,
                                 cancellationToken);

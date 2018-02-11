@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
                             }
                         case XmlElementKind.Summary:
                             {
-                                if (info.IsXmlEmptyElement || IsSummaryMissing((XmlElementSyntax)info.Element))
+                                if (info.IsEmptyElement || IsSummaryMissing((XmlElementSyntax)info.Element))
                                 {
                                     context.ReportDiagnostic(
                                         DiagnosticDescriptors.AddSummaryToDocumentationComment,

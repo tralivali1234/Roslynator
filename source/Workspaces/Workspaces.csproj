@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="CSharp\CSharpSyntax.cs" />
     <Compile Include="CSharp\CSharpTypeFactory.cs" />
-    <Compile Include="CSharp\DocumentFormatter.cs" />
+    <Compile Include="CSharp\SyntaxFormatter.cs" />
     <Compile Include="CSharp\Extensions\DocumentExtensions.cs" />
     <Compile Include="CSharp\Extensions\WorkspaceSyntaxExtensions.cs" />
     <Compile Include="CSharp\Negation.cs" />

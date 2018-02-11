@@ -2,12 +2,12 @@
 
 namespace Roslynator.CSharp.Syntax
 {
-    public enum HexadecimalLiteralSuffixKind
+    internal enum HexNumericLiteralSuffixKind
     {
-        None,
-        UInt32OrUInt64,
-        Int64OrUInt64,
-        UInt64,
-        Unknown
+        None = 0,
+        UIntOrULong = 1,
+        LongOrULong = 2,
+        ULong = 3,
+        Unknown = 4
     }
 }

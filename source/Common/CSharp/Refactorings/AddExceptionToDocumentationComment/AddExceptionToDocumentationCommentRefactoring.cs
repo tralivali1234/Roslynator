@@ -180,13 +180,13 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
                             {
                                 if (!containsException)
                                 {
-                                    if (info.IsXmlElement)
+                                    if (info.IsEmptyElement)
                                     {
-                                        containsException = ContainsException((XmlElementSyntax)info.Element, exceptionSymbol, semanticModel, cancellationToken);
+                                        containsException = ContainsException((XmlEmptyElementSyntax)info.Element, exceptionSymbol, semanticModel, cancellationToken);
                                     }
                                     else
                                     {
-                                        containsException = ContainsException((XmlEmptyElementSyntax)info.Element, exceptionSymbol, semanticModel, cancellationToken);
+                                        containsException = ContainsException((XmlElementSyntax)info.Element, exceptionSymbol, semanticModel, cancellationToken);
                                     }
                                 }
 

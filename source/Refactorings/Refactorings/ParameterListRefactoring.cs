@@ -41,14 +41,14 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             context.RegisterRefactoring(
                                 "Format parameters on separate lines",
-                                cancellationToken => DocumentFormatter.ToMultiLineAsync(context.Document, parameterList, cancellationToken));
+                                cancellationToken => SyntaxFormatter.ToMultiLineAsync(context.Document, parameterList, cancellationToken));
                         }
                     }
                     else
                     {
                         context.RegisterRefactoring(
                             "Format parameters on a single line",
-                            cancellationToken => DocumentFormatter.ToSingleLineAsync(context.Document, parameterList, cancellationToken));
+                            cancellationToken => SyntaxFormatter.ToSingleLineAsync(context.Document, parameterList, cancellationToken));
                     }
                 }
             }

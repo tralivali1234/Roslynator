@@ -19,13 +19,13 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Format binary expression on multiple lines",
-                        cancellationToken => DocumentFormatter.ToMultiLineAsync(context.Document, binaryExpression, cancellationToken));
+                        cancellationToken => SyntaxFormatter.ToMultiLineAsync(context.Document, binaryExpression, cancellationToken));
                 }
                 else
                 {
                     context.RegisterRefactoring(
                         "Format binary expression on a single line",
-                        cancellationToken => DocumentFormatter.ToSingleLineAsync(context.Document, binaryExpression, cancellationToken));
+                        cancellationToken => SyntaxFormatter.ToSingleLineAsync(context.Document, binaryExpression, cancellationToken));
                 }
             }
         }

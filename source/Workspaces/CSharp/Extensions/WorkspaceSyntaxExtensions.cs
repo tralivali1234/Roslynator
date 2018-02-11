@@ -12,7 +12,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
-    //TODO: ren
     public static class WorkspaceSyntaxExtensions
     {
         private const string NavigationAnnotationKind = "CodeAction_Navigation";
@@ -63,8 +62,7 @@ namespace Roslynator.CSharp
         #endregion ExpressionSyntax
 
         #region SimpleNameSyntax
-        //TODO: int
-        public static MemberAccessExpressionSyntax QualifyWithThis(this SimpleNameSyntax simpleName, bool simplifiable = true)
+        internal static MemberAccessExpressionSyntax QualifyWithThis(this SimpleNameSyntax simpleName, bool simplifiable = true)
         {
             return SimpleMemberAccessExpression(ThisExpression(), simpleName).WithSimplifierAnnotationIf(simplifiable);
         }

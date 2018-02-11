@@ -68,7 +68,6 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
-        //TODO: ByName
         public TypeParameterSyntax FindTypeParameter(string name)
         {
             foreach (TypeParameterSyntax typeParameter in TypeParameters)
@@ -80,7 +79,6 @@ namespace Roslynator.CSharp.Syntax
             return null;
         }
 
-        //TODO: ByName
         public TypeParameterConstraintClauseSyntax FindConstraintClause(string name)
         {
             foreach (TypeParameterConstraintClauseSyntax constraintClause in ConstraintClauses)
@@ -345,7 +343,6 @@ namespace Roslynator.CSharp.Syntax
             return this;
         }
 
-        //TODO: RemoveAllConstraintClauses
         public GenericInfo RemoveConstraintClauses()
         {
             ThrowInvalidOperationIfNotInitialized();

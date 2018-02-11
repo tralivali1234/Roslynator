@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, LiteralExpressionSyntax literalExpression)
         {
-            HexadecimalLiteralInfo info = SyntaxInfo.HexadecimalLiteralInfo(literalExpression);
+            HexNumericLiteralExpressionInfo info = SyntaxInfo.HexNumericLiteralExpressionInfo(literalExpression);
 
             if (!info.Success)
                 return;

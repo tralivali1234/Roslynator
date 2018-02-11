@@ -85,8 +85,10 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: ?
-        internal static Task<Document> RemoveStatementAsync(this Document document, StatementSyntax statement, CancellationToken cancellationToken = default(CancellationToken))
+        internal static Task<Document> RemoveStatementAsync(
+            this Document document,
+            StatementSyntax statement,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
@@ -153,7 +155,6 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
-        //TODO: int
         public static async Task<Document> RemoveDirectivesAsync(
             this Document document,
             DirectiveRemoveOptions removeOptions,
@@ -219,8 +220,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: int
-        public static async Task<Document> RemoveDirectivesAsync(
+        internal static async Task<Document> RemoveDirectivesAsync(
             this Document document,
             IEnumerable<DirectiveTriviaSyntax> directives,
             CancellationToken cancellationToken = default(CancellationToken))

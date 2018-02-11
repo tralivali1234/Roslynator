@@ -9,7 +9,6 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: ren
     public struct SingleParameterLambdaExpressionInfo : IEquatable<SingleParameterLambdaExpressionInfo>
     {
         private SingleParameterLambdaExpressionInfo(
@@ -33,12 +32,6 @@ namespace Roslynator.CSharp.Syntax
         public ParameterListSyntax ParameterList
         {
             get { return (IsParenthesizedLambda) ? (ParameterListSyntax)Parameter.Parent : null; }
-        }
-
-        //TODO: del, ParameterText
-        public string ParameterName
-        {
-            get { return Parameter?.Identifier.ValueText; }
         }
 
         public bool IsSimpleLambda

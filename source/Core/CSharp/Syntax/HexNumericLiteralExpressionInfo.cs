@@ -9,16 +9,15 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: HexadecimalLiteralExpressionInfo, HexLiteralExpressionInfo
-    public struct HexadecimalLiteralInfo : IEquatable<HexadecimalLiteralInfo>
+    internal struct HexNumericLiteralExpressionInfo : IEquatable<HexNumericLiteralExpressionInfo>
     {
-        private HexadecimalLiteralInfo(LiteralExpressionSyntax literalExpression, SyntaxToken token)
+        private HexNumericLiteralExpressionInfo(LiteralExpressionSyntax literalExpression, SyntaxToken token)
         {
             LiteralExpression = literalExpression;
             Token = token;
         }
 
-        private static HexadecimalLiteralInfo Default { get; } = new HexadecimalLiteralInfo();
+        private static HexNumericLiteralExpressionInfo Default { get; } = new HexNumericLiteralExpressionInfo();
 
         public LiteralExpressionSyntax LiteralExpression { get; }
 
@@ -68,26 +67,26 @@ namespace Roslynator.CSharp.Syntax
             return Text.Substring(startIndex);
         }
 
-        public HexadecimalLiteralSuffixKind GetSuffixKind()
+        public HexNumericLiteralSuffixKind GetSuffixKind()
         {
             string suffix = GetSuffix();
 
             if (suffix == null)
-                return HexadecimalLiteralSuffixKind.None;
+                return HexNumericLiteralSuffixKind.None;
 
             if (string.Equals(GetSuffix(), "u", StringComparison.OrdinalIgnoreCase))
-                return HexadecimalLiteralSuffixKind.UInt32OrUInt64;
+                return HexNumericLiteralSuffixKind.UIntOrULong;
 
             if (string.Equals(GetSuffix(), "l", StringComparison.OrdinalIgnoreCase))
-                return HexadecimalLiteralSuffixKind.Int64OrUInt64;
+                return HexNumericLiteralSuffixKind.LongOrULong;
 
             if (string.Equals(GetSuffix(), "ul", StringComparison.OrdinalIgnoreCase)
                 || string.Equals(GetSuffix(), "lu", StringComparison.OrdinalIgnoreCase))
             {
-                return HexadecimalLiteralSuffixKind.UInt64;
+                return HexNumericLiteralSuffixKind.ULong;
             }
 
-            return HexadecimalLiteralSuffixKind.Unknown;
+            return HexNumericLiteralSuffixKind.Unknown;
         }
 
         public bool Success
@@ -95,12 +94,12 @@ namespace Roslynator.CSharp.Syntax
             get { return LiteralExpression != null; }
         }
 
-        internal static HexadecimalLiteralInfo Create(SyntaxNode node, bool walkDownParentheses = true)
+        internal static HexNumericLiteralExpressionInfo Create(SyntaxNode node, bool walkDownParentheses = true)
         {
             return Create(Walk(node, walkDownParentheses) as LiteralExpressionSyntax);
         }
 
-        internal static HexadecimalLiteralInfo Create(LiteralExpressionSyntax literalExpression)
+        internal static HexNumericLiteralExpressionInfo Create(LiteralExpressionSyntax literalExpression)
         {
             if (literalExpression == null)
                 return Default;
@@ -115,7 +114,7 @@ namespace Roslynator.CSharp.Syntax
             if (!text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                 return Default;
 
-            return new HexadecimalLiteralInfo(literalExpression, token);
+            return new HexNumericLiteralExpressionInfo(literalExpression, token);
         }
 
         public override string ToString()
@@ -125,10 +124,10 @@ namespace Roslynator.CSharp.Syntax
 
         public override bool Equals(object obj)
         {
-            return obj is HexadecimalLiteralInfo other && Equals(other);
+            return obj is HexNumericLiteralExpressionInfo other && Equals(other);
         }
 
-        public bool Equals(HexadecimalLiteralInfo other)
+        public bool Equals(HexNumericLiteralExpressionInfo other)
         {
             return EqualityComparer<LiteralExpressionSyntax>.Default.Equals(LiteralExpression, other.LiteralExpression);
         }
@@ -138,12 +137,12 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<LiteralExpressionSyntax>.Default.GetHashCode(LiteralExpression);
         }
 
-        public static bool operator ==(HexadecimalLiteralInfo info1, HexadecimalLiteralInfo info2)
+        public static bool operator ==(HexNumericLiteralExpressionInfo info1, HexNumericLiteralExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        public static bool operator !=(HexadecimalLiteralInfo info1, HexadecimalLiteralInfo info2)
+        public static bool operator !=(HexNumericLiteralExpressionInfo info1, HexNumericLiteralExpressionInfo info2)
         {
             return !(info1 == info2);
         }

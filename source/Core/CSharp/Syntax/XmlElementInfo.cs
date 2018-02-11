@@ -22,20 +22,14 @@ namespace Roslynator.CSharp.Syntax
 
         public string LocalName { get; }
 
-        public XmlElementKind ElementKind { get; }
+        internal XmlElementKind ElementKind { get; }
 
         public SyntaxKind Kind
         {
             get { return Element?.Kind() ?? SyntaxKind.None; }
         }
 
-        public bool IsXmlElement
-        {
-            get { return Kind == SyntaxKind.XmlElement; }
-        }
-
-        //TODO: IsEmptyElement + smazat IsXmlElement
-        public bool IsXmlEmptyElement
+        public bool IsEmptyElement
         {
             get { return Kind == SyntaxKind.XmlEmptyElement; }
         }

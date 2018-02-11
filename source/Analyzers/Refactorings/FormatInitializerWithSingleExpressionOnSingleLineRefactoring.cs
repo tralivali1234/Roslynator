@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
             InitializerExpressionSyntax initializer,
             CancellationToken cancellationToken)
         {
-            return DocumentFormatter.ToSingleLineAsync(document, initializer, cancellationToken);
+            return SyntaxFormatter.ToSingleLineAsync(document, initializer, cancellationToken);
         }
     }
 }

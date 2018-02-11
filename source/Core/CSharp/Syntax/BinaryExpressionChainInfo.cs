@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
@@ -10,8 +11,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: ireadonlylist
-    internal struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>
+    internal struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>, IReadOnlyList<ExpressionSyntax>
     {
         private BinaryExpressionChainInfo(
             BinaryExpressionSyntax binaryExpression,
@@ -34,6 +34,31 @@ namespace Roslynator.CSharp.Syntax
         public bool Success
         {
             get { return BinaryExpression != null; }
+        }
+
+        public int Count
+        {
+            get { return Expressions.Length; }
+        }
+
+        public ExpressionSyntax this[int index]
+        {
+            get { return Expressions[index]; }
+        }
+
+        IEnumerator<ExpressionSyntax> IEnumerable<ExpressionSyntax>.GetEnumerator()
+        {
+            return ((IEnumerable<ExpressionSyntax>)Expressions).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Expressions).GetEnumerator();
+        }
+
+        public ImmutableArray<ExpressionSyntax>.Enumerator GetEnumerator()
+        {
+            return Expressions.GetEnumerator();
         }
 
         internal static BinaryExpressionChainInfo Create(

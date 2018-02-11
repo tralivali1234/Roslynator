@@ -138,8 +138,8 @@
     <Compile Include="CSharp\CSharpGeneratedCodeAnalyzer.cs" />
     <Compile Include="CSharp\Extensions\SymbolExtensions.cs" />
     <Compile Include="CSharp\SyntaxRewriters\BinaryExpressionToMultiLineRewriter.cs" />
-    <Compile Include="CSharp\Syntax\HexadecimalLiteralInfo.cs" />
-    <Compile Include="CSharp\Syntax\HexadecimalLiteralSuffixKind.cs" />
+    <Compile Include="CSharp\Syntax\HexNumericLiteralExpressionInfo.cs" />
+    <Compile Include="CSharp\Syntax\HexNumericLiteralSuffixKind.cs" />
     <Compile Include="CSharp\Syntax\IfStatementInfo.cs" />
     <Compile Include="CSharp\IfStatementOrElseClause.cs" />
     <Compile Include="CSharp\Comparers\MemberDeclarationSortMode.cs" />

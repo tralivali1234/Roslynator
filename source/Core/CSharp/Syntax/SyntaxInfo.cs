@@ -228,16 +228,14 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.GenericInfo.Create(structDeclaration);
         }
 
-        public static HexadecimalLiteralInfo HexadecimalLiteralInfo(
-            SyntaxNode node,
-            bool walkDownParentheses = true)
+        internal static HexNumericLiteralExpressionInfo HexNumericLiteralExpressionInfo(SyntaxNode node, bool walkDownParentheses = true)
         {
-            return Syntax.HexadecimalLiteralInfo.Create(node, walkDownParentheses);
+            return Syntax.HexNumericLiteralExpressionInfo.Create(node, walkDownParentheses);
         }
 
-        public static HexadecimalLiteralInfo HexadecimalLiteralInfo(LiteralExpressionSyntax literalExpression)
+        internal static HexNumericLiteralExpressionInfo HexNumericLiteralExpressionInfo(LiteralExpressionSyntax literalExpression)
         {
-            return Syntax.HexadecimalLiteralInfo.Create(literalExpression);
+            return Syntax.HexNumericLiteralExpressionInfo.Create(literalExpression);
         }
 
         public static IfStatementInfo IfStatementInfo(IfStatementSyntax ifStatement)

@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.Syntax
             get { return Block ?? (CSharpSyntaxNode)SwitchSection; }
         }
 
-        //TODO: ren
+        //TODO: IsBlock
         public bool IsInBlock
         {
             get { return Block != null; }

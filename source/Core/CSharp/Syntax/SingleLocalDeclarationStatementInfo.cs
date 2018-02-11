@@ -9,7 +9,6 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: ren
     public struct SingleLocalDeclarationStatementInfo : IEquatable<SingleLocalDeclarationStatementInfo>
     {
         private SingleLocalDeclarationStatementInfo(

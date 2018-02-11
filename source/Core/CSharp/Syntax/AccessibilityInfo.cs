@@ -9,15 +9,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    // TODO: AccessModifiersInfo
+    //XTODO: AccessModifiersInfo
     public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
-        private AccessibilityInfo(SyntaxNode declaration, SyntaxTokenList modifiers, int index, int secondIndex = -1)
+        private AccessibilityInfo(SyntaxNode declaration, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
         {
             Declaration = declaration;
             Modifiers = modifiers;
-            TokenIndex = index;
-            SecondTokenIndex = secondIndex;
+            TokenIndex = tokenIndex;
+            SecondTokenIndex = secondTokenIndex;
         }
 
         private static AccessibilityInfo Default { get; } = new AccessibilityInfo();

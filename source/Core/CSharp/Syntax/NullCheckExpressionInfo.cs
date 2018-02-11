@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Syntax
             SemanticModel semanticModel = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            //TODO: ?
+            //XTODO: throw ex
             if (semanticModel == null
                 && (allowedKinds & NullCheckKind.HasValueProperty) != 0)
             {
