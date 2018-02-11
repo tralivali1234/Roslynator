@@ -528,6 +528,21 @@ namespace Roslynator.CSharp.Syntax
             return Syntax.ParametersInfo.Create(anonymousMethod, allowMissing);
         }
 
+        internal static RegionInfo RegionInfo(SyntaxNode node)
+        {
+            return Syntax.RegionInfo.Create(node);
+        }
+
+        internal static RegionInfo RegionInfo(RegionDirectiveTriviaSyntax regionDirective)
+        {
+            return Syntax.RegionInfo.Create(regionDirective);
+        }
+
+        internal static RegionInfo RegionInfo(EndRegionDirectiveTriviaSyntax endRegionDirective)
+        {
+            return Syntax.RegionInfo.Create(endRegionDirective);
+        }
+
         public static SimpleAssignmentExpressionInfo SimpleAssignmentExpressionInfo(
             SyntaxNode node,
             bool walkDownParentheses = true,

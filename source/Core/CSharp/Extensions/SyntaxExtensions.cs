@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Documentation;
+using Roslynator.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxRewriters;
 using Roslynator.CSharp.SyntaxWalkers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -529,18 +530,9 @@ namespace Roslynator.CSharp
             if (endRegionDirective == null)
                 throw new ArgumentNullException(nameof(endRegionDirective));
 
-            List<DirectiveTriviaSyntax> relatedDirectives = endRegionDirective.GetRelatedDirectives();
+            RegionInfo info = SyntaxInfo.RegionInfo(endRegionDirective);
 
-            if (relatedDirectives.Count == 2)
-            {
-                foreach (DirectiveTriviaSyntax directive in relatedDirectives)
-                {
-                    if (directive.IsKind(SyntaxKind.RegionDirectiveTrivia))
-                        return (RegionDirectiveTriviaSyntax)directive;
-                }
-            }
-
-            return null;
+            return (info.Success) ? info.RegionDirective : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
@@ -1414,18 +1406,9 @@ namespace Roslynator.CSharp
             if (regionDirective == null)
                 throw new ArgumentNullException(nameof(regionDirective));
 
-            List<DirectiveTriviaSyntax> relatedDirectives = regionDirective.GetRelatedDirectives();
+            RegionInfo info = SyntaxInfo.RegionInfo(regionDirective);
 
-            if (relatedDirectives.Count == 2)
-            {
-                foreach (DirectiveTriviaSyntax directive in relatedDirectives)
-                {
-                    if (directive.IsKind(SyntaxKind.EndRegionDirectiveTrivia))
-                        return (EndRegionDirectiveTriviaSyntax)directive;
-                }
-            }
-
-            return null;
+            return (info.Success) ? info.EndRegionDirective : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)

@@ -53,6 +53,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static BinaryExpressionChainInfo CreateCore(BinaryExpressionSyntax binaryExpression, SyntaxKind kind)
         {
+            //TODO: immutablearray builder
             List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
 
             if (expressions == null)

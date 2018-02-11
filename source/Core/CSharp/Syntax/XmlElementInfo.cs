@@ -29,13 +29,12 @@ namespace Roslynator.CSharp.Syntax
             get { return Element?.Kind() ?? SyntaxKind.None; }
         }
 
-        //TODO: 
         public bool IsXmlElement
         {
             get { return Kind == SyntaxKind.XmlElement; }
         }
 
-        //TODO: 
+        //TODO: IsEmptyElement + smazat IsXmlElement
         public bool IsXmlEmptyElement
         {
             get { return Kind == SyntaxKind.XmlEmptyElement; }

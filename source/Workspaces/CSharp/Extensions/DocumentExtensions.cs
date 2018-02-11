@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Documentation;
 using Roslynator.CSharp.Helpers;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
@@ -269,22 +270,16 @@ namespace Roslynator.CSharp
             if (regionDirective == null)
                 throw new ArgumentNullException(nameof(regionDirective));
 
-            List<DirectiveTriviaSyntax> list = regionDirective.GetRelatedDirectives();
+            RegionInfo info = SyntaxInfo.RegionInfo(regionDirective);
 
-            //TODO: throw ex
-            if (list.Count == 2
-                && list[1].IsKind(SyntaxKind.EndRegionDirectiveTrivia))
-            {
-                var endRegionDirective = (EndRegionDirectiveTriviaSyntax)list[1];
+            if (!info.Success)
+                return document;
 
-                SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+            SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-                SourceText newSourceText = RemoveRegion(sourceText, regionDirective, endRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, info.EndRegionDirective);
 
-                return document.WithText(newSourceText);
-            }
-
-            return document;
+            return document.WithText(newSourceText);
         }
 
         public static async Task<Document> RemoveRegionAsync(
@@ -298,22 +293,16 @@ namespace Roslynator.CSharp
             if (endRegionDirective == null)
                 throw new ArgumentNullException(nameof(endRegionDirective));
 
-            List<DirectiveTriviaSyntax> list = endRegionDirective.GetRelatedDirectives();
+            RegionInfo info = SyntaxInfo.RegionInfo(endRegionDirective);
 
-            //TODO: throw ex
-            if (list.Count == 2
-                && list[0].IsKind(SyntaxKind.RegionDirectiveTrivia))
-            {
-                var regionDirective = (RegionDirectiveTriviaSyntax)list[0];
+            if (!info.Success)
+                return document;
 
-                SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+            SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-                SourceText newSourceText = RemoveRegion(sourceText, regionDirective, endRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, info.RegionDirective, endRegionDirective);
 
-                return document.WithText(newSourceText);
-            }
-
-            return document;
+            return document.WithText(newSourceText);
         }
 
         private static SourceText RemoveRegion(

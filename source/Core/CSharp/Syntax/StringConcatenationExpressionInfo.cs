@@ -126,6 +126,7 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
+            //TODO: immutablearray builder
             List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
 
             if (expressions == null)
