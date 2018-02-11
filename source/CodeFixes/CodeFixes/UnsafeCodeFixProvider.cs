@@ -95,7 +95,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeContainingDeclarationUnsafe))
                                         continue;
 
-                                    if (!CSharpFacts.SupportsModifiers(ancestor.Kind()))
+                                    if (!CSharpFacts.CanHaveModifiers(ancestor.Kind()))
                                         continue;
 
                                     ModifiersCodeFixRegistrator.AddModifier(

@@ -8,11 +8,13 @@ namespace Roslynator.CSharp
     //TODO: CSharpFacts
     internal static class CSharpFacts
     {
+        //TODO: CanHaveStatements
         public static bool CanContainStatements(SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
         }
 
+        //TODO: CanHaveMembers
         public static bool CanContainMembers(SyntaxKind kind)
         {
             return kind.Is(
@@ -21,11 +23,6 @@ namespace Roslynator.CSharp
                 SyntaxKind.ClassDeclaration,
                 SyntaxKind.StructDeclaration,
                 SyntaxKind.InterfaceDeclaration);
-        }
-
-        public static bool IsYieldStatement(SyntaxKind kind)
-        {
-            return kind.Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);
         }
 
         public static bool IsNestedMethod(SyntaxKind kind)
@@ -37,6 +34,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.LocalFunctionStatement);
         }
 
+        //TODO: IsLoopStatement
         public static bool IsLoop(SyntaxKind kind)
         {
             return kind.Is(
@@ -114,7 +112,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool SupportsModifiers(SyntaxKind kind)
+        public static bool CanHaveModifiers(SyntaxKind kind)
         {
             switch (kind)
             {
@@ -148,7 +146,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool SupportsExpressionBody(SyntaxKind kind)
+        public static bool CanHaveExpressionBody(SyntaxKind kind)
         {
             switch (kind)
             {
@@ -169,6 +167,7 @@ namespace Roslynator.CSharp
             }
         }
 
+        //TODO: CanHaveEmbeddedStatement
         public static bool CanContainEmbeddedStatement(SyntaxKind kind)
         {
             switch (kind)

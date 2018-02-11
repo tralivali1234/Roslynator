@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxNode parent = arrowExpressionClause.Parent;
 
             return parent != null
-                && CSharpFacts.SupportsExpressionBody(parent.Kind());
+                && CSharpFacts.CanHaveExpressionBody(parent.Kind());
         }
 
         public static async Task<Document> RefactorAsync(

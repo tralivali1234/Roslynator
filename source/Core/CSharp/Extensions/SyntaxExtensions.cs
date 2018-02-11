@@ -133,7 +133,7 @@ namespace Roslynator.CSharp
 
             bool containsYield = block
                 .DescendantNodes(block.Span, node => !CSharpFacts.IsNestedMethod(node.Kind()))
-                .Any(f => CSharpFacts.IsYieldStatement(f.Kind()));
+                .Any(f => f.Kind().Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement));
 
             sw.Stop();
 
