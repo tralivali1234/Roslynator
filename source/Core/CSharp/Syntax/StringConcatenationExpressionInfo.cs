@@ -15,9 +15,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ireadonlylist
     internal struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
     {
-        private StringConcatenationExpressionInfo(BinaryExpressionSyntax addExpression, IEnumerable<ExpressionSyntax> expressions, TextSpan? span = null)
+        private StringConcatenationExpressionInfo(
+            BinaryExpressionSyntax addExpression,
+            IEnumerable<ExpressionSyntax> expressions,
+            TextSpan? span = null)
         {
             ContainsNonSpecificExpression = false;
             ContainsRegularLiteralExpression = false;
@@ -66,6 +70,7 @@ namespace Roslynator.CSharp.Syntax
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
+        //TODO: ren
         public BinaryExpressionSyntax OriginalExpression { get; }
 
         public TextSpan? Span { get; }
@@ -160,13 +165,12 @@ namespace Roslynator.CSharp.Syntax
             if (expression == null)
                 return false;
 
-            SyntaxKind kind = expression.Kind();
-
-            if (kind == SyntaxKind.StringLiteralExpression)
+            if (expression.Kind().Is(
+                SyntaxKind.StringLiteralExpression,
+                SyntaxKind.InterpolatedStringExpression))
+            {
                 return true;
-
-            if (kind == SyntaxKind.InterpolatedStringExpression)
-                return true;
+            }
 
             return semanticModel.GetTypeInfo(expression, cancellationToken)
                 .ConvertedType?
@@ -212,6 +216,8 @@ namespace Roslynator.CSharp.Syntax
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('$');
@@ -303,6 +309,8 @@ namespace Roslynator.CSharp.Syntax
 
         public LiteralExpressionSyntax ToStringLiteral()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
@@ -343,6 +351,8 @@ namespace Roslynator.CSharp.Syntax
 
         public LiteralExpressionSyntax ToMultilineStringLiteral()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
@@ -396,18 +406,9 @@ namespace Roslynator.CSharp.Syntax
 
         public override string ToString()
         {
-            if (Span != null)
-            {
-                TextSpan span = Span.Value;
-
-                return OriginalExpression
-                    .ToString()
-                    .Substring(span.Start - OriginalExpression.SpanStart, span.Length);
-            }
-            else
-            {
-                return OriginalExpression.ToString();
-            }
+            return (Span != null)
+                ? OriginalExpression.ToString(Span.Value)
+                : OriginalExpression.ToString();
         }
 
         private static string GetInnerText(string s)
@@ -415,6 +416,12 @@ namespace Roslynator.CSharp.Syntax
             return (s[0] == '@')
                 ? s.Substring(2, s.Length - 3)
                 : s.Substring(1, s.Length - 2);
+        }
+
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (OriginalExpression == null)
+                throw new InvalidOperationException($"{nameof(StringConcatenationExpressionInfo)} is not initalized.");
         }
 
         public override bool Equals(object obj)

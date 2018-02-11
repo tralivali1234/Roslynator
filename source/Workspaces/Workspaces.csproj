@@ -46,8 +46,8 @@
     <Compile Include="CSharp\DocumentFormatter.cs" />
     <Compile Include="CSharp\Extensions\DocumentExtensions.cs" />
     <Compile Include="CSharp\Extensions\WorkspaceSyntaxExtensions.cs" />
-    <Compile Include="CSharp\LogicalNegation.cs" />
-    <Compile Include="CSharp\RemoveCommentHelper.cs" />
+    <Compile Include="CSharp\Negation.cs" />
+    <Compile Include="CSharp\Helpers\RemoveCommentHelper.cs" />
     <Compile Include="DocumentReferenceInfo.cs" />
     <Compile Include="CodeFixes\Extensions\CodeFixContextExtensions.cs" />
     <Compile Include="Extensions\DocumentExtensions.cs" />

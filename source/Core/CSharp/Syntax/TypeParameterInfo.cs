@@ -10,8 +10,6 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct TypeParameterInfo : IEquatable<TypeParameterInfo>
     {
-        private static TypeParameterInfo Default { get; } = new TypeParameterInfo();
-
         private TypeParameterInfo(
             TypeParameterSyntax typeParameter,
             SyntaxNode declaration,
@@ -23,6 +21,8 @@ namespace Roslynator.CSharp.Syntax
             TypeParameterList = typeParameterList;
             ConstraintClauses = constraintClauses;
         }
+
+        private static TypeParameterInfo Default { get; } = new TypeParameterInfo();
 
         public TypeParameterSyntax TypeParameter { get; }
 

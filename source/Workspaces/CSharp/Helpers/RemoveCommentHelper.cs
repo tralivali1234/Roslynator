@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Roslynator.CSharp
+namespace Roslynator.CSharp.Helpers
 {
     internal static class RemoveCommentHelper
     {

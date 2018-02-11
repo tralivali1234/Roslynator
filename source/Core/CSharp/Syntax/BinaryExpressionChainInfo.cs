@@ -10,6 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ireadonlylist
     internal struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>
     {
         private BinaryExpressionChainInfo(

@@ -2087,11 +2087,12 @@ namespace Roslynator.CSharp
 
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantRegionDirectives(this SyntaxNode node)
         {
-            foreach (SyntaxNode descendant in node.DescendantNodes(descendIntoTrivia: true))
-            {
-                if (descendant.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia))
-                    yield return (DirectiveTriviaSyntax)descendant;
-            }
+            return DescendantDirectives(node, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+        }
+
+        internal static IEnumerable<DirectiveTriviaSyntax> DescendantRegionDirectives(this SyntaxNode node, TextSpan span)
+        {
+            return DescendantDirectives(node, span, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
         }
 
         public static bool IsDescendantOf(this SyntaxNode node, SyntaxKind kind, bool ascendOutOfTrivia = true)

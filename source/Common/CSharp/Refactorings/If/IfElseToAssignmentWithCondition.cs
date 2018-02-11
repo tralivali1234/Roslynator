@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.If
             {
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-                right = LogicalNegation.LogicallyNegate(right, semanticModel, cancellationToken);
+                right = Negation.LogicallyNegate(right, semanticModel, cancellationToken);
             }
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(Left.WithoutTrivia(), right)

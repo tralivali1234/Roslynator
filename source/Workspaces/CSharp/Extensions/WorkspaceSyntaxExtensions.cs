@@ -12,6 +12,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: ren
     public static class WorkspaceSyntaxExtensions
     {
         private const string NavigationAnnotationKind = "CodeAction_Navigation";
@@ -62,6 +63,7 @@ namespace Roslynator.CSharp
         #endregion ExpressionSyntax
 
         #region SimpleNameSyntax
+        //TODO: int
         public static MemberAccessExpressionSyntax QualifyWithThis(this SimpleNameSyntax simpleName, bool simplifiable = true)
         {
             return SimpleMemberAccessExpression(ThisExpression(), simpleName).WithSimplifierAnnotationIf(simplifiable);
@@ -103,6 +105,7 @@ namespace Roslynator.CSharp
             return (condition) ? node.WithAdditionalAnnotations(_simplifierAnnotationArray) : node;
         }
 
+        //TODO: WithFormatterAndSimplifierAnnotation
         internal static TNode WithFormatterAndSimplifierAnnotations<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -128,6 +131,7 @@ namespace Roslynator.CSharp
             return token.WithAdditionalAnnotations(_navigationAnnotationArray);
         }
 
+        //TODO: WithFormatterAndSimplifierAnnotation
         internal static SyntaxToken WithFormatterAndSimplifierAnnotations(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_formatterAndSimplifierAnnotationArray);

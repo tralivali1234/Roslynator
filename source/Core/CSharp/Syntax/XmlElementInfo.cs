@@ -9,14 +9,14 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct XmlElementInfo : IEquatable<XmlElementInfo>
     {
-        private static XmlElementInfo Default { get; } = new XmlElementInfo();
-
         private XmlElementInfo(XmlNodeSyntax element, string localName, XmlElementKind elementKind)
         {
             Element = element;
             LocalName = localName;
             ElementKind = elementKind;
         }
+
+        private static XmlElementInfo Default { get; } = new XmlElementInfo();
 
         public XmlNodeSyntax Element { get; }
 
@@ -29,11 +29,13 @@ namespace Roslynator.CSharp.Syntax
             get { return Element?.Kind() ?? SyntaxKind.None; }
         }
 
+        //TODO: 
         public bool IsXmlElement
         {
             get { return Kind == SyntaxKind.XmlElement; }
         }
 
+        //TODO: 
         public bool IsXmlEmptyElement
         {
             get { return Kind == SyntaxKind.XmlEmptyElement; }
@@ -95,15 +97,15 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
-        internal bool IsLocalName(string localName)
+        internal bool IsLocalName(string localName, StringComparison comparison = StringComparison.Ordinal)
         {
-            return string.Equals(LocalName, localName, StringComparison.Ordinal);
+            return string.Equals(LocalName, localName, comparison);
         }
 
-        internal bool IsLocalName(string localName1, string localName2)
+        internal bool IsLocalName(string localName1, string localName2, StringComparison comparison = StringComparison.Ordinal)
         {
-            return IsLocalName(localName1)
-                || IsLocalName(localName2);
+            return IsLocalName(localName1, comparison)
+                || IsLocalName(localName2, comparison);
         }
 
         public override bool Equals(object obj)

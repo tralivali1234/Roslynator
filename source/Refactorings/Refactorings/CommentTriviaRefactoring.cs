@@ -87,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove comments",
-                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.All, context.Span, cancellationToken));
+                        cancellationToken => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.All, cancellationToken));
                 }
 
                 if (fComment
@@ -96,7 +96,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove comments (except documentation comments)",
-                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.AllExceptDocumentation, context.Span, cancellationToken));
+                        cancellationToken => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.AllExceptDocumentation, cancellationToken));
                 }
 
                 if (fDocComment
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove documentation comments",
-                        c => context.Document.RemoveCommentsAsync(CommentRemoveOptions.Documentation, context.Span, c));
+                        c => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.Documentation, c));
                 }
             }
         }

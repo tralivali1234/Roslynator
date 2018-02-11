@@ -14,6 +14,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: ren
     internal static class DocumentFormatter
     {
         public static Task<Document> ToSingleLineAsync<TNode>(
