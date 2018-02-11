@@ -70,7 +70,6 @@ namespace Roslynator.CSharp.Syntax
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
-        //TODO: BinaryExpression, AddExpression, UnderlyingExpression
         public BinaryExpressionSyntax OriginalExpression { get; }
 
         public TextSpan? Span { get; }

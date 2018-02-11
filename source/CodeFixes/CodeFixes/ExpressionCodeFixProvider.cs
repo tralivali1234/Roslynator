@@ -222,7 +222,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveConditionThatIsAlwaysEqualToTrueOrFalse))
                                 break;
 
-                            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(expression, allowedKinds: NullCheckKind.ComparisonToNull);
+                            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(expression, allowedStyles: NullCheckStyles.ComparisonToNull);
 
                             if (!nullCheck.Success)
                                 break;
@@ -233,7 +233,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     cancellationToken.ThrowIfCancellationRequested();
 
-                                    SyntaxNode newRoot = RemoveCondition(root, expression, nullCheck.Kind == NullCheckKind.NotEqualsToNull);
+                                    SyntaxNode newRoot = RemoveCondition(root, expression, nullCheck.Style == NullCheckStyles.NotEqualsToNull);
 
                                     cancellationToken.ThrowIfCancellationRequested();
 

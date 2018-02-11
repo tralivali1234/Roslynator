@@ -441,18 +441,33 @@ namespace Roslynator.CSharp.Syntax
 
         public static NullCheckExpressionInfo NullCheckExpressionInfo(
             SyntaxNode node,
-            NullCheckKind allowedKinds = NullCheckKind.All,
+            NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.Pattern,
             bool walkDownParentheses = true,
             bool allowMissing = false,
-            SemanticModel semanticModel = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return Syntax.NullCheckExpressionInfo.Create(
                 node,
-                allowedKinds,
+                allowedStyles,
                 walkDownParentheses,
                 allowMissing,
+                cancellationToken);
+        }
+
+        public static NullCheckExpressionInfo NullCheckExpressionInfo(
+            SyntaxNode node,
+            SemanticModel semanticModel,
+            NullCheckStyles allowedStyles = NullCheckStyles.All,
+            bool walkDownParentheses = true,
+            bool allowMissing = false,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Syntax.NullCheckExpressionInfo.Create(
+                node,
                 semanticModel,
+                allowedStyles,
+                walkDownParentheses,
+                allowMissing,
                 cancellationToken);
         }
 

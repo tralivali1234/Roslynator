@@ -30,7 +30,6 @@ namespace Roslynator.CSharp.Syntax
 
         public bool All(ModifierFlags flags) => _flags.All(flags);
 
-        //TODO: ren
         public bool HasNew => Any(ModifierFlags.New);
 
         public bool HasPublic => Any(ModifierFlags.Public);

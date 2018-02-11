@@ -192,7 +192,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(nextStatement is IfStatementSyntax ifStatement))
                 return false;
 
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, NullCheckKind.NotEqualsToNull);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
 
             if (!nullCheck.Success)
                 return false;

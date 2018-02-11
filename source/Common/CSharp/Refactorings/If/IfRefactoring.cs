@@ -222,7 +222,7 @@ namespace Roslynator.CSharp.Refactorings.If
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if ((nullCheck.Kind & NullCheckKind.ComparisonToNull) != 0
+            if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
                 && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: false);
@@ -336,7 +336,7 @@ namespace Roslynator.CSharp.Refactorings.If
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if ((nullCheck.Kind & NullCheckKind.ComparisonToNull) != 0
+            if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
                 && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: false);

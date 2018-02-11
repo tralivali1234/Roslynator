@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.Node.ContainsDiagnostics)
                 return;
 
-            Analyze(context, (BinaryExpressionSyntax)context.Node, NullCheckKind.EqualsToNull);
+            Analyze(context, (BinaryExpressionSyntax)context.Node, NullCheckStyles.EqualsToNull);
         }
 
         public static void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
@@ -33,12 +33,12 @@ namespace Roslynator.CSharp.Refactorings
             if (context.Node.ContainsDiagnostics)
                 return;
 
-            Analyze(context, (BinaryExpressionSyntax)context.Node, NullCheckKind.NotEqualsToNull);
+            Analyze(context, (BinaryExpressionSyntax)context.Node, NullCheckStyles.NotEqualsToNull);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression, NullCheckKind allowedKinds)
+        private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression, NullCheckStyles allowedKinds)
         {
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, allowedKinds: allowedKinds);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, allowedStyles: allowedKinds);
             if (nullCheck.Success
                 && IsUnconstrainedTypeParameter(context.SemanticModel.GetTypeSymbol(nullCheck.Expression, context.CancellationToken))
                 && !binaryExpression.SpanContainsDirectives())

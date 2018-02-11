@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Refactorings
             if (ifStatement.IsSimpleIf()
                 && !ifStatement.ContainsDiagnostics)
             {
-                NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedKinds: NullCheckKind.NotEqualsToNull);
+                NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
                 if (nullCheck.Success)
                 {
                     MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(ifStatement.SingleStatementOrDefault());
@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!logicalAndExpression.ContainsDiagnostics)
             {
-                ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAndExpression.Left, allowedKinds: NullCheckKind.NotEqualsToNull).Expression;
+                ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAndExpression.Left, allowedStyles: NullCheckStyles.NotEqualsToNull).Expression;
 
                 if (expression != null
                     && context.SemanticModel
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static ExpressionSyntax CreateExpressionWithConditionalAccess(BinaryExpressionSyntax logicalAnd)
         {
-            ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAnd.Left, allowedKinds: NullCheckKind.NotEqualsToNull).Expression;
+            ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAnd.Left, allowedStyles: NullCheckStyles.NotEqualsToNull).Expression;
 
             ExpressionSyntax right = logicalAnd.Right?.WalkDownParentheses();
 
