@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Accessibility GetAccessibility(SyntaxNodeAnalysisContext context, MemberDeclarationSyntax declaration, SyntaxTokenList modifiers)
         {
-            if (!modifiers.Any(f => f.IsAccessModifier()))
+            if (!modifiers.Any(f => SyntaxFacts.IsAccessibilityModifier(f.Kind())))
             {
                 if (modifiers.Any(SyntaxKind.PartialKeyword))
                 {

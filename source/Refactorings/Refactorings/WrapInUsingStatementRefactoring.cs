@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(variableDeclaration.Parent is LocalDeclarationStatementSyntax localDeclaration))
                 return;
 
-            if (!localDeclaration.Parent.Kind().CanContainStatements())
+            if (!CSharpFacts.CanContainStatements(localDeclaration.Parent.Kind()))
                 return;
 
             SingleLocalDeclarationStatementInfo localInfo = SyntaxInfo.SingleLocalDeclarationStatementInfo(localDeclaration);

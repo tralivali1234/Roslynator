@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             if (kind == SyntaxKind.LabeledStatement)
                 return;
 
-            if (kind.CanContainEmbeddedStatement())
+            if (CSharpFacts.CanContainEmbeddedStatement(kind))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyStatement, emptyStatement);

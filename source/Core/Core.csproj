@@ -45,8 +45,8 @@
     <Compile Include="AsyncMethodNameGenerator.cs" />
     <Compile Include="CSharp\BracesAnalysis.cs" />
     <Compile Include="CSharp\CSharpAccessibility.cs" />
+    <Compile Include="CSharp\CSharpFacts.cs" />
     <Compile Include="CSharp\Documentation\DocumentationCommentTriviaRewriter.cs" />
-    <Compile Include="CSharp\Extensions\SpecialTypeExtensions.cs" />
     <Compile Include="CSharp\ModifierFlags.cs" />
     <Compile Include="CSharp\Extensions\ModifierFlagsExtensions.cs" />
     <Compile Include="CSharp\SyntaxRewriters\WhitespaceRemover.cs" />

@@ -140,7 +140,7 @@ namespace Roslynator.Helpers
                 }
             }
             else if (typeSymbol.IsAnonymousType
-                || typeSymbol.IsPredefinedType())
+                || CSharpFacts.IsPredefinedType(typeSymbol.SpecialType))
             {
                 return null;
             }

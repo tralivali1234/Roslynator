@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
                     && context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(expression)
                     && !expressionStatement.IsEmbedded()
                     && !(expression is AssignmentExpressionSyntax)
-                    && !expression.Kind().IsIncrementOrDecrementExpression())
+                    && !CSharpFacts.IsIncrementOrDecrementExpression(expression.Kind()))
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 

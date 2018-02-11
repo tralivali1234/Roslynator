@@ -185,7 +185,7 @@ namespace Roslynator.CSharp.ModifierHelpers
             {
                 SyntaxToken modifier = modifiers[i];
 
-                if (modifier.IsAccessModifier())
+                if (SyntaxFacts.IsAccessibilityModifier(modifier.Kind()))
                     node = RemoveModifier(node, modifiers, modifier, i);
             }
 

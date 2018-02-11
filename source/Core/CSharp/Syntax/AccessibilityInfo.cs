@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.Syntax
             if (declaration == null)
                 return Default;
 
-            if (!declaration.Kind().CanHaveAccessibility())
+            if (!CSharpFacts.CanHaveAccessibility(declaration.Kind()))
                 return Default;
 
             return Create(declaration, declaration.GetModifiers());

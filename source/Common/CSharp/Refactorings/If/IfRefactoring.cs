@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
@@ -151,8 +152,8 @@ namespace Roslynator.CSharp.Refactorings.If
                 SyntaxKind kind1 = expression1.Kind();
                 SyntaxKind kind2 = expression2.Kind();
 
-                if (kind1.IsBooleanLiteralExpression()
-                    && kind2.IsBooleanLiteralExpression()
+                if (IsBooleanLiteralExpression(kind1)
+                    && IsBooleanLiteralExpression(kind2)
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)
@@ -194,7 +195,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfToReturnWithBooleanExpression ifToReturnWithBooleanExpression = null;
 
             if (options.UseBooleanExpression
-                && (expression1.Kind().IsBooleanLiteralExpression() || expression2.Kind().IsBooleanLiteralExpression())
+                && (IsBooleanLiteralExpression(expression1.Kind()) || IsBooleanLiteralExpression(expression2.Kind()))
                 && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.IsBoolean() == true
                 && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.IsBoolean() == true)
             {
@@ -204,7 +205,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfToReturnWithConditionalExpression ifToReturnWithConditionalExpression = null;
 
             if (options.UseConditionalExpression
-                && (!expression1.Kind().IsBooleanLiteralExpression() || !expression2.Kind().IsBooleanLiteralExpression()))
+                && (!IsBooleanLiteralExpression(expression1.Kind()) || !IsBooleanLiteralExpression(expression2.Kind())))
             {
                 ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpression.Create(ifStatement, expression1, expression2, isYield);
             }
@@ -291,8 +292,8 @@ namespace Roslynator.CSharp.Refactorings.If
                 SyntaxKind kind1 = right1.Kind();
                 SyntaxKind kind2 = right2.Kind();
 
-                if (kind1.IsBooleanLiteralExpression()
-                    && kind2.IsBooleanLiteralExpression()
+                if (IsBooleanLiteralExpression(kind1)
+                    && IsBooleanLiteralExpression(kind2)
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)

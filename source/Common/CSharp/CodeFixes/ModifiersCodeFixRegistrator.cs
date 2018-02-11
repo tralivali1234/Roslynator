@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -325,9 +326,9 @@ namespace Roslynator.CSharp.CodeFixes
 
             foreach (SyntaxToken modifier in modifiers)
             {
-                if (modifier.IsAccessModifier())
+                if (IsAccessibilityModifier(modifier.Kind()))
                 {
-                    if (accessModifier.IsAccessModifier())
+                    if (IsAccessibilityModifier(accessModifier.Kind()))
                     {
                         accessModifier = default(SyntaxToken);
                         break;
@@ -339,7 +340,7 @@ namespace Roslynator.CSharp.CodeFixes
                 }
             }
 
-            if (accessModifier.IsAccessModifier())
+            if (IsAccessibilityModifier(accessModifier.Kind()))
             {
                 RemoveModifier(context, diagnostic, node, accessModifier, additionalKey: additionalKey);
             }
@@ -407,7 +408,7 @@ namespace Roslynator.CSharp.CodeFixes
                 return;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'",
+                $"Change accessibility to '{GetText(accessibility)}'",
                 cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Document, node, accessibility, cancellationToken),
                 GetEquivalenceKey(diagnostic, accessibility.ToString()));
 
@@ -421,7 +422,7 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Add modifier '{SyntaxFacts.GetText(modifierKind)}'";
+            return $"Add modifier '{GetText(modifierKind)}'";
         }
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind, SyntaxNode node)
@@ -441,7 +442,7 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetRemoveModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Remove modifier '{SyntaxFacts.GetText(modifierKind)}'";
+            return $"Remove modifier '{GetText(modifierKind)}'";
         }
     }
 }

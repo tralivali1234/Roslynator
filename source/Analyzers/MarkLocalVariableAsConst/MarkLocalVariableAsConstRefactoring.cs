@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
             {
                 case SpecialType.System_Boolean:
                     {
-                        if (expression.Kind().IsBooleanLiteralExpression())
+                        if (CSharpFacts.IsBooleanLiteralExpression(expression.Kind()))
                             return true;
 
                         break;

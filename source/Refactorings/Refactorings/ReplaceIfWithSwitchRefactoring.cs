@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -316,7 +317,7 @@ namespace Roslynator.CSharp.Refactorings
 
             bool IsLoopOrNestedMethod(SyntaxKind kind)
             {
-                return kind.IsLoop() || kind.IsNestedMethod();
+                return IsLoop(kind) || IsNestedMethod(kind);
             }
 
             bool ShouldCheckBreakStatement()
@@ -328,10 +329,10 @@ namespace Roslynator.CSharp.Refactorings
 
                     SyntaxKind kind = node.Kind();
 
-                    if (kind.IsNestedMethod())
+                    if (IsNestedMethod(kind))
                         break;
 
-                    if (kind.IsLoop())
+                    if (IsLoop(kind))
                         return true;
                 }
 

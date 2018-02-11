@@ -10,7 +10,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //XTODO: test
     internal static class RemoveEmptyRegionRefactoring
     {
         public static void AnalyzeRegionDirective(SyntaxNodeAnalysisContext context)

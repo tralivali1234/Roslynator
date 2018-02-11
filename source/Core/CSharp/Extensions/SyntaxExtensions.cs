@@ -132,8 +132,8 @@ namespace Roslynator.CSharp
             Stopwatch sw = Stopwatch.StartNew();
 
             bool containsYield = block
-                .DescendantNodes(block.Span, node => !node.IsNestedMethod())
-                .Any(f => f.Kind().IsYieldStatement());
+                .DescendantNodes(block.Span, node => !CSharpFacts.IsNestedMethod(node.Kind()))
+                .Any(f => CSharpFacts.IsYieldStatement(f.Kind()));
 
             sw.Stop();
 
@@ -1050,12 +1050,11 @@ namespace Roslynator.CSharp
 
             SyntaxTrivia trivia = member.GetDocumentationCommentTrivia();
 
-            if (trivia.IsDocumentationCommentTrivia())
+            if (trivia.IsDocumentationCommentTrivia()
+                && trivia.GetStructure() is DocumentationCommentTriviaSyntax comment
+                && SyntaxFacts.IsDocumentationCommentTrivia(comment.Kind()))
             {
-                var comment = trivia.GetStructure() as DocumentationCommentTriviaSyntax;
-
-                if (comment?.Kind().IsDocumentationCommentTrivia() == true)
-                    return comment;
+                return comment;
             }
 
             return null;
@@ -1254,7 +1253,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(methodDeclaration));
 
             return methodDeclaration
-                .DescendantNodes(node => !node.IsNestedMethod())
+                .DescendantNodes(node => !CSharpFacts.IsNestedMethod(node.Kind()))
                 .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
         }
 
@@ -1620,7 +1619,7 @@ namespace Roslynator.CSharp
 
             SyntaxKind parentKind = parent.Kind();
 
-            return parentKind.CanContainEmbeddedStatement()
+            return CSharpFacts.CanContainEmbeddedStatement(parentKind)
                 && (ifInsideElse
                     || kind != SyntaxKind.IfStatement
                     || parentKind != SyntaxKind.ElseClause)
@@ -2039,11 +2038,6 @@ namespace Roslynator.CSharp
                         throw new ArgumentException("", nameof(node));
                     }
             }
-        }
-
-        internal static bool IsNestedMethod(this SyntaxNode node)
-        {
-            return node?.Kind().IsNestedMethod() == true;
         }
 
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantDirectives(this SyntaxNode node, Func<DirectiveTriviaSyntax, bool> predicate = null)
@@ -2512,7 +2506,7 @@ namespace Roslynator.CSharp
             while (node != null)
             {
                 if (node.IsStructuredTrivia
-                    && node.Kind().IsDocumentationCommentTrivia())
+                    && SyntaxFacts.IsDocumentationCommentTrivia(node.Kind()))
                 {
                     return true;
                 }
@@ -2648,11 +2642,6 @@ namespace Roslynator.CSharp
                 || kind == kind4
                 || kind == kind5
                 || kind == kind6;
-        }
-
-        public static bool IsAccessModifier(this SyntaxToken token)
-        {
-            return token.Kind().IsAccessModifier();
         }
 
         public static SyntaxToken TrimLeadingTrivia(this SyntaxToken token)
@@ -2909,7 +2898,7 @@ namespace Roslynator.CSharp
 
         public static bool IsDocumentationCommentTrivia(this SyntaxTrivia trivia)
         {
-            return trivia.Kind().IsDocumentationCommentTrivia();
+            return SyntaxFacts.IsDocumentationCommentTrivia(trivia.Kind());
         }
 
         internal static bool IsElasticMarker(this SyntaxTrivia trivia)

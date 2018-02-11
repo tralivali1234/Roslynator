@@ -107,7 +107,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            if (left.Kind().IsBooleanLiteralExpression())
+            if (CSharpFacts.IsBooleanLiteralExpression(left.Kind()))
             {
                 SyntaxTriviaList leadingTrivia = binaryExpression.GetLeadingTrivia();
 
@@ -131,7 +131,7 @@ namespace Roslynator.CSharp.Refactorings
                 return Negation.LogicallyNegate(right, semanticModel, cancellationToken)
                     .WithLeadingTrivia(leadingTrivia);
             }
-            else if (right.Kind().IsBooleanLiteralExpression())
+            else if (CSharpFacts.IsBooleanLiteralExpression(right.Kind()))
             {
                 SyntaxTriviaList trailingTrivia = binaryExpression.GetTrailingTrivia();
 

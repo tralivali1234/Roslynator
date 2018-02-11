@@ -49,15 +49,12 @@ namespace Roslynator.CSharp.Refactorings
         public static void Analyze(SyntaxNodeAnalysisContext context, QualifiedNameSyntax qualifiedName)
         {
             if (!qualifiedName.IsParentKind(SyntaxKind.UsingDirective)
-                && !IsWithinNameOfExpression(qualifiedName, context.SemanticModel, context.CancellationToken))
+                && !IsWithinNameOfExpression(qualifiedName, context.SemanticModel, context.CancellationToken)
+                && context.SemanticModel.GetSymbol(qualifiedName, context.CancellationToken) is INamedTypeSymbol typeSymbol
+                && !CSharpFacts.IsPredefinedType(typeSymbol.SpecialType)
+                && typeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
             {
-                var typeSymbol = context.SemanticModel.GetSymbol(qualifiedName, context.CancellationToken) as INamedTypeSymbol;
-
-                if (typeSymbol?.IsPredefinedType() == false
-                    && typeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.SimplifyNullableOfT, qualifiedName);
-                }
+                context.ReportDiagnostic(DiagnosticDescriptors.SimplifyNullableOfT, qualifiedName);
             }
         }
 

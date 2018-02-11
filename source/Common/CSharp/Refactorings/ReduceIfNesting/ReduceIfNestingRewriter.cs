@@ -173,8 +173,8 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                     .WithStatement(newBlock)
                     .WithFormatterAnnotation();
 
-                if (statements.Last().Kind().IsJumpStatementOrYieldBreakStatement()
-                    && block.Statements.Last().Kind().IsJumpStatementOrYieldBreakStatement())
+                if (CSharpFacts.IsJumpStatementOrYieldBreakStatement(statements.Last().Kind())
+                    && CSharpFacts.IsJumpStatementOrYieldBreakStatement(block.Statements.Last().Kind()))
                 {
                     statements = statements.RemoveAt(statements.Count - 1);
                 }
