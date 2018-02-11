@@ -107,7 +107,7 @@ namespace Roslynator.CSharp.Refactorings
             INamedTypeSymbol eventHandlerSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_EventHandler);
 
             return GenericName(
-                Identifier(SymbolDisplay.GetMinimalString(eventHandlerSymbol, semanticModel, type.SpanStart)),
+                Identifier(SymbolDisplay.ToMinimalDisplayString(eventHandlerSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default)),
                 typeSymbol.ToMinimalTypeSyntax(semanticModel, type.SpanStart));
         }
     }

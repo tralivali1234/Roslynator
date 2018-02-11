@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             Document document = context.Document;
 
-            string typeName = SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, type.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(newTypeSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             string title = $"Change {GetText(node)} type to '{typeName}'";
 

@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.CodeFixes
             SemanticModel semanticModel,
             string additionalKey = null)
         {
-            string typeName = SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, type.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(newTypeSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             string title = $"Change type to '{typeName}'";
 
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.CodeFixes
             ITypeSymbol destinationType,
             SemanticModel semanticModel)
         {
-            string typeName = SymbolDisplay.GetMinimalString(destinationType, semanticModel, expression.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(destinationType, semanticModel, expression.SpanStart, SymbolDisplayFormats.Default);
 
             TypeSyntax newType = SyntaxFactory.ParseTypeName(typeName);
 

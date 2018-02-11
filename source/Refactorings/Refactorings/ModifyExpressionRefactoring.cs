@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -152,7 +153,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel)
         {
             context.RegisterRefactoring(
-                $"Cast to '{SymbolDisplay.GetString(destinationType)}'",
+                $"Cast to '{SymbolDisplay.ToDisplayString(destinationType, SymbolDisplayFormats.Default)}'",
                 cancellationToken =>
                 {
                     return AddCastExpressionRefactoring.RefactorAsync(

@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                                 return context.Document.ReplaceNodeAsync(type, newNode, cancellationToken);
                                             },
-                                            GetEquivalenceKey(diagnostic, SymbolDisplay.GetString(namedTypeSymbol)));
+                                            GetEquivalenceKey(diagnostic, SymbolDisplay.ToDisplayString(namedTypeSymbol, SymbolDisplayFormats.Default)));
 
                                         context.RegisterCodeFix(codeAction, diagnostic);
                                     }

@@ -248,7 +248,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 break;
 
                             CodeAction codeAction = CodeAction.Create(
-                                $"Add type '{SymbolDisplay.GetMinimalString(convertedType, semanticModel, defaultExpression.SpanStart)}'",
+                                $"Add type '{SymbolDisplay.ToMinimalDisplayString(convertedType, semanticModel, defaultExpression.SpanStart, SymbolDisplayFormats.Default)}'",
                                 cancellationToken =>
                                 {
                                     TypeSyntax newNode = convertedType.ToMinimalTypeSyntax(semanticModel, defaultExpression.SpanStart);

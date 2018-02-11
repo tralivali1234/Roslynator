@@ -103,7 +103,7 @@ namespace Roslynator.CSharp.Refactorings
 
             newNode = newNode.WithType(newType);
 
-            string typeName = SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, type.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(newTypeSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             CodeAction codeAction = CodeAction.Create(
                 $"Change type to '{typeName}' and add await",

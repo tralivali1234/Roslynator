@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -49,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
                     ITypeSymbol typeSymbol = localSymbol.Type;
 
                     context.RegisterRefactoring(
-                        $"Change type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, type.Span.Start)}'",
+                        $"Change type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, type.Span.Start, SymbolDisplayFormats.Default)}'",
                         cancellationToken => ChangeTypeRefactoring.ChangeTypeAsync(context.Document, type, typeSymbol, cancellationToken));
                 }
             }

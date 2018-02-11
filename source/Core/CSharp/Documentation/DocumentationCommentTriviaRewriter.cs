@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Documentation
 
             if (typeSymbol != null)
             {
-                return SymbolDisplay.GetMinimalString(typeSymbol, _semanticModel, _position)
+                return SymbolDisplay.ToMinimalDisplayString(typeSymbol, _semanticModel, _position, SymbolDisplayFormats.Default)
                     .Replace('<', '{')
                     .Replace('>', '}');
             }

@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 if (typeSymbol.Kind == SymbolKind.TypeParameter)
                                     continue;
 
-                                string typeName = SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, identifierName.SpanStart);
+                                string typeName = SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, identifierName.SpanStart, SymbolDisplayFormats.Default);
 
                                 CodeAction codeAction = CodeAction.Create(
                                     $"Add variable type '{typeName}'",

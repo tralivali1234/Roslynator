@@ -133,7 +133,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            string displayName = SymbolDisplay.GetMinimalString(interfaceSymbol.OriginalDefinition, semanticModel, type.SpanStart);
+            string displayName = SymbolDisplay.ToMinimalDisplayString(interfaceSymbol.OriginalDefinition, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             Document document = context.Document;
             string title = $"Add to interface '{displayName}'";

@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.CodeFixes
             foreach (Diagnostic diagnostic in context.Diagnostics)
             {
                 CodeAction codeAction = CodeAction.Create(
-                    $"Change type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, type.Span.Start)}'",
+                    $"Change type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, type.Span.Start, SymbolDisplayFormats.Default)}'",
                     cancellationToken => ChangeTypeRefactoring.ChangeTypeAsync(context.Document, type, typeSymbol, cancellationToken),
                     GetEquivalenceKey(diagnostic));
 
