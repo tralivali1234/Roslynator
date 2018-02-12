@@ -18,7 +18,8 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetEnclosingSymbol(localDeclaration.SpanStart, context.CancellationToken);
 
-            if (symbol?.IsMethod() == true)
+            if (symbol?.IsMethod() == true
+                && !symbol.IsImplicitlyDeclared)
             {
                 var methodsymbol = (IMethodSymbol)symbol;
 
