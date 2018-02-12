@@ -158,7 +158,7 @@ namespace Roslynator.CSharp.Refactorings
                     return ((AccessorDeclarationSyntax)node).AttributeLists;
                 default:
                     {
-                        Debug.Fail(node.Kind().ToString());
+                        Debug.Assert(node.Kind() == SyntaxKind.GlobalStatement, node.Kind().ToString());
                         return default(SyntaxList<AttributeListSyntax>);
                     }
             }
