@@ -20,45 +20,29 @@ namespace Roslynator.CSharp.Refactorings
 
         private static readonly Regex _leadingSlashesRegex = new Regex(@"^//\s*");
 
-        public static bool IsFixable(SyntaxTrivia trivia)
+        public static TextSpan GetFixableSpan(SyntaxTrivia trivia)
         {
             if (trivia.Kind() != SyntaxKind.SingleLineCommentTrivia)
-                return false;
+                return default(TextSpan);
 
             if (!(trivia.Token.Parent is MemberDeclarationSyntax memberDeclaration))
-                return false;
+                return default(TextSpan);
 
-            if (trivia.SpanStart >= memberDeclaration.SpanStart)
-                return false;
+            TextSpan span = trivia.Span;
 
-            SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
-
-            int i = leadingTrivia.IndexOf(trivia);
-
-            Debug.Assert(i != -1, trivia.ToString());
-
-            if (i == -1)
-                return false;
-
-            i++;
-
-            while (i < leadingTrivia.Count)
+            if (memberDeclaration.LeadingTriviaSpan().Contains(span)
+                || memberDeclaration.TrailingTriviaSpan().Contains(span))
             {
-                if (!leadingTrivia[i].IsKind(
-                    SyntaxKind.WhitespaceTrivia,
-                    SyntaxKind.EndOfLineTrivia,
-                    SyntaxKind.SingleLineCommentTrivia))
-                {
-                    return false;
-                }
+                TextSpan fixableSpan = GetFixableSpan(memberDeclaration);
 
-                i++;
+                if (fixableSpan.Contains(span))
+                    return fixableSpan;
             }
 
-            return true;
+            return default(TextSpan);
         }
 
-        public static TextSpan GetFixableCommentSpan(SyntaxNode memberDeclaration)
+        public static TextSpan GetFixableSpan(SyntaxNode memberDeclaration)
         {
             SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
 

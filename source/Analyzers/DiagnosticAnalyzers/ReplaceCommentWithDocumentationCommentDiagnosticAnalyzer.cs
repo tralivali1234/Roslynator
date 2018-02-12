@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
         public static void AnalyzeMemberDeclaration(SyntaxNodeAnalysisContext context)
         {
-            TextSpan span = GetFixableCommentSpan(context.Node);
+            TextSpan span = GetFixableSpan(context.Node);
 
             if (!span.IsEmpty)
             {
