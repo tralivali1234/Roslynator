@@ -38,12 +38,6 @@ using System.Runtime.InteropServices;
     + "53981af331e2c3ce8932209c17c27ef91f0bcc9594885730f62ae3d6584bf4b4849ddd850ec20d"
     + "8d1be8c7")]
 
-[assembly: InternalsVisibleTo("Roslynator.VisualStudio.Core, PublicKey=0024000004800000940000000602000000240000525341310004000001000100b9334d9f979634"
-    + "48aa80cc9e862c7f3635cca0ff373a856c090df36f5c540bbfab571110f4f57f59fe951f9ec176"
-    + "27e24d3d331db917aa303ba63715c0a711769d4a297874a1a25a971653d7e25ca727e6cfb0f8cd"
-    + "368a7ceca10e72dbfba2ce5f98e6bf989055c262672bb613785ca9ca735349e445b8e010e38f70"
-    + "4e3ef0b1")]
-
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
