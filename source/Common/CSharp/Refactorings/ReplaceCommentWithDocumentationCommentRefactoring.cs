@@ -105,7 +105,7 @@ namespace Roslynator.CSharp.Refactorings
                     i--;
 
                 if (i >= 0
-                    && trailingTrivia[i].IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
+                    && trailingTrivia[i].IsKind(SyntaxKind.SingleLineCommentTrivia))
                 {
                     return trailingTrivia[i].Span;
                 }
