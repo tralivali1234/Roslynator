@@ -4,7 +4,6 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using static Roslynator.CSharp.Refactorings.ReplaceCommentWithDocumentationCommentRefactoring;
@@ -48,14 +47,14 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
         public static void AnalyzeMemberDeclaration(SyntaxNodeAnalysisContext context)
         {
-            TextSpan span = GetFixableSpan((MemberDeclarationSyntax)context.Node);
+            TextSpan span = GetFixableCommentSpan(context.Node);
 
-            if (span == default(TextSpan))
-                return;
-
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.ReplaceCommentWithDocumentationComment,
-                Location.Create(context.SyntaxTree(), span));
+            if (!span.IsEmpty)
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.ReplaceCommentWithDocumentationComment,
+                    Location.Create(context.SyntaxTree(), span));
+            }
         }
     }
 }

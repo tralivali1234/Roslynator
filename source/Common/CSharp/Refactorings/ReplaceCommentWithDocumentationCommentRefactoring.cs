@@ -58,18 +58,16 @@ namespace Roslynator.CSharp.Refactorings
             return true;
         }
 
-        public static TextSpan GetFixableSpan(MemberDeclarationSyntax memberDeclaration)
+        public static TextSpan GetFixableCommentSpan(SyntaxNode memberDeclaration)
         {
-            return GetFixableSpan(memberDeclaration.GetLeadingTrivia());
-        }
+            SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
 
-        private static TextSpan GetFixableSpan(SyntaxTriviaList leadingTrivia)
-        {
             if (leadingTrivia.Any())
             {
                 var span = default(TextSpan);
 
                 int i = leadingTrivia.Count - 1;
+
                 while (i >= 0)
                 {
                     if (leadingTrivia[i].IsWhitespaceTrivia())
@@ -79,7 +77,18 @@ namespace Roslynator.CSharp.Refactorings
                         break;
 
                     if (!leadingTrivia[i].IsEndOfLineTrivia())
+                    {
+                        i--;
+                        while (i >= 0)
+                        {
+                            if (SyntaxFacts.IsDocumentationCommentTrivia(leadingTrivia[i].Kind()))
+                                return default(TextSpan);
+
+                            i--;
+                        }
+
                         break;
+                    }
 
                     i--;
 
@@ -98,7 +107,24 @@ namespace Roslynator.CSharp.Refactorings
                     i--;
                 }
 
-                return span;
+                if (!span.IsEmpty)
+                    return span;
+            }
+
+            SyntaxTriviaList trailingTrivia = memberDeclaration.GetTrailingTrivia();
+
+            if (trailingTrivia.Any())
+            {
+                int i = trailingTrivia.Count - 1;
+
+                if (trailingTrivia[i].IsWhitespaceTrivia())
+                    i--;
+
+                if (i >= 0
+                    && trailingTrivia[i].IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
+                {
+                    return trailingTrivia[i].Span;
+                }
             }
 
             return default(TextSpan);
@@ -107,20 +133,43 @@ namespace Roslynator.CSharp.Refactorings
         public static Task<Document> RefactorAsync(
             Document document,
             MemberDeclarationSyntax memberDeclaration,
+            TextSpan span,
             CancellationToken cancellationToken)
         {
+            MemberDeclarationSyntax newNode = memberDeclaration;
+
+            ImmutableArray<string> comments;
+
             SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
 
-            TextSpan commentsSpan = GetFixableSpan(leadingTrivia);
+            if (leadingTrivia.Span.Contains(span))
+            {
+                comments = leadingTrivia
+                    .Where(f => span.Contains(f.Span) && f.IsKind(SyntaxKind.SingleLineCommentTrivia))
+                    .Select(f => _leadingSlashesRegex.Replace(f.ToString(), ""))
+                    .ToImmutableArray();
 
-            ImmutableArray<string> comments = leadingTrivia
-                .Where(f => commentsSpan.Contains(f.Span) && f.IsKind(SyntaxKind.SingleLineCommentTrivia))
-                .Select(f => _leadingSlashesRegex.Replace(f.ToString(), ""))
-                .ToImmutableArray();
+                TextSpan spanToRemove = TextSpan.FromBounds(span.Start, memberDeclaration.SpanStart);
 
-            TextSpan spanToRemove = TextSpan.FromBounds(commentsSpan.Start, memberDeclaration.SpanStart);
+                newNode = memberDeclaration.WithLeadingTrivia(leadingTrivia.Where(f => !spanToRemove.Contains(f.Span)));
+            }
+            else
+            {
+                SyntaxTriviaList trailingTrivia = memberDeclaration.GetTrailingTrivia();
 
-            MemberDeclarationSyntax newNode = memberDeclaration.WithLeadingTrivia(leadingTrivia.Where(f => !spanToRemove.Contains(f.Span)));
+                Debug.Assert(trailingTrivia.Span.Contains(span));
+
+                for (int i = 0; i < trailingTrivia.Count; i++)
+                {
+                    if (trailingTrivia[i].Span == span)
+                    {
+                        comments = ImmutableArray.Create(_leadingSlashesRegex.Replace(trailingTrivia[i].ToString(), ""));
+
+                        newNode = newNode.WithTrailingTrivia(trailingTrivia.Skip(i + 1));
+                        break;
+                    }
+                }
+            }
 
             var settings = new DocumentationCommentGeneratorSettings(comments);
 
