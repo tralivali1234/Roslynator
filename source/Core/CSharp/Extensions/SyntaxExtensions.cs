@@ -1619,7 +1619,7 @@ namespace Roslynator.CSharp
 
             SyntaxKind parentKind = parent.Kind();
 
-            return CSharpFacts.CanContainEmbeddedStatement(parentKind)
+            return CSharpFacts.CanHaveEmbeddedStatement(parentKind)
                 && (ifInsideElse
                     || kind != SyntaxKind.IfStatement
                     || parentKind != SyntaxKind.ElseClause)

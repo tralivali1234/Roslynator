@@ -96,52 +96,5 @@ namespace Roslynator
 
             return AccessibilityFlags.None;
         }
-
-        public static bool IsMoreRestrictiveThan(this Accessibility accessibility, Accessibility other)
-        {
-            switch (other)
-            {
-                case Accessibility.Public:
-                    {
-                        return accessibility == Accessibility.Internal
-                            || accessibility == Accessibility.ProtectedOrInternal
-                            || accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Protected
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.Internal:
-                    {
-                        return accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.ProtectedOrInternal:
-                    {
-                        return accessibility == Accessibility.Internal
-                            || accessibility == Accessibility.Protected
-                            || accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.ProtectedAndInternal:
-                case Accessibility.Protected:
-                    {
-                        return accessibility == Accessibility.Private;
-                    }
-                case Accessibility.Private:
-                    {
-                        return false;
-                    }
-            }
-
-            return false;
-        }
-
-        internal static bool IsSingleTokenAccessibility(this Accessibility accessibility)
-        {
-            return accessibility.Is(
-                Accessibility.Public,
-                Accessibility.Internal,
-                Accessibility.Protected,
-                Accessibility.Private);
-        }
     }
 }

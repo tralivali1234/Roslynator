@@ -5,17 +5,14 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp
 {
-    //TODO: CSharpFacts
     internal static class CSharpFacts
     {
-        //TODO: CanHaveStatements
-        public static bool CanContainStatements(SyntaxKind kind)
+        public static bool CanHaveStatements(SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
         }
 
-        //TODO: CanHaveMembers
-        public static bool CanContainMembers(SyntaxKind kind)
+        public static bool CanHaveMembers(SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.CompilationUnit,
@@ -34,8 +31,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.LocalFunctionStatement);
         }
 
-        //TODO: IsLoopStatement
-        public static bool IsLoop(SyntaxKind kind)
+        public static bool IsLoopStatement(SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.ForStatement,
@@ -167,8 +163,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: CanHaveEmbeddedStatement
-        public static bool CanContainEmbeddedStatement(SyntaxKind kind)
+        public static bool CanHaveEmbeddedStatement(SyntaxKind kind)
         {
             switch (kind)
             {
