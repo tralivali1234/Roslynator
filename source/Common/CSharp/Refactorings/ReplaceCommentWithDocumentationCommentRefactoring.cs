@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
             if (memberDeclaration.LeadingTriviaSpan().Contains(span)
                 || memberDeclaration.TrailingTriviaSpan().Contains(span))
             {
-                TextSpan fixableSpan = GetFixableSpan(memberDeclaration);
+                (TextSpan fixableSpan, bool hasDocumentationComment) = AnalyzeLeadingTrivia(memberDeclaration);
 
                 if (fixableSpan.Contains(span))
                     return fixableSpan;
@@ -42,89 +42,131 @@ namespace Roslynator.CSharp.Refactorings
             return default(TextSpan);
         }
 
-        public static TextSpan GetFixableSpan(SyntaxNode memberDeclaration)
+        public static (TextSpan span, bool hasDocumentationComment) AnalyzeLeadingTrivia(SyntaxNode declaration)
         {
-            SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
+            SyntaxTriviaList leadingTrivia = declaration.GetLeadingTrivia();
 
-            if (leadingTrivia.Any())
+            SyntaxTriviaList.Reversed.Enumerator en = leadingTrivia.Reverse().GetEnumerator();
+
+            var span = default(TextSpan);
+
+            while (en.MoveNext())
             {
-                var span = default(TextSpan);
-
-                int i = leadingTrivia.Count - 1;
-
-                while (i >= 0)
+                if (en.Current.Kind() == SyntaxKind.WhitespaceTrivia
+                    && !en.MoveNext())
                 {
-                    if (leadingTrivia[i].IsWhitespaceTrivia())
-                        i--;
+                    break;
+                }
 
-                    if (i < 0)
+                if (en.Current.Kind() == SyntaxKind.EndOfLineTrivia)
+                {
+                    if (!en.MoveNext())
                         break;
 
-                    if (!leadingTrivia[i].IsEndOfLineTrivia())
+                    if (en.Current.Kind() == SyntaxKind.SingleLineCommentTrivia)
                     {
-                        i--;
-                        while (i >= 0)
-                        {
-                            if (SyntaxFacts.IsDocumentationCommentTrivia(leadingTrivia[i].Kind()))
-                                return default(TextSpan);
-
-                            i--;
-                        }
-
-                        break;
+                        span = (span == default(TextSpan))
+                            ? en.Current.Span
+                            : TextSpan.FromBounds(en.Current.SpanStart, span.End);
                     }
-
-                    i--;
-
-                    if (i < 0)
-                        break;
-
-                    SyntaxTrivia trivia = leadingTrivia[i];
-
-                    if (!trivia.IsKind(SyntaxKind.SingleLineCommentTrivia))
-                        break;
-
-                    span = (span == default(TextSpan))
-                        ? trivia.Span
-                        : TextSpan.FromBounds(trivia.SpanStart, span.End);
-
-                    i--;
                 }
-
-                if (!span.IsEmpty)
-                    return span;
-            }
-
-            SyntaxTriviaList trailingTrivia = memberDeclaration.GetTrailingTrivia();
-
-            if (trailingTrivia.Any())
-            {
-                int i = trailingTrivia.Count - 1;
-
-                if (trailingTrivia[i].IsWhitespaceTrivia())
-                    i--;
-
-                if (i >= 0
-                    && trailingTrivia[i].IsKind(SyntaxKind.SingleLineCommentTrivia))
+                else
                 {
-                    return trailingTrivia[i].Span;
+                    do
+                    {
+                        if (SyntaxFacts.IsDocumentationCommentTrivia(en.Current.Kind()))
+                            return (default(TextSpan), true);
+
+                    } while (en.MoveNext());
+
+                    break;
                 }
             }
 
-            return default(TextSpan);
+            return (span, false);
+        }
+
+        public static (TextSpan span, bool containsEndOfLine) AnalyzeTrailingTrivia(SyntaxNode declaration)
+        {
+            if (declaration == null)
+                return (default(TextSpan), false);
+
+            return AnalyzeTrailingTrivia(declaration.GetTrailingTrivia());
+        }
+
+        public static (TextSpan span, bool containsEndOfLine) AnalyzeTrailingTrivia<TNode>(SyntaxList<TNode> nodes) where TNode : SyntaxNode
+        {
+            TNode node = nodes.FirstOrDefault();
+
+            if (node == null)
+                return (default(TextSpan), false);
+
+            return AnalyzeTrailingTrivia(node.GetTrailingTrivia());
+        }
+
+        public static (TextSpan span, bool containsEndOfLine) AnalyzeTrailingTrivia(SyntaxToken token)
+        {
+            return AnalyzeTrailingTrivia(token.TrailingTrivia);
+        }
+
+        public static (TextSpan span, bool containsEndOfLine) AnalyzeTrailingTrivia(SyntaxTriviaList trailingTrivia)
+        {
+            SyntaxTriviaList.Enumerator en = trailingTrivia.GetEnumerator();
+
+            if (en.MoveNext())
+            {
+                SyntaxKind kind = en.Current.Kind();
+
+                if (kind == SyntaxKind.WhitespaceTrivia)
+                {
+                    if (en.MoveNext())
+                    {
+                        if (en.Current.Kind() == SyntaxKind.SingleLineCommentTrivia)
+                        {
+                            return (en.Current.Span, false);
+                        }
+                        else
+                        {
+                            while (en.MoveNext())
+                            {
+                                if (en.Current.IsEndOfLineTrivia())
+                                    return (default(TextSpan), true);
+                            }
+                        }
+                    }
+                }
+                else if (kind == SyntaxKind.EndOfLineTrivia)
+                {
+                    return (default(TextSpan), true);
+                }
+                else if (kind == SyntaxKind.SingleLineCommentTrivia)
+                {
+                    return (en.Current.Span, false);
+                }
+                else
+                {
+                    while (en.MoveNext())
+                    {
+                        if (en.Current.IsEndOfLineTrivia())
+                            return (default(TextSpan), true);
+                    }
+                }
+            }
+
+            return (default(TextSpan), false);
         }
 
         public static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationSyntax memberDeclaration,
+            MemberDeclarationSyntax declaration,
             TextSpan span,
             CancellationToken cancellationToken)
         {
-            MemberDeclarationSyntax newNode = memberDeclaration;
+            MemberDeclarationSyntax newDeclaration = declaration;
 
             ImmutableArray<string> comments;
 
-            SyntaxTriviaList leadingTrivia = memberDeclaration.GetLeadingTrivia();
+            SyntaxTriviaList leadingTrivia = declaration.GetLeadingTrivia();
 
             if (leadingTrivia.Span.Contains(span))
             {
@@ -133,15 +175,21 @@ namespace Roslynator.CSharp.Refactorings
                     .Select(f => _leadingSlashesRegex.Replace(f.ToString(), ""))
                     .ToImmutableArray();
 
-                TextSpan spanToRemove = TextSpan.FromBounds(span.Start, memberDeclaration.SpanStart);
+                TextSpan spanToRemove = TextSpan.FromBounds(span.Start, declaration.SpanStart);
 
-                newNode = memberDeclaration.WithLeadingTrivia(leadingTrivia.Where(f => !spanToRemove.Contains(f.Span)));
+                newDeclaration = declaration.WithLeadingTrivia(leadingTrivia.Where(f => !spanToRemove.Contains(f.Span)));
             }
             else
             {
-                SyntaxTriviaList trailingTrivia = memberDeclaration.GetTrailingTrivia();
+                SyntaxTrivia trivia = declaration.FindTrivia(span.Start);
 
-                Debug.Assert(trailingTrivia.Span.Contains(span));
+                Debug.Assert(trivia != default(SyntaxTrivia));
+
+                SyntaxToken token = trivia.Token;
+
+                SyntaxTriviaList trailingTrivia = token.TrailingTrivia;
+
+                Debug.Assert(trailingTrivia.Contains(trivia));
 
                 for (int i = 0; i < trailingTrivia.Count; i++)
                 {
@@ -149,7 +197,9 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         comments = ImmutableArray.Create(_leadingSlashesRegex.Replace(trailingTrivia[i].ToString(), ""));
 
-                        newNode = newNode.WithTrailingTrivia(trailingTrivia.Skip(i + 1));
+                        SyntaxToken newToken = token.WithTrailingTrivia(trailingTrivia.Skip(i + 1));
+
+                        newDeclaration = newDeclaration.ReplaceToken(token, newToken);
                         break;
                     }
                 }
@@ -157,9 +207,9 @@ namespace Roslynator.CSharp.Refactorings
 
             var settings = new DocumentationCommentGeneratorSettings(comments);
 
-            newNode = newNode.WithNewSingleLineDocumentationComment(settings);
+            newDeclaration = newDeclaration.WithNewSingleLineDocumentationComment(settings);
 
-            return document.ReplaceNodeAsync(memberDeclaration, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(declaration, newDeclaration, cancellationToken);
         }
     }
 }
