@@ -11,9 +11,9 @@ namespace Roslynator.CSharp.Analyzers.Tests
     // x
     public static class ReplaceCommentWithDocumentationComment
     {
-        // x
-        // xx
-        public class Foo
+        // x1
+        // x2
+        private class FooLeading
         {
             // x
             public string FieldName;
@@ -22,12 +22,12 @@ namespace Roslynator.CSharp.Analyzers.Tests
             public const string ConstantName = null;
 
             // x
-            public Foo(object parameter)
+            public FooLeading(object parameter)
             {
             }
 
             // x
-            ~Foo()
+            ~FooLeading()
             {
             }
 
@@ -35,20 +35,10 @@ namespace Roslynator.CSharp.Analyzers.Tests
             public event EventHandler EventName;
 
             // x
-            protected virtual void OnEventName(EventArgs e)
+            public event EventHandler<EventArgs> EventName2
             {
-                EventName?.Invoke(this, e);
-            }
-
-            // x
-            public event EventHandler<EventArgs> EventName2;
-
-            // x
-            protected virtual void OnEventName2(EventArgs e)
-            {
-                EventHandler<EventArgs> handler = EventName2;
-                if (handler != null)
-                    handler(this, e);
+                add { }
+                remove { }
             }
 
             // x
@@ -62,32 +52,26 @@ namespace Roslynator.CSharp.Analyzers.Tests
             }
 
             // x
-            public void MethodNameVoid<T>(object parameter)
+            public void MethodName<T>(object parameter)
             {
             }
 
             // x
-            public string MethodName<T>(object parameter)
+            public static explicit operator FooLeading(string value)
+            {
+                return new FooLeading(null);
+            }
+
+            // x
+            public static explicit operator string(FooLeading value)
             {
                 return null;
             }
 
             // x
-            public static explicit operator Foo(string value)
+            public static FooLeading operator !(FooLeading value)
             {
-                return new Foo(null);
-            }
-
-            // x
-            public static explicit operator string(Foo value)
-            {
-                return null;
-            }
-
-            // x
-            public static Foo operator !(Foo value)
-            {
-                return new Foo(null);
+                return new FooLeading(null);
             }
 
             // x
@@ -123,6 +107,86 @@ namespace Roslynator.CSharp.Analyzers.Tests
             public class Foo2
             {
             }
+        }
+
+        // x1
+        // x2
+        private class FooTrailing // x
+        {
+            public string FieldName; // x
+
+            public const string ConstantName = null; // x
+
+            public FooTrailing(object parameter) // x
+            {
+            }
+
+            ~FooTrailing() // x
+            {
+            }
+
+            public event EventHandler EventName; // x
+
+            public event EventHandler<EventArgs> EventName2
+            {
+                add { }
+                remove { }
+            } // x
+
+            public string PropertyName { get; set; } // x
+
+            public string this[int index] // x
+            {
+                get { return null; }
+                set { }
+            }
+
+            public void MethodName<T>(object parameter) // x
+            {
+            }
+
+            public static explicit operator FooTrailing(string value) // x
+            {
+                return new FooTrailing(null);
+            }
+
+            public static explicit operator string(FooTrailing value) // x
+            {
+                return null;
+            }
+
+            public static FooTrailing operator !(FooTrailing value) // x
+            {
+                return new FooTrailing(null);
+            }
+
+            public enum EnumName // x
+            {
+                None // x
+            }
+
+            public interface InterfaceName<T> // x
+            {
+            }
+
+            public struct StructName<T> // x
+            {
+            }
+
+            public class ClassName<T> // x
+            {
+            }
+
+            public delegate void DelegateName<T>(object parameter); // x
+        }
+
+        // n
+
+        /// <summary>
+        /// x
+        /// </summary>
+        private class Foo
+        {
         }
     }
 }
