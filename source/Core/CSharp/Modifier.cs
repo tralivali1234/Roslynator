@@ -12,6 +12,43 @@ namespace Roslynator.CSharp
 {
     public static class Modifier
     {
+        internal static SyntaxNode Insert(SyntaxNode node, Accessibility accessibility, IModifierComparer comparer)
+        {
+            switch (accessibility)
+            {
+                case Accessibility.Private:
+                    {
+                        return Insert(node, SyntaxKind.PrivateKeyword, comparer);
+                    }
+                case Accessibility.Protected:
+                    {
+                        return Insert(node, SyntaxKind.ProtectedKeyword, comparer);
+                    }
+                case Accessibility.ProtectedAndInternal:
+                    {
+                        node = Insert(node, SyntaxKind.PrivateKeyword, comparer);
+
+                        return Insert(node, SyntaxKind.ProtectedKeyword, comparer);
+                    }
+                case Accessibility.Internal:
+                    {
+                        return Insert(node, SyntaxKind.InternalKeyword, comparer);
+                    }
+                case Accessibility.Public:
+                    {
+                        return Insert(node, SyntaxKind.PublicKeyword, comparer);
+                    }
+                case Accessibility.ProtectedOrInternal:
+                    {
+                        node = Insert(node, SyntaxKind.ProtectedKeyword, comparer);
+
+                        return Insert(node, SyntaxKind.InternalKeyword, comparer);
+                    }
+            }
+
+            return node;
+        }
+
         public static TNode Insert<TNode>(TNode node, SyntaxKind modifierKind, IModifierComparer comparer = null) where TNode : SyntaxNode
         {
             return Insert(node, Token(modifierKind), comparer);
