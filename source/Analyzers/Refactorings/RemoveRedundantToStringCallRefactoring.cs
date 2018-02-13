@@ -35,6 +35,9 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (invocationInfo.Expression.IsKind(SyntaxKind.BaseExpression))
+                return false;
+
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
             MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
