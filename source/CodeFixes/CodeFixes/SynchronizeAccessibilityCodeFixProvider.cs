@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -47,7 +48,7 @@ namespace Roslynator.CSharp.CodeFixes
                 f => (MemberDeclarationSyntax)f.GetSyntax(context.CancellationToken));
 
             foreach (Accessibility accessibility in memberDeclarations
-                .Select(CSharpAccessibility.GetExplicitAccessibility)
+                .Select(f => SyntaxInfo.AccessibilityInfo(f).Accessibility)
                 .Where(f => f != Accessibility.NotApplicable))
             {
                 if (CSharpAccessibility.IsAllowedAccessibility(memberDeclaration, accessibility))

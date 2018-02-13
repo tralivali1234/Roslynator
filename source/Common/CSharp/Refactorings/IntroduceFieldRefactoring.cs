@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -52,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
                 .WithFormatterAnnotation();
 
             FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(
-                (containingMember.GetModifiers().Contains(SyntaxKind.StaticKeyword)) ? Modifiers.PrivateStatic() : Modifiers.Private(),
+                (SyntaxInfo.ModifiersInfo(containingMember).HasStatic) ? Modifiers.PrivateStatic() : Modifiers.Private(),
                 typeSymbol.ToMinimalTypeSyntax(semanticModel, containingType.OpenBraceToken.Span.End),
                 name);
 

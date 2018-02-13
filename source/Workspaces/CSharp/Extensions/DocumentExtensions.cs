@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Documentation;
 using Roslynator.CSharp.Helpers;
 using Roslynator.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
@@ -326,16 +327,16 @@ namespace Roslynator.CSharp
             this Document document,
             StatementsInfo statementsInfo,
             IEnumerable<StatementSyntax> newStatements,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            return ReplaceStatementsAsync(document, statementsInfo, SyntaxFactory.List(newStatements), cancellationToken);
+            return ReplaceStatementsAsync(document, statementsInfo, List(newStatements), cancellationToken);
         }
 
         internal static Task<Document> ReplaceStatementsAsync(
             this Document document,
             StatementsInfo statementsInfo,
             SyntaxList<StatementSyntax> newStatements,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return document.ReplaceNodeAsync(statementsInfo.Node, statementsInfo.WithStatements(newStatements).Node, cancellationToken);
         }
@@ -344,7 +345,7 @@ namespace Roslynator.CSharp
             this Document document,
             MemberDeclarationsInfo info,
             IEnumerable<MemberDeclarationSyntax> newMembers,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return document.ReplaceNodeAsync(
                 info.Declaration,
@@ -356,12 +357,30 @@ namespace Roslynator.CSharp
             this Document document,
             MemberDeclarationsInfo info,
             SyntaxList<MemberDeclarationSyntax> newMembers,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             return document.ReplaceNodeAsync(
                 info.Declaration,
                 info.WithMembers(newMembers).Declaration,
                 cancellationToken);
+        }
+
+        internal static Task<Document> ReplaceModifiersAsync(
+            this Document document,
+            ModifiersInfo modifiersInfo,
+            IEnumerable<SyntaxToken> newModifiers,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return ReplaceModifiersAsync(document, modifiersInfo, TokenList(newModifiers), cancellationToken);
+        }
+
+        internal static Task<Document> ReplaceModifiersAsync(
+            this Document document,
+            ModifiersInfo modifiersInfo,
+            SyntaxTokenList newModifiers,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return document.ReplaceNodeAsync(modifiersInfo.Node, modifiersInfo.WithModifiers(newModifiers).Node, cancellationToken);
         }
 
         internal static async Task<Document> AddNewDocumentationCommentsAsync(

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpTypeFactory;
@@ -66,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax newContainingMember = containingMember
                 .ReplaceNode(lockStatement, newLockStatement);
 
-            bool isStatic = containingMember.GetModifiers().Contains(SyntaxKind.StaticKeyword);
+            bool isStatic = SyntaxInfo.ModifiersInfo(containingMember).HasStatic;
 
             FieldDeclarationSyntax field = CreateFieldDeclaration(name, isStatic).WithFormatterAnnotation();
 

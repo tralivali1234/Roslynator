@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -241,7 +242,7 @@ namespace Roslynator.CSharp.CodeFixes
             Func<SyntaxToken, bool> predicate,
             string additionalKey = null)
         {
-            RemoveModifiers(context, diagnostic, node, node.GetModifiers(), predicate, additionalKey);
+            RemoveModifiers(context, diagnostic, node, SyntaxInfo.ModifiersInfo(node).Modifiers, predicate, additionalKey);
         }
 
         public static void RemoveModifiers(
@@ -292,11 +293,11 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             string additionalKey = null)
         {
-            SyntaxTokenList modifiers = node.GetModifiers();
+            SyntaxToken modifier = SyntaxInfo.ModifiersInfo(node).Modifiers.SingleOrDefault(shouldThrow: false);
 
-            if (modifiers.Count == 1)
+            if (modifier != default(SyntaxToken))
             {
-                RemoveModifier(context, diagnostic, node, modifiers[0], additionalKey);
+                RemoveModifier(context, diagnostic, node, modifier, additionalKey);
             }
             else
             {
@@ -320,11 +321,9 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             string additionalKey = null)
         {
-            SyntaxTokenList modifiers = node.GetModifiers();
-
             var accessModifier = default(SyntaxToken);
 
-            foreach (SyntaxToken modifier in modifiers)
+            foreach (SyntaxToken modifier in SyntaxInfo.ModifiersInfo(node).Modifiers)
             {
                 if (IsAccessibilityModifier(modifier.Kind()))
                 {

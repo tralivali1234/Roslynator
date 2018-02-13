@@ -138,8 +138,7 @@ namespace Roslynator.CSharp.Syntax
             if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.WithStatements(statements));
 
-            Debug.Fail("");
-            return this;
+            throw new InvalidOperationException();
         }
 
         public StatementsInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
@@ -152,8 +151,7 @@ namespace Roslynator.CSharp.Syntax
             if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.RemoveNode(node, options));
 
-            Debug.Fail("");
-            return this;
+            throw new InvalidOperationException();
         }
 
         public StatementsInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
@@ -166,8 +164,7 @@ namespace Roslynator.CSharp.Syntax
             if (IsSwitchSection)
                 return new StatementsInfo(SwitchSection.ReplaceNode(oldNode, newNode));
 
-            Debug.Fail("");
-            return this;
+            throw new InvalidOperationException();
         }
 
         public StatementsInfo Add(StatementSyntax statement)

@@ -493,15 +493,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: del
-        public static Accessibility GetExplicitAccessibility(MemberDeclarationSyntax member)
-        {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            return GetAccessibility(member.GetModifiers());
-        }
-
         public static Accessibility GetAccessibility(MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -813,8 +804,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: GetExplicitAccessibility
-        public static Accessibility GetAccessibility(SyntaxTokenList modifiers)
+        internal static Accessibility GetAccessibility(SyntaxTokenList modifiers)
         {
             int count = modifiers.Count;
 
@@ -879,7 +869,7 @@ namespace Roslynator.CSharp
 
             AccessibilityInfo newInfo = ChangeAccessibility(info, newAccessibility, comparer);
 
-            return (TNode)newInfo.Declaration;
+            return (TNode)newInfo.Node;
         }
 
         public static AccessibilityInfo ChangeAccessibility(
@@ -897,7 +887,7 @@ namespace Roslynator.CSharp
 
             comparer = comparer ?? ModifierComparer.Instance;
 
-            SyntaxNode declaration = info.Declaration;
+            SyntaxNode declaration = info.Node;
 
             if (accessibility.IsSingleTokenAccessibility()
                 && newAccessibility.IsSingleTokenAccessibility())
@@ -1021,10 +1011,10 @@ namespace Roslynator.CSharp
                     {
                         var eventDeclaration = (EventDeclarationSyntax)node;
 
-                        ModifiersInfo info = SyntaxInfo.ModifiersInfo(eventDeclaration);
+                        ModifierFlags flags = SyntaxInfo.ModifiersInfo(eventDeclaration).GetFlags();
 
-                        return (ignoreOverride || !info.HasOverride)
-                            && (!accessibility.IsPrivate() || !info.HasAbstractOrVirtualOrOverride)
+                        return (ignoreOverride || !flags.HasOverride())
+                            && (!accessibility.IsPrivate() || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(eventDeclaration.AccessorList, accessibility);
                     }
@@ -1032,10 +1022,10 @@ namespace Roslynator.CSharp
                     {
                         var indexerDeclaration = (IndexerDeclarationSyntax)node;
 
-                        ModifiersInfo info = SyntaxInfo.ModifiersInfo(indexerDeclaration);
+                        ModifierFlags flags = SyntaxInfo.ModifiersInfo(indexerDeclaration).GetFlags();
 
-                        return (ignoreOverride || !info.HasOverride)
-                            && (!accessibility.IsPrivate() || !info.HasAbstractOrVirtualOrOverride)
+                        return (ignoreOverride || !flags.HasOverride())
+                            && (!accessibility.IsPrivate() || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(indexerDeclaration.AccessorList, accessibility);
                     }
@@ -1043,10 +1033,10 @@ namespace Roslynator.CSharp
                     {
                         var propertyDeclaration = (PropertyDeclarationSyntax)node;
 
-                        ModifiersInfo info = SyntaxInfo.ModifiersInfo(propertyDeclaration);
+                        ModifierFlags flags = SyntaxInfo.ModifiersInfo(propertyDeclaration).GetFlags();
 
-                        return (ignoreOverride || !info.HasOverride)
-                            && (!accessibility.IsPrivate() || !info.HasAbstractOrVirtualOrOverride)
+                        return (ignoreOverride || !flags.HasOverride())
+                            && (!accessibility.IsPrivate() || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(propertyDeclaration.AccessorList, accessibility);
                     }
@@ -1054,20 +1044,20 @@ namespace Roslynator.CSharp
                     {
                         var methodDeclaration = (MethodDeclarationSyntax)node;
 
-                        ModifiersInfo info = SyntaxInfo.ModifiersInfo(methodDeclaration);
+                        ModifierFlags flags = SyntaxInfo.ModifiersInfo(methodDeclaration).GetFlags();
 
-                        return (ignoreOverride || !info.HasOverride)
-                            && (!accessibility.IsPrivate() || !info.HasAbstractOrVirtualOrOverride)
+                        return (ignoreOverride || !flags.HasOverride())
+                            && (!accessibility.IsPrivate() || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility);
                     }
                 case SyntaxKind.EventFieldDeclaration:
                     {
                         var eventFieldDeclaration = (EventFieldDeclarationSyntax)node;
 
-                        ModifiersInfo info = SyntaxInfo.ModifiersInfo(eventFieldDeclaration);
+                        ModifierFlags flags = SyntaxInfo.ModifiersInfo(eventFieldDeclaration).GetFlags();
 
-                        return (ignoreOverride || !info.HasOverride)
-                            && (!accessibility.IsPrivate() || !info.HasAbstractOrVirtualOrOverride)
+                        return (ignoreOverride || !flags.HasOverride())
+                            && (!accessibility.IsPrivate() || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility);
                     }
                 case SyntaxKind.ConstructorDeclaration:

@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Comparers;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -48,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
                 if (getter != null)
                 {
-                    if (CSharpAccessibility.GetAccessibility(getter.Modifiers) == Accessibility.Private)
+                    if (SyntaxInfo.AccessibilityInfo(getter).IsPrivate)
                         getter = CSharpAccessibility.ChangeAccessibility(getter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(getter
@@ -59,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 AccessorDeclarationSyntax setter = propertyDeclaration.Setter();
                 if (setter != null)
                 {
-                    if (CSharpAccessibility.GetAccessibility(setter.Modifiers) == Accessibility.Private)
+                    if (SyntaxInfo.AccessibilityInfo(setter).IsPrivate)
                         setter = CSharpAccessibility.ChangeAccessibility(setter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(setter

@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol GetBaseSymbolOrDefault(SemanticModel semanticModel, CancellationToken cancellationToken)
             {
-                if (modifiersInfo.HasAbstractOrVirtualOrOverride)
+                if (modifiersInfo.GetFlags().Any(ModifierFlags.AbstractVirtualOverride))
                     return ChangeAccessibilityRefactoring.GetBaseSymbolOrDefault(node, semanticModel, cancellationToken);
 
                 return null;

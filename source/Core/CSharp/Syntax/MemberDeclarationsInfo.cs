@@ -166,8 +166,7 @@ namespace Roslynator.CSharp.Syntax
                     }
             }
 
-            Debug.Fail(Kind.ToString());
-            return this;
+            throw new InvalidOperationException();
         }
 
         public MemberDeclarationsInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
@@ -205,8 +204,7 @@ namespace Roslynator.CSharp.Syntax
                     }
             }
 
-            Debug.Fail(Kind.ToString());
-            return this;
+            throw new InvalidOperationException();
         }
 
         public MemberDeclarationsInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
@@ -244,8 +242,7 @@ namespace Roslynator.CSharp.Syntax
                     }
             }
 
-            Debug.Fail(Kind.ToString());
-            return this;
+            throw new InvalidOperationException();
         }
 
         public MemberDeclarationsInfo Add(MemberDeclarationSyntax member)

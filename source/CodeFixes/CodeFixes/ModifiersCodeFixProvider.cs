@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -115,7 +116,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveInvalidModifier))
                                 break;
 
-                            SyntaxTokenList modifiers = node.GetModifiers();
+                            SyntaxTokenList modifiers = SyntaxInfo.ModifiersInfo(node).Modifiers;
 
                             if (modifiers.Contains(token))
                             {

@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -41,9 +42,9 @@ namespace Roslynator.CSharp.CodeFixes
             {
                 if (parent is MemberDeclarationSyntax memberDeclaration)
                 {
-                    Debug.Assert(memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword), memberDeclaration.ToString());
+                    Debug.Assert(SyntaxInfo.ModifiersInfo(memberDeclaration).HasStatic, memberDeclaration.ToString());
 
-                    if (memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword))
+                    if (SyntaxInfo.ModifiersInfo(memberDeclaration).HasStatic)
                     {
                         if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeMemberNonStatic))
                         {
@@ -104,7 +105,7 @@ namespace Roslynator.CSharp.CodeFixes
             if (!(syntax is MemberDeclarationSyntax memberDeclaration))
                 return;
 
-            if (memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword))
+            if (SyntaxInfo.ModifiersInfo(memberDeclaration).HasStatic)
                 return;
 
             Document document = context.Document;

@@ -66,6 +66,7 @@
     <Compile Include="CodeFixProviders\DeclareEnumMemberWithZeroValueCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\DocumentationCommentCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\AddExceptionToDocumentationCommentCodeFixProvider.cs" />
+    <Compile Include="DiagnosticAnalyzers\ReorderModifiersDiagnosticAnalyzer.cs" />
     <Compile Include="UnnecessaryUnsafeContext\UnnecessaryUnsafeContextCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\UseConditionalAccessCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\AvoidNullReferenceExceptionCodeFixProvider.cs" />
@@ -460,7 +461,7 @@
     <Compile Include="DiagnosticAnalyzers\BracesDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\BinaryExpressionDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\ObjectCreationExpressionDiagnosticAnalyzer.cs" />
-    <Compile Include="DiagnosticAnalyzers\ModifiersDiagnosticAnalyzer.cs" />
+    <Compile Include="DiagnosticAnalyzers\AddDefaultAccessModifierDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\BooleanLiteralDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\AttributeArgumentListDiagnosticAnalyzer.cs" />
     <Compile Include="CodeFixProviders\FormatBinaryOperatorOnNextLineCodeFixProvider.cs" />

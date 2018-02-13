@@ -174,16 +174,16 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                SyntaxTokenList modifiers = member.GetModifiers();
+                ModifierFlags flags = SyntaxInfo.ModifiersInfo(member).GetFlags();
 
-                if (modifiers.Contains(SyntaxKind.PartialKeyword))
+                if (flags.HasPartial())
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 
                     foreach (SyntaxReference reference in symbol.DeclaringSyntaxReferences)
                         members.Add((MemberDeclarationSyntax)reference.GetSyntax(cancellationToken));
                 }
-                else if (modifiers.ContainsAny(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword, SyntaxKind.OverrideKeyword))
+                else if (flags.Any(ModifierFlags.AbstractVirtualOverride))
                 {
                     ISymbol symbol = GetBaseSymbolOrDefault(member, semanticModel, cancellationToken);
 
@@ -298,7 +298,7 @@ namespace Roslynator.CSharp.Refactorings
 
             AccessibilityInfo newInfo = info.WithAccessibility(newAccessibility, ModifierComparer.Instance);
 
-            return newInfo.Declaration;
+            return newInfo.Node;
         }
     }
 }

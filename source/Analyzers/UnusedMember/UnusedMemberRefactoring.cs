@@ -59,7 +59,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (EventDeclarationSyntax)member;
 
-                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -104,7 +105,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
                             SyntaxTokenList modifiers = declaration.Modifiers;
 
-                            if (!declaration.AttributeLists.Any()
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && !declaration.AttributeLists.Any()
                                 && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 string methodName = declaration.Identifier.ValueText;
@@ -124,7 +126,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (PropertyDeclarationSyntax)member;
 
-                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);

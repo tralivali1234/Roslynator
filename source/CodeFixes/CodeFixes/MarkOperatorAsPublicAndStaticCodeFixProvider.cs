@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -37,15 +38,15 @@ namespace Roslynator.CSharp.CodeFixes
                 {
                     case CompilerDiagnosticIdentifiers.UserDefinedOperatorMustBeDeclaredStaticAndPublic:
                         {
-                            SyntaxTokenList modifiers = memberDeclaration.GetModifiers();
+                            ModifiersInfo info = SyntaxInfo.ModifiersInfo(memberDeclaration);
 
                             string title = "Add ";
 
-                            if (modifiers.Contains(SyntaxKind.PublicKeyword))
+                            if (info.HasPublic)
                             {
                                 title += "modifier 'static'";
                             }
-                            else if (modifiers.Contains(SyntaxKind.StaticKeyword))
+                            else if (info.HasStatic)
                             {
                                 title += "modifier 'public'";
                             }
@@ -58,6 +59,8 @@ namespace Roslynator.CSharp.CodeFixes
                                 title,
                                 cancellationToken =>
                                 {
+                                    SyntaxTokenList modifiers = info.Modifiers;
+
                                     SyntaxTokenList newModifiers = modifiers;
 
                                     if (!modifiers.Contains(SyntaxKind.PublicKeyword))
@@ -66,9 +69,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     if (!modifiers.Contains(SyntaxKind.StaticKeyword))
                                         newModifiers = Modifier.Insert(newModifiers, SyntaxKind.StaticKeyword);
 
-                                    MemberDeclarationSyntax newMemberDeclaration = memberDeclaration.WithModifiers(newModifiers);
-
-                                    return context.Document.ReplaceNodeAsync(memberDeclaration, newMemberDeclaration, cancellationToken);
+                                    return context.Document.ReplaceModifiersAsync(info, newModifiers, cancellationToken);
                                 },
                                 GetEquivalenceKey(diagnostic));
 

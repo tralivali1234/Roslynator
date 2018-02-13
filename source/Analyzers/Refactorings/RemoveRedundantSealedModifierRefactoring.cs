@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -34,9 +35,7 @@ namespace Roslynator.CSharp.Refactorings
             if (containingSymbol?.IsSealed == true
                 && containingSymbol.IsClass())
             {
-                SyntaxToken sealedKeyword = declaration
-                    .GetModifiers()
-                    .FirstOrDefault(f => f.IsKind(SyntaxKind.SealedKeyword));
+                SyntaxToken sealedKeyword = SyntaxInfo.ModifiersInfo(declaration).Modifiers.Find(SyntaxKind.SealedKeyword);
 
                 if (sealedKeyword.IsKind(SyntaxKind.SealedKeyword))
                 {

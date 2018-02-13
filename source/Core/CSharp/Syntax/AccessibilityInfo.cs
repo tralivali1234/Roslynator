@@ -12,9 +12,9 @@ namespace Roslynator.CSharp.Syntax
     //XTODO: AccessModifiersInfo
     public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
-        private AccessibilityInfo(SyntaxNode declaration, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
+        private AccessibilityInfo(SyntaxNode node, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
         {
-            Declaration = declaration;
+            Node = node;
             Modifiers = modifiers;
             TokenIndex = tokenIndex;
             SecondTokenIndex = secondTokenIndex;
@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
 
-        public SyntaxNode Declaration { get; }
+        public SyntaxNode Node { get; }
 
         public SyntaxTokenList Modifiers { get; }
 
@@ -70,6 +70,7 @@ namespace Roslynator.CSharp.Syntax
             get { return Accessibility == Accessibility.Private; }
         }
 
+        //TODO: ExplicitAccessibility
         public Accessibility Accessibility
         {
             get
@@ -120,18 +121,101 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Success
         {
-            get { return Declaration != null; }
+            get { return Node != null; }
         }
 
-        internal static AccessibilityInfo Create(SyntaxNode declaration)
+        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2)
         {
-            if (declaration == null)
+            Accessibility accessibility = Accessibility;
+
+            return accessibility == accessibility1
+                || accessibility == accessibility2;
+        }
+
+        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3)
+        {
+            Accessibility accessibility = Accessibility;
+
+            return accessibility == accessibility1
+                || accessibility == accessibility2
+                || accessibility == accessibility3;
+        }
+
+        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3, Accessibility accessibility4)
+        {
+            Accessibility accessibility = Accessibility;
+
+            return accessibility == accessibility1
+                || accessibility == accessibility2
+                || accessibility == accessibility3
+                || accessibility == accessibility4;
+        }
+
+        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3, Accessibility accessibility4, Accessibility accessibility5)
+        {
+            Accessibility accessibility = Accessibility;
+
+            return accessibility == accessibility1
+                || accessibility == accessibility2
+                || accessibility == accessibility3
+                || accessibility == accessibility4
+                || accessibility == accessibility5;
+        }
+
+        internal static AccessibilityInfo Create(SyntaxNode node)
+        {
+            if (node == null)
                 return Default;
 
-            if (!CSharpFacts.CanHaveAccessibility(declaration.Kind()))
-                return Default;
+            switch (node.Kind())
+            {
+                case SyntaxKind.ClassDeclaration:
+                    return Create(node, ((ClassDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.ConstructorDeclaration:
+                    return Create(node, ((ConstructorDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.ConversionOperatorDeclaration:
+                    return Create(node, ((ConversionOperatorDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.DelegateDeclaration:
+                    return Create(node, ((DelegateDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.DestructorDeclaration:
+                    return Create(node, ((DestructorDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.EnumDeclaration:
+                    return Create(node, ((EnumDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.EventDeclaration:
+                    return Create(node, ((EventDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.EventFieldDeclaration:
+                    return Create(node, ((EventFieldDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.FieldDeclaration:
+                    return Create(node, ((FieldDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.IndexerDeclaration:
+                    return Create(node, ((IndexerDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.InterfaceDeclaration:
+                    return Create(node, ((InterfaceDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.MethodDeclaration:
+                    return Create(node, ((MethodDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.OperatorDeclaration:
+                    return Create(node, ((OperatorDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.PropertyDeclaration:
+                    return Create(node, ((PropertyDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.StructDeclaration:
+                    return Create(node, ((StructDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.IncompleteMember:
+                    return Create(node, ((IncompleteMemberSyntax)node).Modifiers);
+                case SyntaxKind.GetAccessorDeclaration:
+                case SyntaxKind.SetAccessorDeclaration:
+                case SyntaxKind.AddAccessorDeclaration:
+                case SyntaxKind.RemoveAccessorDeclaration:
+                case SyntaxKind.UnknownAccessorDeclaration:
+                    return Create(node, ((AccessorDeclarationSyntax)node).Modifiers);
+                case SyntaxKind.LocalDeclarationStatement:
+                    return Create(node, ((LocalDeclarationStatementSyntax)node).Modifiers);
+                case SyntaxKind.LocalFunctionStatement:
+                    return Create(node, ((LocalFunctionStatementSyntax)node).Modifiers);
+                case SyntaxKind.Parameter:
+                    return Create(node, ((ParameterSyntax)node).Modifiers);
+            }
 
-            return Create(declaration, declaration.GetModifiers());
+            return Default;
         }
 
         internal static AccessibilityInfo Create(ClassDeclarationSyntax classDeclaration)
@@ -278,7 +362,7 @@ namespace Roslynator.CSharp.Syntax
             return Create(accessorDeclaration, accessorDeclaration.Modifiers);
         }
 
-        private static AccessibilityInfo Create(SyntaxNode declaration, SyntaxTokenList modifiers)
+        private static AccessibilityInfo Create(SyntaxNode node, SyntaxTokenList modifiers)
         {
             int count = modifiers.Count;
 
@@ -288,7 +372,7 @@ namespace Roslynator.CSharp.Syntax
                 {
                     case SyntaxKind.PublicKeyword:
                         {
-                            return new AccessibilityInfo(declaration, modifiers, i);
+                            return new AccessibilityInfo(node, modifiers, i);
                         }
                     case SyntaxKind.PrivateKeyword:
                     case SyntaxKind.InternalKeyword:
@@ -296,34 +380,34 @@ namespace Roslynator.CSharp.Syntax
                             for (int j = i + 1; j < count; j++)
                             {
                                 if (modifiers[j].IsKind(SyntaxKind.ProtectedKeyword))
-                                    return new AccessibilityInfo(declaration, modifiers, i, j);
+                                    return new AccessibilityInfo(node, modifiers, i, j);
                             }
 
-                            return new AccessibilityInfo(declaration, modifiers, i);
+                            return new AccessibilityInfo(node, modifiers, i);
                         }
                     case SyntaxKind.ProtectedKeyword:
                         {
                             for (int j = i + 1; j < count; j++)
                             {
                                 if (modifiers[j].IsKind(SyntaxKind.InternalKeyword, SyntaxKind.PrivateKeyword))
-                                    return new AccessibilityInfo(declaration, modifiers, i, j);
+                                    return new AccessibilityInfo(node, modifiers, i, j);
                             }
 
-                            return new AccessibilityInfo(declaration, modifiers, i);
+                            return new AccessibilityInfo(node, modifiers, i);
                         }
                 }
             }
 
-            return new AccessibilityInfo(declaration, modifiers, -1);
+            return new AccessibilityInfo(node, modifiers, -1);
         }
 
         public AccessibilityInfo WithModifiers(SyntaxTokenList newModifiers)
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            SyntaxNode newNode = Declaration.WithModifiers(newModifiers);
+            ModifiersInfo info = ModifiersInfo.WithModifiers(Node, newModifiers);
 
-            return Create(newNode, newModifiers);
+            return Create(info.Node, info.Modifiers);
         }
 
         public AccessibilityInfo WithAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
@@ -340,13 +424,13 @@ namespace Roslynator.CSharp.Syntax
 
         private void ThrowInvalidOperationIfNotInitialized()
         {
-            if (Declaration == null)
+            if (Node == null)
                 throw new InvalidOperationException($"{nameof(AccessibilityInfo)} is not initalized.");
         }
 
         public override string ToString()
         {
-            return Declaration?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)
@@ -357,12 +441,12 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Equals(AccessibilityInfo other)
         {
-            return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
+            return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
         }
 
         public static bool operator ==(AccessibilityInfo info1, AccessibilityInfo info2)
