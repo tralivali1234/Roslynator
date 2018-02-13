@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.CSharp
+namespace Roslynator
 {
     public static class MethodKindExtensions
     {

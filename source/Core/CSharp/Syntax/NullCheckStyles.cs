@@ -6,7 +6,7 @@ using System;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: Roslynator.CSharp
+    //TODO: Roslynator.CSharp
     [Flags]
     public enum NullCheckStyles
     {

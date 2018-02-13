@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: názvy metod bez Info na konci
     public static class SyntaxInfo
     {
         public static AccessibilityInfo AccessibilityInfo(SyntaxNode declaration)
