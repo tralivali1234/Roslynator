@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct ModifiersInfo : IEquatable<ModifiersInfo>
     {
-        private ModifiersInfo(SyntaxNode node, SyntaxTokenList modifiers)
+        internal ModifiersInfo(SyntaxNode node, SyntaxTokenList modifiers)
         {
             Node = node;
             Modifiers = modifiers;
@@ -28,48 +28,39 @@ namespace Roslynator.CSharp.Syntax
             get { return CSharpAccessibility.GetAccessibility(Modifiers); }
         }
 
-        //TODO: 
-        public bool HasNew => Modifiers.Contains(SyntaxKind.NewKeyword);
+        public bool IsNew => Modifiers.Contains(SyntaxKind.NewKeyword);
 
-        public bool HasPublic => Modifiers.Contains(SyntaxKind.PublicKeyword);
+        public bool IsConst => Modifiers.Contains(SyntaxKind.ConstKeyword);
 
-        public bool HasPrivate => Modifiers.Contains(SyntaxKind.PrivateKeyword);
+        public bool IsStatic => Modifiers.Contains(SyntaxKind.StaticKeyword);
 
-        public bool HasProtected => Modifiers.Contains(SyntaxKind.ProtectedKeyword);
+        public bool IsVirtual => Modifiers.Contains(SyntaxKind.VirtualKeyword);
 
-        public bool HasInternal => Modifiers.Contains(SyntaxKind.InternalKeyword);
+        public bool IsSealed => Modifiers.Contains(SyntaxKind.SealedKeyword);
 
-        public bool HasConst => Modifiers.Contains(SyntaxKind.ConstKeyword);
+        public bool IsOverride => Modifiers.Contains(SyntaxKind.OverrideKeyword);
 
-        public bool HasStatic => Modifiers.Contains(SyntaxKind.StaticKeyword);
+        public bool IsAbstract => Modifiers.Contains(SyntaxKind.AbstractKeyword);
 
-        public bool HasVirtual => Modifiers.Contains(SyntaxKind.VirtualKeyword);
+        public bool IsReadOnly => Modifiers.Contains(SyntaxKind.ReadOnlyKeyword);
 
-        public bool HasSealed => Modifiers.Contains(SyntaxKind.SealedKeyword);
+        public bool IsExtern => Modifiers.Contains(SyntaxKind.ExternKeyword);
 
-        public bool HasOverride => Modifiers.Contains(SyntaxKind.OverrideKeyword);
+        public bool IsUnsafe => Modifiers.Contains(SyntaxKind.UnsafeKeyword);
 
-        public bool HasAbstract => Modifiers.Contains(SyntaxKind.AbstractKeyword);
+        public bool IsVolatile => Modifiers.Contains(SyntaxKind.VolatileKeyword);
 
-        public bool HasReadOnly => Modifiers.Contains(SyntaxKind.ReadOnlyKeyword);
+        public bool IsAsync => Modifiers.Contains(SyntaxKind.AsyncKeyword);
 
-        public bool HasExtern => Modifiers.Contains(SyntaxKind.ExternKeyword);
+        public bool IsPartial => Modifiers.Contains(SyntaxKind.PartialKeyword);
 
-        public bool HasUnsafe => Modifiers.Contains(SyntaxKind.UnsafeKeyword);
+        public bool IsRef => Modifiers.Contains(SyntaxKind.RefKeyword);
 
-        public bool HasVolatile => Modifiers.Contains(SyntaxKind.VolatileKeyword);
+        public bool IsOut => Modifiers.Contains(SyntaxKind.OutKeyword);
 
-        public bool HasAsync => Modifiers.Contains(SyntaxKind.AsyncKeyword);
+        public bool IsIn => Modifiers.Contains(SyntaxKind.InKeyword);
 
-        public bool HasPartial => Modifiers.Contains(SyntaxKind.PartialKeyword);
-
-        public bool HasRef => Modifiers.Contains(SyntaxKind.RefKeyword);
-
-        public bool HasOut => Modifiers.Contains(SyntaxKind.OutKeyword);
-
-        public bool HasIn => Modifiers.Contains(SyntaxKind.InKeyword);
-
-        public bool HasParams => Modifiers.Contains(SyntaxKind.ParamsKeyword);
+        public bool IsParams => Modifiers.Contains(SyntaxKind.ParamsKeyword);
 
         public bool Success
         {
@@ -292,110 +283,110 @@ namespace Roslynator.CSharp.Syntax
             return new ModifiersInfo(parameter, parameter.Modifiers);
         }
 
+        internal AccessibilityInfo AccessibilityInfo()
+        {
+            return Syntax.AccessibilityInfo.Create(Node, Modifiers);
+        }
+
         public ModifiersInfo WithModifiers(SyntaxTokenList modifiers)
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            return WithModifiers(Node, modifiers);
-        }
-
-        internal static ModifiersInfo WithModifiers(SyntaxNode node, SyntaxTokenList modifiers)
-        {
-            switch (node.Kind())
+            switch (Node.Kind())
             {
                 case SyntaxKind.ClassDeclaration:
                     {
-                        var classDeclaration = (ClassDeclarationSyntax)node;
+                        var classDeclaration = (ClassDeclarationSyntax)Node;
                         ClassDeclarationSyntax newNode = classDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.ConstructorDeclaration:
                     {
-                        var constructorDeclaration = (ConstructorDeclarationSyntax)node;
+                        var constructorDeclaration = (ConstructorDeclarationSyntax)Node;
                         ConstructorDeclarationSyntax newNode = constructorDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.OperatorDeclaration:
                     {
-                        var operatorDeclaration = (OperatorDeclarationSyntax)node;
+                        var operatorDeclaration = (OperatorDeclarationSyntax)Node;
                         OperatorDeclarationSyntax newNode = operatorDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.ConversionOperatorDeclaration:
                     {
-                        var conversionOperatorDeclaration = (ConversionOperatorDeclarationSyntax)node;
+                        var conversionOperatorDeclaration = (ConversionOperatorDeclarationSyntax)Node;
                         ConversionOperatorDeclarationSyntax newNode = conversionOperatorDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.DelegateDeclaration:
                     {
-                        var delegateDeclaration = (DelegateDeclarationSyntax)node;
+                        var delegateDeclaration = (DelegateDeclarationSyntax)Node;
                         DelegateDeclarationSyntax newNode = delegateDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.DestructorDeclaration:
                     {
-                        var destructorDeclaration = (DestructorDeclarationSyntax)node;
+                        var destructorDeclaration = (DestructorDeclarationSyntax)Node;
                         DestructorDeclarationSyntax newNode = destructorDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.EnumDeclaration:
                     {
-                        var enumDeclaration = (EnumDeclarationSyntax)node;
+                        var enumDeclaration = (EnumDeclarationSyntax)Node;
                         EnumDeclarationSyntax newNode = enumDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.EventDeclaration:
                     {
-                        var eventDeclaration = (EventDeclarationSyntax)node;
+                        var eventDeclaration = (EventDeclarationSyntax)Node;
                         EventDeclarationSyntax newNode = eventDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.EventFieldDeclaration:
                     {
-                        var eventFieldDeclaration = (EventFieldDeclarationSyntax)node;
+                        var eventFieldDeclaration = (EventFieldDeclarationSyntax)Node;
                         EventFieldDeclarationSyntax newNode = eventFieldDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.FieldDeclaration:
                     {
-                        var fieldDeclaration = (FieldDeclarationSyntax)node;
+                        var fieldDeclaration = (FieldDeclarationSyntax)Node;
                         FieldDeclarationSyntax newNode = fieldDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.IndexerDeclaration:
                     {
-                        var indexerDeclaration = (IndexerDeclarationSyntax)node;
+                        var indexerDeclaration = (IndexerDeclarationSyntax)Node;
                         IndexerDeclarationSyntax newNode = indexerDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.InterfaceDeclaration:
                     {
-                        var interfaceDeclaration = (InterfaceDeclarationSyntax)node;
+                        var interfaceDeclaration = (InterfaceDeclarationSyntax)Node;
                         InterfaceDeclarationSyntax newNode = interfaceDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.MethodDeclaration:
                     {
-                        var methodDeclaration = (MethodDeclarationSyntax)node;
+                        var methodDeclaration = (MethodDeclarationSyntax)Node;
                         MethodDeclarationSyntax newNode = methodDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.PropertyDeclaration:
                     {
-                        var propertyDeclaration = (PropertyDeclarationSyntax)node;
+                        var propertyDeclaration = (PropertyDeclarationSyntax)Node;
                         PropertyDeclarationSyntax newNode = propertyDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.StructDeclaration:
                     {
-                        var structDeclaration = (StructDeclarationSyntax)node;
+                        var structDeclaration = (StructDeclarationSyntax)Node;
                         StructDeclarationSyntax newNode = structDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.IncompleteMember:
                     {
-                        var incompleteMember = (IncompleteMemberSyntax)node;
+                        var incompleteMember = (IncompleteMemberSyntax)Node;
                         IncompleteMemberSyntax newNode = incompleteMember.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
@@ -405,25 +396,25 @@ namespace Roslynator.CSharp.Syntax
                 case SyntaxKind.RemoveAccessorDeclaration:
                 case SyntaxKind.UnknownAccessorDeclaration:
                     {
-                        var accessorDeclaration = (AccessorDeclarationSyntax)node;
+                        var accessorDeclaration = (AccessorDeclarationSyntax)Node;
                         AccessorDeclarationSyntax newNode = accessorDeclaration.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.LocalDeclarationStatement:
                     {
-                        var localDeclarationStatement = (LocalDeclarationStatementSyntax)node;
+                        var localDeclarationStatement = (LocalDeclarationStatementSyntax)Node;
                         LocalDeclarationStatementSyntax newNode = localDeclarationStatement.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.LocalFunctionStatement:
                     {
-                        var localFunctionStatement = (LocalFunctionStatementSyntax)node;
+                        var localFunctionStatement = (LocalFunctionStatementSyntax)Node;
                         LocalFunctionStatementSyntax newNode = localFunctionStatement.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }
                 case SyntaxKind.Parameter:
                     {
-                        var parameter = (ParameterSyntax)node;
+                        var parameter = (ParameterSyntax)Node;
                         ParameterSyntax newNode = parameter.WithModifiers(modifiers);
                         return new ModifiersInfo(newNode, newNode.Modifiers);
                     }

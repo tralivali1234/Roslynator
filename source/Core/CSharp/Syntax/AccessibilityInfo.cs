@@ -324,7 +324,7 @@ namespace Roslynator.CSharp.Syntax
             return Create(accessorDeclaration, accessorDeclaration.Modifiers);
         }
 
-        private static AccessibilityInfo Create(SyntaxNode node, SyntaxTokenList modifiers)
+        internal static AccessibilityInfo Create(SyntaxNode node, SyntaxTokenList modifiers)
         {
             int count = modifiers.Count;
 
@@ -363,11 +363,16 @@ namespace Roslynator.CSharp.Syntax
             return new AccessibilityInfo(node, modifiers, -1);
         }
 
+        internal ModifiersInfo ModifiersInfo()
+        {
+            return new ModifiersInfo(Node, Modifiers);
+        }
+
         public AccessibilityInfo WithModifiers(SyntaxTokenList newModifiers)
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            ModifiersInfo info = ModifiersInfo.WithModifiers(Node, newModifiers);
+            var info = ModifiersInfo().WithModifiers(newModifiers);
 
             return Create(info.Node, info.Modifiers);
         }

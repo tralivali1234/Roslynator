@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax newContainingMember = containingMember
                 .ReplaceNode(lockStatement, newLockStatement);
 
-            bool isStatic = SyntaxInfo.ModifiersInfo(containingMember).HasStatic;
+            bool isStatic = SyntaxInfo.ModifiersInfo(containingMember).IsStatic;
 
             FieldDeclarationSyntax field = CreateFieldDeclaration(name, isStatic).WithFormatterAnnotation();
 

@@ -176,7 +176,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ModifierFlags flags = SyntaxInfo.ModifiersInfo(member).GetFlags();
 
-                if (flags.HasPartial())
+                if (flags.Any(ModifierFlags.Partial))
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 

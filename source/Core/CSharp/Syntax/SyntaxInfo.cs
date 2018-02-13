@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: názvy metod bez Info na konci
     public static class SyntaxInfo
     {
         public static AccessibilityInfo AccessibilityInfo(SyntaxNode declaration)
@@ -442,7 +441,7 @@ namespace Roslynator.CSharp.Syntax
 
         public static NullCheckExpressionInfo NullCheckExpressionInfo(
             SyntaxNode node,
-            NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.Pattern,
+            NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.IsPattern,
             bool walkDownParentheses = true,
             bool allowMissing = false,
             CancellationToken cancellationToken = default(CancellationToken))

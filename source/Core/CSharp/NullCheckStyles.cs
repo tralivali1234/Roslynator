@@ -25,8 +25,7 @@ namespace Roslynator.CSharp
         // !(x is null)
         NotIsNull = 8,
 
-        //TODO: IsPattern
-        Pattern = IsNull | NotIsNull,
+        IsPattern = IsNull | NotIsNull,
 
         // !x.HasValue
         NotHasValue = 16,

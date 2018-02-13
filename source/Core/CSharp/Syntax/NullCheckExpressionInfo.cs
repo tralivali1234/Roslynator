@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Syntax
 
         internal static NullCheckExpressionInfo Create(
             SyntaxNode node,
-            NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.Pattern,
+            NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.IsPattern,
             bool walkDownParentheses = true,
             bool allowMissing = false,
             CancellationToken cancellationToken = default(CancellationToken))

@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case CompilerDiagnosticIdentifiers.MemberHidesInheritedMemberToMakeCurrentMethodOverrideThatImplementationAddOverrideKeyword:
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddOverrideModifier)
-                                && !SyntaxInfo.ModifiersInfo(memberDeclaration).HasStatic)
+                                && !SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
                             {
                                 ModifiersCodeFixRegistrator.AddModifier(context, diagnostic, memberDeclaration, SyntaxKind.OverrideKeyword, additionalKey: nameof(SyntaxKind.OverrideKeyword));
                             }

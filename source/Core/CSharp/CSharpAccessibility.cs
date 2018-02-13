@@ -1013,7 +1013,7 @@ namespace Roslynator.CSharp
 
                         ModifierFlags flags = SyntaxInfo.ModifiersInfo(eventDeclaration).GetFlags();
 
-                        return (ignoreOverride || !flags.HasOverride())
+                        return (ignoreOverride || !flags.Any(ModifierFlags.Override))
                             && (accessibility != Accessibility.Private || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(eventDeclaration.AccessorList, accessibility);
@@ -1024,7 +1024,7 @@ namespace Roslynator.CSharp
 
                         ModifierFlags flags = SyntaxInfo.ModifiersInfo(indexerDeclaration).GetFlags();
 
-                        return (ignoreOverride || !flags.HasOverride())
+                        return (ignoreOverride || !flags.Any(ModifierFlags.Override))
                             && (accessibility != Accessibility.Private || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(indexerDeclaration.AccessorList, accessibility);
@@ -1035,7 +1035,7 @@ namespace Roslynator.CSharp
 
                         ModifierFlags flags = SyntaxInfo.ModifiersInfo(propertyDeclaration).GetFlags();
 
-                        return (ignoreOverride || !flags.HasOverride())
+                        return (ignoreOverride || !flags.Any(ModifierFlags.Override))
                             && (accessibility != Accessibility.Private || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility)
                             && CheckAccessorAccessibility(propertyDeclaration.AccessorList, accessibility);
@@ -1046,7 +1046,7 @@ namespace Roslynator.CSharp
 
                         ModifierFlags flags = SyntaxInfo.ModifiersInfo(methodDeclaration).GetFlags();
 
-                        return (ignoreOverride || !flags.HasOverride())
+                        return (ignoreOverride || !flags.Any(ModifierFlags.Override))
                             && (accessibility != Accessibility.Private || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility);
                     }
@@ -1056,7 +1056,7 @@ namespace Roslynator.CSharp
 
                         ModifierFlags flags = SyntaxInfo.ModifiersInfo(eventFieldDeclaration).GetFlags();
 
-                        return (ignoreOverride || !flags.HasOverride())
+                        return (ignoreOverride || !flags.Any(ModifierFlags.Override))
                             && (accessibility != Accessibility.Private || !flags.Any(ModifierFlags.AbstractVirtualOverride))
                             && CheckProtectedInStaticOrSealedClass(node, accessibility);
                     }
