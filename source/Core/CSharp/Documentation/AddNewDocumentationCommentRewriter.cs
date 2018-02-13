@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Roslynator.CSharp.CSharpAccessibility;
 
 namespace Roslynator.CSharp.Documentation
 {
@@ -40,7 +41,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (ClassDeclarationSyntax)base.VisitClassDeclaration(node);
 
@@ -57,7 +58,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (StructDeclarationSyntax)base.VisitStructDeclaration(node);
 
@@ -74,7 +75,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (InterfaceDeclarationSyntax)base.VisitInterfaceDeclaration(node);
 
@@ -91,7 +92,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitEnumDeclaration(EnumDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (EnumDeclarationSyntax)base.VisitEnumDeclaration(node);
 
@@ -108,7 +109,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitDelegateDeclaration(DelegateDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (DelegateDeclarationSyntax)base.VisitDelegateDeclaration(node);
 
@@ -125,7 +126,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitEnumMemberDeclaration(EnumMemberDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (EnumMemberDeclarationSyntax)base.VisitEnumMemberDeclaration(node);
 
@@ -142,7 +143,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitFieldDeclaration(FieldDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (FieldDeclarationSyntax)base.VisitFieldDeclaration(node);
 
@@ -159,7 +160,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitEventFieldDeclaration(EventFieldDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (EventFieldDeclarationSyntax)base.VisitEventFieldDeclaration(node);
 
@@ -176,7 +177,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (MethodDeclarationSyntax)base.VisitMethodDeclaration(node);
 
@@ -193,7 +194,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitOperatorDeclaration(OperatorDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (OperatorDeclarationSyntax)base.VisitOperatorDeclaration(node);
 
@@ -210,7 +211,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitConversionOperatorDeclaration(ConversionOperatorDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (ConversionOperatorDeclarationSyntax)base.VisitConversionOperatorDeclaration(node);
 
@@ -227,7 +228,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (ConstructorDeclarationSyntax)base.VisitConstructorDeclaration(node);
 
@@ -244,7 +245,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitDestructorDeclaration(DestructorDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (DestructorDeclarationSyntax)base.VisitDestructorDeclaration(node);
 
@@ -261,7 +262,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (PropertyDeclarationSyntax)base.VisitPropertyDeclaration(node);
 
@@ -278,7 +279,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitEventDeclaration(EventDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (EventDeclarationSyntax)base.VisitEventDeclaration(node);
 
@@ -295,7 +296,7 @@ namespace Roslynator.CSharp.Documentation
 
         public override SyntaxNode VisitIndexerDeclaration(IndexerDeclarationSyntax node)
         {
-            bool isPubliclyVisible = node.IsPubliclyVisible();
+            bool isPubliclyVisible = IsPubliclyVisible(node);
 
             node = (IndexerDeclarationSyntax)base.VisitIndexerDeclaration(node);
 

@@ -11,21 +11,21 @@ namespace Roslynator.CSharp.Syntax
 {
     public struct RegionInfo : IEquatable<RegionInfo>
     {
-        private RegionInfo(RegionDirectiveTriviaSyntax regionDirective, EndRegionDirectiveTriviaSyntax endRegionDirective)
+        private RegionInfo(RegionDirectiveTriviaSyntax directive, EndRegionDirectiveTriviaSyntax endDirective)
         {
-            RegionDirective = regionDirective;
-            EndRegionDirective = endRegionDirective;
+            Directive = directive;
+            EndDirective = endDirective;
         }
 
         private static RegionInfo Default { get; } = new RegionInfo();
 
-        public RegionDirectiveTriviaSyntax RegionDirective { get; }
+        public RegionDirectiveTriviaSyntax Directive { get; }
 
-        public EndRegionDirectiveTriviaSyntax EndRegionDirective { get; }
+        public EndRegionDirectiveTriviaSyntax EndDirective { get; }
 
         public bool Success
         {
-            get { return RegionDirective != null; }
+            get { return Directive != null; }
         }
 
         public TextSpan Span
@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Syntax
             get
             {
                 return (Success)
-                    ? TextSpan.FromBounds(RegionDirective.SpanStart, EndRegionDirective.Span.End)
+                    ? TextSpan.FromBounds(Directive.SpanStart, EndDirective.Span.End)
                     : default(TextSpan);
             }
         }
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.Syntax
             get
             {
                 return (Success)
-                    ? TextSpan.FromBounds(RegionDirective.FullSpan.Start, EndRegionDirective.FullSpan.End)
+                    ? TextSpan.FromBounds(Directive.FullSpan.Start, EndDirective.FullSpan.End)
                     : default(TextSpan);
             }
         }
@@ -55,10 +55,10 @@ namespace Roslynator.CSharp.Syntax
                 if (!Success)
                     return false;
 
-                SyntaxTrivia trivia = RegionDirective.ParentTrivia;
+                SyntaxTrivia trivia = Directive.ParentTrivia;
 
                 return trivia.TryGetContainingList(out SyntaxTriviaList list)
-                    && object.ReferenceEquals(EndRegionDirective, FindEndRegionDirective(list, list.IndexOf(trivia)));
+                    && object.ReferenceEquals(EndDirective, FindEndRegionDirective(list, list.IndexOf(trivia)));
             }
         }
 
@@ -139,7 +139,7 @@ namespace Roslynator.CSharp.Syntax
 
         public override string ToString()
         {
-            return RegionDirective?.ToString() ?? base.ToString();
+            return Directive?.ToString() ?? base.ToString();
         }
 
         public override bool Equals(object obj)
@@ -149,12 +149,12 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Equals(RegionInfo other)
         {
-            return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.Equals(RegionDirective, other.RegionDirective);
+            return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.Equals(Directive, other.Directive);
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.GetHashCode(RegionDirective);
+            return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.GetHashCode(Directive);
         }
 
         public static bool operator ==(RegionInfo info1, RegionInfo info2)

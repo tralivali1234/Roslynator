@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            return typeSymbol.IsReferenceTypeOrNullableType();
+            return typeSymbol.IsReferenceOrNullableType();
         }
 
         internal static async Task ComputeRefactoringAsync(RefactoringContext context, VariableDeclarationSyntax variableDeclaration)
@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            return typeSymbol.IsReferenceTypeOrNullableType();
+            return typeSymbol.IsReferenceOrNullableType();
         }
 
         internal static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)

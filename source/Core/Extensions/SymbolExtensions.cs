@@ -420,24 +420,6 @@ namespace Roslynator
             }
         }
 
-        public static ISymbol OverriddenSymbol(this ISymbol symbol)
-        {
-            if (symbol == null)
-                throw new ArgumentNullException(nameof(symbol));
-
-            switch (symbol.Kind)
-            {
-                case SymbolKind.Method:
-                    return ((IMethodSymbol)symbol).OverriddenMethod;
-                case SymbolKind.Property:
-                    return ((IPropertySymbol)symbol).OverriddenProperty;
-                case SymbolKind.Event:
-                    return ((IEventSymbol)symbol).OverriddenEvent;
-            }
-
-            return null;
-        }
-
         internal static ISymbol BaseOverriddenSymbol(this ISymbol symbol)
         {
             if (symbol == null)
@@ -815,19 +797,15 @@ namespace Roslynator
                     .Is(elementType1, elementType2, elementType3) == true;
         }
 
-        public static bool IsRef(this IParameterSymbol parameterSymbol)
-        {
-            return parameterSymbol?.RefKind == RefKind.Ref;
-        }
-
-        public static bool IsOut(this IParameterSymbol parameterSymbol)
-        {
-            return parameterSymbol?.RefKind == RefKind.Out;
-        }
-
         public static bool IsRefOrOut(this IParameterSymbol parameterSymbol)
         {
-            return parameterSymbol?.RefKind.IsRefOrOut() == true;
+            if (parameterSymbol == null)
+                throw new ArgumentNullException(nameof(parameterSymbol));
+
+            RefKind refKind = parameterSymbol.RefKind;
+
+            return refKind == RefKind.Ref
+                || refKind == RefKind.Out;
         }
         #endregion IParameterSymbol
 
@@ -979,6 +957,7 @@ namespace Roslynator
             return typeSymbol?.SpecialType == SpecialType.System_Void;
         }
 
+        //XTODO: IsInt32
         public static bool IsInt(this ITypeSymbol typeSymbol)
         {
             return typeSymbol?.SpecialType == SpecialType.System_Int32;
@@ -1144,6 +1123,7 @@ namespace Roslynator
                 && typeSymbol.HasAttribute(compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
         }
 
+        //TODO: CanBeDeclaredExplicitly
         public static bool SupportsExplicitDeclaration(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
@@ -1559,7 +1539,7 @@ namespace Roslynator
                 || IsConstructedFromIEnumerableOfT(typeSymbol);
         }
 
-        public static bool IsReferenceTypeOrNullableType(this ITypeSymbol typeSymbol)
+        public static bool IsReferenceOrNullableType(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));

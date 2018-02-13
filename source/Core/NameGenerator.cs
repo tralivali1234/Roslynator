@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Roslynator.Helpers;
@@ -126,16 +127,10 @@ namespace Roslynator
 
             INamedTypeSymbol containingType = semanticModel.GetEnclosingNamedType(position, cancellationToken);
 
-            return IsUniqueMemberName(name, containingType, isCaseSensitive);
-        }
+            Debug.Assert(containingType != null);
 
-        public static bool IsUniqueMemberName(
-            string name,
-            INamedTypeSymbol containingType,
-            bool isCaseSensitive = true)
-        {
             if (containingType == null)
-                throw new ArgumentNullException(nameof(containingType));
+                return true;
 
             return IsUniqueName(name, containingType.GetMembers(), isCaseSensitive);
         }
@@ -166,6 +161,7 @@ namespace Roslynator
             return true;
         }
 
+        //XTODO: 
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);

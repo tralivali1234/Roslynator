@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (semanticModel
                     .GetTypeSymbol(nullCheck.Expression, cancellationToken)?
-                    .IsReferenceTypeOrNullableType() == true)
+                    .IsReferenceOrNullableType() == true)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseCoalesceExpressionInsteadOfConditionalExpression,

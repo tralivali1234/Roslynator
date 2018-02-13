@@ -532,7 +532,7 @@ namespace Roslynator.CSharp
 
             RegionInfo region = SyntaxInfo.RegionInfo(endRegionDirective);
 
-            return (region.Success) ? region.RegionDirective : null;
+            return (region.Success) ? region.Directive : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
@@ -963,7 +963,7 @@ namespace Roslynator.CSharp
             return s;
         }
 
-        public static bool IsHexadecimalNumericLiteral(this LiteralExpressionSyntax literalExpression)
+        public static bool IsHexNumericLiteral(this LiteralExpressionSyntax literalExpression)
         {
             if (literalExpression == null)
                 throw new ArgumentNullException(nameof(literalExpression));
@@ -1078,46 +1078,6 @@ namespace Roslynator.CSharp
             return member
                 .GetLeadingTrivia()
                 .Any(IsDocumentationCommentTrivia);
-        }
-
-        public static bool IsPubliclyVisible(this MemberDeclarationSyntax member)
-        {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
-
-            do
-            {
-                if (member.IsKind(SyntaxKind.NamespaceDeclaration))
-                    return true;
-
-                Accessibility accessibility = CSharpAccessibility.GetAccessibility(member);
-
-                if (accessibility == Accessibility.Public
-                    || accessibility == Accessibility.Protected
-                    || accessibility == Accessibility.ProtectedOrInternal)
-                {
-                    SyntaxNode parent = member.Parent;
-
-                    if (parent != null)
-                    {
-                        if (parent.IsKind(SyntaxKind.CompilationUnit))
-                            return true;
-
-                        member = parent as MemberDeclarationSyntax;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-
-            } while (member != null);
-
-            return false;
         }
 
         internal static TMember WithNewSingleLineDocumentationComment<TMember>(
@@ -1360,7 +1320,7 @@ namespace Roslynator.CSharp
 
             RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
 
-            return (region.Success) ? region.EndRegionDirective : null;
+            return (region.Success) ? region.EndDirective : null;
         }
 
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)

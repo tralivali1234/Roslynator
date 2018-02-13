@@ -9,9 +9,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator
 {
-    public static class AnalysisContextExtensions
+    //TODO: Roslynator.Diagnostics
+    public static class DiagnosticsExtensions
     {
-        #region SymbolAnalysisContextExtensions
+        #region SymbolAnalysisContext
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -21,8 +22,11 @@ namespace Roslynator
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, node.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: node.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -31,8 +35,11 @@ namespace Roslynator
             SyntaxToken token,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, token.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: token.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -41,8 +48,11 @@ namespace Roslynator
             SyntaxTrivia trivia,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, trivia.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: trivia.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -51,8 +61,24 @@ namespace Roslynator
             Location location,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, messageArgs));
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SymbolAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            IEnumerable<Location> additionalLocations,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                messageArgs: messageArgs));
         }
 
         public static void ReportDiagnostic(
@@ -62,17 +88,36 @@ namespace Roslynator
             ImmutableDictionary<string, string> properties,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, properties, messageArgs));
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                properties: properties,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SymbolAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            IEnumerable<Location> additionalLocations,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                properties: properties,
+                messageArgs: messageArgs));
         }
 
         internal static INamedTypeSymbol GetTypeByMetadataName(this SymbolAnalysisContext context, string fullyQualifiedMetadataName)
         {
             return context.Compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
         }
-        #endregion SymbolAnalysisContextExtensions
+        #endregion SymbolAnalysisContext
 
-        #region SyntaxNodeAnalysisContextExtensions
+        #region SyntaxNodeAnalysisContext
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -82,8 +127,11 @@ namespace Roslynator
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, node.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: node.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -92,8 +140,11 @@ namespace Roslynator
             SyntaxToken token,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, token.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: token.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -102,8 +153,11 @@ namespace Roslynator
             SyntaxTrivia trivia,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, trivia.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: trivia.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -112,19 +166,10 @@ namespace Roslynator
             Location location,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, messageArgs));
-        }
-
-        public static void ReportDiagnostic(
-            this SyntaxNodeAnalysisContext context,
-            DiagnosticDescriptor descriptor,
-            Location location,
-            ImmutableDictionary<string, string> properties,
-            params object[] messageArgs)
-        {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, properties, messageArgs));
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                messageArgs: messageArgs));
         }
 
         public static void ReportDiagnostic(
@@ -134,8 +179,41 @@ namespace Roslynator
             IEnumerable<Location> additionalLocations,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, additionalLocations, messageArgs));
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SyntaxNodeAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                properties: properties,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SyntaxNodeAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            IEnumerable<Location> additionalLocations,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                properties: properties,
+                messageArgs: messageArgs));
         }
 
         internal static INamedTypeSymbol GetTypeByMetadataName(
@@ -179,9 +257,9 @@ namespace Roslynator
             ReportToken(context, descriptor, argumentList.OpenParenToken, messageArgs);
             ReportToken(context, descriptor, argumentList.CloseParenToken, messageArgs);
         }
-        #endregion SyntaxNodeAnalysisContextExtensions
+        #endregion SyntaxNodeAnalysisContext
 
-        #region SyntaxTreeAnalysisContextExtensions
+        #region SyntaxTreeAnalysisContext
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -191,8 +269,11 @@ namespace Roslynator
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, node.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: node.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -201,8 +282,11 @@ namespace Roslynator
             SyntaxToken token,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, token.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: token.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -211,8 +295,11 @@ namespace Roslynator
             SyntaxTrivia trivia,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, trivia.GetLocation(), messageArgs));
+            ReportDiagnostic(
+                context: context,
+                descriptor: descriptor,
+                location: trivia.GetLocation(),
+                messageArgs: messageArgs);
         }
 
         public static void ReportDiagnostic(
@@ -221,9 +308,55 @@ namespace Roslynator
             Location location,
             params object[] messageArgs)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(descriptor, location, messageArgs));
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                messageArgs: messageArgs));
         }
-        #endregion SyntaxTreeAnalysisContextExtensions
+
+        public static void ReportDiagnostic(
+            this SyntaxTreeAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            IEnumerable<Location> additionalLocations,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SyntaxTreeAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                properties: properties,
+                messageArgs: messageArgs));
+        }
+
+        public static void ReportDiagnostic(
+            this SyntaxTreeAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            IEnumerable<Location> additionalLocations,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(
+                descriptor: descriptor,
+                location: location,
+                additionalLocations: additionalLocations,
+                properties: properties,
+                messageArgs: messageArgs));
+        }
+        #endregion SyntaxTreeAnalysisContext
     }
 }

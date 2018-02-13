@@ -27,10 +27,10 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveEmptyRegion,
                 regionDirective.GetLocation(),
-                additionalLocations: ImmutableArray.Create(region.EndRegionDirective.GetLocation()));
+                additionalLocations: ImmutableArray.Create(region.EndDirective.GetLocation()));
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, regionDirective.GetLocation());
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, region.EndRegionDirective.GetLocation());
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, region.EndDirective.GetLocation());
         }
 
         public static Task<Document> RefactorAsync(

@@ -24,7 +24,10 @@
     <PackageVersion>1.8.0-beta</PackageVersion>
     <Authors>Josef Pihrt</Authors>
     <Company></Company>
-    <Description>Roslynator.CSharp</Description>
+    <Description>Roslynator.CSharp
+
+Commonly Used Types:
+Roslynator.CSharp.CSharpFactory</Description>
     <Copyright>Copyright (c) 2017-2018 Josef Pihrt</Copyright>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseUrl>http://github.com/JosefPihrt/Roslynator/blob/master/LICENSE.txt</PackageLicenseUrl>

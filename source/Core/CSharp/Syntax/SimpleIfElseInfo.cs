@@ -25,6 +25,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static SimpleIfElseInfo Default { get; } = new SimpleIfElseInfo();
 
+        //XTODO: If
         public IfStatementSyntax IfStatement { get; }
 
         public ExpressionSyntax Condition { get; }
@@ -32,6 +33,11 @@ namespace Roslynator.CSharp.Syntax
         public StatementSyntax WhenTrue { get; }
 
         public StatementSyntax WhenFalse { get; }
+
+        public ElseClauseSyntax Else
+        {
+            get { return IfStatement?.Else; }
+        }
 
         internal static SimpleIfElseInfo Create(
             IfStatementSyntax ifStatement,

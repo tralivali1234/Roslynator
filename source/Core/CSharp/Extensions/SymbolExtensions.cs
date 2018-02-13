@@ -116,7 +116,7 @@ namespace Roslynator.CSharp
             }
 
             if (value == null
-                && !typeSymbol.IsReferenceTypeOrNullableType())
+                && !typeSymbol.IsReferenceOrNullableType())
             {
                 return DefaultExpression(typeSymbol.ToMinimalTypeSyntax(semanticModel, position, format));
             }

@@ -276,7 +276,7 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, region.EndRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, region.EndDirective);
 
             return document.WithText(newSourceText);
         }
@@ -299,7 +299,7 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveRegion(sourceText, region.RegionDirective, endRegionDirective);
+            SourceText newSourceText = RemoveRegion(sourceText, region.Directive, endRegionDirective);
 
             return document.WithText(newSourceText);
         }

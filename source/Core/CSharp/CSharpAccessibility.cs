@@ -12,27 +12,27 @@ namespace Roslynator.CSharp
 {
     public static class CSharpAccessibility
     {
-        public static Accessibility GetDefaultAccessibility(MemberDeclarationSyntax member)
+        public static Accessibility GetDefaultAccessibility(MemberDeclarationSyntax declaration)
         {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
+            if (declaration == null)
+                throw new ArgumentNullException(nameof(declaration));
 
-            switch (member.Kind())
+            switch (declaration.Kind())
             {
                 case SyntaxKind.ConstructorDeclaration:
-                    return GetDefaultAccessibility((ConstructorDeclarationSyntax)member);
+                    return GetDefaultAccessibility((ConstructorDeclarationSyntax)declaration);
                 case SyntaxKind.DestructorDeclaration:
-                    return GetDefaultAccessibility((DestructorDeclarationSyntax)member);
+                    return GetDefaultAccessibility((DestructorDeclarationSyntax)declaration);
                 case SyntaxKind.MethodDeclaration:
-                    return GetDefaultAccessibility((MethodDeclarationSyntax)member);
+                    return GetDefaultAccessibility((MethodDeclarationSyntax)declaration);
                 case SyntaxKind.PropertyDeclaration:
-                    return GetDefaultAccessibility((PropertyDeclarationSyntax)member);
+                    return GetDefaultAccessibility((PropertyDeclarationSyntax)declaration);
                 case SyntaxKind.IndexerDeclaration:
-                    return GetDefaultAccessibility((IndexerDeclarationSyntax)member);
+                    return GetDefaultAccessibility((IndexerDeclarationSyntax)declaration);
                 case SyntaxKind.EventDeclaration:
-                    return GetDefaultAccessibility((EventDeclarationSyntax)member);
+                    return GetDefaultAccessibility((EventDeclarationSyntax)declaration);
                 case SyntaxKind.EventFieldDeclaration:
-                    return GetDefaultAccessibility((EventFieldDeclarationSyntax)member);
+                    return GetDefaultAccessibility((EventFieldDeclarationSyntax)declaration);
                 case SyntaxKind.FieldDeclaration:
                     return Accessibility.Private;
                 case SyntaxKind.OperatorDeclaration:
@@ -42,15 +42,15 @@ namespace Roslynator.CSharp
                 case SyntaxKind.StructDeclaration:
                 case SyntaxKind.InterfaceDeclaration:
                 case SyntaxKind.EnumDeclaration:
-                    return GetDefaultAccessibility((BaseTypeDeclarationSyntax)member);
+                    return GetDefaultAccessibility((BaseTypeDeclarationSyntax)declaration);
                 case SyntaxKind.DelegateDeclaration:
-                    return GetDefaultAccessibility((DelegateDeclarationSyntax)member);
+                    return GetDefaultAccessibility((DelegateDeclarationSyntax)declaration);
                 case SyntaxKind.EnumMemberDeclaration:
                 case SyntaxKind.NamespaceDeclaration:
                     return Accessibility.Public;
             }
 
-            Debug.Fail(member.Kind().ToString());
+            Debug.Fail(declaration.Kind().ToString());
 
             return Accessibility.NotApplicable;
         }
@@ -258,27 +258,27 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
-        public static Accessibility GetDefaultExplicitAccessibility(MemberDeclarationSyntax member)
+        public static Accessibility GetDefaultExplicitAccessibility(MemberDeclarationSyntax declaration)
         {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
+            if (declaration == null)
+                throw new ArgumentNullException(nameof(declaration));
 
-            switch (member.Kind())
+            switch (declaration.Kind())
             {
                 case SyntaxKind.ConstructorDeclaration:
-                    return GetDefaultExplicitAccessibility((ConstructorDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((ConstructorDeclarationSyntax)declaration);
                 case SyntaxKind.DestructorDeclaration:
-                    return GetDefaultExplicitAccessibility((DestructorDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((DestructorDeclarationSyntax)declaration);
                 case SyntaxKind.MethodDeclaration:
-                    return GetDefaultExplicitAccessibility((MethodDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((MethodDeclarationSyntax)declaration);
                 case SyntaxKind.PropertyDeclaration:
-                    return GetDefaultExplicitAccessibility((PropertyDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((PropertyDeclarationSyntax)declaration);
                 case SyntaxKind.IndexerDeclaration:
-                    return GetDefaultExplicitAccessibility((IndexerDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((IndexerDeclarationSyntax)declaration);
                 case SyntaxKind.EventDeclaration:
-                    return GetDefaultExplicitAccessibility((EventDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((EventDeclarationSyntax)declaration);
                 case SyntaxKind.EventFieldDeclaration:
-                    return GetDefaultExplicitAccessibility((EventFieldDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((EventFieldDeclarationSyntax)declaration);
                 case SyntaxKind.FieldDeclaration:
                     return Accessibility.Private;
                 case SyntaxKind.OperatorDeclaration:
@@ -288,15 +288,15 @@ namespace Roslynator.CSharp
                 case SyntaxKind.StructDeclaration:
                 case SyntaxKind.InterfaceDeclaration:
                 case SyntaxKind.EnumDeclaration:
-                    return GetDefaultExplicitAccessibility((BaseTypeDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((BaseTypeDeclarationSyntax)declaration);
                 case SyntaxKind.DelegateDeclaration:
-                    return GetDefaultExplicitAccessibility((DelegateDeclarationSyntax)member);
+                    return GetDefaultExplicitAccessibility((DelegateDeclarationSyntax)declaration);
                 case SyntaxKind.EnumMemberDeclaration:
                 case SyntaxKind.NamespaceDeclaration:
                     return Accessibility.NotApplicable;
             }
 
-            Debug.Fail(member.Kind().ToString());
+            Debug.Fail(declaration.Kind().ToString());
 
             return Accessibility.NotApplicable;
         }
@@ -493,37 +493,37 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static Accessibility GetAccessibility(MemberDeclarationSyntax member)
+        public static Accessibility GetAccessibility(MemberDeclarationSyntax declaration)
         {
-            if (member == null)
-                throw new ArgumentNullException(nameof(member));
+            if (declaration == null)
+                throw new ArgumentNullException(nameof(declaration));
 
-            switch (member.Kind())
+            switch (declaration.Kind())
             {
                 case SyntaxKind.ConstructorDeclaration:
-                    return GetAccessibility((ConstructorDeclarationSyntax)member);
+                    return GetAccessibility((ConstructorDeclarationSyntax)declaration);
                 case SyntaxKind.MethodDeclaration:
-                    return GetAccessibility((MethodDeclarationSyntax)member);
+                    return GetAccessibility((MethodDeclarationSyntax)declaration);
                 case SyntaxKind.PropertyDeclaration:
-                    return GetAccessibility((PropertyDeclarationSyntax)member);
+                    return GetAccessibility((PropertyDeclarationSyntax)declaration);
                 case SyntaxKind.IndexerDeclaration:
-                    return GetAccessibility((IndexerDeclarationSyntax)member);
+                    return GetAccessibility((IndexerDeclarationSyntax)declaration);
                 case SyntaxKind.EventDeclaration:
-                    return GetAccessibility((EventDeclarationSyntax)member);
+                    return GetAccessibility((EventDeclarationSyntax)declaration);
                 case SyntaxKind.EventFieldDeclaration:
-                    return GetAccessibility((EventFieldDeclarationSyntax)member);
+                    return GetAccessibility((EventFieldDeclarationSyntax)declaration);
                 case SyntaxKind.FieldDeclaration:
-                    return GetAccessibility((FieldDeclarationSyntax)member);
+                    return GetAccessibility((FieldDeclarationSyntax)declaration);
                 case SyntaxKind.ClassDeclaration:
-                    return GetAccessibility((ClassDeclarationSyntax)member);
+                    return GetAccessibility((ClassDeclarationSyntax)declaration);
                 case SyntaxKind.StructDeclaration:
-                    return GetAccessibility((StructDeclarationSyntax)member);
+                    return GetAccessibility((StructDeclarationSyntax)declaration);
                 case SyntaxKind.InterfaceDeclaration:
-                    return GetAccessibility((InterfaceDeclarationSyntax)member);
+                    return GetAccessibility((InterfaceDeclarationSyntax)declaration);
                 case SyntaxKind.EnumDeclaration:
-                    return GetAccessibility((EnumDeclarationSyntax)member);
+                    return GetAccessibility((EnumDeclarationSyntax)declaration);
                 case SyntaxKind.DelegateDeclaration:
-                    return GetAccessibility((DelegateDeclarationSyntax)member);
+                    return GetAccessibility((DelegateDeclarationSyntax)declaration);
                 case SyntaxKind.DestructorDeclaration:
                 case SyntaxKind.OperatorDeclaration:
                 case SyntaxKind.ConversionOperatorDeclaration:
@@ -855,6 +855,46 @@ namespace Roslynator.CSharp
             }
 
             return Accessibility.NotApplicable;
+        }
+
+        public static bool IsPubliclyVisible(MemberDeclarationSyntax declaration)
+        {
+            if (declaration == null)
+                throw new ArgumentNullException(nameof(declaration));
+
+            do
+            {
+                if (declaration.IsKind(SyntaxKind.NamespaceDeclaration))
+                    return true;
+
+                Accessibility accessibility = GetAccessibility(declaration);
+
+                if (accessibility == Accessibility.Public
+                    || accessibility == Accessibility.Protected
+                    || accessibility == Accessibility.ProtectedOrInternal)
+                {
+                    SyntaxNode parent = declaration.Parent;
+
+                    if (parent != null)
+                    {
+                        if (parent.IsKind(SyntaxKind.CompilationUnit))
+                            return true;
+
+                        declaration = parent as MemberDeclarationSyntax;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+
+            } while (declaration != null);
+
+            return false;
         }
 
         public static TNode ChangeAccessibility<TNode>(
