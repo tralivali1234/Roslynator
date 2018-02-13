@@ -28,6 +28,7 @@ namespace Roslynator.CSharp.Syntax
             get { return CSharpAccessibility.GetAccessibility(Modifiers); }
         }
 
+        //TODO: 
         public bool HasNew => Modifiers.Contains(SyntaxKind.NewKeyword);
 
         public bool HasPublic => Modifiers.Contains(SyntaxKind.PublicKeyword);
@@ -298,7 +299,6 @@ namespace Roslynator.CSharp.Syntax
             return WithModifiers(Node, modifiers);
         }
 
-        //TODO: mov
         internal static ModifiersInfo WithModifiers(SyntaxNode node, SyntaxTokenList modifiers)
         {
             switch (node.Kind())

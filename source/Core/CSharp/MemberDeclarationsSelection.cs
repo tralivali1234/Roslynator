@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
-    //TODO: MembersSelection
     public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
         private MemberDeclarationsSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int firstIndex, int lastIndex)

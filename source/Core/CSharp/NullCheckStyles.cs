@@ -4,9 +4,8 @@ using System;
 
 #pragma warning disable RCS1130
 
-namespace Roslynator.CSharp.Syntax
+namespace Roslynator.CSharp
 {
-    //TODO: Roslynator.CSharp
     [Flags]
     public enum NullCheckStyles
     {
@@ -26,6 +25,7 @@ namespace Roslynator.CSharp.Syntax
         // !(x is null)
         NotIsNull = 8,
 
+        //TODO: IsPattern
         Pattern = IsNull | NotIsNull,
 
         // !x.HasValue

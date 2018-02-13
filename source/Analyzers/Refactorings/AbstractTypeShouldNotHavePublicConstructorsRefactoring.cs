@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
-            if (SyntaxInfo.AccessibilityInfo(constructorDeclaration).IsAccessibility(Accessibility.Public, Accessibility.ProtectedOrInternal)
+            if (SyntaxInfo.AccessibilityInfo(constructorDeclaration).Accessibility.Is(Accessibility.Public, Accessibility.ProtectedOrInternal)
                 && constructorDeclaration.IsParentKind(SyntaxKind.ClassDeclaration))
             {
                 var classDeclaration = (ClassDeclarationSyntax)constructorDeclaration.Parent;

@@ -124,44 +124,6 @@ namespace Roslynator.CSharp.Syntax
             get { return Node != null; }
         }
 
-        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2)
-        {
-            Accessibility accessibility = Accessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2;
-        }
-
-        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3)
-        {
-            Accessibility accessibility = Accessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2
-                || accessibility == accessibility3;
-        }
-
-        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3, Accessibility accessibility4)
-        {
-            Accessibility accessibility = Accessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2
-                || accessibility == accessibility3
-                || accessibility == accessibility4;
-        }
-
-        public bool IsAccessibility(Accessibility accessibility1, Accessibility accessibility2, Accessibility accessibility3, Accessibility accessibility4, Accessibility accessibility5)
-        {
-            Accessibility accessibility = Accessibility;
-
-            return accessibility == accessibility1
-                || accessibility == accessibility2
-                || accessibility == accessibility3
-                || accessibility == accessibility4
-                || accessibility == accessibility5;
-        }
-
         internal static AccessibilityInfo Create(SyntaxNode node)
         {
             if (node == null)
