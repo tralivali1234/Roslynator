@@ -322,6 +322,48 @@ namespace Roslynator.CSharp
             return sourceText.WithChanges(textChange);
         }
 
+        internal static Task<Document> ReplaceStatementsAsync(
+            this Document document,
+            StatementsInfo statementsInfo,
+            IEnumerable<StatementSyntax> newStatements,
+            CancellationToken cancellationToken)
+        {
+            return ReplaceStatementsAsync(document, statementsInfo, SyntaxFactory.List(newStatements), cancellationToken);
+        }
+
+        internal static Task<Document> ReplaceStatementsAsync(
+            this Document document,
+            StatementsInfo statementsInfo,
+            SyntaxList<StatementSyntax> newStatements,
+            CancellationToken cancellationToken)
+        {
+            return document.ReplaceNodeAsync(statementsInfo.Node, statementsInfo.WithStatements(newStatements).Node, cancellationToken);
+        }
+
+        internal static Task<Document> ReplaceMembersAsync(
+            this Document document,
+            MemberDeclarationsInfo info,
+            IEnumerable<MemberDeclarationSyntax> newMembers,
+            CancellationToken cancellationToken)
+        {
+            return document.ReplaceNodeAsync(
+                info.Declaration,
+                info.WithMembers(newMembers).Declaration,
+                cancellationToken);
+        }
+
+        internal static Task<Document> ReplaceMembersAsync(
+            this Document document,
+            MemberDeclarationsInfo info,
+            SyntaxList<MemberDeclarationSyntax> newMembers,
+            CancellationToken cancellationToken)
+        {
+            return document.ReplaceNodeAsync(
+                info.Declaration,
+                info.WithMembers(newMembers).Declaration,
+                cancellationToken);
+        }
+
         internal static async Task<Document> AddNewDocumentationCommentsAsync(
             Document document,
             DocumentationCommentGeneratorSettings settings = null,

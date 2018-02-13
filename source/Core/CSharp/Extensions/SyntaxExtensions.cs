@@ -152,8 +152,8 @@ namespace Roslynator.CSharp
             return containsYield;
 #else
             return block
-                .DescendantNodes(block.Span, node => !node.IsNestedMethod())
-                .Any(f => f.Kind().IsYieldStatement());
+                .DescendantNodes(block.Span, node => !CSharpFacts.IsNestedMethod(node.Kind()))
+                .Any(f => f.Kind().Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement));
 #endif
         }
 

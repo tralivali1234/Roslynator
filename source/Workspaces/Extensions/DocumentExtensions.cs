@@ -5,10 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp.Syntax;
 
 namespace Roslynator
 {
@@ -107,48 +104,6 @@ namespace Roslynator
             SyntaxNode newRoot = root.ReplaceNode(oldNode, newNodes);
 
             return document.WithSyntaxRoot(newRoot);
-        }
-
-        internal static Task<Document> ReplaceStatementsAsync(
-            this Document document,
-            StatementsInfo statementsInfo,
-            IEnumerable<StatementSyntax> newStatements,
-            CancellationToken cancellationToken)
-        {
-            return ReplaceStatementsAsync(document, statementsInfo, SyntaxFactory.List(newStatements), cancellationToken);
-        }
-
-        internal static Task<Document> ReplaceStatementsAsync(
-            this Document document,
-            StatementsInfo statementsInfo,
-            SyntaxList<StatementSyntax> newStatements,
-            CancellationToken cancellationToken)
-        {
-            return document.ReplaceNodeAsync(statementsInfo.Node, statementsInfo.WithStatements(newStatements).Node, cancellationToken);
-        }
-
-        internal static Task<Document> ReplaceMembersAsync(
-            this Document document,
-            MemberDeclarationsInfo info,
-            IEnumerable<MemberDeclarationSyntax> newMembers,
-            CancellationToken cancellationToken)
-        {
-            return document.ReplaceNodeAsync(
-                info.Declaration,
-                info.WithMembers(newMembers).Declaration,
-                cancellationToken);
-        }
-
-        internal static Task<Document> ReplaceMembersAsync(
-            this Document document,
-            MemberDeclarationsInfo info,
-            SyntaxList<MemberDeclarationSyntax> newMembers,
-            CancellationToken cancellationToken)
-        {
-            return document.ReplaceNodeAsync(
-                info.Declaration,
-                info.WithMembers(newMembers).Declaration,
-                cancellationToken);
         }
 
         public static async Task<Document> ReplaceNodesAsync<TNode>(

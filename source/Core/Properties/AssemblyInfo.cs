@@ -1,26 +1,11 @@
-﻿using System.Resources;
+﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle("Roslynator.Core")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Pihrtsoft")]
-[assembly: AssemblyProduct("Roslynator.Core")]
-[assembly: AssemblyCopyright("Copyright (c) 2016-2017 Josef Pihrt")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+[assembly: AssemblyVersion("1.7.0")]
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-[assembly: InternalsVisibleTo("Roslynator.Workspaces, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c5f40467c21537"
+[assembly: InternalsVisibleTo("Roslynator.CSharp.Workspaces, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c5f40467c21537"
     + "61c5b2d17b492c32ba431160c1ffda1818efa6c93c9a8803fd8fb3794939680fe8a4709f081f02"
     + "09b436ff4d01d44f0f75cfefc49848efa655249cc7268d6d4679e7c9853b6a5ab9a74c31d2a908"
     + "1139c77babf90da04720275dd9e3049ff416a1abb052afd9efdcfffc9d59276b6ee3c08082b672"
@@ -73,16 +58,3 @@ using System.Runtime.InteropServices;
     + "ecae5676dc22d56963d8176e558d1055e4761daaa2a7b8bf0703069ee212516277db9346629dd8"
     + "7f56da3aef0360740c19ec1274e8d86e745d55146d251aa2e43c42eea156ced86b47a1c043cf1c"
     + "607050ef")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-[assembly: AssemblyVersion("1.7.0")]
-//[assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: NeutralResourcesLanguage("en-US")]
