@@ -2,12 +2,14 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.CodeFixes;
 
 namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
@@ -25,7 +27,12 @@ namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
         {
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token, kind: SyntaxKind.UnsafeKeyword))
+            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token))
+                return;
+
+            Debug.Assert(token.Kind() == SyntaxKind.UnsafeKeyword, token.Kind().ToString());
+
+            if (token.Kind() != SyntaxKind.UnsafeKeyword)
                 return;
 
             Diagnostic diagnostic = context.Diagnostics[0];
