@@ -104,7 +104,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
                             SyntaxTokenList modifiers = declaration.Modifiers;
 
-                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
+                            if (!declaration.AttributeLists.Any()
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private))
                             {
                                 string methodName = declaration.Identifier.ValueText;
 
