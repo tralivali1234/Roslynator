@@ -52,12 +52,7 @@ namespace Roslynator.CSharp.Refactorings
 
             Debug.Assert(methodSymbol.DeclaringSyntaxReferences.Any());
 
-            SyntaxReference syntaxReference = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault();
-
-            if (syntaxReference == null)
-                return;
-
-            SyntaxNode node = await syntaxReference.GetSyntaxAsync(context.CancellationToken).ConfigureAwait(false);
+            SyntaxNode node = await methodSymbol.GetSyntaxOrDefaultAsync(context.CancellationToken).ConfigureAwait(false);
 
             switch (node)
             {
@@ -97,7 +92,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 default:
                     {
-                        Debug.Fail(node.Kind().ToString());
+                        Debug.Assert(node == null, node.Kind().ToString());
                         break;
                     }
             }

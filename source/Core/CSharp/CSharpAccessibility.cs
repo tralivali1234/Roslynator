@@ -493,7 +493,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: overload
+        //TODO: del
         public static Accessibility GetExplicitAccessibility(MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -791,7 +791,7 @@ namespace Roslynator.CSharp
             if (declarationAccessibility == Accessibility.NotApplicable)
                 return accessibility;
 
-            return (IsMoreRestrictiveThan(accessibility, declarationAccessibility))
+            return (accessibility.IsMoreRestrictiveThan(declarationAccessibility))
                 ? accessibility
                 : declarationAccessibility;
 
@@ -867,53 +867,6 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
-        public static bool IsMoreRestrictiveThan(Accessibility accessibility, Accessibility other)
-        {
-            switch (other)
-            {
-                case Accessibility.Public:
-                    {
-                        return accessibility == Accessibility.Internal
-                            || accessibility == Accessibility.ProtectedOrInternal
-                            || accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Protected
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.Internal:
-                    {
-                        return accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.ProtectedOrInternal:
-                    {
-                        return accessibility == Accessibility.Internal
-                            || accessibility == Accessibility.Protected
-                            || accessibility == Accessibility.ProtectedAndInternal
-                            || accessibility == Accessibility.Private;
-                    }
-                case Accessibility.ProtectedAndInternal:
-                case Accessibility.Protected:
-                    {
-                        return accessibility == Accessibility.Private;
-                    }
-                case Accessibility.Private:
-                    {
-                        return false;
-                    }
-            }
-
-            return false;
-        }
-
-        internal static bool IsSingleTokenAccessibility(Accessibility accessibility)
-        {
-            return accessibility.Is(
-                Accessibility.Public,
-                Accessibility.Internal,
-                Accessibility.Protected,
-                Accessibility.Private);
-        }
-
         public static TNode ChangeAccessibility<TNode>(
             TNode node,
             Accessibility newAccessibility,
@@ -946,8 +899,8 @@ namespace Roslynator.CSharp
 
             SyntaxNode declaration = info.Declaration;
 
-            if (IsSingleTokenAccessibility(accessibility)
-                && IsSingleTokenAccessibility(newAccessibility))
+            if (accessibility.IsSingleTokenAccessibility()
+                && newAccessibility.IsSingleTokenAccessibility())
             {
                 int insertIndex = comparer.GetInsertIndex(info.Modifiers, GetTokenKind(newAccessibility));
 
@@ -1144,7 +1097,7 @@ namespace Roslynator.CSharp
                             if (!CheckProtectedInStaticOrSealedClass(memberDeclaration, accessibility))
                                 return false;
 
-                            return IsMoreRestrictiveThan(accessibility, GetAccessibility(memberDeclaration));
+                            return accessibility.IsMoreRestrictiveThan(GetAccessibility(memberDeclaration));
                         }
 
                         return false;
@@ -1178,7 +1131,7 @@ namespace Roslynator.CSharp
                     Accessibility accessorAccessibility = GetAccessibility(accessor.Modifiers);
 
                     if (accessorAccessibility != Accessibility.NotApplicable)
-                        return IsMoreRestrictiveThan(accessorAccessibility, accessibility);
+                        return accessorAccessibility.IsMoreRestrictiveThan(accessibility);
                 }
             }
 

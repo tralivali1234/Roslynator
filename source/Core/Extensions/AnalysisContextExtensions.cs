@@ -55,6 +55,17 @@ namespace Roslynator
                 Diagnostic.Create(descriptor, location, messageArgs));
         }
 
+        public static void ReportDiagnostic(
+            this SymbolAnalysisContext context,
+            DiagnosticDescriptor descriptor,
+            Location location,
+            ImmutableDictionary<string, string> properties,
+            params object[] messageArgs)
+        {
+            context.ReportDiagnostic(
+                Diagnostic.Create(descriptor, location, properties, messageArgs));
+        }
+
         internal static INamedTypeSymbol GetTypeByMetadataName(this SymbolAnalysisContext context, string fullyQualifiedMetadataName)
         {
             return context.Compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);

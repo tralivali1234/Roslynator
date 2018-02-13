@@ -28,10 +28,7 @@ namespace Roslynator.CSharp.Refactorings
                     if (methodsymbol.PartialImplementationPart != null)
                         symbol = methodsymbol.PartialImplementationPart;
 
-                    SyntaxNode node = await symbol
-                        .DeclaringSyntaxReferences[0]
-                        .GetSyntaxAsync(context.CancellationToken)
-                        .ConfigureAwait(false);
+                    SyntaxNode node = await symbol.GetSyntaxAsync(context.CancellationToken).ConfigureAwait(false);
 
                     if (node is MethodDeclarationSyntax method)
                     {

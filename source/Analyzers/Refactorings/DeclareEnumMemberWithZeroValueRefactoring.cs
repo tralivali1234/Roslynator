@@ -20,27 +20,20 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
 
-            if (namedTypeSymbol.IsEnumWithFlags(context.Compilation)
-                && !ContainsMemberWithZeroValue(namedTypeSymbol))
-            {
-                SyntaxReference syntaxReference = namedTypeSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (!namedTypeSymbol.IsEnumWithFlags(context.Compilation))
+                return;
 
-                Debug.Assert(syntaxReference != null, "");
+            if (ContainsMemberWithZeroValue(namedTypeSymbol))
+                return;
 
-                if (syntaxReference != null)
-                {
-                    SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
+            var enumDeclaration = namedTypeSymbol.GetSyntaxOrDefault(context.CancellationToken) as EnumDeclarationSyntax;
 
-                    Debug.Assert(node.IsKind(SyntaxKind.EnumDeclaration), node.Kind().ToString());
+            Debug.Assert(enumDeclaration != null, namedTypeSymbol.ToString());
 
-                    if (node.IsKind(SyntaxKind.EnumDeclaration))
-                    {
-                        var enumDeclaration = (EnumDeclarationSyntax)node;
+            if (enumDeclaration == null)
+                return;
 
-                        context.ReportDiagnostic(DiagnosticDescriptors.DeclareEnumMemberWithZeroValue, enumDeclaration.Identifier);
-                    }
-                }
-            }
+            context.ReportDiagnostic(DiagnosticDescriptors.DeclareEnumMemberWithZeroValue, enumDeclaration.Identifier);
         }
 
         private static bool ContainsMemberWithZeroValue(INamedTypeSymbol namedTypeSymbol)

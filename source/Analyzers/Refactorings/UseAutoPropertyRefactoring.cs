@@ -451,7 +451,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol fieldSymbol = GetFieldSymbol(propertyDeclaration, semanticModel, cancellationToken);
 
-            var variableDeclarator = (VariableDeclaratorSyntax)await fieldSymbol.DeclaringSyntaxReferences[0].GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
+            var variableDeclarator = (VariableDeclaratorSyntax)await fieldSymbol.GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
 
             var variableDeclaration = (VariableDeclarationSyntax)variableDeclarator.Parent;
 

@@ -168,13 +168,10 @@ namespace Roslynator.CSharp.Refactorings
             LiteralExpressionSyntax literalExpression,
             string identifier)
         {
-            var property = new KeyValuePair<string, string>("Identifier", identifier);
-
-            ImmutableDictionary<string, string> properties = ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { property });
-
-            Diagnostic diagnostic = Diagnostic.Create(DiagnosticDescriptors.UseNameOfOperator, literalExpression.GetLocation(), properties);
-
-            context.ReportDiagnostic(diagnostic);
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.UseNameOfOperator,
+                literalExpression.GetLocation(),
+                ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Identifier", identifier) }));
 
             string text = literalExpression.Token.Text;
 
