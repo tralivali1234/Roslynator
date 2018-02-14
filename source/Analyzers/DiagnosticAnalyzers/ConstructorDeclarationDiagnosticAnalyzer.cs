@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
         }
 
-        private void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var constructor = (ConstructorDeclarationSyntax)context.Node;
 

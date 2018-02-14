@@ -5,21 +5,16 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.RemoveBracesRefactoring;
+using static Roslynator.CSharp.Refactorings.AddBracesRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class RemoveBracesDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class AddBracesMultilineDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.RemoveBraces,
-                    DiagnosticDescriptors.RemoveBracesFadeOut);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.AddBracesWhenExpressionSpansOverMultipleLines); }
         }
 
         public override void Initialize(AnalysisContext context)

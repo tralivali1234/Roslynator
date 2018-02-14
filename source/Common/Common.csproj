@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\AbstractCodeFixProvider.cs" />
+    <Compile Include="CSharp\EmbeddedStatementHelper.cs" />
     <Compile Include="CSharp\Refactorings\AddCastExpressionRefactoring.cs" />
     <Compile Include="CSharp\Refactorings\CallExtensionMethodAsInstanceMethodAnalysis.cs" />
     <Compile Include="CSharp\Refactorings\ChangeAccessibilityRefactoring.cs" />

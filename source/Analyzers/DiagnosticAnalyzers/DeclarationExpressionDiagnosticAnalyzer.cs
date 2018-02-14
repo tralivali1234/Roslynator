@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeDeclarationExpression, SyntaxKind.DeclarationExpression);
         }
 
-        private void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 

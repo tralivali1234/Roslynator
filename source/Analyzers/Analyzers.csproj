@@ -66,6 +66,7 @@
     <Compile Include="CodeFixProviders\DeclareEnumMemberWithZeroValueCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\DocumentationCommentCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\AddExceptionToDocumentationCommentCodeFixProvider.cs" />
+    <Compile Include="DiagnosticAnalyzers\AddBracesMultilineDiagnosticAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzers\ReorderModifiersDiagnosticAnalyzer.cs" />
     <Compile Include="UnnecessaryUnsafeContext\UnnecessaryUnsafeContextCodeFixProvider.cs" />
     <Compile Include="CodeFixProviders\UseConditionalAccessCodeFixProvider.cs" />

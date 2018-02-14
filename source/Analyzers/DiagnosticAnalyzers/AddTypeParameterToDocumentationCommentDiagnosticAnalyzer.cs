@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeDelegateDeclaration, SyntaxKind.DelegateDeclaration);
         }
 
-        private void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
         {
             var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, classDeclaration, typeParameterList.Parameters);
         }
 
-        private void AnalyzeInterfaceDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeInterfaceDeclaration(SyntaxNodeAnalysisContext context)
         {
             var interfaceDeclaration = (InterfaceDeclarationSyntax)context.Node;
 
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, interfaceDeclaration, typeParameterList.Parameters);
         }
 
-        private void AnalyzeStructDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeStructDeclaration(SyntaxNodeAnalysisContext context)
         {
             var structDeclaration = (StructDeclarationSyntax)context.Node;
 
@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, structDeclaration, typeParameterList.Parameters);
         }
 
-        private void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
             var method = (MethodDeclarationSyntax)context.Node;
 
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, method, typeParameterList.Parameters);
         }
 
-        private void AnalyzeDelegateDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeDelegateDeclaration(SyntaxNodeAnalysisContext context)
         {
             var delegateDeclaration = (DelegateDeclarationSyntax)context.Node;
 

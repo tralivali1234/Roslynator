@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeVariableDeclaration, SyntaxKind.VariableDeclaration);
         }
 
-        private void AnalyzeVariableDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeVariableDeclaration(SyntaxNodeAnalysisContext context)
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 

@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAwaitExpression, SyntaxKind.AwaitExpression);
         }
 
-        private void AnalyzeAwaitExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAwaitExpression(SyntaxNodeAnalysisContext context)
         {
             var awaitExpression = (AwaitExpressionSyntax)context.Node;
 

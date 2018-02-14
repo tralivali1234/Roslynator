@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeInvocationExpression, SyntaxKind.InvocationExpression);
         }
 
-        private void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
         {
             var invocation = (InvocationExpressionSyntax)context.Node;
 

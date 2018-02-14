@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeInterpolation, SyntaxKind.Interpolation);
         }
 
-        private void AnalyzeInterpolation(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeInterpolation(SyntaxNodeAnalysisContext context)
         {
             var interpolation = (InterpolationSyntax)context.Node;
 

@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAnonymousMethod, SyntaxKind.AnonymousMethodExpression);
         }
 
-        private void AnalyzeAnonymousMethod(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAnonymousMethod(SyntaxNodeAnalysisContext context)
         {
             var anonymousMethod = (AnonymousMethodExpressionSyntax)context.Node;
 

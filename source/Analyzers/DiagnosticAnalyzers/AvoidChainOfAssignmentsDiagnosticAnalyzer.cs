@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeEqualsValueClause, SyntaxKind.EqualsValueClause);
         }
 
-        private void AnalyzeAssignment(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAssignment(SyntaxNodeAnalysisContext context)
         {
             var assignment = (AssignmentExpressionSyntax)context.Node;
 
@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeEqualsValueClause(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeEqualsValueClause(SyntaxNodeAnalysisContext context)
         {
             var equalsValue = (EqualsValueClauseSyntax)context.Node;
 

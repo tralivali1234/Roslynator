@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeTryStatement, SyntaxKind.TryStatement);
         }
 
-        private void AnalyzeBlock(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
         {
             var block = (BlockSyntax)context.Node;
 
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeStatement(context, block, block);
         }
 
-        private void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
         {
             var whileStatement = (WhileStatementSyntax)context.Node;
 
@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
         {
             var forStatement = (ForStatementSyntax)context.Node;
 
@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeForEachStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeForEachStatement(SyntaxNodeAnalysisContext context)
         {
             var forEachStatement = (ForEachStatementSyntax)context.Node;
 
@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
         {
             var usingStatement = (UsingStatementSyntax)context.Node;
 
@@ -102,7 +102,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
         {
             var fixedStatement = (FixedStatementSyntax)context.Node;
 
@@ -115,7 +115,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeCheckedStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeCheckedStatement(SyntaxNodeAnalysisContext context)
         {
             var checkedStatement = (CheckedStatementSyntax)context.Node;
 
@@ -123,7 +123,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeStatement(context, checkedStatement, checkedStatement.Block);
         }
 
-        private void AnalyzeUnsafeStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeUnsafeStatement(SyntaxNodeAnalysisContext context)
         {
             var unsafeStatement = (UnsafeStatementSyntax)context.Node;
 
@@ -131,7 +131,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeStatement(context, unsafeStatement, unsafeStatement.Block);
         }
 
-        private void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
         {
             var lockStatement = (LockStatementSyntax)context.Node;
 
@@ -144,7 +144,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
@@ -157,7 +157,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context)
         {
             var switchStatement = (SwitchStatementSyntax)context.Node;
 
@@ -165,7 +165,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeStatement(context, switchStatement, switchStatement.OpenBraceToken, switchStatement.CloseBraceToken);
         }
 
-        private void AnalyzeTryStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeTryStatement(SyntaxNodeAnalysisContext context)
         {
             var tryStatement = (TryStatementSyntax)context.Node;
 

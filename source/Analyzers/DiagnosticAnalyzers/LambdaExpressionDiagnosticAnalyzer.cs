@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeLambdaExpression, SyntaxKind.ParenthesizedLambdaExpression);
         }
 
-        private void AnalyzeLambdaExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeLambdaExpression(SyntaxNodeAnalysisContext context)
         {
             var lambda = (LambdaExpressionSyntax)context.Node;
 

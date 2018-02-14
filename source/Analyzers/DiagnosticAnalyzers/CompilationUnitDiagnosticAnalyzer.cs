@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeCompilationUnit, SyntaxKind.CompilationUnit);
         }
 
-        private void AnalyzeCompilationUnit(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeCompilationUnit(SyntaxNodeAnalysisContext context)
         {
             var compilationUnit = (CompilationUnitSyntax)context.Node;
 

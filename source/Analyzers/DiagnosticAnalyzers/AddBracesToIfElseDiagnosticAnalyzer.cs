@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Helpers;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -32,28 +31,29 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
         private static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
-            SyntaxNode node = context.Node;
+            var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (!((IfStatementSyntax)node).IsSimpleIf())
-                Analyze(context, node);
+            if (ifStatement.IsSimpleIf())
+                return;
+
+            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(ifStatement);
+
+            if (statement == null)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, ifStatement.GetTitle());
         }
 
         private static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, context.Node);
-        }
+            var elseClause = (ElseClauseSyntax)context.Node;
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxNode node)
-        {
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(node, ifInsideElse: false, usingInsideUsing: false);
+            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(elseClause, allowIfStatement: false);
 
-            if (statement != null)
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AddBracesToIfElse,
-                    statement,
-                    node.GetTitle());
-            }
+            if (statement == null)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, elseClause.GetTitle());
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
             var memberAccess = (MemberAccessExpressionSyntax)context.Node;
 
