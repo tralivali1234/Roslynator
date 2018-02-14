@@ -1123,7 +1123,6 @@ namespace Roslynator
                 && typeSymbol.HasAttribute(compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
         }
 
-        //TODO: CanBeDeclaredExplicitly, CanBeExplicitlyDeclared
         public static bool SupportsExplicitDeclaration(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)

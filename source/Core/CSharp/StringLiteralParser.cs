@@ -9,7 +9,7 @@ using Roslynator.Text;
 
 namespace Roslynator.CSharp
 {
-    internal static partial class StringLiteralParser
+    internal static class StringLiteralParser
     {
         private const string MissingEscapeSequenceMessage = "Missing escape sequence.";
         private const string UnrecognizedEscapeSequenceMessage = "Unrecognized escape sequence.";

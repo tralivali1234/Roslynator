@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    public struct MethodInfo
+    public struct MethodInfo : IEquatable<MethodInfo>
     {
         internal MethodInfo(IMethodSymbol symbol, SemanticModel semanticModel)
             : this()
@@ -316,7 +317,6 @@ namespace Roslynator
 
             return false;
         }
-
         #region IMethodSymbol
 
         public MethodKind MethodKind => Symbol.MethodKind;
@@ -366,7 +366,32 @@ namespace Roslynator
         public bool IsSealed => Symbol.IsSealed;
 
         public Accessibility DeclaredAccessibility => Symbol.DeclaredAccessibility;
-
         #endregion IMethodSymbol
+
+        public override bool Equals(object obj)
+        {
+            return obj is MethodInfo other && Equals(other);
+        }
+
+        public bool Equals(MethodInfo other)
+        {
+            return EqualityComparer<IMethodSymbol>.Default.Equals(Symbol, other.Symbol)
+                   && EqualityComparer<SemanticModel>.Default.Equals(SemanticModel, other.SemanticModel);
+        }
+
+        public override int GetHashCode()
+        {
+            return Hash.Combine(Symbol, Hash.Create(SemanticModel));
+        }
+
+        public static bool operator ==(MethodInfo info1, MethodInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(MethodInfo info1, MethodInfo info2)
+        {
+            return !(info1 == info2);
+        }
     }
 }
