@@ -10,6 +10,11 @@ namespace Roslynator.CSharp
 {
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
+        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, SelectionResult result)
+             : this(statements, span, result.FirstIndex, result.LastIndex)
+        {
+        }
+
         private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, int firstIndex, int lastIndex)
              : base(statements, span, firstIndex, lastIndex)
         {
@@ -20,7 +25,7 @@ namespace Roslynator.CSharp
             if (block == null)
                 throw new ArgumentNullException(nameof(block));
 
-            return CreateCore(block.Statements, span);
+            return CreateImpl(block.Statements, span);
         }
 
         public static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span)
@@ -28,60 +33,93 @@ namespace Roslynator.CSharp
             if (switchSection == null)
                 throw new ArgumentNullException(nameof(switchSection));
 
-            return CreateCore(switchSection.Statements, span);
+            return CreateImpl(switchSection.Statements, span);
         }
 
         public static StatementsSelection Create(StatementsInfo statementsInfo, TextSpan span)
         {
-            return CreateCore(statementsInfo.Statements, span);
+            return CreateImpl(statementsInfo.Statements, span);
         }
 
-        private static StatementsSelection CreateCore(SyntaxList<StatementSyntax> statements, TextSpan span)
+        private static StatementsSelection CreateImpl(SyntaxList<StatementSyntax> statements, TextSpan span)
         {
-            (int firstIndex, int lastIndex) = GetIndexes(statements, span);
+            SelectionResult result = SelectionResult.Create(statements, span);
 
-            return new StatementsSelection(statements, span, firstIndex, lastIndex);
+            return new StatementsSelection(statements, span, result);
         }
 
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
         {
-            if (block == null)
-            {
-                selectedStatements = null;
-                return false;
-            }
+            selectedStatements = Create(block, span, 1, int.MaxValue);
+            return selectedStatements != null;
+        }
 
-            return TryCreate(block.Statements, span, out selectedStatements);
+        public static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(block, span, minCount, int.MaxValue);
+            return selectedStatements != null;
+        }
+
+        public static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(block, span, minCount, maxCount);
+            return selectedStatements != null;
+        }
+
+        public static bool TryCreateExact(BlockSyntax block, TextSpan span, int count, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(block, span, count, count);
+            return selectedStatements != null;
+        }
+
+        private static StatementsSelection Create(BlockSyntax block, TextSpan span, int minCount, int maxCount)
+        {
+            if (block == null)
+                return null;
+
+            return Create(block.Statements, span, minCount, maxCount);
         }
 
         public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, out StatementsSelection selectedStatements)
         {
-            if (switchSection == null)
-            {
-                selectedStatements = null;
-                return false;
-            }
-
-            return TryCreate(switchSection.Statements, span, out selectedStatements);
+            selectedStatements = Create(switchSection, span, 1, int.MaxValue);
+            return selectedStatements != null;
         }
 
-        public static bool TryCreate(SyntaxList<StatementSyntax> statements, TextSpan span, out StatementsSelection selectedStatements)
+        public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, out StatementsSelection selectedStatements)
         {
-            selectedStatements = null;
+            selectedStatements = Create(switchSection, span, minCount, int.MaxValue);
+            return selectedStatements != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(switchSection, span, minCount, maxCount);
+            return selectedStatements != null;
+        }
 
-            if (!statements.Any())
-                return false;
+        public static bool TryCreateExact(SwitchSectionSyntax switchSection, TextSpan span, int count, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(switchSection, span, count, count);
+            return selectedStatements != null;
+        }
 
-            (int firstIndex, int lastIndex) = GetIndexes(statements, span);
+        private static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount)
+        {
+            if (switchSection == null)
+                return null;
 
-            if (firstIndex == -1)
-                return false;
+            return Create(switchSection.Statements, span, minCount, maxCount);
+        }
 
-            selectedStatements = new StatementsSelection(statements, span, firstIndex, lastIndex);
-            return true;
+        private static StatementsSelection Create(SyntaxList<StatementSyntax> statements, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(statements, span, minCount, maxCount);
+
+            if (!result.Success)
+                return null;
+
+            return new StatementsSelection(statements, span, result);
         }
     }
 }

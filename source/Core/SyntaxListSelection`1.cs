@@ -8,6 +8,11 @@ namespace Roslynator
 {
     public class SyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
+        private SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, SelectionResult result)
+            : this(list, span, result.FirstIndex, result.LastIndex)
+        {
+        }
+
         protected SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
             : base(span, firstIndex, lastIndex)
         {
@@ -18,66 +23,45 @@ namespace Roslynator
 
         protected override IReadOnlyList<TNode> Items => UnderlyingList;
 
-        internal static (int firstIndex, int lastIndex) GetIndexes(SyntaxList<TNode> list, TextSpan span)
-        {
-            SyntaxList<TNode>.Enumerator en = list.GetEnumerator();
-
-            if (en.MoveNext())
-            {
-                int i = 0;
-
-                while (span.Start >= en.Current.FullSpan.End
-                    && en.MoveNext())
-                {
-                    i++;
-                }
-
-                if (span.Start >= en.Current.FullSpan.Start
-                    && span.Start <= en.Current.Span.Start)
-                {
-                    int j = i;
-
-                    while (span.End > en.Current.FullSpan.End
-                        && en.MoveNext())
-                    {
-                        j++;
-                    }
-
-                    if (span.End >= en.Current.Span.End
-                        && span.End <= en.Current.FullSpan.End)
-                    {
-                        return (i, j);
-                    }
-                }
-            }
-
-            return (-1, -1);
-        }
-
         public static SyntaxListSelection<TNode> Create(SyntaxList<TNode> list, TextSpan span)
         {
-            (int firstIndex, int lastIndex) = GetIndexes(list, span);
+            SelectionResult result = SelectionResult.Create(list, span);
 
-            return new SyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
+            return new SyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }
 
         public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, out SyntaxListSelection<TNode> selection)
         {
-            selection = null;
+            selection = Create(list, span, 1, int.MaxValue);
+            return selection != null;
+        }
 
-            if (!list.Any())
-                return false;
+        public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, out SyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, int.MaxValue);
+            return selection != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, int maxCount, out SyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, maxCount);
+            return selection != null;
+        }
 
-            (int firstIndex, int lastIndex) = GetIndexes(list, span);
+        public static bool TryCreateExact(SyntaxList<TNode> list, TextSpan span, int count, out SyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, count, count);
+            return selection != null;
+        }
 
-            if (firstIndex == -1)
-                return false;
+        private static SyntaxListSelection<TNode> Create(SyntaxList<TNode> list, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(list, span, minCount, maxCount);
 
-            selection = new SyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
-            return true;
+            if (!result.Success)
+                return null;
+
+            return new SyntaxListSelection<TNode>(list, span, result);
         }
     }
 }

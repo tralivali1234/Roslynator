@@ -8,6 +8,11 @@ namespace Roslynator.Text
 {
     public class TextLineCollectionSelection : Selection<TextLine>
     {
+        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, SelectionResult result)
+            : this(lines, span, result.FirstIndex, result.LastIndex)
+        {
+        }
+
         private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int firstIndex, int lastIndex)
             : base(span, firstIndex, lastIndex)
         {
@@ -18,69 +23,51 @@ namespace Roslynator.Text
 
         protected override IReadOnlyList<TextLine> Items => UnderlyingLines;
 
-        private static (int firstIndex, int lastIndex) GetIndexes(TextLineCollection lines, TextSpan span)
-        {
-            using (TextLineCollection.Enumerator en = lines.GetEnumerator())
-            {
-                if (en.MoveNext())
-                {
-                    int i = 0;
-
-                    while (span.Start >= en.Current.EndIncludingLineBreak
-                        && en.MoveNext())
-                    {
-                        i++;
-                    }
-
-                    if (span.Start == en.Current.Start)
-                    {
-                        int j = i;
-
-                        while (span.End > en.Current.EndIncludingLineBreak
-                            && en.MoveNext())
-                        {
-                            j++;
-                        }
-
-                        if (span.End == en.Current.End
-                            || span.End == en.Current.EndIncludingLineBreak)
-                        {
-                            return (i, j);
-                        }
-                    }
-                }
-            }
-
-            return (-1, -1);
-        }
-
         public static TextLineCollectionSelection Create(TextLineCollection lines, TextSpan span)
         {
             if (lines == null)
                 throw new ArgumentNullException(nameof(lines));
 
-            (int firstIndex, int lastIndex) = GetIndexes(lines, span);
+            SelectionResult result = SelectionResult.Create(lines, span);
 
-            return new TextLineCollectionSelection(lines, span, firstIndex, lastIndex);
+            return new TextLineCollectionSelection(lines, span, result);
         }
 
-        public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selection)
+        public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selectedLines)
         {
-            selection = null;
+            selectedLines = Create(lines, span, 1, int.MaxValue);
+            return selectedLines != null;
+        }
 
-            if (lines.Count == 0)
-                return false;
+        public static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, out TextLineCollectionSelection selectedLines)
+        {
+            selectedLines = Create(lines, span, minCount, int.MaxValue);
+            return selectedLines != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        public static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, int maxCount, out TextLineCollectionSelection selectedLines)
+        {
+            selectedLines = Create(lines, span, minCount, maxCount);
+            return selectedLines != null;
+        }
 
-            (int firstIndex, int lastIndex) = GetIndexes(lines, span);
+        public static bool TryCreateExact(TextLineCollection lines, TextSpan span, int count, out TextLineCollectionSelection selectedLines)
+        {
+            selectedLines = Create(lines, span, count, count);
+            return selectedLines != null;
+        }
 
-            if (firstIndex == -1)
-                return false;
+        private static TextLineCollectionSelection Create(TextLineCollection lines, TextSpan span, int minCount, int maxCount)
+        {
+            if (lines == null)
+                return null;
 
-            selection = new TextLineCollectionSelection(lines, span, firstIndex, lastIndex);
-            return true;
+            SelectionResult result = SelectionResult.Create(lines, span, minCount, maxCount);
+
+            if (!result.Success)
+                return null;
+
+            return new TextLineCollectionSelection(lines, span, result);
         }
     }
 }

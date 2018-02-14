@@ -9,6 +9,11 @@ namespace Roslynator.CSharp
 {
     public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
+        private MemberDeclarationsSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, SelectionResult result)
+             : this(declaration, members, span, result.FirstIndex, result.LastIndex)
+        {
+        }
+
         private MemberDeclarationsSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int firstIndex, int lastIndex)
              : base(members, span, firstIndex, lastIndex)
         {
@@ -25,106 +30,93 @@ namespace Roslynator.CSharp
             return Create(namespaceDeclaration, namespaceDeclaration.Members, span);
         }
 
-        public static MemberDeclarationsSelection Create(ClassDeclarationSyntax classDeclaration, TextSpan span)
+        public static MemberDeclarationsSelection Create(TypeDeclarationSyntax typeDeclaration, TextSpan span)
         {
-            if (classDeclaration == null)
-                throw new ArgumentNullException(nameof(classDeclaration));
+            if (typeDeclaration == null)
+                throw new ArgumentNullException(nameof(typeDeclaration));
 
-            return Create(classDeclaration, classDeclaration.Members, span);
-        }
-
-        public static MemberDeclarationsSelection Create(StructDeclarationSyntax structDeclaration, TextSpan span)
-        {
-            if (structDeclaration == null)
-                throw new ArgumentNullException(nameof(structDeclaration));
-
-            return Create(structDeclaration, structDeclaration.Members, span);
-        }
-
-        public static MemberDeclarationsSelection Create(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span)
-        {
-            if (interfaceDeclaration == null)
-                throw new ArgumentNullException(nameof(interfaceDeclaration));
-
-            return Create(interfaceDeclaration, interfaceDeclaration.Members, span);
+            return Create(typeDeclaration, typeDeclaration.Members, span);
         }
 
         private static MemberDeclarationsSelection Create(MemberDeclarationSyntax memberDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
         {
-            (int firstIndex, int lastIndex) = GetIndexes(members, span);
+            SelectionResult result = SelectionResult.Create(members, span);
 
-            return new MemberDeclarationsSelection(memberDeclaration, members, span, firstIndex, lastIndex);
+            return new MemberDeclarationsSelection(memberDeclaration, members, span, result);
         }
 
         public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
-            if (namespaceDeclaration != null)
-            {
-                return TryCreate(namespaceDeclaration, namespaceDeclaration.Members, span, out selectedMembers);
-            }
-            else
-            {
-                selectedMembers = null;
-                return false;
-            }
+            selectedMembers = Create(namespaceDeclaration, span, 1, int.MaxValue);
+            return selectedMembers != null;
         }
 
-        public static bool TryCreate(ClassDeclarationSyntax classDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
+        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
         {
-            if (classDeclaration != null)
-            {
-                return TryCreate(classDeclaration, classDeclaration.Members, span, out selectedMembers);
-            }
-            else
-            {
-                selectedMembers = null;
-                return false;
-            }
+            selectedMembers = Create(namespaceDeclaration, span, minCount, int.MaxValue);
+            return selectedMembers != null;
         }
 
-        public static bool TryCreate(StructDeclarationSyntax structDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
+        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
         {
-            if (structDeclaration != null)
-            {
-                return TryCreate(structDeclaration, structDeclaration.Members, span, out selectedMembers);
-            }
-            else
-            {
-                selectedMembers = null;
-                return false;
-            }
+            selectedMembers = Create(namespaceDeclaration, span, minCount, maxCount);
+            return selectedMembers != null;
         }
 
-        public static bool TryCreate(InterfaceDeclarationSyntax interfaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
+        public static bool TryCreateExact(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int count, out MemberDeclarationsSelection selectedMembers)
         {
-            if (interfaceDeclaration != null)
-            {
-                return TryCreate(interfaceDeclaration, interfaceDeclaration.Members, span, out selectedMembers);
-            }
-            else
-            {
-                selectedMembers = null;
-                return false;
-            }
+            selectedMembers = Create(namespaceDeclaration, span, count, count);
+            return selectedMembers != null;
         }
 
-        private static bool TryCreate(MemberDeclarationSyntax containingDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, out MemberDeclarationsSelection selectedMembers)
+        public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
-            selectedMembers = null;
+            selectedMembers = Create(typeDeclaration, span, 1, int.MaxValue);
+            return selectedMembers != null;
+        }
 
-            if (!members.Any())
-                return false;
+        public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
+        {
+            selectedMembers = Create(typeDeclaration, span, minCount, int.MaxValue);
+            return selectedMembers != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
+        {
+            selectedMembers = Create(typeDeclaration, span, minCount, maxCount);
+            return selectedMembers != null;
+        }
 
-            (int firstIndex, int lastIndex) = GetIndexes(members, span);
+        public static bool TryCreateExact(TypeDeclarationSyntax typeDeclaration, TextSpan span, int count, out MemberDeclarationsSelection selectedMembers)
+        {
+            selectedMembers = Create(typeDeclaration, span, count, count);
+            return selectedMembers != null;
+        }
 
-            if (firstIndex == -1)
-                return false;
+        private static MemberDeclarationsSelection Create(NamespaceDeclarationSyntax declaration, TextSpan span, int minCount, int maxCount)
+        {
+            if (declaration == null)
+                return null;
 
-            selectedMembers = new MemberDeclarationsSelection(containingDeclaration, members, span, firstIndex, lastIndex);
-            return true;
+            return Create(declaration, declaration.Members, span, minCount, maxCount);
+        }
+
+        private static MemberDeclarationsSelection Create(TypeDeclarationSyntax declaration, TextSpan span, int minCount, int maxCount)
+        {
+            if (declaration == null)
+                return null;
+
+            return Create(declaration, declaration.Members, span, minCount, maxCount);
+        }
+
+        private static MemberDeclarationsSelection Create(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(members, span, minCount, maxCount);
+
+            if (!result.Success)
+                return null;
+
+            return new MemberDeclarationsSelection(declaration, members, span, result);
         }
     }
 }

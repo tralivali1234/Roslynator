@@ -8,6 +8,11 @@ namespace Roslynator
 {
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
+        private SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, SelectionResult result)
+            : this(list, span, result.FirstIndex, result.LastIndex)
+        {
+        }
+
         protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
             : base(span, firstIndex, lastIndex)
         {
@@ -18,71 +23,45 @@ namespace Roslynator
 
         protected override IReadOnlyList<TNode> Items => UnderlyingList;
 
-        internal static (int firstIndex, int lastIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
-        {
-            SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
-
-            if (en.MoveNext())
-            {
-                int i = 0;
-
-                while (span.Start >= en.Current.FullSpan.End
-                    && en.MoveNext())
-                {
-                    i++;
-                }
-
-                if (span.Start >= en.Current.FullSpan.Start
-                    && span.Start <= en.Current.Span.Start)
-                {
-                    int j = i;
-
-                    while (span.End > GetLastIndex(list, en.Current, j)
-                        && en.MoveNext())
-                    {
-                        j++;
-                    }
-
-                    if (span.End >= en.Current.Span.End
-                        && span.End <= GetLastIndex(list, en.Current, j))
-                    {
-                        return (i, j);
-                    }
-                }
-            }
-
-            return (-1, -1);
-        }
-
-        private static int GetLastIndex(SeparatedSyntaxList<TNode> list, TNode node, int i)
-        {
-            return (i == list.Count - 1) ? node.FullSpan.End : list.GetSeparator(i).FullSpan.End;
-        }
-
         public static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
-            (int firstIndex, int lastIndex) = GetIndexes(list, span);
+            SelectionResult result = SelectionResult.Create(list, span);
 
-            return new SeparatedSyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
+            return new SeparatedSyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }
 
         public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, out SeparatedSyntaxListSelection<TNode> selection)
         {
-            selection = null;
+            selection = Create(list, span, 1, int.MaxValue);
+            return selection != null;
+        }
 
-            if (!list.Any())
-                return false;
+        public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, out SeparatedSyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, int.MaxValue);
+            return selection != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, int maxCount, out SeparatedSyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, maxCount);
+            return selection != null;
+        }
 
-            (int firstIndex, int lastIndex) = GetIndexes(list, span);
+        public static bool TryCreateExact(SeparatedSyntaxList<TNode> list, TextSpan span, int count, out SeparatedSyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, count, count);
+            return selection != null;
+        }
 
-            if (firstIndex == -1)
-                return false;
+        private static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(list, span, minCount, maxCount);
 
-            selection = new SeparatedSyntaxListSelection<TNode>(list, span, firstIndex, lastIndex);
-            return true;
+            if (!result.Success)
+                return null;
+
+            return new SeparatedSyntaxListSelection<TNode>(list, span, result);
         }
     }
 }
