@@ -3,7 +3,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyVersion("1.7.0")]
+[assembly: AssemblyVersion("1.7.1")]
 
 [assembly: InternalsVisibleTo("Roslynator.CSharp.Workspaces, PublicKey=0024000004800000940000000602000000240000525341310004000001000100c5f40467c21537"
     + "61c5b2d17b492c32ba431160c1ffda1818efa6c93c9a8803fd8fb3794939680fe8a4709f081f02"
