@@ -804,7 +804,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: GetDeclaredAccessibility
         internal static Accessibility GetAccessibility(SyntaxTokenList modifiers)
         {
             int count = modifiers.Count;

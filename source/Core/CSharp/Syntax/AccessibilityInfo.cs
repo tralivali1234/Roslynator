@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: AccessModifiersInfo
+    //XTODO: AccessModifiersInfo, ExplicitAccessibilityInfo
     public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
         private AccessibilityInfo(SyntaxNode node, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
@@ -38,36 +38,6 @@ namespace Roslynator.CSharp.Syntax
         public SyntaxToken SecondToken
         {
             get { return GetTokenOrDefault(SecondTokenIndex); }
-        }
-
-        public bool IsPublic
-        {
-            get { return Accessibility == Accessibility.Public; }
-        }
-
-        public bool IsInternal
-        {
-            get { return Accessibility == Accessibility.Internal; }
-        }
-
-        public bool IsProtectedInternal
-        {
-            get { return Accessibility == Accessibility.ProtectedOrInternal; }
-        }
-
-        public bool IsProtected
-        {
-            get { return Accessibility == Accessibility.Protected; }
-        }
-
-        public bool IsPrivateProtected
-        {
-            get { return Accessibility == Accessibility.ProtectedAndInternal; }
-        }
-
-        public bool IsPrivate
-        {
-            get { return Accessibility == Accessibility.Private; }
         }
 
         //TODO: ExplicitAccessibility
@@ -372,7 +342,7 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            var info = ModifiersInfo().WithModifiers(newModifiers);
+            ModifiersInfo info = ModifiersInfo().WithModifiers(newModifiers);
 
             return Create(info.Node, info.Modifiers);
         }

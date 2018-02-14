@@ -14,7 +14,6 @@ using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Documentation;
 using Roslynator.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxRewriters;
-using Roslynator.CSharp.SyntaxWalkers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
