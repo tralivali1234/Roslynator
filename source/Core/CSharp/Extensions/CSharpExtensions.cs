@@ -169,7 +169,6 @@ namespace Roslynator.CSharp
             return conversion.IsImplicit;
         }
 
-        //XTODO: ren 
         public static IParameterSymbol DetermineParameter(
             this SemanticModel semanticModel,
             ArgumentSyntax argument,

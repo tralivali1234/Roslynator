@@ -22,7 +22,6 @@ namespace Roslynator.CSharp.Syntax
 
         private static SimpleIfStatementInfo Default { get; } = new SimpleIfStatementInfo();
 
-        //XTODO: If
         public IfStatementSyntax IfStatement { get; }
 
         public ExpressionSyntax Condition { get; }

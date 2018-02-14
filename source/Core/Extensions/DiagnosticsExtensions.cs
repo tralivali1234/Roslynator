@@ -4,12 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator
 {
-    //TODO: Roslynator.Diagnostics
     public static class DiagnosticsExtensions
     {
         #region SymbolAnalysisContext
@@ -238,24 +236,6 @@ namespace Roslynator
         {
             if (!node.IsMissing)
                 context.ReportDiagnostic(descriptor, node, messageArgs);
-        }
-
-        internal static void ReportBraces(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor, BlockSyntax block, params object[] messageArgs)
-        {
-            ReportToken(context, descriptor, block.OpenBraceToken, messageArgs);
-            ReportToken(context, descriptor, block.CloseBraceToken, messageArgs);
-        }
-
-        internal static void ReportBraces(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor, AccessorListSyntax accessorList, params object[] messageArgs)
-        {
-            ReportToken(context, descriptor, accessorList.OpenBraceToken, messageArgs);
-            ReportToken(context, descriptor, accessorList.CloseBraceToken, messageArgs);
-        }
-
-        internal static void ReportParentheses(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor, ArgumentListSyntax argumentList, params object[] messageArgs)
-        {
-            ReportToken(context, descriptor, argumentList.OpenParenToken, messageArgs);
-            ReportToken(context, descriptor, argumentList.CloseParenToken, messageArgs);
         }
         #endregion SyntaxNodeAnalysisContext
 
