@@ -35,10 +35,10 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            RegionDirectiveTriviaSyntax regionDirective,
+            RegionInfo region,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return document.RemoveRegionAsync(regionDirective, cancellationToken);
+            return document.RemoveRegionAsync(region, cancellationToken);
         }
     }
 }

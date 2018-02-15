@@ -1835,12 +1835,12 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static IEnumerable<DirectiveTriviaSyntax> DescendantDirectives(this SyntaxNode node, Func<DirectiveTriviaSyntax, bool> predicate = null)
+        internal static IEnumerable<DirectiveTriviaSyntax> DescendantPreprocessorDirectives(this SyntaxNode node, Func<DirectiveTriviaSyntax, bool> predicate = null)
         {
-            return DescendantDirectives(node, node.FullSpan, predicate);
+            return DescendantPreprocessorDirectives(node, node.FullSpan, predicate);
         }
 
-        internal static IEnumerable<DirectiveTriviaSyntax> DescendantDirectives(this SyntaxNode node, TextSpan span, Func<DirectiveTriviaSyntax, bool> predicate = null)
+        internal static IEnumerable<DirectiveTriviaSyntax> DescendantPreprocessorDirectives(this SyntaxNode node, TextSpan span, Func<DirectiveTriviaSyntax, bool> predicate = null)
         {
             foreach (SyntaxTrivia trivia in node.DescendantTrivia(span: span, descendIntoTrivia: true))
             {
@@ -1859,12 +1859,12 @@ namespace Roslynator.CSharp
 
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantRegionDirectives(this SyntaxNode node)
         {
-            return DescendantDirectives(node, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+            return DescendantPreprocessorDirectives(node, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
         }
 
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantRegionDirectives(this SyntaxNode node, TextSpan span)
         {
-            return DescendantDirectives(node, span, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+            return DescendantPreprocessorDirectives(node, span, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
         }
 
         public static bool IsDescendantOf(this SyntaxNode node, SyntaxKind kind, bool ascendOutOfTrivia = true)

@@ -30,7 +30,7 @@ namespace Roslynator.CodeGeneration.CSharp
         {
             yield return PropertyDeclaration(
                 Modifiers.ProtectedOverride(),
-                StringPredefinedType(),
+                PredefinedStringType(),
                 Identifier("DisabledByDefault"),
                 AccessorList(AutoGetAccessorDeclaration()),
                 ParseExpression(
@@ -43,7 +43,7 @@ namespace Roslynator.CodeGeneration.CSharp
 
             yield return PropertyDeclaration(
                 Modifiers.ProtectedOverride(),
-                StringPredefinedType(),
+                PredefinedStringType(),
                 Identifier("MaxId"),
                 AccessorList(AutoGetAccessorDeclaration()),
                 ParseExpression($"CodeFixIdentifiers.{codeFixes.OrderBy(f => f.Id, comparer).Last().Identifier}"));
@@ -51,7 +51,7 @@ namespace Roslynator.CodeGeneration.CSharp
             yield return MethodDeclaration(
                 Modifiers.ProtectedOverride(),
                 VoidType(),
-                "Fill",
+                Identifier("Fill"),
                 ParameterList(Parameter(ParseTypeName("ICollection<BaseModel>"), Identifier("codeFixes"))),
                 Block(
                     SingletonList(ExpressionStatement(ParseExpression("codeFixes.Clear()")))

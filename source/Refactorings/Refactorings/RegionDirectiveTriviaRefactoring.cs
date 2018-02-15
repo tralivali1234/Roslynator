@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Remove all region directives",
-                    cancellationToken => context.Document.RemoveDirectivesAsync(DirectiveRemoveOptions.Region, cancellationToken));
+                    cancellationToken => context.Document.RemovePreprocessorDirectivesAsync(PreprocessorDirectiveRemoveOptions.Region, cancellationToken));
             }
         }
 
@@ -22,9 +23,14 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveRegion)
                 && context.IsRootCompilationUnit)
             {
-                context.RegisterRefactoring(
-                    "Remove region",
-                    cancellationToken => context.Document.RemoveRegionAsync(regionDirective, cancellationToken));
+                RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
+
+                if (region.Success)
+                {
+                    context.RegisterRefactoring(
+                        "Remove region",
+                        cancellationToken => context.Document.RemoveRegionAsync(region, cancellationToken));
+                }
             }
         }
 
@@ -33,9 +39,14 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveRegion)
                 && context.IsRootCompilationUnit)
             {
-                context.RegisterRefactoring(
-                    "Remove region",
-                    cancellationToken => context.Document.RemoveRegionAsync(endRegionDirective, cancellationToken));
+                RegionInfo region = SyntaxInfo.RegionInfo(endRegionDirective);
+
+                if (region.Success)
+                {
+                    context.RegisterRefactoring(
+                        "Remove region",
+                        cancellationToken => context.Document.RemoveRegionAsync(region, cancellationToken));
+                }
             }
         }
     }

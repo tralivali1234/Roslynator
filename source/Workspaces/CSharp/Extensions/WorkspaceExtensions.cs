@@ -16,7 +16,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    public static class DocumentExtensions
+    public static class WorkspaceExtensions
     {
         internal static Task<Document> RemoveNodeAsync(
             this Document document,
@@ -141,6 +141,21 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        //TODO: TriviaRemoveOptions
+        public static async Task<Document> RemoveTriviaAsync(
+            this Document document,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (document == null)
+                throw new ArgumentNullException(nameof(document));
+
+            SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+
+            SyntaxNode newRoot = SyntaxRemover.RemoveTrivia(root);
+
+            return document.WithSyntaxRoot(newRoot);
+        }
+
         public static async Task<Document> RemoveTriviaAsync(
             this Document document,
             TextSpan span,
@@ -156,9 +171,9 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
-        public static async Task<Document> RemoveDirectivesAsync(
+        public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
-            DirectiveRemoveOptions removeOptions,
+            PreprocessorDirectiveRemoveOptions removeOptions,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -168,30 +183,30 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveDirectives(sourceText, GetDirectives());
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, GetPreprocessorDirectives());
 
             return document.WithText(newSourceText);
 
-            IEnumerable<DirectiveTriviaSyntax> GetDirectives()
+            IEnumerable<DirectiveTriviaSyntax> GetPreprocessorDirectives()
             {
                 switch (removeOptions)
                 {
-                    case DirectiveRemoveOptions.All:
-                        return root.DescendantDirectives();
-                    case DirectiveRemoveOptions.AllExceptRegion:
-                        return root.DescendantDirectives(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    case DirectiveRemoveOptions.Region:
-                        return root.DescendantDirectives(f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                    case PreprocessorDirectiveRemoveOptions.All:
+                        return root.DescendantPreprocessorDirectives();
+                    case PreprocessorDirectiveRemoveOptions.AllExceptRegion:
+                        return root.DescendantPreprocessorDirectives(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                    case PreprocessorDirectiveRemoveOptions.Region:
+                        return root.DescendantPreprocessorDirectives(f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
                     default:
                         throw new ArgumentException("", nameof(removeOptions));
                 }
             }
         }
 
-        public static async Task<Document> RemoveDirectivesAsync(
+        public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
             TextSpan span,
-            DirectiveRemoveOptions removeOptions,
+            PreprocessorDirectiveRemoveOptions removeOptions,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -201,27 +216,27 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveDirectives(sourceText, GetDirectives());
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, GetPreprocessorDirectives());
 
             return document.WithText(newSourceText);
 
-            IEnumerable<DirectiveTriviaSyntax> GetDirectives()
+            IEnumerable<DirectiveTriviaSyntax> GetPreprocessorDirectives()
             {
                 switch (removeOptions)
                 {
-                    case DirectiveRemoveOptions.All:
-                        return root.DescendantDirectives(span);
-                    case DirectiveRemoveOptions.AllExceptRegion:
-                        return root.DescendantDirectives(span, f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    case DirectiveRemoveOptions.Region:
-                        return root.DescendantDirectives(span, f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                    case PreprocessorDirectiveRemoveOptions.All:
+                        return root.DescendantPreprocessorDirectives(span);
+                    case PreprocessorDirectiveRemoveOptions.AllExceptRegion:
+                        return root.DescendantPreprocessorDirectives(span, f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
+                    case PreprocessorDirectiveRemoveOptions.Region:
+                        return root.DescendantPreprocessorDirectives(span, f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
                     default:
                         throw new ArgumentException("", nameof(removeOptions));
                 }
             }
         }
 
-        internal static async Task<Document> RemoveDirectivesAsync(
+        internal static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
             IEnumerable<DirectiveTriviaSyntax> directives,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -234,12 +249,12 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveDirectives(sourceText, directives);
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, directives);
 
             return document.WithText(newSourceText);
         }
 
-        private static SourceText RemoveDirectives(
+        private static SourceText RemovePreprocessorDirectives(
             SourceText sourceText,
             IEnumerable<DirectiveTriviaSyntax> directives)
         {
@@ -260,57 +275,19 @@ namespace Roslynator.CSharp
 
         public static async Task<Document> RemoveRegionAsync(
             this Document document,
-            RegionDirectiveTriviaSyntax regionDirective,
+            RegionInfo region,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
 
-            if (regionDirective == null)
-                throw new ArgumentNullException(nameof(regionDirective));
-
-            RegionInfo region = SyntaxInfo.RegionInfo(regionDirective);
-
             if (!region.Success)
-                return document;
+                throw new ArgumentException($"{nameof(RegionInfo)} is not initialized.", nameof(region));
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemoveRegion(sourceText, regionDirective, region.EndDirective);
-
-            return document.WithText(newSourceText);
-        }
-
-        public static async Task<Document> RemoveRegionAsync(
-            this Document document,
-            EndRegionDirectiveTriviaSyntax endRegionDirective,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (endRegionDirective == null)
-                throw new ArgumentNullException(nameof(endRegionDirective));
-
-            RegionInfo region = SyntaxInfo.RegionInfo(endRegionDirective);
-
-            if (!region.Success)
-                return document;
-
-            SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
-
-            SourceText newSourceText = RemoveRegion(sourceText, region.Directive, endRegionDirective);
-
-            return document.WithText(newSourceText);
-        }
-
-        private static SourceText RemoveRegion(
-            SourceText sourceText,
-            RegionDirectiveTriviaSyntax regionDirective,
-            EndRegionDirectiveTriviaSyntax endRegionDirective)
-        {
-            int startLine = regionDirective.GetSpanStartLine();
-            int endLine = endRegionDirective.GetSpanEndLine();
+            int startLine = region.Directive.GetSpanStartLine();
+            int endLine = region.EndDirective.GetSpanEndLine();
 
             TextLineCollection lines = sourceText.Lines;
 
@@ -320,7 +297,9 @@ namespace Roslynator.CSharp
 
             var textChange = new TextChange(span, "");
 
-            return sourceText.WithChanges(textChange);
+            SourceText newSourceText = sourceText.WithChanges(textChange);
+
+            return document.WithText(newSourceText);
         }
 
         internal static Task<Document> ReplaceStatementsAsync(

@@ -2,7 +2,7 @@
 
 namespace Roslynator
 {
-    public enum DirectiveRemoveOptions
+    public enum PreprocessorDirectiveRemoveOptions
     {
         All,
         AllExceptRegion,

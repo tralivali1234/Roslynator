@@ -2,6 +2,7 @@
 
 namespace Roslynator
 {
+    //TODO: CommentRemoveOption
     public enum CommentRemoveOptions
     {
         All,

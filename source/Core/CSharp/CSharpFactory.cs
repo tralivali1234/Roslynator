@@ -9,6 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: zrušit výchozí hodnoty parametrů
     public static class CSharpFactory
     {
         #region Trivia
@@ -1077,77 +1078,78 @@ namespace Roslynator.CSharp
         #endregion Token
 
         #region Type
-        public static PredefinedTypeSyntax BoolPredefinedType()
+        //TODO: PredefinedBoolType
+        public static PredefinedTypeSyntax PredefinedBoolType()
         {
             return PredefinedType(SyntaxKind.BoolKeyword);
         }
 
-        public static PredefinedTypeSyntax BytePredefinedType()
+        public static PredefinedTypeSyntax PredefinedByteType()
         {
             return PredefinedType(SyntaxKind.ByteKeyword);
         }
 
-        public static PredefinedTypeSyntax SBytePredefinedType()
+        public static PredefinedTypeSyntax PredefinedSByteType()
         {
             return PredefinedType(SyntaxKind.SByteKeyword);
         }
 
-        public static PredefinedTypeSyntax IntPredefinedType()
+        public static PredefinedTypeSyntax PredefinedIntType()
         {
             return PredefinedType(SyntaxKind.IntKeyword);
         }
 
-        public static PredefinedTypeSyntax UIntPredefinedType()
+        public static PredefinedTypeSyntax PredefinedUIntType()
         {
             return PredefinedType(SyntaxKind.UIntKeyword);
         }
 
-        public static PredefinedTypeSyntax ShortPredefinedType()
+        public static PredefinedTypeSyntax PredefinedShortType()
         {
             return PredefinedType(SyntaxKind.ShortKeyword);
         }
 
-        public static PredefinedTypeSyntax UShortPredefinedType()
+        public static PredefinedTypeSyntax PredefinedUShortType()
         {
             return PredefinedType(SyntaxKind.UShortKeyword);
         }
 
-        public static PredefinedTypeSyntax LongPredefinedType()
+        public static PredefinedTypeSyntax PredefinedLongType()
         {
             return PredefinedType(SyntaxKind.LongKeyword);
         }
 
-        public static PredefinedTypeSyntax ULongPredefinedType()
+        public static PredefinedTypeSyntax PredefinedULongType()
         {
             return PredefinedType(SyntaxKind.ULongKeyword);
         }
 
-        public static PredefinedTypeSyntax FloatPredefinedType()
+        public static PredefinedTypeSyntax PredefinedFloatType()
         {
             return PredefinedType(SyntaxKind.FloatKeyword);
         }
 
-        public static PredefinedTypeSyntax DoublePredefinedType()
+        public static PredefinedTypeSyntax PredefinedDoubleType()
         {
             return PredefinedType(SyntaxKind.DoubleKeyword);
         }
 
-        public static PredefinedTypeSyntax DecimalPredefinedType()
+        public static PredefinedTypeSyntax PredefinedDecimalType()
         {
             return PredefinedType(SyntaxKind.DecimalKeyword);
         }
 
-        public static PredefinedTypeSyntax StringPredefinedType()
+        public static PredefinedTypeSyntax PredefinedStringType()
         {
             return PredefinedType(SyntaxKind.StringKeyword);
         }
 
-        public static PredefinedTypeSyntax CharPredefinedType()
+        public static PredefinedTypeSyntax PredefinedCharType()
         {
             return PredefinedType(SyntaxKind.CharKeyword);
         }
 
-        public static PredefinedTypeSyntax ObjectPredefinedType()
+        public static PredefinedTypeSyntax PredefinedObjectType()
         {
             return PredefinedType(SyntaxKind.ObjectKeyword);
         }
@@ -1298,12 +1300,12 @@ namespace Roslynator.CSharp
             return SyntaxFactory.NamespaceDeclaration(name, default(SyntaxList<ExternAliasDirectiveSyntax>), default(SyntaxList<UsingDirectiveSyntax>), members);
         }
 
-        public static ClassDeclarationSyntax ClassDeclaration(SyntaxTokenList modifiers, string identifier, SyntaxList<MemberDeclarationSyntax> members)
+        public static ClassDeclarationSyntax ClassDeclaration(SyntaxTokenList modifiers, string identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
         {
             return ClassDeclaration(modifiers, Identifier(identifier), members);
         }
 
-        public static ClassDeclarationSyntax ClassDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, SyntaxList<MemberDeclarationSyntax> members)
+        public static ClassDeclarationSyntax ClassDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
         {
             return SyntaxFactory.ClassDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
@@ -1315,7 +1317,7 @@ namespace Roslynator.CSharp
                 members);
         }
 
-        public static ClassDeclarationSyntax ClassDeclaration(StructDeclarationSyntax structDeclaration)
+        internal static ClassDeclarationSyntax ClassDeclaration(StructDeclarationSyntax structDeclaration)
         {
             if (structDeclaration == null)
                 throw new ArgumentNullException(nameof(structDeclaration));
@@ -1336,7 +1338,24 @@ namespace Roslynator.CSharp
                 structDeclaration.SemicolonToken);
         }
 
-        public static StructDeclarationSyntax StructDeclaration(ClassDeclarationSyntax classDeclaration)
+        public static StructDeclarationSyntax StructDeclaration(SyntaxTokenList modifiers, string identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
+        {
+            return StructDeclaration(modifiers, Identifier(identifier), members);
+        }
+
+        public static StructDeclarationSyntax StructDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
+        {
+            return SyntaxFactory.StructDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                identifier,
+                default(TypeParameterListSyntax),
+                default(BaseListSyntax),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                members);
+        }
+
+        internal static StructDeclarationSyntax StructDeclaration(ClassDeclarationSyntax classDeclaration)
         {
             if (classDeclaration == null)
                 throw new ArgumentNullException(nameof(classDeclaration));
@@ -1357,13 +1376,21 @@ namespace Roslynator.CSharp
                 classDeclaration.SemicolonToken);
         }
 
-        public static ConstructorDeclarationSyntax ConstructorDeclaration(SyntaxTokenList modifiers, string identifier, ParameterListSyntax parameterList, BlockSyntax body)
+        public static InterfaceDeclarationSyntax InterfaceDeclaration(SyntaxTokenList modifiers, string identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
         {
-            return ConstructorDeclaration(
+            return InterfaceDeclaration(modifiers, Identifier(identifier), members);
+        }
+
+        public static InterfaceDeclarationSyntax InterfaceDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
+        {
+            return SyntaxFactory.InterfaceDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
                 modifiers,
-                Identifier(identifier),
-                parameterList,
-                body);
+                identifier,
+                default(TypeParameterListSyntax),
+                default(BaseListSyntax),
+                default(SyntaxList<TypeParameterConstraintClauseSyntax>),
+                members);
         }
 
         public static ConstructorDeclarationSyntax ConstructorDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, ParameterListSyntax parameterList, BlockSyntax body)
@@ -1377,6 +1404,17 @@ namespace Roslynator.CSharp
                 body);
         }
 
+        public static ConstructorDeclarationSyntax ConstructorDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, ParameterListSyntax parameterList, ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SyntaxFactory.ConstructorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                identifier,
+                parameterList,
+                default(ConstructorInitializerSyntax),
+                expressionBody);
+        }
+
         public static EnumMemberDeclarationSyntax EnumMemberDeclaration(string name, ExpressionSyntax value)
         {
             return EnumMemberDeclaration(Identifier(name), value);
@@ -1384,10 +1422,20 @@ namespace Roslynator.CSharp
 
         public static EnumMemberDeclarationSyntax EnumMemberDeclaration(SyntaxToken identifier, ExpressionSyntax value)
         {
+            return EnumMemberDeclaration(identifier, EqualsValueClause(value));
+        }
+
+        public static EnumMemberDeclarationSyntax EnumMemberDeclaration(string name, EqualsValueClauseSyntax value)
+        {
+            return EnumMemberDeclaration(Identifier(name), value);
+        }
+
+        public static EnumMemberDeclarationSyntax EnumMemberDeclaration(SyntaxToken identifier, EqualsValueClauseSyntax value)
+        {
             return SyntaxFactory.EnumMemberDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 identifier,
-                EqualsValueClause(value));
+                value);
         }
 
         public static FieldDeclarationSyntax FieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, string identifier, ExpressionSyntax value = null)
@@ -1426,16 +1474,6 @@ namespace Roslynator.CSharp
                     type,
                     identifier,
                     initializer));
-        }
-
-        public static MethodDeclarationSyntax MethodDeclaration(
-            SyntaxTokenList modifiers,
-            TypeSyntax returnType,
-            string identifier,
-            ParameterListSyntax parameterList,
-            BlockSyntax body)
-        {
-            return MethodDeclaration(modifiers, returnType, Identifier(identifier), parameterList, body);
         }
 
         public static MethodDeclarationSyntax MethodDeclaration(
@@ -1518,22 +1556,114 @@ namespace Roslynator.CSharp
         #region AccessorDeclaration
         public static AccessorDeclarationSyntax GetAccessorDeclaration(BlockSyntax body)
         {
-            return AccessorDeclaration(SyntaxKind.GetAccessorDeclaration, body);
+            return GetAccessorDeclaration(default(SyntaxTokenList), body);
+        }
+
+        public static AccessorDeclarationSyntax GetAccessorDeclaration(SyntaxTokenList modifiers, BlockSyntax body)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.GetAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                body);
+        }
+
+        public static AccessorDeclarationSyntax GetAccessorDeclaration(ArrowExpressionClauseSyntax expressionBody)
+        {
+            return GetAccessorDeclaration(default(SyntaxTokenList), expressionBody);
+        }
+
+        public static AccessorDeclarationSyntax GetAccessorDeclaration(SyntaxTokenList modifiers, ArrowExpressionClauseSyntax expressionBody)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.GetAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                expressionBody);
         }
 
         public static AccessorDeclarationSyntax SetAccessorDeclaration(BlockSyntax body)
         {
-            return AccessorDeclaration(SyntaxKind.SetAccessorDeclaration, body);
+            return SetAccessorDeclaration(default(SyntaxTokenList), body);
+        }
+
+        public static AccessorDeclarationSyntax SetAccessorDeclaration(SyntaxTokenList modifiers, BlockSyntax body)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.SetAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                body);
+        }
+
+        public static AccessorDeclarationSyntax SetAccessorDeclaration(ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SetAccessorDeclaration(default(SyntaxTokenList), expressionBody);
+        }
+
+        public static AccessorDeclarationSyntax SetAccessorDeclaration(SyntaxTokenList modifiers, ArrowExpressionClauseSyntax expressionBody)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.SetAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                expressionBody);
         }
 
         public static AccessorDeclarationSyntax AddAccessorDeclaration(BlockSyntax body)
         {
-            return AccessorDeclaration(SyntaxKind.AddAccessorDeclaration, body);
+            return AddAccessorDeclaration(default(SyntaxTokenList), body);
+        }
+
+        public static AccessorDeclarationSyntax AddAccessorDeclaration(SyntaxTokenList modifiers, BlockSyntax body)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.AddAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                body);
+        }
+
+        public static AccessorDeclarationSyntax AddAccessorDeclaration(ArrowExpressionClauseSyntax expressionBody)
+        {
+            return AddAccessorDeclaration(default(SyntaxTokenList), expressionBody);
+        }
+
+        public static AccessorDeclarationSyntax AddAccessorDeclaration(SyntaxTokenList modifiers, ArrowExpressionClauseSyntax expressionBody)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.AddAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                expressionBody);
         }
 
         public static AccessorDeclarationSyntax RemoveAccessorDeclaration(BlockSyntax body)
         {
-            return AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration, body);
+            return RemoveAccessorDeclaration(default(SyntaxTokenList), body);
+        }
+
+        public static AccessorDeclarationSyntax RemoveAccessorDeclaration(SyntaxTokenList modifiers, BlockSyntax body)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.RemoveAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                body);
+        }
+
+        public static AccessorDeclarationSyntax RemoveAccessorDeclaration(ArrowExpressionClauseSyntax expressionBody)
+        {
+            return RemoveAccessorDeclaration(default(SyntaxTokenList), expressionBody);
+        }
+
+        public static AccessorDeclarationSyntax RemoveAccessorDeclaration(SyntaxTokenList modifiers, ArrowExpressionClauseSyntax expressionBody)
+        {
+            return AccessorDeclaration(
+                SyntaxKind.RemoveAccessorDeclaration,
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                expressionBody);
         }
 
         public static AccessorDeclarationSyntax AutoGetAccessorDeclaration(SyntaxTokenList modifiers = default(SyntaxTokenList))
@@ -2259,9 +2389,19 @@ namespace Roslynator.CSharp
             return InitializerExpression(SyntaxKind.ArrayInitializerExpression, expressions);
         }
 
+        public static InitializerExpressionSyntax ArrayInitializerExpression(SyntaxToken openBraceToken, SeparatedSyntaxList<ExpressionSyntax> expressions, SyntaxToken closeBraceToken)
+        {
+            return InitializerExpression(SyntaxKind.ArrayInitializerExpression, openBraceToken, expressions, closeBraceToken);
+        }
+
         public static InitializerExpressionSyntax CollectionInitializerExpression(SeparatedSyntaxList<ExpressionSyntax> expressions = default(SeparatedSyntaxList<ExpressionSyntax>))
         {
             return InitializerExpression(SyntaxKind.CollectionInitializerExpression, expressions);
+        }
+
+        public static InitializerExpressionSyntax CollectionInitializerExpression(SyntaxToken openBraceToken, SeparatedSyntaxList<ExpressionSyntax> expressions, SyntaxToken closeBraceToken)
+        {
+            return InitializerExpression(SyntaxKind.CollectionInitializerExpression, openBraceToken, expressions, closeBraceToken);
         }
 
         public static InitializerExpressionSyntax ComplexElementInitializerExpression(SeparatedSyntaxList<ExpressionSyntax> expressions = default(SeparatedSyntaxList<ExpressionSyntax>))
@@ -2269,9 +2409,19 @@ namespace Roslynator.CSharp
             return InitializerExpression(SyntaxKind.ComplexElementInitializerExpression, expressions);
         }
 
+        public static InitializerExpressionSyntax ComplexElementInitializerExpression(SyntaxToken openBraceToken, SeparatedSyntaxList<ExpressionSyntax> expressions, SyntaxToken closeBraceToken)
+        {
+            return InitializerExpression(SyntaxKind.ComplexElementInitializerExpression, openBraceToken, expressions, closeBraceToken);
+        }
+
         public static InitializerExpressionSyntax ObjectInitializerExpression(SeparatedSyntaxList<ExpressionSyntax> expressions = default(SeparatedSyntaxList<ExpressionSyntax>))
         {
             return InitializerExpression(SyntaxKind.ObjectInitializerExpression, expressions);
+        }
+
+        public static InitializerExpressionSyntax ObjectInitializerExpression(SyntaxToken openBraceToken, SeparatedSyntaxList<ExpressionSyntax> expressions, SyntaxToken closeBraceToken)
+        {
+            return InitializerExpression(SyntaxKind.ObjectInitializerExpression, openBraceToken, expressions, closeBraceToken);
         }
 
         public static CheckedExpressionSyntax CheckedExpression(ExpressionSyntax expression)
@@ -2279,9 +2429,19 @@ namespace Roslynator.CSharp
             return SyntaxFactory.CheckedExpression(SyntaxKind.CheckedExpression, expression);
         }
 
+        public static CheckedExpressionSyntax CheckedExpression(SyntaxToken openParenToken, ExpressionSyntax expression, SyntaxToken closeParenToken)
+        {
+            return SyntaxFactory.CheckedExpression(SyntaxKind.CheckedExpression, CheckedKeyword(), openParenToken, expression, closeParenToken);
+        }
+
         public static CheckedExpressionSyntax UncheckedExpression(ExpressionSyntax expression)
         {
             return SyntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression, expression);
+        }
+
+        public static CheckedExpressionSyntax UncheckedExpression(SyntaxToken openParenToken, ExpressionSyntax expression, SyntaxToken closeParenToken)
+        {
+            return SyntaxFactory.CheckedExpression(SyntaxKind.UncheckedExpression, UncheckedKeyword(), openParenToken, expression, closeParenToken);
         }
         #endregion Expression
 
@@ -2310,18 +2470,28 @@ namespace Roslynator.CSharp
             return SyntaxFactory.VariableDeclarator(identifier, default(BracketedArgumentListSyntax), initializer);
         }
 
-        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, string identifier, EqualsValueClauseSyntax initializer = null)
+        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, string identifier, ExpressionSyntax value = null)
         {
-            return VariableDeclaration(type, Identifier(identifier), initializer);
+            return VariableDeclaration(type, Identifier(identifier), value);
         }
 
-        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer = null)
+        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SyntaxToken identifier, ExpressionSyntax value = null)
+        {
+            if (value != null)
+            {
+                return VariableDeclaration(type, identifier, EqualsValueClause(value));
+            }
+            else
+            {
+                return VariableDeclaration(type, SyntaxFactory.VariableDeclarator(identifier));
+            }
+        }
+
+        public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer)
         {
             return VariableDeclaration(
                 type,
-                (initializer != null)
-                    ? VariableDeclarator(identifier, initializer)
-                    : SyntaxFactory.VariableDeclarator(identifier));
+                VariableDeclarator(identifier, initializer));
         }
 
         public static VariableDeclarationSyntax VariableDeclaration(TypeSyntax type, VariableDeclaratorSyntax variable)
@@ -2335,6 +2505,16 @@ namespace Roslynator.CSharp
                 StaticKeyword(),
                 default(NameEqualsSyntax),
                 name);
+        }
+
+        public static UsingDirectiveSyntax UsingStaticDirective(SyntaxToken usingKeyword, SyntaxToken staticKeyword, NameSyntax name, SyntaxToken semicolonToken)
+        {
+            return UsingDirective(
+                usingKeyword,
+                staticKeyword,
+                default(NameEqualsSyntax),
+                name,
+                semicolonToken);
         }
 
         public static AttributeSyntax Attribute(NameSyntax name, AttributeArgumentSyntax argument)
@@ -2365,12 +2545,29 @@ namespace Roslynator.CSharp
             return SyntaxFactory.Argument(nameColon, default(SyntaxToken), expression);
         }
 
-        public static ParameterSyntax Parameter(TypeSyntax type, string identifier, EqualsValueClauseSyntax @default = null)
+        public static ParameterSyntax Parameter(TypeSyntax type, string identifier, ExpressionSyntax @default = null)
         {
             return Parameter(type, Identifier(identifier), @default);
         }
 
-        public static ParameterSyntax Parameter(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax @default = null)
+        public static ParameterSyntax Parameter(TypeSyntax type, SyntaxToken identifier, ExpressionSyntax @default = null)
+        {
+            if (@default != null)
+            {
+                return Parameter(type, identifier, EqualsValueClause(@default));
+            }
+            else
+            {
+                return SyntaxFactory.Parameter(
+                    default(SyntaxList<AttributeListSyntax>),
+                    default(SyntaxTokenList),
+                    type,
+                    identifier,
+                    default(EqualsValueClauseSyntax));
+            }
+        }
+
+        public static ParameterSyntax Parameter(TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax @default)
         {
             return SyntaxFactory.Parameter(
                 default(SyntaxList<AttributeListSyntax>),
@@ -2409,9 +2606,19 @@ namespace Roslynator.CSharp
             return ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, argumentList);
         }
 
+        public static ConstructorInitializerSyntax BaseConstructorInitializer(SyntaxToken semicolonToken, ArgumentListSyntax argumentList)
+        {
+            return ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, semicolonToken, BaseKeyword(), argumentList);
+        }
+
         public static ConstructorInitializerSyntax ThisConstructorInitializer(ArgumentListSyntax argumentList = null)
         {
             return ConstructorInitializer(SyntaxKind.ThisConstructorInitializer, argumentList);
+        }
+
+        public static ConstructorInitializerSyntax ThisConstructorInitializer(SyntaxToken semicolonToken, ArgumentListSyntax argumentList)
+        {
+            return ConstructorInitializer(SyntaxKind.ThisConstructorInitializer, semicolonToken, ThisKeyword(), argumentList);
         }
 
         public static SwitchSectionSyntax SwitchSection(SwitchLabelSyntax switchLabel, StatementSyntax statement)

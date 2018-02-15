@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.CodeFixes
             return MethodDeclaration(
                 Modifiers.PublicOverride(),
                 IntType(),
-                "GetHashCode",
+                Identifier("GetHashCode"),
                 ParameterList(),
                 Block(ThrowNewNotImplementedExceptionStatement()));
         }

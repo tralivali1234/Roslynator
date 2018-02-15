@@ -32,7 +32,7 @@ namespace Roslynator.CodeGeneration.CSharp
         {
             yield return PropertyDeclaration(
                 Modifiers.ProtectedOverride(),
-                StringPredefinedType(),
+                PredefinedStringType(),
                 Identifier("DisabledByDefault"),
                 AccessorList(AutoGetAccessorDeclaration()),
                 ParseExpression(
@@ -45,14 +45,14 @@ namespace Roslynator.CodeGeneration.CSharp
 
             yield return PropertyDeclaration(
                 Modifiers.ProtectedOverride(),
-                StringPredefinedType(),
+                PredefinedStringType(),
                 Identifier("MaxId"),
                 AccessorList(AutoGetAccessorDeclaration()),
                 ParseExpression($"RefactoringIdentifiers.{refactorings.OrderBy(f => f.Id, comparer).Last().Identifier}"));
 
             yield return ConstructorDeclaration(
                 Modifiers.Public(),
-                "RefactoringsOptionsPage",
+                Identifier("RefactoringsOptionsPage"),
                 ParameterList(),
                 Block(
                     refactorings
@@ -63,7 +63,7 @@ namespace Roslynator.CodeGeneration.CSharp
             yield return MethodDeclaration(
                 Modifiers.Public(),
                 VoidType(),
-                "MigrateValuesFromIdentifierProperties",
+                Identifier("MigrateValuesFromIdentifierProperties"),
                 ParameterList(),
                 Block(refactorings
                     .Where(ShouldGenerateProperty)
@@ -73,7 +73,7 @@ namespace Roslynator.CodeGeneration.CSharp
             yield return MethodDeclaration(
                 Modifiers.InternalStatic(),
                 VoidType(),
-                "SetRefactoringsDisabledByDefault",
+                Identifier("SetRefactoringsDisabledByDefault"),
                 ParameterList(Parameter(IdentifierName("RefactoringSettings"), Identifier("settings"))),
                 Block(refactorings
                     .Where(f => !f.IsEnabledByDefault)
@@ -87,7 +87,7 @@ namespace Roslynator.CodeGeneration.CSharp
             yield return MethodDeclaration(
                 Modifiers.ProtectedOverride(),
                 VoidType(),
-                "Fill",
+                Identifier("Fill"),
                 ParameterList(Parameter(ParseTypeName("ICollection<BaseModel>"), Identifier("refactorings"))),
                 Block(
                     SingletonList(ExpressionStatement(ParseExpression("refactorings.Clear()")))
@@ -111,7 +111,7 @@ namespace Roslynator.CodeGeneration.CSharp
                        AttributeList(Attribute(IdentifierName("TypeConverter"), AttributeArgument(TypeOfExpression(IdentifierName("EnabledDisabledConverter")))))
                     }),
                     Modifiers.Public(),
-                    BoolPredefinedType(),
+                    PredefinedBoolType(),
                     default(ExplicitInterfaceSpecifierSyntax),
                     Identifier(info.Identifier),
                     AccessorList(
