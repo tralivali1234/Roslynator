@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                             string title = "Add ";
 
-                            if (info.Accessibility == Accessibility.Public)
+                            if (info.ExplicitAccessibility == Accessibility.Public)
                             {
                                 title += "modifier 'static'";
                             }

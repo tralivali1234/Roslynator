@@ -104,10 +104,13 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsPublicInstanceStringMethod(name2))
+            if (!methodInfo.IsPublicInstanceNonGenericMethod(name2))
                 return;
 
-            if (methodInfo.ReturnType.SpecialType != ((name2.EndsWith("IndexOf", StringComparison.Ordinal)) ? SpecialType.System_Int32 : SpecialType.System_Boolean))
+            if (!methodInfo.IsContainingType(SpecialType.System_String))
+                return;
+
+            if (!methodInfo.IsReturnType((name2.EndsWith("IndexOf", StringComparison.Ordinal)) ? SpecialType.System_Int32 : SpecialType.System_Boolean))
                 return;
 
             if (!methodInfo.HasParameter(SpecialType.System_String))
@@ -151,7 +154,10 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsPublicStaticStringMethod("Equals"))
+            if (!methodInfo.IsPublicStaticNonGenericMethod("Equals"))
+                return;
+
+            if (!methodInfo.IsContainingType(SpecialType.System_String))
                 return;
 
             if (!methodInfo.ReturnsBoolean)
@@ -266,7 +272,8 @@ namespace Roslynator.CSharp.Refactorings
             MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
 
             return methodInfo.Symbol != null
-                && methodInfo.IsPublicInstanceStringMethod()
+                && methodInfo.IsPublicInstanceNonGenericMethod()
+                && methodInfo.IsContainingType(SpecialType.System_String)
                 && methodInfo.ReturnsString
                 && !methodInfo.Parameters.Any();
         }

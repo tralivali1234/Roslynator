@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return false;
 
-            if (!methodInfo.IsLinqElementAt(allowImmutableArrayExtension: true))
+            if (!methodInfo.IsLinqElementAt(semanticModel, allowImmutableArrayExtension: true))
                 return false;
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);

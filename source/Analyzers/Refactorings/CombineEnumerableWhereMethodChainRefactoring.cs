@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,70 +12,68 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
 using static Roslynator.CSharp.CSharpFactory;
-using System.Collections.Generic;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class CombineEnumerableWhereMethodChainRefactoring
     {
-        private static DiagnosticDescriptor FadeOutDescriptor
-        {
-            get { return DiagnosticDescriptors.CombineEnumerableWhereMethodChainFadeOut; }
-        }
-
         public static void Analyze(
             SyntaxNodeAnalysisContext context,
             InvocationExpressionSyntax invocation,
             MemberAccessExpressionSyntax memberAccess)
         {
-            if (memberAccess.Expression?.Kind() == SyntaxKind.InvocationExpression)
+            if (memberAccess.Expression?.Kind() != SyntaxKind.InvocationExpression)
+                return;
+
+            var invocation2 = (InvocationExpressionSyntax)memberAccess.Expression;
+
+            if (invocation2.ArgumentList?.Arguments.Count != 1)
+                return;
+
+            if (invocation2.Expression?.Kind() != SyntaxKind.SimpleMemberAccessExpression)
+                return;
+
+            var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            if (!string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
+                return;
+
+            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
+
+            if (methodInfo2.Symbol == null)
+                return;
+
+            if (!methodInfo2.IsLinqExtensionOfIEnumerableOfT(semanticModel, "Where", parameterCount: 2))
+                return;
+
+            if (SymbolUtility.IsPredicateFunc(
+                methodInfo2.Parameters[1].Type,
+                methodInfo2.TypeArguments[0],
+                semanticModel))
             {
-                var invocation2 = (InvocationExpressionSyntax)memberAccess.Expression;
+                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
 
-                if (invocation2.ArgumentList?.Arguments.Count == 1
-                    && invocation2.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
+                if (methodInfo.Symbol != null
+                    && methodInfo.IsLinqWhere(semanticModel))
                 {
-                    var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
+                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
+                }
+            }
+            else if (SymbolUtility.IsPredicateFunc(
+                methodInfo2.Parameters[1].Type,
+                methodInfo2.TypeArguments[0],
+                semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32),
+                semanticModel))
+            {
+                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
 
-                    SemanticModel semanticModel = context.SemanticModel;
-                    CancellationToken cancellationToken = context.CancellationToken;
-
-                    if (string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
-                    {
-                        MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
-
-                        if (methodInfo2.Symbol != null
-                            && methodInfo2.IsLinqExtensionOfIEnumerableOfT("Where", parameterCount: 2))
-                        {
-                            if (SymbolUtility.IsPredicateFunc(
-                                methodInfo2.Parameters[1].Type,
-                                methodInfo2.TypeArguments[0],
-                                semanticModel))
-                            {
-                                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
-
-                                if (methodInfo.Symbol != null
-                                    && methodInfo.IsLinqWhere())
-                                {
-                                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
-                                }
-                            }
-                            else if (SymbolUtility.IsPredicateFunc(
-                                methodInfo2.Parameters[1].Type,
-                                methodInfo2.TypeArguments[0],
-                                semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32),
-                                semanticModel))
-                            {
-                                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
-
-                                if (methodInfo.Symbol != null
-                                    && methodInfo.IsLinqWhereWithIndex())
-                                {
-                                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
-                                }
-                            }
-                        }
-                    }
+                if (methodInfo.Symbol != null
+                    && methodInfo.IsLinqWhereWithIndex(semanticModel))
+                {
+                    Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
                 }
             }
         }
@@ -108,8 +107,8 @@ namespace Roslynator.CSharp.Refactorings
         {
             TextSpan span = TextSpan.FromBounds(memberAccess.OperatorToken.Span.Start, lambda.ArrowToken.Span.End);
 
-            context.ReportDiagnostic(FadeOutDescriptor, Location.Create(invocation.SyntaxTree, span));
-            context.ReportDiagnostic(FadeOutDescriptor, invocation.ArgumentList.CloseParenToken);
+            context.ReportDiagnostic(DiagnosticDescriptors.CombineEnumerableWhereMethodChainFadeOut, Location.Create(invocation.SyntaxTree, span));
+            context.ReportDiagnostic(DiagnosticDescriptors.CombineEnumerableWhereMethodChainFadeOut, invocation.ArgumentList.CloseParenToken);
         }
 
         private static bool CheckLambdas(ExpressionSyntax expression1, ExpressionSyntax expression2)

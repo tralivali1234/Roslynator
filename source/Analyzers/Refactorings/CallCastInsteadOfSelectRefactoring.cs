@@ -35,12 +35,12 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return;
 
-            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, semanticModel);
+            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol);
 
             if (extensionMethodInfo.Symbol == null)
                 return;
 
-            if (!extensionMethodInfo.MethodInfo.IsLinqSelect(allowImmutableArrayExtension: true))
+            if (!extensionMethodInfo.MethodInfo.IsLinqSelect(semanticModel, allowImmutableArrayExtension: true))
                 return;
 
             ITypeSymbol typeArgument = extensionMethodInfo.ReducedSymbolOrSymbol.TypeArguments[0];

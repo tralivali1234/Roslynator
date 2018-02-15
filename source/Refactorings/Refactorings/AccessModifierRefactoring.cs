@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.Accessibilities)
                     {
-                        if (accessibility != modifiersInfo.Accessibility
+                        if (accessibility != modifiersInfo.ExplicitAccessibility
                             && CSharpAccessibility.IsAllowedAccessibility(node, accessibility))
                         {
                             context.RegisterRefactoring(
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.Accessibilities)
             {
-                if (accessibility == modifiersInfo.Accessibility)
+                if (accessibility == modifiersInfo.ExplicitAccessibility)
                     continue;
 
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);

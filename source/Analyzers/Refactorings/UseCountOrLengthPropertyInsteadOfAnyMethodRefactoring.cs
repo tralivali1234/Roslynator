@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Any"))
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Any", semanticModel))
                 return;
 
             string propertyName = CSharpUtility.GetCountOrLengthPropertyName(invocationInfo.Expression, semanticModel, cancellationToken);

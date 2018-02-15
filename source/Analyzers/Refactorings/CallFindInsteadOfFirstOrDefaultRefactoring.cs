@@ -23,35 +23,38 @@ namespace Roslynator.CSharp.Refactorings
 
             MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
 
-            if (methodInfo.Symbol != null
-                && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate("FirstOrDefault"))
+            if (methodInfo.Symbol == null)
+                return;
+
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, "FirstOrDefault"))
+                return;
+
+            ExpressionSyntax expression = memberAccess.Expression;
+
+            if (expression == null)
+                return;
+
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
+
+            if (typeSymbol == null)
+                return;
+
+            if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
             {
-                ExpressionSyntax expression = memberAccess.Expression;
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
+                    memberAccess.Name);
+            }
+            //TODO: InlineMethod bug
+            else if (typeSymbol.IsArrayType())
+            {
+                var arrayType = (IArrayTypeSymbol)typeSymbol;
 
-                if (expression != null)
+                if (arrayType.Rank == 1)
                 {
-                    ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
-
-                    if (typeSymbol != null)
-                    {
-                        if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
-                                memberAccess.Name);
-                        }
-                        else if (typeSymbol.IsArrayType())
-                        {
-                            var arrayType = (IArrayTypeSymbol)typeSymbol;
-
-                            if (arrayType.Rank == 1)
-                            {
-                                context.ReportDiagnostic(
-                                    DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
-                                    memberAccess.Name);
-                            }
-                        }
-                    }
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
+                        memberAccess.Name);
                 }
             }
         }

@@ -15,80 +15,82 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class CallOfTypeInsteadOfWhereAndCastRefactoring
     {
-        public static bool Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
+        public static void Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
         {
             var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
 
             ExpressionSyntax expression = memberAccess?.Expression;
 
-            if (expression?.Kind() == SyntaxKind.InvocationExpression)
-            {
-                var invocation2 = (InvocationExpressionSyntax)expression;
+            if (expression?.Kind() != SyntaxKind.InvocationExpression)
+                return;
 
-                ArgumentListSyntax argumentList = invocation2.ArgumentList;
+            var invocation2 = (InvocationExpressionSyntax)expression;
 
-                if (argumentList?.IsMissing == false)
-                {
-                    SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
+            ArgumentListSyntax argumentList = invocation2.ArgumentList;
 
-                    if (arguments.Count == 1
-                        && invocation2.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
-                    {
-                        var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
+            if (argumentList?.IsMissing != false)
+                return;
 
-                        if (string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
-                        {
-                            SemanticModel semanticModel = context.SemanticModel;
-                            CancellationToken cancellationToken = context.CancellationToken;
+            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
 
-                            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+            if (arguments.Count != 1)
+                return;
 
-                            if (methodInfo.Symbol != null
-                                && methodInfo.IsLinqCast())
-                            {
-                                MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
+            if (invocation2.Expression?.Kind() != SyntaxKind.SimpleMemberAccessExpression)
+                return;
 
-                                if (methodInfo2.Symbol != null
-                                    && methodInfo2.IsLinqWhere())
-                                {
-                                    BinaryExpressionSyntax isExpression = GetIsExpression(arguments.First().Expression);
+            var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
 
-                                    if (isExpression?.Right is TypeSyntax type)
-                                    {
-                                        TypeSyntax type2 = GetTypeArgument(memberAccess.Name);
+            if (!string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
+                return;
 
-                                        if (type2 != null)
-                                        {
-                                            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type);
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
 
-                                            if (typeSymbol != null)
-                                            {
-                                                ITypeSymbol typeSymbol2 = semanticModel.GetTypeSymbol(type2);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
 
-                                                if (typeSymbol.Equals(typeSymbol2))
-                                                {
-                                                    TextSpan span = TextSpan.FromBounds(memberAccess2.Name.Span.Start, invocation.Span.End);
+            if (methodInfo.Symbol == null)
+                return;
 
-                                                    if (!invocation.ContainsDirectives(span))
-                                                    {
-                                                        context.ReportDiagnostic(
-                                                            DiagnosticDescriptors.SimplifyLinqMethodChain,
-                                                            Location.Create(invocation.SyntaxTree, span));
-                                                    }
+            if (!methodInfo.IsLinqCast(semanticModel))
+                return;
 
-                                                    return true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
 
-            return false;
+            if (methodInfo2.Symbol == null)
+                return;
+
+            if (!methodInfo2.IsLinqWhere(semanticModel))
+                return;
+
+            BinaryExpressionSyntax isExpression = GetIsExpression(arguments.First().Expression);
+
+            if (!(isExpression?.Right is TypeSyntax type))
+                return;
+
+            TypeSyntax type2 = GetTypeArgument(memberAccess.Name);
+
+            if (type2 == null)
+                return;
+
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
+
+            if (typeSymbol == null)
+                return;
+
+            ITypeSymbol typeSymbol2 = semanticModel.GetTypeSymbol(type2, cancellationToken);
+
+            if (!typeSymbol.Equals(typeSymbol2))
+                return;
+
+            TextSpan span = TextSpan.FromBounds(memberAccess2.Name.Span.Start, invocation.Span.End);
+
+            if (invocation.ContainsDirectives(span))
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.SimplifyLinqMethodChain,
+                Location.Create(invocation.SyntaxTree, span));
         }
 
         private static TypeSyntax GetTypeArgument(SimpleNameSyntax name)

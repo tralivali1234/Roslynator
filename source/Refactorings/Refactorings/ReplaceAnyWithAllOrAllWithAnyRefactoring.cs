@@ -27,30 +27,30 @@ namespace Roslynator.CSharp.Refactorings
         {
             MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.None, context.CancellationToken);
 
-            if (methodInfo.Symbol != null
-                && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(fromMethodName))
-            {
-                ExpressionSyntax expression = GetExpression(invocation);
+            if (methodInfo.Symbol == null)
+                return false;
 
-                if (expression != null)
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, fromMethodName))
+                return false;
+
+            ExpressionSyntax expression = GetExpression(invocation);
+
+            if (expression == null)
+                return false;
+
+            context.RegisterRefactoring(
+                $"Replace '{fromMethodName}' with '{toMethodName}'",
+                cancellationToken =>
                 {
-                    context.RegisterRefactoring(
-                        $"Replace '{fromMethodName}' with '{toMethodName}'",
-                        cancellationToken =>
-                        {
-                            return RefactorAsync(
-                                context.Document,
-                                invocation,
-                                toMethodName,
-                                expression,
-                                cancellationToken);
-                        });
+                    return RefactorAsync(
+                        context.Document,
+                        invocation,
+                        toMethodName,
+                        expression,
+                        cancellationToken);
+                });
 
-                    return true;
-                }
-            }
-
-            return false;
+            return true;
         }
 
         private static ExpressionSyntax GetExpression(InvocationExpressionSyntax invocation)

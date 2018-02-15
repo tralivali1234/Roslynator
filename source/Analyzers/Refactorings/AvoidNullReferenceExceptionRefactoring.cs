@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
 
                             if (methodInfo.Symbol != null
                                 && methodInfo.ReturnType.IsReferenceType
-                                && methodInfo.IsContainingType(MetadataNames.System_Linq_Enumerable))
+                                && methodInfo.IsContainingType(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
                             {
                                 ReportDiagnostic(context, expression);
                             }

@@ -862,7 +862,7 @@ namespace Roslynator.CSharp
             if (declaration == null)
                 throw new ArgumentNullException(nameof(declaration));
 
-            return SyntaxInfo.ModifiersInfo(declaration).Accessibility;
+            return SyntaxInfo.ModifiersInfo(declaration).ExplicitAccessibility;
         }
 
         public static Accessibility GetExplicitAccessibility(ClassDeclarationSyntax classDeclaration)
@@ -1041,7 +1041,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        //TODO: WithExplicitAccessibility
+        //XTODO: WithExplicitAccessibility
         public static TNode ChangeExplicitAccessibility<TNode>(
             TNode node,
             Accessibility newAccessibility,
@@ -1052,9 +1052,8 @@ namespace Roslynator.CSharp
 
             AccessibilityInfo info = SyntaxInfo.AccessibilityInfo(node);
 
-            //TODO: throw ex
             if (!info.Success)
-                return node;
+                throw new ArgumentException($"'{node.Kind()}' cannot have modifiers.", nameof(node));
 
             AccessibilityInfo newInfo = info.WithExplicitAccessibility(newAccessibility, comparer);
 

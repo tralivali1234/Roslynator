@@ -411,7 +411,7 @@ namespace Roslynator.CSharp
         {
             if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
             {
-                ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, semanticModel, extensionMethodKind);
+                ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, extensionMethodKind);
 
                 if (extensionMethodInfo.Symbol != null)
                 {
@@ -429,7 +429,7 @@ namespace Roslynator.CSharp
         {
             if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
             {
-                return new MethodInfo(methodSymbol, semanticModel);
+                return new MethodInfo(methodSymbol);
             }
 
             return default(MethodInfo);

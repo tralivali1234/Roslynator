@@ -6,9 +6,9 @@ namespace Roslynator
 {
     internal struct ExtensionMethodInfo
     {
-        private ExtensionMethodInfo(IMethodSymbol methodSymbol, IMethodSymbol reducedSymbol, SemanticModel semanticModel)
+        private ExtensionMethodInfo(IMethodSymbol methodSymbol, IMethodSymbol reducedSymbol)
         {
-            MethodInfo = new MethodInfo(methodSymbol, semanticModel);
+            MethodInfo = new MethodInfo(methodSymbol);
             ReducedSymbol = reducedSymbol;
         }
 
@@ -36,7 +36,7 @@ namespace Roslynator
             get { return Symbol != null && object.ReferenceEquals(ReducedSymbol, Symbol); }
         }
 
-        public static ExtensionMethodInfo Create(IMethodSymbol methodSymbol, SemanticModel semanticModel, ExtensionMethodKind kind = ExtensionMethodKind.None)
+        public static ExtensionMethodInfo Create(IMethodSymbol methodSymbol, ExtensionMethodKind kind = ExtensionMethodKind.None)
         {
             if (methodSymbol?.IsExtensionMethod == true)
             {
@@ -46,12 +46,12 @@ namespace Roslynator
                 {
                     if (kind != ExtensionMethodKind.NonReduced)
                     {
-                        return new ExtensionMethodInfo(reducedFrom, methodSymbol, semanticModel);
+                        return new ExtensionMethodInfo(reducedFrom, methodSymbol);
                     }
                 }
                 else if (kind != ExtensionMethodKind.Reduced)
                 {
-                    return new ExtensionMethodInfo(methodSymbol, null, semanticModel);
+                    return new ExtensionMethodInfo(methodSymbol, null);
                 }
             }
 

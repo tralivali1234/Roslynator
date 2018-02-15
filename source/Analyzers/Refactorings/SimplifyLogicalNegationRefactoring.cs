@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate())
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(context.SemanticModel))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, parent);

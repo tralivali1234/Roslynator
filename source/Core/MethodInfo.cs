@@ -10,38 +10,29 @@ namespace Roslynator
 {
     public struct MethodInfo : IEquatable<MethodInfo>
     {
-        internal MethodInfo(IMethodSymbol symbol, SemanticModel semanticModel)
-            : this()
+        internal MethodInfo(IMethodSymbol symbol)
         {
             Debug.Assert(symbol != null);
-            Debug.Assert(semanticModel != null);
 
             Symbol = symbol;
-            SemanticModel = semanticModel;
         }
 
         public IMethodSymbol Symbol { get; }
-
-        public SemanticModel SemanticModel { get; }
 
         public bool IsReturnType(SpecialType specialType)
         {
             return ReturnType.SpecialType == specialType;
         }
 
-        public bool IsReturnType(string fullyQualifiedMetadataName)
-        {
-            return ReturnType.Equals(SemanticModel.GetTypeByMetadataName(fullyQualifiedMetadataName));
-        }
-
         public bool IsContainingType(SpecialType specialType)
         {
-            return ContainingType.SpecialType == specialType;
+            return ContainingType?.SpecialType == specialType;
         }
 
-        public bool IsContainingType(string fullyQualifiedMetadataName)
+        //TODO: ?
+        public bool IsContainingType(ITypeSymbol containingType)
         {
-            return ContainingType.Equals(SemanticModel.GetTypeByMetadataName(fullyQualifiedMetadataName));
+            return ContainingType?.Equals(containingType) == true;
         }
 
         public bool ReturnsObject
@@ -124,9 +115,19 @@ namespace Roslynator
             get { return DeclaredAccessibility == Accessibility.Internal; }
         }
 
+        public bool IsProtectedInternal
+        {
+            get { return DeclaredAccessibility == Accessibility.ProtectedOrInternal; }
+        }
+
         public bool IsProtected
         {
             get { return DeclaredAccessibility == Accessibility.Protected; }
+        }
+
+        public bool IsPrivateProtected
+        {
+            get { return DeclaredAccessibility == Accessibility.ProtectedAndInternal; }
         }
 
         public bool IsPrivate
@@ -134,60 +135,53 @@ namespace Roslynator
             get { return DeclaredAccessibility == Accessibility.Private; }
         }
 
-        internal bool IsPublicStaticStringMethod(string name = null, bool isGenericMethod = false)
+        //TODO: IsPublicStaticNonGeneric
+        internal bool IsPublicStaticNonGenericMethod(string name = null)
         {
             return IsNullOrName(name)
-                && IsContainingType(SpecialType.System_String)
                 && IsPublic
                 && IsStatic
-                && IsGenericMethod == isGenericMethod;
+                && !IsGenericMethod;
         }
 
-        internal bool IsPublicStaticRegexMethod(string name = null, bool isGenericMethod = false)
+        internal bool IsPublicInstanceNonGenericMethod(string name = null)
         {
             return IsNullOrName(name)
-                && IsContainingType(MetadataNames.System_Text_RegularExpressions_Regex)
-                && IsPublic
-                && IsStatic
-                && IsGenericMethod == isGenericMethod;
-        }
-
-        internal bool IsPublicInstanceStringMethod(string name = null, bool isGenericMethod = false)
-        {
-            return IsNullOrName(name)
-                && IsContainingType(SpecialType.System_String)
                 && IsPublic
                 && !IsStatic
-                && IsGenericMethod == isGenericMethod;
+                && !IsGenericMethod;
         }
 
         internal bool IsLinqExtensionOfIEnumerableOfTWithoutParameters(
             string name,
+            SemanticModel semanticModel,
             bool allowImmutableArrayExtension = false)
         {
-            return IsLinqExtensionOfIEnumerableOfT(name, parameterCount: 1, allowImmutableArrayExtension: allowImmutableArrayExtension);
+            return IsLinqExtensionOfIEnumerableOfT(semanticModel, name, parameterCount: 1, allowImmutableArrayExtension: allowImmutableArrayExtension);
         }
 
         internal bool IsLinqElementAt(
+            SemanticModel semanticModel,
             bool allowImmutableArrayExtension = false)
         {
-            return IsLinqExtensionOfIEnumerableOfT("ElementAt", parameterCount: 2, allowImmutableArrayExtension: allowImmutableArrayExtension)
+            return IsLinqExtensionOfIEnumerableOfT(semanticModel, "ElementAt", parameterCount: 2, allowImmutableArrayExtension: allowImmutableArrayExtension)
                 && Parameters[1].Type.IsInt();
         }
 
         internal bool IsLinqWhere(
+            SemanticModel semanticModel,
             bool allowImmutableArrayExtension = false)
         {
-            return IsLinqExtensionOfIEnumerableOfTWithPredicate("Where", parameterCount: 2, allowImmutableArrayExtension: allowImmutableArrayExtension);
+            return IsLinqExtensionOfIEnumerableOfTWithPredicate("Where", parameterCount: 2, semanticModel: semanticModel, allowImmutableArrayExtension: allowImmutableArrayExtension);
         }
 
-        internal bool IsLinqWhereWithIndex()
+        internal bool IsLinqWhereWithIndex(SemanticModel semanticModel)
         {
-            return IsLinqExtensionOfIEnumerableOfT("Where", parameterCount: 2, allowImmutableArrayExtension: false)
-                && SymbolUtility.IsPredicateFunc(Parameters[1].Type, Symbol.TypeArguments[0], SemanticModel.Compilation.GetSpecialType(SpecialType.System_Int32), SemanticModel);
+            return IsLinqExtensionOfIEnumerableOfT(semanticModel, "Where", parameterCount: 2, allowImmutableArrayExtension: false)
+                && SymbolUtility.IsPredicateFunc(Parameters[1].Type, Symbol.TypeArguments[0], semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32), semanticModel);
         }
 
-        internal bool IsLinqSelect(bool allowImmutableArrayExtension = false)
+        internal bool IsLinqSelect(SemanticModel semanticModel, bool allowImmutableArrayExtension = false)
         {
             if (!Symbol.IsPublic())
                 return false;
@@ -206,28 +200,28 @@ namespace Roslynator
             if (containingType == null)
                 return false;
 
-            if (containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
                 return parameters.Length == 2
                     && parameters[0].Type.IsConstructedFromIEnumerableOfT()
-                    && SymbolUtility.IsFunc(parameters[1].Type, Symbol.TypeArguments[0], Symbol.TypeArguments[1], SemanticModel);
+                    && SymbolUtility.IsFunc(parameters[1].Type, Symbol.TypeArguments[0], Symbol.TypeArguments[1], semanticModel);
             }
             else if (allowImmutableArrayExtension
-                && containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
                 return parameters.Length == 2
-                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(SemanticModel)
-                    && SymbolUtility.IsFunc(parameters[1].Type, Symbol.TypeArguments[0], Symbol.TypeArguments[1], SemanticModel);
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel)
+                    && SymbolUtility.IsFunc(parameters[1].Type, Symbol.TypeArguments[0], Symbol.TypeArguments[1], semanticModel);
             }
 
             return false;
         }
 
-        internal bool IsLinqCast()
+        internal bool IsLinqCast(SemanticModel semanticModel)
         {
             return Symbol.IsPublic()
                 && Symbol.ReturnType.IsConstructedFromIEnumerableOfT()
@@ -236,10 +230,11 @@ namespace Roslynator
                 && Symbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.IsIEnumerable() == true
                 && Symbol
                     .ContainingType?
-                    .Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)) == true;
+                    .Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)) == true;
         }
 
         internal bool IsLinqExtensionOfIEnumerableOfT(
+            SemanticModel semanticModel,
             string name = null,
             int parameterCount = -1,
             bool allowImmutableArrayExtension = false)
@@ -255,7 +250,7 @@ namespace Roslynator
             if (containingType == null)
                 return false;
 
-            if (containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
@@ -263,27 +258,29 @@ namespace Roslynator
                     && parameters[0].Type.IsConstructedFromIEnumerableOfT();
             }
             else if (allowImmutableArrayExtension
-                && containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
                 return (parameterCount == -1 || parameters.Length == parameterCount)
-                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(SemanticModel);
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel);
             }
 
             return false;
         }
 
         internal bool IsLinqExtensionOfIEnumerableOfTWithPredicate(
+            SemanticModel semanticModel,
             string name = null,
             bool allowImmutableArrayExtension = false)
         {
-            return IsLinqExtensionOfIEnumerableOfTWithPredicate(name, parameterCount: 2, allowImmutableArrayExtension: allowImmutableArrayExtension);
+            return IsLinqExtensionOfIEnumerableOfTWithPredicate(name, parameterCount: 2, semanticModel: semanticModel, allowImmutableArrayExtension: allowImmutableArrayExtension);
         }
 
         private bool IsLinqExtensionOfIEnumerableOfTWithPredicate(
             string name,
             int parameterCount,
+            SemanticModel semanticModel,
             bool allowImmutableArrayExtension = false)
         {
             if (!Symbol.IsPublic())
@@ -297,28 +294,28 @@ namespace Roslynator
             if (containingType == null)
                 return false;
 
-            if (containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
                 return parameters.Length == parameterCount
                     && parameters[0].Type.IsConstructedFromIEnumerableOfT()
-                    && SymbolUtility.IsPredicateFunc(parameters[1].Type, Symbol.TypeArguments[0], SemanticModel);
+                    && SymbolUtility.IsPredicateFunc(parameters[1].Type, Symbol.TypeArguments[0], semanticModel);
             }
             else if (allowImmutableArrayExtension
-                && containingType.Equals(SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
             {
                 ImmutableArray<IParameterSymbol> parameters = Parameters;
 
                 return parameters.Length == parameterCount
-                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(SemanticModel)
-                    && SymbolUtility.IsPredicateFunc(parameters[1].Type, Symbol.TypeArguments[0], SemanticModel);
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel)
+                    && SymbolUtility.IsPredicateFunc(parameters[1].Type, Symbol.TypeArguments[0], semanticModel);
             }
 
             return false;
         }
-        #region IMethodSymbol
 
+        #region IMethodSymbol
         public MethodKind MethodKind => Symbol.MethodKind;
 
         public bool IsGenericMethod => Symbol.IsGenericMethod;
@@ -375,13 +372,12 @@ namespace Roslynator
 
         public bool Equals(MethodInfo other)
         {
-            return EqualityComparer<IMethodSymbol>.Default.Equals(Symbol, other.Symbol)
-                   && EqualityComparer<SemanticModel>.Default.Equals(SemanticModel, other.SemanticModel);
+            return EqualityComparer<IMethodSymbol>.Default.Equals(Symbol, other.Symbol);
         }
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Symbol, Hash.Create(SemanticModel));
+            return Symbol?.GetHashCode() ?? 0;
         }
 
         public static bool operator ==(MethodInfo info1, MethodInfo info2)

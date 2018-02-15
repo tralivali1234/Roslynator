@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return false;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Last", allowImmutableArrayExtension: true))
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Last", semanticModel, allowImmutableArrayExtension: true))
                 return false;
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);

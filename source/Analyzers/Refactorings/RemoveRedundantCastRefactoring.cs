@@ -199,12 +199,12 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return;
 
-            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, semanticModel, ExtensionMethodKind.Reduced);
+            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, ExtensionMethodKind.Reduced);
 
             if (extensionMethodInfo.Symbol == null)
                 return;
 
-            if (!extensionMethodInfo.MethodInfo.IsLinqCast())
+            if (!extensionMethodInfo.MethodInfo.IsLinqCast(semanticModel))
                 return;
 
             ITypeSymbol typeArgument = extensionMethodInfo.ReducedSymbol.TypeArguments.SingleOrDefault(shouldThrow: false);

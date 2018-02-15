@@ -23,8 +23,7 @@ namespace Roslynator.CSharp.Syntax
 
         public SyntaxTokenList Modifiers { get; }
 
-        //TODO: ExplicitAccessibility
-        public Accessibility Accessibility
+        public Accessibility ExplicitAccessibility
         {
             get { return CSharpAccessibility.GetExplicitAccessibility(Modifiers); }
         }

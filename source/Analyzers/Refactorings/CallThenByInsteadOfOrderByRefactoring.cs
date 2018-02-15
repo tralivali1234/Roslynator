@@ -28,8 +28,8 @@ namespace Roslynator.CSharp.Refactorings
                         case "OrderBy":
                         case "OrderByDescending":
                             {
-                                if (IsLinqExtensionOfIEnumerableOfT(context, invocationInfo.InvocationExpression)
-                                    && IsLinqExtensionOfIEnumerableOfT(context, invocationInfo2.InvocationExpression))
+                                if (IsOrderByOrOrderByDescending(invocationInfo.InvocationExpression, context.SemanticModel, context.CancellationToken)
+                                    && IsOrderByOrOrderByDescending(invocationInfo2.InvocationExpression, context.SemanticModel, context.CancellationToken))
                                 {
                                     context.ReportDiagnostic(
                                         DiagnosticDescriptors.CallThenByInsteadOfOrderBy,
@@ -44,13 +44,13 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool IsLinqExtensionOfIEnumerableOfT(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        private static bool IsOrderByOrOrderByDescending(InvocationExpressionSyntax invocationExpression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            MethodInfo methodInfo = context.SemanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.None, context.CancellationToken);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.None, cancellationToken);
 
             return methodInfo.Symbol != null
                 && methodInfo.IsName("OrderBy", "OrderByDescending")
-                && methodInfo.IsLinqExtensionOfIEnumerableOfT();
+                && methodInfo.IsLinqExtensionOfIEnumerableOfT(semanticModel);
         }
 
         public static Task<Document> RefactorAsync(
