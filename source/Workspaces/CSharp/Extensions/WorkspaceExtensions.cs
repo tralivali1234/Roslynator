@@ -141,7 +141,6 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
-        //TODO: TriviaRemoveOptions
         public static async Task<Document> RemoveTriviaAsync(
             this Document document,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -183,24 +182,9 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, GetPreprocessorDirectives());
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(), removeOptions);
 
             return document.WithText(newSourceText);
-
-            IEnumerable<DirectiveTriviaSyntax> GetPreprocessorDirectives()
-            {
-                switch (removeOptions)
-                {
-                    case PreprocessorDirectiveRemoveOptions.All:
-                        return root.DescendantPreprocessorDirectives();
-                    case PreprocessorDirectiveRemoveOptions.AllExceptRegion:
-                        return root.DescendantPreprocessorDirectives(f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    case PreprocessorDirectiveRemoveOptions.Region:
-                        return root.DescendantPreprocessorDirectives(f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    default:
-                        throw new ArgumentException("", nameof(removeOptions));
-                }
-            }
         }
 
         public static async Task<Document> RemovePreprocessorDirectivesAsync(
@@ -216,24 +200,9 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, GetPreprocessorDirectives());
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(span), removeOptions);
 
             return document.WithText(newSourceText);
-
-            IEnumerable<DirectiveTriviaSyntax> GetPreprocessorDirectives()
-            {
-                switch (removeOptions)
-                {
-                    case PreprocessorDirectiveRemoveOptions.All:
-                        return root.DescendantPreprocessorDirectives(span);
-                    case PreprocessorDirectiveRemoveOptions.AllExceptRegion:
-                        return root.DescendantPreprocessorDirectives(span, f => !f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    case PreprocessorDirectiveRemoveOptions.Region:
-                        return root.DescendantPreprocessorDirectives(span, f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
-                    default:
-                        throw new ArgumentException("", nameof(removeOptions));
-                }
-            }
         }
 
         internal static async Task<Document> RemovePreprocessorDirectivesAsync(
@@ -249,16 +218,9 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, directives);
+            SourceText newSourceText = sourceText.WithChanges(GetTextChanges());
 
             return document.WithText(newSourceText);
-        }
-
-        private static SourceText RemovePreprocessorDirectives(
-            SourceText sourceText,
-            IEnumerable<DirectiveTriviaSyntax> directives)
-        {
-            return sourceText.WithChanges(GetTextChanges());
 
             IEnumerable<TextChange> GetTextChanges()
             {
@@ -270,6 +232,73 @@ namespace Roslynator.CSharp
 
                     yield return new TextChange(lines[startLine].SpanIncludingLineBreak, "");
                 }
+            }
+        }
+
+        private static SourceText RemovePreprocessorDirectives(
+            SourceText sourceText,
+            IEnumerable<DirectiveTriviaSyntax> directives,
+            PreprocessorDirectiveRemoveOptions removeOptions)
+        {
+            return sourceText.WithChanges(GetTextChanges());
+
+            IEnumerable<TextChange> GetTextChanges()
+            {
+                TextLineCollection lines = sourceText.Lines;
+
+                foreach (DirectiveTriviaSyntax directive in directives)
+                {
+                    if (ShouldRemoveDirective(directive))
+                    {
+                        int startLine = directive.GetSpanStartLine();
+
+                        yield return new TextChange(lines[startLine].SpanIncludingLineBreak, "");
+                    }
+                }
+            }
+
+            bool ShouldRemoveDirective(DirectiveTriviaSyntax directive)
+            {
+                switch (directive.Kind())
+                {
+                    case SyntaxKind.IfDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.If) != 0;
+                    case SyntaxKind.ElifDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Elif) != 0;
+                    case SyntaxKind.ElseDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Else) != 0;
+                    case SyntaxKind.EndIfDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.EndIf) != 0;
+                    case SyntaxKind.RegionDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Region) != 0;
+                    case SyntaxKind.EndRegionDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.EndRegion) != 0;
+                    case SyntaxKind.DefineDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Define) != 0;
+                    case SyntaxKind.UndefDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Undef) != 0;
+                    case SyntaxKind.ErrorDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Error) != 0;
+                    case SyntaxKind.WarningDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Warning) != 0;
+                    case SyntaxKind.LineDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Line) != 0;
+                    case SyntaxKind.PragmaWarningDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.PragmaWarning) != 0;
+                    case SyntaxKind.PragmaChecksumDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.PragmaChecksum) != 0;
+                    case SyntaxKind.ReferenceDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Reference) != 0;
+                    case SyntaxKind.BadDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Bad) != 0;
+                    case SyntaxKind.ShebangDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Shebang) != 0;
+                    case SyntaxKind.LoadDirectiveTrivia:
+                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Load) != 0;
+                }
+
+                Debug.Fail(directive.Kind().ToString());
+                return false;
             }
         }
 

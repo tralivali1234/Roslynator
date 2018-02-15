@@ -1078,7 +1078,6 @@ namespace Roslynator.CSharp
         #endregion Token
 
         #region Type
-        //TODO: PredefinedBoolType
         public static PredefinedTypeSyntax PredefinedBoolType()
         {
             return PredefinedType(SyntaxKind.BoolKeyword);

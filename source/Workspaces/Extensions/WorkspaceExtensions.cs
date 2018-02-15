@@ -10,9 +10,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
-    #region Document
     public static class WorkspaceExtensions
     {
+        #region Document
         public static async Task<Document> WithTextChangeAsync(
             this Document document,
             TextChange textChange,

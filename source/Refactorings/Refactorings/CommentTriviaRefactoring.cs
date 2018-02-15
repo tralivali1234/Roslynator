@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove all comments (except documentation comments)",
-                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.AllExceptDocumentation, cancellationToken));
+                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.NonDocumentationComment, cancellationToken));
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllDocumentationComments)
@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove all documentation comments",
-                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.Documentation, cancellationToken));
+                        cancellationToken => context.Document.RemoveCommentsAsync(CommentRemoveOptions.DocumentationComment, cancellationToken));
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove comments (except documentation comments)",
-                        cancellationToken => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.AllExceptDocumentation, cancellationToken));
+                        cancellationToken => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.NonDocumentationComment, cancellationToken));
                 }
 
                 if (fDocComment
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Remove documentation comments",
-                        c => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.Documentation, c));
+                        c => context.Document.RemoveCommentsAsync(context.Span, CommentRemoveOptions.DocumentationComment, c));
                 }
             }
         }
