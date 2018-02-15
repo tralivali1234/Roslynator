@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsPublicInstanceNonGenericMethod(name2))
+            if (!methodInfo.IsPublicInstanceNonGeneric(name2))
                 return;
 
             if (!methodInfo.IsContainingType(SpecialType.System_String))
@@ -154,7 +154,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsPublicStaticNonGenericMethod("Equals"))
+            if (!methodInfo.IsPublicStaticNonGeneric("Equals"))
                 return;
 
             if (!methodInfo.IsContainingType(SpecialType.System_String))
@@ -272,7 +272,7 @@ namespace Roslynator.CSharp.Refactorings
             MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
 
             return methodInfo.Symbol != null
-                && methodInfo.IsPublicInstanceNonGenericMethod()
+                && methodInfo.IsPublicInstanceNonGeneric()
                 && methodInfo.IsContainingType(SpecialType.System_String)
                 && methodInfo.ReturnsString
                 && !methodInfo.Parameters.Any();

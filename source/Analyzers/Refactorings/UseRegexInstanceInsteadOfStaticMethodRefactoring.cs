@@ -29,8 +29,8 @@ namespace Roslynator.CSharp.Refactorings
                         MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationInfo.InvocationExpression, context.CancellationToken);
 
                         if (methodInfo.Symbol != null
-                            && methodInfo.IsPublicStaticNonGenericMethod()
-                            && methodInfo.IsContainingType(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)))
+                            && methodInfo.IsPublicStaticNonGeneric()
+                            && methodInfo.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
                         {
                             context.ReportDiagnostic(
                                 DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod,

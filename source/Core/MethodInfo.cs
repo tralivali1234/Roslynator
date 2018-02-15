@@ -29,12 +29,6 @@ namespace Roslynator
             return ContainingType?.SpecialType == specialType;
         }
 
-        //TODO: ?
-        public bool IsContainingType(ITypeSymbol containingType)
-        {
-            return ContainingType?.Equals(containingType) == true;
-        }
-
         public bool ReturnsObject
         {
             get { return IsReturnType(SpecialType.System_Object); }
@@ -115,19 +109,9 @@ namespace Roslynator
             get { return DeclaredAccessibility == Accessibility.Internal; }
         }
 
-        public bool IsProtectedInternal
-        {
-            get { return DeclaredAccessibility == Accessibility.ProtectedOrInternal; }
-        }
-
         public bool IsProtected
         {
             get { return DeclaredAccessibility == Accessibility.Protected; }
-        }
-
-        public bool IsPrivateProtected
-        {
-            get { return DeclaredAccessibility == Accessibility.ProtectedAndInternal; }
         }
 
         public bool IsPrivate
@@ -135,8 +119,7 @@ namespace Roslynator
             get { return DeclaredAccessibility == Accessibility.Private; }
         }
 
-        //TODO: IsPublicStaticNonGeneric
-        internal bool IsPublicStaticNonGenericMethod(string name = null)
+        internal bool IsPublicStaticNonGeneric(string name = null)
         {
             return IsNullOrName(name)
                 && IsPublic
@@ -144,7 +127,7 @@ namespace Roslynator
                 && !IsGenericMethod;
         }
 
-        internal bool IsPublicInstanceNonGenericMethod(string name = null)
+        internal bool IsPublicInstanceNonGeneric(string name = null)
         {
             return IsNullOrName(name)
                 && IsPublic

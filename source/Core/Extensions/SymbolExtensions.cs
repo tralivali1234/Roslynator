@@ -263,55 +263,6 @@ namespace Roslynator
                 && ((IMethodSymbol)symbol).IsAsync;
         }
 
-        public static bool IsPubliclyVisible(this ISymbol symbol)
-        {
-            if (symbol == null)
-                throw new ArgumentNullException(nameof(symbol));
-
-            do
-            {
-                switch (symbol.Kind)
-                {
-                    case SymbolKind.Event:
-                    case SymbolKind.Field:
-                    case SymbolKind.Method:
-                    case SymbolKind.NamedType:
-                    case SymbolKind.Property:
-                        {
-                            Accessibility accessibility = symbol.DeclaredAccessibility;
-
-                            if (accessibility == Accessibility.Public
-                                || accessibility == Accessibility.Protected
-                                || accessibility == Accessibility.ProtectedOrInternal)
-                            {
-                                INamedTypeSymbol containingType = symbol.ContainingType;
-
-                                if (containingType != null)
-                                {
-                                    symbol = containingType;
-                                    break;
-                                }
-                                else
-                                {
-                                    return symbol.ContainingNamespace != null;
-                                }
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                    case SymbolKind.Namespace:
-                        {
-                            return true;
-                        }
-                }
-
-            } while (symbol != null);
-
-            return false;
-        }
-
         internal static bool IsPropertyOfAnonymousType(this ISymbol symbol)
         {
             return symbol.IsProperty()
