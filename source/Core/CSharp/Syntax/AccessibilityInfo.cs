@@ -6,10 +6,10 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Comparers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: AccessModifiersInfo, ExplicitAccessibilityInfo
     public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
         private AccessibilityInfo(SyntaxNode node, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
@@ -40,8 +40,7 @@ namespace Roslynator.CSharp.Syntax
             get { return GetTokenOrDefault(SecondTokenIndex); }
         }
 
-        //TODO: ExplicitAccessibility
-        public Accessibility Accessibility
+        public Accessibility ExplicitAccessibility
         {
             get
             {
@@ -347,11 +346,66 @@ namespace Roslynator.CSharp.Syntax
             return Create(info.Node, info.Modifiers);
         }
 
-        public AccessibilityInfo WithAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
+        public AccessibilityInfo WithExplicitAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            return CSharpAccessibility.ChangeAccessibility(this, newAccessibility, comparer);
+            Accessibility accessibility = ExplicitAccessibility;
+
+            if (accessibility == newAccessibility)
+                return this;
+
+            comparer = comparer ?? ModifierComparer.Instance;
+
+            SyntaxNode declaration = Node;
+
+            if (accessibility.IsSingleTokenAccessibility()
+                && newAccessibility.IsSingleTokenAccessibility())
+            {
+                int insertIndex = comparer.GetInsertIndex(Modifiers, GetTokenKind());
+
+                if (TokenIndex == insertIndex
+                    || TokenIndex == insertIndex - 1)
+                {
+                    SyntaxToken newToken = SyntaxFactory.Token(GetTokenKind()).WithTriviaFrom(Token);
+
+                    SyntaxTokenList newModifiers = Modifiers.Replace(Token, newToken);
+
+                    return WithModifiers(newModifiers);
+                }
+            }
+
+            if (accessibility != Accessibility.NotApplicable)
+            {
+                declaration = Modifier.RemoveAt(declaration, Math.Max(TokenIndex, SecondTokenIndex));
+
+                if (SecondTokenIndex != -1)
+                    declaration = Modifier.RemoveAt(declaration, Math.Min(TokenIndex, SecondTokenIndex));
+            }
+
+            if (newAccessibility != Accessibility.NotApplicable)
+                declaration = Modifier.Insert(declaration, newAccessibility, comparer);
+
+            return SyntaxInfo.AccessibilityInfo(declaration);
+
+            SyntaxKind GetTokenKind()
+            {
+                switch (newAccessibility)
+                {
+                    case Accessibility.Private:
+                        return SyntaxKind.PrivateKeyword;
+                    case Accessibility.Protected:
+                        return SyntaxKind.ProtectedKeyword;
+                    case Accessibility.Internal:
+                        return SyntaxKind.InternalKeyword;
+                    case Accessibility.Public:
+                        return SyntaxKind.PublicKeyword;
+                    case Accessibility.NotApplicable:
+                        return SyntaxKind.None;
+                    default:
+                        throw new ArgumentException("", nameof(newAccessibility));
+                }
+            }
         }
 
         private SyntaxToken GetTokenOrDefault(int index)

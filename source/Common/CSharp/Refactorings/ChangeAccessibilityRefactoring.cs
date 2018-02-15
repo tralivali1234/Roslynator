@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                Accessibility accessibility = SyntaxInfo.AccessibilityInfo(member).Accessibility;
+                Accessibility accessibility = CSharpAccessibility.GetExplicitAccessibility(member);
 
                 if (accessibility == Accessibility.NotApplicable)
                 {
@@ -154,7 +154,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.FirstIndex)
-                .Concat(selectedMembers.Select(f => CSharpAccessibility.ChangeAccessibility(f, newAccessibility)))
+                .Concat(selectedMembers.Select(f => CSharpAccessibility.ChangeExplicitAccessibility(f, newAccessibility)))
                 .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
@@ -208,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return await solution.ReplaceNodesAsync(
                 members,
-                (node, _) => CSharpAccessibility.ChangeAccessibility(node, newAccessibility),
+                (node, _) => CSharpAccessibility.ChangeExplicitAccessibility(node, newAccessibility),
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -218,7 +218,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            SyntaxNode newNode = CSharpAccessibility.ChangeAccessibility(node, newAccessibility);
+            SyntaxNode newNode = CSharpAccessibility.ChangeExplicitAccessibility(node, newAccessibility);
 
             return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }
@@ -293,10 +293,10 @@ namespace Roslynator.CSharp.Refactorings
         {
             AccessibilityInfo info = SyntaxInfo.AccessibilityInfo(node);
 
-            if (info.Accessibility == Accessibility.NotApplicable)
+            if (info.ExplicitAccessibility == Accessibility.NotApplicable)
                 return node;
 
-            AccessibilityInfo newInfo = info.WithAccessibility(newAccessibility, ModifierComparer.Instance);
+            AccessibilityInfo newInfo = info.WithExplicitAccessibility(newAccessibility, ModifierComparer.Instance);
 
             return newInfo.Node;
         }

@@ -179,7 +179,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     if (syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax declaration2)
                     {
-                        Accessibility accessibility2 = SyntaxInfo.AccessibilityInfo(declaration2).Accessibility;
+                        Accessibility accessibility2 = CSharpAccessibility.GetExplicitAccessibility(declaration2);
 
                         if (accessibility2 != Accessibility.NotApplicable)
                         {
@@ -271,7 +271,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility accessibility,
             CancellationToken cancellationToken)
         {
-            MemberDeclarationSyntax newNode = CSharpAccessibility.ChangeAccessibility(memberDeclaration, accessibility);
+            MemberDeclarationSyntax newNode = CSharpAccessibility.ChangeExplicitAccessibility(memberDeclaration, accessibility);
 
             return document.ReplaceNodeAsync(memberDeclaration, newNode, cancellationToken);
         }

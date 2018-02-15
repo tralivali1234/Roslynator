@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -16,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
-            if (SyntaxInfo.AccessibilityInfo(constructorDeclaration).Accessibility.Is(Accessibility.Public, Accessibility.ProtectedOrInternal)
+            if (CSharpAccessibility.GetExplicitAccessibility(constructorDeclaration).Is(Accessibility.Public, Accessibility.ProtectedOrInternal)
                 && constructorDeclaration.IsParentKind(SyntaxKind.ClassDeclaration))
             {
                 var classDeclaration = (ClassDeclarationSyntax)constructorDeclaration.Parent;
@@ -48,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
             ConstructorDeclarationSyntax constructorDeclaration,
             CancellationToken cancellationToken)
         {
-            ConstructorDeclarationSyntax newNode = CSharpAccessibility.ChangeAccessibility(constructorDeclaration, Accessibility.Protected);
+            ConstructorDeclarationSyntax newNode = CSharpAccessibility.ChangeExplicitAccessibility(constructorDeclaration, Accessibility.Protected);
 
             return document.ReplaceNodeAsync(constructorDeclaration, newNode, cancellationToken);
         }

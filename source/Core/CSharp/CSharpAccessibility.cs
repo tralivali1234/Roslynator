@@ -540,7 +540,7 @@ namespace Roslynator.CSharp
             if (classDeclaration == null)
                 throw new ArgumentNullException(nameof(classDeclaration));
 
-            Accessibility accessibility = GetAccessibility(classDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(classDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(classDeclaration);
@@ -558,7 +558,7 @@ namespace Roslynator.CSharp
             if (modifiers.Contains(SyntaxKind.StaticKeyword))
                 return Accessibility.Private;
 
-            Accessibility accessibility = GetAccessibility(modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(constructorDeclaration);
@@ -579,7 +579,7 @@ namespace Roslynator.CSharp
             if (delegateDeclaration == null)
                 throw new ArgumentNullException(nameof(delegateDeclaration));
 
-            Accessibility accessibility = GetAccessibility(delegateDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(delegateDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(delegateDeclaration);
@@ -600,7 +600,7 @@ namespace Roslynator.CSharp
             if (enumDeclaration == null)
                 throw new ArgumentNullException(nameof(enumDeclaration));
 
-            Accessibility accessibility = GetAccessibility(enumDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(enumDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(enumDeclaration);
@@ -624,7 +624,7 @@ namespace Roslynator.CSharp
             if (eventDeclaration.ExplicitInterfaceSpecifier != null)
                 return Accessibility.Private;
 
-            Accessibility accessibility = GetAccessibility(eventDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(eventDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(eventDeclaration);
@@ -640,7 +640,7 @@ namespace Roslynator.CSharp
             if (eventFieldDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
                 return Accessibility.Public;
 
-            Accessibility accessibility = GetAccessibility(eventFieldDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(eventFieldDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(eventFieldDeclaration);
@@ -653,7 +653,7 @@ namespace Roslynator.CSharp
             if (fieldDeclaration == null)
                 throw new ArgumentNullException(nameof(fieldDeclaration));
 
-            Accessibility accessibility = GetAccessibility(fieldDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(fieldDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(fieldDeclaration);
@@ -672,7 +672,7 @@ namespace Roslynator.CSharp
             if (indexerDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
                 return Accessibility.Public;
 
-            Accessibility accessibility = GetAccessibility(indexerDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(indexerDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(indexerDeclaration);
@@ -685,7 +685,7 @@ namespace Roslynator.CSharp
             if (interfaceDeclaration == null)
                 throw new ArgumentNullException(nameof(interfaceDeclaration));
 
-            Accessibility accessibility = GetAccessibility(interfaceDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(interfaceDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(interfaceDeclaration);
@@ -709,7 +709,7 @@ namespace Roslynator.CSharp
             if (methodDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
                 return Accessibility.Public;
 
-            Accessibility accessibility = GetAccessibility(methodDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(methodDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(methodDeclaration);
@@ -744,7 +744,7 @@ namespace Roslynator.CSharp
             if (propertyDeclaration.IsParentKind(SyntaxKind.InterfaceDeclaration))
                 return Accessibility.Public;
 
-            Accessibility accessibility = GetAccessibility(propertyDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(propertyDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(propertyDeclaration);
@@ -757,7 +757,7 @@ namespace Roslynator.CSharp
             if (structDeclaration == null)
                 throw new ArgumentNullException(nameof(structDeclaration));
 
-            Accessibility accessibility = GetAccessibility(structDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(structDeclaration.Modifiers);
 
             if (accessibility == Accessibility.NotApplicable)
                 accessibility = GetDefaultAccessibility(structDeclaration);
@@ -770,7 +770,7 @@ namespace Roslynator.CSharp
             if (accessorDeclaration == null)
                 throw new ArgumentNullException(nameof(accessorDeclaration));
 
-            Accessibility accessibility = GetAccessibility(accessorDeclaration.Modifiers);
+            Accessibility accessibility = GetExplicitAccessibility(accessorDeclaration.Modifiers);
 
             SyntaxNode declaration = accessorDeclaration.Parent?.Parent;
 
@@ -804,7 +804,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static Accessibility GetAccessibility(SyntaxTokenList modifiers)
+        internal static Accessibility GetExplicitAccessibility(SyntaxTokenList modifiers)
         {
             int count = modifiers.Count;
 
@@ -857,6 +857,150 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        public static Accessibility GetExplicitAccessibility(SyntaxNode declaration)
+        {
+            if (declaration == null)
+                throw new ArgumentNullException(nameof(declaration));
+
+            return SyntaxInfo.ModifiersInfo(declaration).Accessibility;
+        }
+
+        public static Accessibility GetExplicitAccessibility(ClassDeclarationSyntax classDeclaration)
+        {
+            if (classDeclaration == null)
+                throw new ArgumentNullException(nameof(classDeclaration));
+
+            return GetExplicitAccessibility(classDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
+        {
+            if (constructorDeclaration == null)
+                throw new ArgumentNullException(nameof(constructorDeclaration));
+
+            return GetExplicitAccessibility(constructorDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
+        {
+            if (conversionOperatorDeclaration == null)
+                throw new ArgumentNullException(nameof(conversionOperatorDeclaration));
+
+            return GetExplicitAccessibility(conversionOperatorDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(DelegateDeclarationSyntax delegateDeclaration)
+        {
+            if (delegateDeclaration == null)
+                throw new ArgumentNullException(nameof(delegateDeclaration));
+
+            return GetExplicitAccessibility(delegateDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(DestructorDeclarationSyntax destructorDeclaration)
+        {
+            if (destructorDeclaration == null)
+                throw new ArgumentNullException(nameof(destructorDeclaration));
+
+            return GetExplicitAccessibility(destructorDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(EnumDeclarationSyntax enumDeclaration)
+        {
+            if (enumDeclaration == null)
+                throw new ArgumentNullException(nameof(enumDeclaration));
+
+            return GetExplicitAccessibility(enumDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(EventDeclarationSyntax eventDeclaration)
+        {
+            if (eventDeclaration == null)
+                throw new ArgumentNullException(nameof(eventDeclaration));
+
+            return GetExplicitAccessibility(eventDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
+        {
+            if (eventFieldDeclaration == null)
+                throw new ArgumentNullException(nameof(eventFieldDeclaration));
+
+            return GetExplicitAccessibility(eventFieldDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(FieldDeclarationSyntax fieldDeclaration)
+        {
+            if (fieldDeclaration == null)
+                throw new ArgumentNullException(nameof(fieldDeclaration));
+
+            return GetExplicitAccessibility(fieldDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(IndexerDeclarationSyntax indexerDeclaration)
+        {
+            if (indexerDeclaration == null)
+                throw new ArgumentNullException(nameof(indexerDeclaration));
+
+            return GetExplicitAccessibility(indexerDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
+        {
+            if (interfaceDeclaration == null)
+                throw new ArgumentNullException(nameof(interfaceDeclaration));
+
+            return GetExplicitAccessibility(interfaceDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(MethodDeclarationSyntax methodDeclaration)
+        {
+            if (methodDeclaration == null)
+                throw new ArgumentNullException(nameof(methodDeclaration));
+
+            return GetExplicitAccessibility(methodDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(OperatorDeclarationSyntax operatorDeclaration)
+        {
+            if (operatorDeclaration == null)
+                throw new ArgumentNullException(nameof(operatorDeclaration));
+
+            return GetExplicitAccessibility(operatorDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(PropertyDeclarationSyntax propertyDeclaration)
+        {
+            if (propertyDeclaration == null)
+                throw new ArgumentNullException(nameof(propertyDeclaration));
+
+            return GetExplicitAccessibility(propertyDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(StructDeclarationSyntax structDeclaration)
+        {
+            if (structDeclaration == null)
+                throw new ArgumentNullException(nameof(structDeclaration));
+
+            return GetExplicitAccessibility(structDeclaration.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(IncompleteMemberSyntax incompleteMember)
+        {
+            if (incompleteMember == null)
+                throw new ArgumentNullException(nameof(incompleteMember));
+
+            return GetExplicitAccessibility(incompleteMember.Modifiers);
+        }
+
+        public static Accessibility GetExplicitAccessibility(AccessorDeclarationSyntax accessorDeclaration)
+        {
+            if (accessorDeclaration == null)
+                throw new ArgumentNullException(nameof(accessorDeclaration));
+
+            return GetExplicitAccessibility(accessorDeclaration.Modifiers);
+        }
+
         public static bool IsPubliclyVisible(MemberDeclarationSyntax declaration)
         {
             if (declaration == null)
@@ -897,7 +1041,8 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        public static TNode ChangeAccessibility<TNode>(
+        //TODO: WithExplicitAccessibility
+        public static TNode ChangeExplicitAccessibility<TNode>(
             TNode node,
             Accessibility newAccessibility,
             IModifierComparer comparer = null) where TNode : SyntaxNode
@@ -907,77 +1052,13 @@ namespace Roslynator.CSharp
 
             AccessibilityInfo info = SyntaxInfo.AccessibilityInfo(node);
 
-            AccessibilityInfo newInfo = ChangeAccessibility(info, newAccessibility, comparer);
+            //TODO: throw ex
+            if (!info.Success)
+                return node;
+
+            AccessibilityInfo newInfo = info.WithExplicitAccessibility(newAccessibility, comparer);
 
             return (TNode)newInfo.Node;
-        }
-
-        public static AccessibilityInfo ChangeAccessibility(
-            AccessibilityInfo info,
-            Accessibility newAccessibility,
-            IModifierComparer comparer = null)
-        {
-            if (!info.Success)
-                return info;
-
-            Accessibility accessibility = info.Accessibility;
-
-            if (accessibility == newAccessibility)
-                return info;
-
-            comparer = comparer ?? ModifierComparer.Instance;
-
-            SyntaxNode declaration = info.Node;
-
-            if (accessibility.IsSingleTokenAccessibility()
-                && newAccessibility.IsSingleTokenAccessibility())
-            {
-                int insertIndex = comparer.GetInsertIndex(info.Modifiers, GetTokenKind());
-
-                if (info.TokenIndex == insertIndex
-                    || info.TokenIndex == insertIndex - 1)
-                {
-                    SyntaxToken newToken = SyntaxFactory.Token(GetTokenKind()).WithTriviaFrom(info.Token);
-
-                    SyntaxTokenList newModifiers = info.Modifiers.Replace(info.Token, newToken);
-
-                    return info.WithModifiers(newModifiers);
-                }
-            }
-
-            if (accessibility != Accessibility.NotApplicable)
-            {
-                declaration = Modifier.RemoveAt(declaration, Math.Max(info.TokenIndex, info.SecondTokenIndex));
-
-                if (info.SecondTokenIndex != -1)
-                    declaration = Modifier.RemoveAt(declaration, Math.Min(info.TokenIndex, info.SecondTokenIndex));
-            }
-
-            if (newAccessibility != Accessibility.NotApplicable)
-            {
-                declaration = Modifier.Insert(declaration, newAccessibility, comparer);
-            }
-
-            return SyntaxInfo.AccessibilityInfo(declaration);
-
-            SyntaxKind GetTokenKind()
-            {
-                switch (newAccessibility)
-                {
-                    case Accessibility.Private:
-                        return SyntaxKind.PrivateKeyword;
-                    case Accessibility.Protected:
-                        return SyntaxKind.ProtectedKeyword;
-                    case Accessibility.Internal:
-                        return SyntaxKind.InternalKeyword;
-                    case Accessibility.Public:
-                        return SyntaxKind.PublicKeyword;
-                    case Accessibility.NotApplicable:
-                        return SyntaxKind.None;
-                    default:
-                        throw new ArgumentException("", nameof(newAccessibility));
-                }
-            }
         }
 
         public static bool IsAllowedAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
@@ -1120,7 +1201,7 @@ namespace Roslynator.CSharp
                 {
                     foreach (AccessorDeclarationSyntax accessor in accessorList.Accessors)
                     {
-                        Accessibility accessorAccessibility = GetAccessibility(accessor.Modifiers);
+                        Accessibility accessorAccessibility = GetExplicitAccessibility(accessor.Modifiers);
 
                         if (accessorAccessibility != Accessibility.NotApplicable)
                             return accessorAccessibility.IsMoreRestrictiveThan(accessibility);

@@ -49,8 +49,8 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
                 if (getter != null)
                 {
-                    if (SyntaxInfo.AccessibilityInfo(getter).Accessibility == Accessibility.Private)
-                        getter = CSharpAccessibility.ChangeAccessibility(getter, Accessibility.Protected);
+                    if (CSharpAccessibility.GetExplicitAccessibility(getter) == Accessibility.Private)
+                        getter = CSharpAccessibility.ChangeExplicitAccessibility(getter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(getter
                        .WithBody(null)
@@ -60,8 +60,8 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
                 AccessorDeclarationSyntax setter = propertyDeclaration.Setter();
                 if (setter != null)
                 {
-                    if (SyntaxInfo.AccessibilityInfo(setter).Accessibility == Accessibility.Private)
-                        setter = CSharpAccessibility.ChangeAccessibility(setter, Accessibility.Protected);
+                    if (CSharpAccessibility.GetExplicitAccessibility(setter) == Accessibility.Private)
+                        setter = CSharpAccessibility.ChangeExplicitAccessibility(setter, Accessibility.Protected);
 
                     accessorList = accessorList.AddAccessors(setter
                        .WithBody(null)

@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeForEachStatement, SyntaxKind.ForEachStatement);
         }
 
-        private void AnalyzeForEachStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeForEachStatement(SyntaxNodeAnalysisContext context)
         {
             var forEachStatement = (ForEachStatementSyntax)context.Node;
 
