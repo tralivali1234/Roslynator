@@ -2,8 +2,9 @@
 
 using System;
 
-namespace Roslynator
+namespace Roslynator.CSharp
 {
+    //TODO: CommentKinds
     [Flags]
     public enum CommentRemoveOptions
     {

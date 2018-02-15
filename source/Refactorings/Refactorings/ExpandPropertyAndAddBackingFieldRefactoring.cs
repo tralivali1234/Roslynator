@@ -45,6 +45,8 @@ namespace Roslynator.CSharp.Refactorings
 
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(propertyDeclaration.Parent);
 
+            SyntaxList<MemberDeclarationSyntax> members = info.Members;
+
             int propertyIndex = info.IndexOf(propertyDeclaration);
 
             if (IsReadOnlyAutoProperty(propertyDeclaration))
@@ -55,10 +57,12 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                info = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
+                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
+
+                members = newInfo.Members;
             }
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members
+            SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .ReplaceAt(propertyIndex, newPropertyDeclaration)
                 .Insert(fieldDeclaration);
 
