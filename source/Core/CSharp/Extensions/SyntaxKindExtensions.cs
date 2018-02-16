@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp
 {
+    //TODO: EnumExtensions
     public static class SyntaxKindExtensions
     {
         public static bool Is(this SyntaxKind kind, SyntaxKind kind1, SyntaxKind kind2)

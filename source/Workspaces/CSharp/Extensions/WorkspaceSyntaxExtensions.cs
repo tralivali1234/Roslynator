@@ -14,6 +14,7 @@ namespace Roslynator.CSharp
 {
     public static class WorkspaceSyntaxExtensions
     {
+        //TODO: int
         private const string NavigationAnnotationKind = "CodeAction_Navigation";
 
         public static SyntaxAnnotation NavigationAnnotation { get; } = new SyntaxAnnotation(NavigationAnnotationKind);

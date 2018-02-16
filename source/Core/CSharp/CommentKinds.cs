@@ -8,6 +8,7 @@ namespace Roslynator.CSharp
     [Flags]
     public enum CommentKinds
     {
+
         None = 0,
         SingleLine = 1,
         MultiLine = 2,

@@ -4,8 +4,9 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    //XTODO: ModifierKinds
     [Flags]
-    public enum ModifierFlags
+    public enum ModifierKinds
     {
         None = 0,
         New = 1,
@@ -13,6 +14,7 @@ namespace Roslynator.CSharp
         Private = 4,
         Protected = 8,
         Internal = 16,
+        Access = Public | Private | Protected | Internal, //TODO: Accessibility
         Const = 32,
         Static = 64,
         Virtual = 128,

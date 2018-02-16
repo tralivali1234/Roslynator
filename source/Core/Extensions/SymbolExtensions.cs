@@ -1276,6 +1276,7 @@ namespace Roslynator
             return default(TSymbol);
         }
 
+        //TODO: HasMember
         public static bool ExistsMember(this ITypeSymbol typeSymbol, string name)
         {
             if (typeSymbol == null)
