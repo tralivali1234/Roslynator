@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -219,11 +220,11 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
                     if (symbol != null)
                     {
-                        if (symbol.IsParameter())
+                        if (symbol is IParameterSymbol parameterSymbol)
                         {
                             foreach (ParameterInfo parameterInfo in ParameterInfos)
                             {
-                                if (parameterInfo.ParameterSymbol.OriginalDefinition.Equals(symbol))
+                                if (ParameterEquals(parameterInfo, parameterSymbol))
                                 {
                                     ExpressionSyntax expression = parameterInfo.Expression;
 
@@ -291,6 +292,28 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             }
 
             return replacementMap;
+
+            bool ParameterEquals(ParameterInfo parameterInfo, IParameterSymbol parameterSymbol2)
+            {
+                IParameterSymbol parameterSymbol = parameterInfo.ParameterSymbol;
+
+                if (parameterSymbol.ContainingSymbol is IMethodSymbol methodSymbol)
+                {
+                    if (parameterInfo.IsThis
+                        || methodSymbol.MethodKind == MethodKind.ReducedExtension)
+                    {
+                        int ordinal = parameterSymbol.Ordinal;
+
+                        if (methodSymbol.MethodKind == MethodKind.ReducedExtension)
+                            ordinal++;
+
+                        return ordinal == parameterSymbol2.Ordinal
+                            && string.Equals(parameterSymbol.Name, parameterSymbol2.Name, StringComparison.Ordinal);
+                    }
+                }
+
+                return parameterSymbol.OriginalDefinition.Equals(parameterSymbol2);
+            }
         }
 
         private Dictionary<ISymbol, string> GetSymbolsToRename()

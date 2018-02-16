@@ -107,13 +107,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
         {
             bool isReduced = symbol.MethodKind == MethodKind.ReducedExtension;
 
-            if (isReduced)
-                symbol = symbol.GetConstructedReducedFrom();
-
             ImmutableArray<IParameterSymbol> parameters = symbol.Parameters;
-
-            if (isReduced)
-                parameters = parameters.RemoveAt(0);
 
             List<ParameterInfo> parameterInfos = null;
 
@@ -157,7 +151,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             {
                 var memberAccess = (MemberAccessExpressionSyntax)node.Expression;
 
-                var parameterInfo = new ParameterInfo(symbol.Parameters[0], memberAccess.Expression.TrimTrivia());
+                var parameterInfo = new ParameterInfo(symbol.ReducedFrom.Parameters[0], memberAccess.Expression.TrimTrivia(), isThis: true);
 
                 (parameterInfos ?? (parameterInfos = new List<ParameterInfo>())).Add(parameterInfo);
             }
