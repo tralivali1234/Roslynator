@@ -107,8 +107,13 @@ namespace Roslynator
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
+            int length = value.Length;
+
+            if (length == 0)
+                return "";
+
             int i = 0;
-            while (i < value.Length)
+            do
             {
                 char ch = value[i];
 
@@ -120,7 +125,8 @@ namespace Roslynator
                 }
 
                 i++;
-            }
+
+            } while (i < length);
 
             return value.Remove(i);
         }
