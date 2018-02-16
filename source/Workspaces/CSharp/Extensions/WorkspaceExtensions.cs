@@ -110,7 +110,7 @@ namespace Roslynator.CSharp
 
         public static async Task<Document> RemoveCommentsAsync(
             this Document document,
-            CommentRemoveOptions removeOptions,
+            CommentKinds commentKinds,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp
 
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            SyntaxNode newRoot = SyntaxRemover.RemoveComments(root, removeOptions)
+            SyntaxNode newRoot = SyntaxRemover.RemoveComments(root, commentKinds)
                 .WithFormatterAnnotation();
 
             return document.WithSyntaxRoot(newRoot);
@@ -127,7 +127,7 @@ namespace Roslynator.CSharp
         public static async Task<Document> RemoveCommentsAsync(
             this Document document,
             TextSpan span,
-            CommentRemoveOptions removeOptions,
+            CommentKinds commentKinds,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -135,7 +135,7 @@ namespace Roslynator.CSharp
 
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
-            SyntaxNode newRoot = SyntaxRemover.RemoveComments(root, span, removeOptions)
+            SyntaxNode newRoot = SyntaxRemover.RemoveComments(root, span, commentKinds)
                 .WithFormatterAnnotation();
 
             return document.WithSyntaxRoot(newRoot);
@@ -172,7 +172,7 @@ namespace Roslynator.CSharp
 
         public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
-            PreprocessorDirectiveRemoveOptions removeOptions,
+            PreprocessorDirectiveKinds directiveKinds,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -182,7 +182,7 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(), removeOptions);
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(), directiveKinds);
 
             return document.WithText(newSourceText);
         }
@@ -190,7 +190,7 @@ namespace Roslynator.CSharp
         public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
             TextSpan span,
-            PreprocessorDirectiveRemoveOptions removeOptions,
+            PreprocessorDirectiveKinds directiveKinds,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (document == null)
@@ -200,7 +200,7 @@ namespace Roslynator.CSharp
 
             SourceText sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
-            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(span), removeOptions);
+            SourceText newSourceText = RemovePreprocessorDirectives(sourceText, root.DescendantPreprocessorDirectives(span), directiveKinds);
 
             return document.WithText(newSourceText);
         }
@@ -238,7 +238,7 @@ namespace Roslynator.CSharp
         private static SourceText RemovePreprocessorDirectives(
             SourceText sourceText,
             IEnumerable<DirectiveTriviaSyntax> directives,
-            PreprocessorDirectiveRemoveOptions removeOptions)
+            PreprocessorDirectiveKinds directiveKinds)
         {
             return sourceText.WithChanges(GetTextChanges());
 
@@ -262,39 +262,39 @@ namespace Roslynator.CSharp
                 switch (directive.Kind())
                 {
                     case SyntaxKind.IfDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.If) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.If) != 0;
                     case SyntaxKind.ElifDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Elif) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Elif) != 0;
                     case SyntaxKind.ElseDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Else) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Else) != 0;
                     case SyntaxKind.EndIfDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.EndIf) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.EndIf) != 0;
                     case SyntaxKind.RegionDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Region) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Region) != 0;
                     case SyntaxKind.EndRegionDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.EndRegion) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.EndRegion) != 0;
                     case SyntaxKind.DefineDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Define) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Define) != 0;
                     case SyntaxKind.UndefDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Undef) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Undef) != 0;
                     case SyntaxKind.ErrorDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Error) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Error) != 0;
                     case SyntaxKind.WarningDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Warning) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Warning) != 0;
                     case SyntaxKind.LineDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Line) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Line) != 0;
                     case SyntaxKind.PragmaWarningDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.PragmaWarning) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.PragmaWarning) != 0;
                     case SyntaxKind.PragmaChecksumDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.PragmaChecksum) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.PragmaChecksum) != 0;
                     case SyntaxKind.ReferenceDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Reference) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Reference) != 0;
                     case SyntaxKind.BadDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Bad) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Bad) != 0;
                     case SyntaxKind.ShebangDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Shebang) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Shebang) != 0;
                     case SyntaxKind.LoadDirectiveTrivia:
-                        return (removeOptions & PreprocessorDirectiveRemoveOptions.Load) != 0;
+                        return (directiveKinds & PreprocessorDirectiveKinds.Load) != 0;
                 }
 
                 Debug.Fail(directive.Kind().ToString());

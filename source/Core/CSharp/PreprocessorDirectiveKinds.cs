@@ -4,9 +4,9 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //TODO: PreprocessorDirectiveKinds
+    //XTODO: PreprocessorDirectiveKinds
     [Flags]
-    public enum PreprocessorDirectiveRemoveOptions
+    public enum PreprocessorDirectiveKinds
     {
         None = 0,
         If = 1,

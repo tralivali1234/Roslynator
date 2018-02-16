@@ -45,7 +45,6 @@ namespace Roslynator.CSharp.Refactorings
                     DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
                     memberAccess.Name);
             }
-            //TODO: InlineMethod bug
             else if (typeSymbol.IsArrayType())
             {
                 var arrayType = (IArrayTypeSymbol)typeSymbol;

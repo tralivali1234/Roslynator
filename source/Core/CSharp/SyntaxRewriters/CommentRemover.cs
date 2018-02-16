@@ -9,26 +9,25 @@ namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class CommentRemover : CSharpSyntaxRewriter
     {
-        internal CommentRemover(SyntaxNode node, CommentRemoveOptions removeOptions, TextSpan span)
+        internal CommentRemover(SyntaxNode node, CommentKinds commentKinds, TextSpan span)
             : base(visitIntoStructuredTrivia: true)
         {
             Node = node;
-            RemoveOptions = removeOptions;
+            CcommentKinds = commentKinds;
             Span = span;
 
-            ShouldRemoveSingleLineComment = (removeOptions & CommentRemoveOptions.SingleLineComment) != 0;
-            ShouldRemoveMultiLineComment = (removeOptions & CommentRemoveOptions.MultiLineComment) != 0;
-            ShouldRemoveSingleLineDocumentationComment = (removeOptions & CommentRemoveOptions.SingleLineDocumentationComment) != 0;
-            ShouldRemoveMultiLineDocumentationComment = (removeOptions & CommentRemoveOptions.MultiLineDocumentationComment) != 0;
+            ShouldRemoveSingleLineComment = (commentKinds & CommentKinds.SingleLine) != 0;
+            ShouldRemoveMultiLineComment = (commentKinds & CommentKinds.MultiLine) != 0;
+            ShouldRemoveSingleLineDocumentationComment = (commentKinds & CommentKinds.SingleLineDocumentation) != 0;
+            ShouldRemoveMultiLineDocumentationComment = (commentKinds & CommentKinds.MultiLineDocumentation) != 0;
         }
 
         public SyntaxNode Node { get; }
 
-        public CommentRemoveOptions RemoveOptions { get; }
+        public CommentKinds CcommentKinds { get; }
 
         public TextSpan Span { get; }
 
-        //TODO: BUG: expand property and add backing field
         private bool ShouldRemoveSingleLineComment { get; }
 
         private bool ShouldRemoveMultiLineComment { get; }
