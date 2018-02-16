@@ -14,10 +14,9 @@ namespace Roslynator.CSharp
 {
     public static class WorkspaceSyntaxExtensions
     {
-        //TODO: int
         private const string NavigationAnnotationKind = "CodeAction_Navigation";
 
-        public static SyntaxAnnotation NavigationAnnotation { get; } = new SyntaxAnnotation(NavigationAnnotationKind);
+        internal static SyntaxAnnotation NavigationAnnotation { get; } = new SyntaxAnnotation(NavigationAnnotationKind);
 
         private static readonly SyntaxAnnotation[] _formatterAnnotationArray = new SyntaxAnnotation[] { Formatter.Annotation };
 
@@ -124,7 +123,7 @@ namespace Roslynator.CSharp
             return token.WithAdditionalAnnotations(_simplifierAnnotationArray);
         }
 
-        public static SyntaxToken WithNavigationAnnotation(this SyntaxToken token)
+        internal static SyntaxToken WithNavigationAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_navigationAnnotationArray);
         }

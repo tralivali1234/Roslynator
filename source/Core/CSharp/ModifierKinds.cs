@@ -14,7 +14,7 @@ namespace Roslynator.CSharp
         Private = 4,
         Protected = 8,
         Internal = 16,
-        Access = Public | Private | Protected | Internal, //TODO: Accessibility
+        Accessibility = Public | Private | Protected | Internal,
         Const = 32,
         Static = 64,
         Virtual = 128,

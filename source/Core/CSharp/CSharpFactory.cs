@@ -9,7 +9,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    //TODO: zrušit výchozí hodnoty parametrů
     public static class CSharpFactory
     {
         #region Trivia
@@ -1296,7 +1295,11 @@ namespace Roslynator.CSharp
 
         public static NamespaceDeclarationSyntax NamespaceDeclaration(NameSyntax name, SyntaxList<MemberDeclarationSyntax> members)
         {
-            return SyntaxFactory.NamespaceDeclaration(name, default(SyntaxList<ExternAliasDirectiveSyntax>), default(SyntaxList<UsingDirectiveSyntax>), members);
+            return SyntaxFactory.NamespaceDeclaration(
+                name,
+                default(SyntaxList<ExternAliasDirectiveSyntax>),
+                default(SyntaxList<UsingDirectiveSyntax>),
+                members);
         }
 
         public static ClassDeclarationSyntax ClassDeclaration(SyntaxTokenList modifiers, string identifier, SyntaxList<MemberDeclarationSyntax> members = default(SyntaxList<MemberDeclarationSyntax>))
@@ -1461,7 +1464,7 @@ namespace Roslynator.CSharp
                 modifiers,
                 type,
                 identifier,
-                (value != null) ? EqualsValueClause(value) : null);
+                (value != null) ? EqualsValueClause(value) : default(EqualsValueClauseSyntax));
         }
 
         public static FieldDeclarationSyntax FieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier, EqualsValueClauseSyntax initializer)
@@ -2527,14 +2530,14 @@ namespace Roslynator.CSharp
         {
             return SyntaxFactory.AttributeArgument(
                 nameEquals: nameEquals,
-                nameColon: null,
+                nameColon: default(NameColonSyntax),
                 expression: expression);
         }
 
         public static AttributeArgumentSyntax AttributeArgument(NameColonSyntax nameColon, ExpressionSyntax expression)
         {
             return SyntaxFactory.AttributeArgument(
-                nameEquals: null,
+                nameEquals: default(NameEqualsSyntax),
                 nameColon: nameColon,
                 expression: expression);
         }

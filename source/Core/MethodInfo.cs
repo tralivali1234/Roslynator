@@ -39,7 +39,6 @@ namespace Roslynator
             get { return IsReturnType(SpecialType.System_Boolean); }
         }
 
-        //TODO: ReturnsInt32
         public bool ReturnsInt
         {
             get { return IsReturnType(SpecialType.System_Int32); }

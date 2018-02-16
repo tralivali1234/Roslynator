@@ -1060,7 +1060,7 @@ namespace Roslynator.CSharp
             return (TNode)newInfo.Node;
         }
 
-        //TODO: int
+        //TODO: IsValidAccessibility
         public static bool IsAllowedAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
         {
             if (node == null)

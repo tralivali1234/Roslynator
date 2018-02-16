@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    //TODO: IMemberDeclarationSorter
     public interface IMemberDeclarationComparer : IComparer<MemberDeclarationSyntax>
     {
         int GetInsertIndex(SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member);
