@@ -143,7 +143,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TextLine line = sourceText.Lines[documentationComment.GetFullSpanStartLine(cancellationToken)];
 
-            string indent = StringUtility.GetIndent(line.ToString());
+            string indent = StringUtility.GetLeadingWhitespaceExceptNewLine(line.ToString());
 
             TextChange textChange;
 

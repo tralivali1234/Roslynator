@@ -102,7 +102,7 @@ namespace Roslynator
             return true;
         }
 
-        public static string GetIndent(string value)
+        public static string GetLeadingWhitespaceExceptNewLine(string value)
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));

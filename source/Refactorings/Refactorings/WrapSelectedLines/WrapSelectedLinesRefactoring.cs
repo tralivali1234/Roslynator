@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
                 string text = firstLine.ToString();
 
                 string indent = (Indent)
-                    ? StringUtility.GetIndent(text)
+                    ? StringUtility.GetLeadingWhitespaceExceptNewLine(text)
                     : "";
 
                 string newText = indent + GetFirstLineText() + Environment.NewLine + text + Environment.NewLine;
