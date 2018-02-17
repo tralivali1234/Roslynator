@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Reflection;
 using System.Runtime.CompilerServices;
-
-[assembly: AssemblyVersion("1.7.1")]
 
 [assembly: InternalsVisibleTo("Roslynator.CSharp.Analyzers, PublicKey=002400000480000094000000060200000024000052534131000400000100010047f923980de8a2"
     + "f3f091a587e29c4969e7c116fbe59d5a884e7d95369213f850faaa52fe90215d04a56874049848"
