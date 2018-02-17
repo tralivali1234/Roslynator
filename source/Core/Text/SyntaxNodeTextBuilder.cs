@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Text
 {
-    //XTODO: SyntaxNodeStringBuilder
     internal class SyntaxNodeTextBuilder
     {
         private readonly string _text;

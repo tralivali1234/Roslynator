@@ -39,21 +39,15 @@ namespace Roslynator.Text
             return selectedLines != null;
         }
 
-        public static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, out TextLineCollectionSelection selectedLines)
+        internal static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, out TextLineCollectionSelection selectedLines)
         {
             selectedLines = Create(lines, span, minCount, int.MaxValue);
             return selectedLines != null;
         }
 
-        public static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, int maxCount, out TextLineCollectionSelection selectedLines)
+        internal static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, int maxCount, out TextLineCollectionSelection selectedLines)
         {
             selectedLines = Create(lines, span, minCount, maxCount);
-            return selectedLines != null;
-        }
-
-        public static bool TryCreateExact(TextLineCollection lines, TextSpan span, int count, out TextLineCollectionSelection selectedLines)
-        {
-            selectedLines = Create(lines, span, count, count);
             return selectedLines != null;
         }
 

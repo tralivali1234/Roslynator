@@ -36,21 +36,15 @@ namespace Roslynator
             return selection != null;
         }
 
-        public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, out SyntaxListSelection<TNode> selection)
+        internal static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, out SyntaxListSelection<TNode> selection)
         {
             selection = Create(list, span, minCount, int.MaxValue);
             return selection != null;
         }
 
-        public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, int maxCount, out SyntaxListSelection<TNode> selection)
+        internal static bool TryCreate(SyntaxList<TNode> list, TextSpan span, int minCount, int maxCount, out SyntaxListSelection<TNode> selection)
         {
             selection = Create(list, span, minCount, maxCount);
-            return selection != null;
-        }
-
-        public static bool TryCreateExact(SyntaxList<TNode> list, TextSpan span, int count, out SyntaxListSelection<TNode> selection)
-        {
-            selection = Create(list, span, count, count);
             return selection != null;
         }
 

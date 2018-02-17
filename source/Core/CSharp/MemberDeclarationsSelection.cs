@@ -51,21 +51,15 @@ namespace Roslynator.CSharp
             return selectedMembers != null;
         }
 
-        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
+        internal static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(namespaceDeclaration, span, minCount, int.MaxValue);
             return selectedMembers != null;
         }
 
-        public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
+        internal static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(namespaceDeclaration, span, minCount, maxCount);
-            return selectedMembers != null;
-        }
-
-        public static bool TryCreateExact(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, int count, out MemberDeclarationsSelection selectedMembers)
-        {
-            selectedMembers = Create(namespaceDeclaration, span, count, count);
             return selectedMembers != null;
         }
 
@@ -75,21 +69,15 @@ namespace Roslynator.CSharp
             return selectedMembers != null;
         }
 
-        public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
+        internal static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(typeDeclaration, span, minCount, int.MaxValue);
             return selectedMembers != null;
         }
 
-        public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
+        internal static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, int minCount, int maxCount, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(typeDeclaration, span, minCount, maxCount);
-            return selectedMembers != null;
-        }
-
-        public static bool TryCreateExact(TypeDeclarationSyntax typeDeclaration, TextSpan span, int count, out MemberDeclarationsSelection selectedMembers)
-        {
-            selectedMembers = Create(typeDeclaration, span, count, count);
             return selectedMembers != null;
         }
 

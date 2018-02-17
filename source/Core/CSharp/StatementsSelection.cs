@@ -54,21 +54,15 @@ namespace Roslynator.CSharp
             return selectedStatements != null;
         }
 
-        public static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, out StatementsSelection selectedStatements)
+        internal static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(block, span, minCount, int.MaxValue);
             return selectedStatements != null;
         }
 
-        public static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        internal static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(block, span, minCount, maxCount);
-            return selectedStatements != null;
-        }
-
-        public static bool TryCreateExact(BlockSyntax block, TextSpan span, int count, out StatementsSelection selectedStatements)
-        {
-            selectedStatements = Create(block, span, count, count);
             return selectedStatements != null;
         }
 
@@ -86,21 +80,15 @@ namespace Roslynator.CSharp
             return selectedStatements != null;
         }
 
-        public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, out StatementsSelection selectedStatements)
+        internal static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(switchSection, span, minCount, int.MaxValue);
             return selectedStatements != null;
         }
 
-        public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        internal static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(switchSection, span, minCount, maxCount);
-            return selectedStatements != null;
-        }
-
-        public static bool TryCreateExact(SwitchSectionSyntax switchSection, TextSpan span, int count, out StatementsSelection selectedStatements)
-        {
-            selectedStatements = Create(switchSection, span, count, count);
             return selectedStatements != null;
         }
 
