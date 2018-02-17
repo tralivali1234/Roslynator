@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings
                     foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.Accessibilities)
                     {
                         if (accessibility != modifiersInfo.ExplicitAccessibility
-                            && CSharpAccessibility.IsAllowedAccessibility(node, accessibility))
+                            && CSharpAccessibility.IsValidAccessibility(node, accessibility))
                         {
                             context.RegisterRefactoring(
                                 ChangeAccessibilityRefactoring.GetTitle(accessibility),
@@ -64,14 +64,14 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (symbol != null)
                 {
-                    if (CSharpAccessibility.IsAllowedAccessibility(node, accessibility, ignoreOverride: true))
+                    if (CSharpAccessibility.IsValidAccessibility(node, accessibility, ignoreOverride: true))
                     {
                         context.RegisterRefactoring(
                             ChangeAccessibilityRefactoring.GetTitle(accessibility),
                             cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Solution, symbol, accessibility, cancellationToken));
                     }
                 }
-                else if (CSharpAccessibility.IsAllowedAccessibility(node, accessibility))
+                else if (CSharpAccessibility.IsValidAccessibility(node, accessibility))
                 {
                     context.RegisterRefactoring(
                         ChangeAccessibilityRefactoring.GetTitle(accessibility),

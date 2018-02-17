@@ -1060,8 +1060,8 @@ namespace Roslynator.CSharp
             return (TNode)newInfo.Node;
         }
 
-        //TODO: IsValidAccessibility
-        public static bool IsAllowedAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
+        //XTODO: IsValidAccessibility
+        public static bool IsValidAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));

@@ -403,7 +403,7 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             Accessibility accessibility)
         {
-            if (!CSharpAccessibility.IsAllowedAccessibility(node, accessibility))
+            if (!CSharpAccessibility.IsValidAccessibility(node, accessibility))
                 return;
 
             CodeAction codeAction = CodeAction.Create(

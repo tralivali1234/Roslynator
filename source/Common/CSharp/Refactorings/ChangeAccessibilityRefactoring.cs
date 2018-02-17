@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.Refactorings
                 foreach (Accessibility accessibility2 in Accessibilities)
                 {
                     if (accessibility != accessibility2
-                        && !CSharpAccessibility.IsAllowedAccessibility(member, accessibility2, ignoreOverride: allowOverride))
+                        && !CSharpAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
                         allowedFlags &= ~accessibility2.GetAccessibilityFlag();
                     }

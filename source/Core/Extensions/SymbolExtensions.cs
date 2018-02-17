@@ -1205,12 +1205,21 @@ namespace Roslynator
                 || InheritsFrom(type, baseType, includeInterfaces);
         }
 
-        public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name)
+        public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate = null)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return typeSymbol.GetMembers(name).FirstOrDefault();
+            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
+
+            if (predicate != null)
+            {
+                return members.FirstOrDefault(predicate);
+            }
+            else
+            {
+                return members.FirstOrDefault();
+            }
         }
 
         public static ISymbol FindMember(this ITypeSymbol typeSymbol, Func<ISymbol, bool> predicate)
@@ -1224,23 +1233,12 @@ namespace Roslynator
             return typeSymbol.GetMembers().FirstOrDefault(predicate);
         }
 
-        public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (predicate == null)
-                throw new ArgumentNullException(nameof(predicate));
-
-            return typeSymbol.GetMembers(name).FirstOrDefault(predicate);
-        }
-
         public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return FindMember(typeSymbol.GetMembers(), predicate);
+            return FindMemberImpl(typeSymbol.GetMembers(), predicate);
         }
 
         public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
@@ -1248,10 +1246,10 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return FindMember(typeSymbol.GetMembers(name), predicate);
+            return FindMemberImpl(typeSymbol.GetMembers(name), predicate);
         }
 
-        private static TSymbol FindMember<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
+        private static TSymbol FindMemberImpl<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
             if (predicate != null)
             {
@@ -1277,12 +1275,21 @@ namespace Roslynator
         }
 
         //TODO: HasMember
-        public static bool ExistsMember(this ITypeSymbol typeSymbol, string name)
+        public static bool ExistsMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate = null)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return typeSymbol.GetMembers(name).Any();
+            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
+
+            if (predicate != null)
+            {
+                return members.Any(predicate);
+            }
+            else
+            {
+                return members.Any();
+            }
         }
 
         public static bool ExistsMember(this ITypeSymbol typeSymbol, Func<ISymbol, bool> predicate)
@@ -1296,23 +1303,12 @@ namespace Roslynator
             return typeSymbol.GetMembers().Any(predicate);
         }
 
-        public static bool ExistsMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (predicate == null)
-                throw new ArgumentNullException(nameof(predicate));
-
-            return typeSymbol.GetMembers(name).Any(predicate);
-        }
-
         public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return ExistsMember(typeSymbol.GetMembers(), predicate);
+            return ExistsMemberImpl(typeSymbol.GetMembers(), predicate);
         }
 
         public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
@@ -1320,10 +1316,10 @@ namespace Roslynator
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            return ExistsMember(typeSymbol.GetMembers(name), predicate);
+            return ExistsMemberImpl(typeSymbol.GetMembers(name), predicate);
         }
 
-        private static bool ExistsMember<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
+        private static bool ExistsMemberImpl<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
             if (predicate != null)
             {

@@ -155,7 +155,6 @@ namespace Roslynator.CSharp
                 throw new ArgumentException($"Type '{typeSymbol.ToDisplayString()}' does not support explicit declaration.", nameof(typeSymbol));
         }
 
-        //TODO: ToDefaultValueSyntax
         public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, TypeSyntax type)
         {
             if (typeSymbol == null)
@@ -164,7 +163,7 @@ namespace Roslynator.CSharp
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            return GetDefaultValueSyntax(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
+            return GetDefaultValueSyntaxImpl(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
         }
 
         public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
@@ -175,15 +174,12 @@ namespace Roslynator.CSharp
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return GetDefaultValueSyntax(typeSymbol, default(TypeSyntax), semanticModel, position, format);
+            return GetDefaultValueSyntaxImpl(typeSymbol, default(TypeSyntax), semanticModel, position, format);
         }
 
         // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/default-values-table
-        private static ExpressionSyntax GetDefaultValueSyntax(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
+        private static ExpressionSyntax GetDefaultValueSyntaxImpl(ITypeSymbol typeSymbol, TypeSyntax type, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
-            if (typeSymbol.Kind == SymbolKind.ErrorType)
-                return null;
-
             switch (typeSymbol.SpecialType)
             {
                 case SpecialType.System_Boolean:
