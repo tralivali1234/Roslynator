@@ -315,6 +315,7 @@ namespace Roslynator
             return false;
         }
 
+        //TODO: ContainsAttribute
         public static bool HasAttribute(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
         {
             if (symbol == null)

@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-
-
   <PropertyGroup>
     <TargetFramework>netstandard1.3</TargetFramework>
   </PropertyGroup>
@@ -13,12 +11,10 @@
     <CodeAnalysisRuleSet>..\global.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Roslynator.Common.snk</AssemblyOriginatorKeyFile>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
-    <PackageId>Roslynator.Common</PackageId>
     <Authors>Josef Pihrt</Authors>
     <Company></Company>
     <Description></Description>
