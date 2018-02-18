@@ -1041,8 +1041,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        //XTODO: WithExplicitAccessibility
-        public static TNode ChangeExplicitAccessibility<TNode>(
+        public static TNode WithExplicitAccessibility<TNode>(
             TNode node,
             Accessibility newAccessibility,
             IModifierComparer comparer = null) where TNode : SyntaxNode
@@ -1060,7 +1059,6 @@ namespace Roslynator.CSharp
             return (TNode)newInfo.Node;
         }
 
-        //XTODO: IsValidAccessibility
         public static bool IsValidAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
         {
             if (node == null)

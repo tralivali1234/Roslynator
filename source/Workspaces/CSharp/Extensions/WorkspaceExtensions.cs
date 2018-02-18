@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Documentation;
-using Roslynator.CSharp.Helpers;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -98,14 +97,6 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(statement));
 
             return document.RemoveNodeAsync(statement, cancellationToken);
-        }
-
-        public static Task<Document> RemoveCommentAsync(
-            this Document document,
-            SyntaxTrivia comment,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return RemoveCommentHelper.RemoveCommentAsync(document, comment, cancellationToken);
         }
 
         public static async Task<Document> RemoveCommentsAsync(

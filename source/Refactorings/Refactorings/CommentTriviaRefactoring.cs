@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Roslynator.CSharp.Helpers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,13 +14,18 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRootCompilationUnit
                 && trivia.FullSpan.Contains(context.Span)
-                && IsComment(kind))
+                && CSharpFacts.IsCommentTrivia(kind))
             {
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveComment))
                 {
                     context.RegisterRefactoring(
                         "Remove comment",
-                        cancellationToken => context.Document.RemoveCommentAsync(trivia, cancellationToken));
+                        cancellationToken =>
+                        {
+                            SyntaxToken newToken = RemoveCommentHelper.GetReplacementToken(trivia).WithFormatterAnnotation();
+
+                            return context.Document.ReplaceTokenAsync(trivia.Token, newToken, cancellationToken);
+                        });
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllComments))
@@ -38,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllDocumentationComments)
-                    && IsDocumentationComment(kind))
+                    && SyntaxFacts.IsDocumentationCommentTrivia(kind))
                 {
                     context.RegisterRefactoring(
                         "Remove all documentation comments",
@@ -107,20 +113,6 @@ namespace Roslynator.CSharp.Refactorings
                         c => context.Document.RemoveCommentsAsync(context.Span, CommentKinds.Documentation, c));
                 }
             }
-        }
-
-        private static bool IsDocumentationComment(SyntaxKind kind)
-        {
-            return kind == SyntaxKind.SingleLineDocumentationCommentTrivia
-                || kind == SyntaxKind.MultiLineDocumentationCommentTrivia;
-        }
-
-        public static bool IsComment(SyntaxKind kind)
-        {
-            return kind == SyntaxKind.SingleLineCommentTrivia
-                || kind == SyntaxKind.SingleLineDocumentationCommentTrivia
-                || kind == SyntaxKind.MultiLineCommentTrivia
-                || kind == SyntaxKind.MultiLineDocumentationCommentTrivia;
         }
     }
 }

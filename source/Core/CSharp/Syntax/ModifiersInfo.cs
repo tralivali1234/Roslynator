@@ -423,6 +423,7 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
+        //TODO: GetModifierKinds, property
         public ModifierKinds GetKinds()
         {
             var kinds = ModifierKinds.None;

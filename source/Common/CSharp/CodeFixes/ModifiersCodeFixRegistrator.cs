@@ -95,7 +95,7 @@ namespace Roslynator.CSharp.CodeFixes
                 case SyntaxKind.StaticKeyword:
                     {
                         if (node.Kind() == SyntaxKind.ConstructorDeclaration)
-                            node = Modifier.RemoveAccess(node);
+                            node = Modifier.RemoveAccessibility(node);
 
                         node = node.RemoveModifier(SyntaxKind.SealedKeyword);
 
@@ -349,7 +349,7 @@ namespace Roslynator.CSharp.CodeFixes
                     "Remove access modifiers",
                     cancellationToken =>
                     {
-                        SyntaxNode newNode = Modifier.RemoveAccess(node);
+                        SyntaxNode newNode = Modifier.RemoveAccessibility(node);
 
                         return context.Document.ReplaceNodeAsync(node, newNode, cancellationToken);
                     },
@@ -433,7 +433,7 @@ namespace Roslynator.CSharp.CodeFixes
                 case SyntaxKind.AbstractKeyword:
                 case SyntaxKind.ReadOnlyKeyword:
                 case SyntaxKind.AsyncKeyword:
-                    return $"Make {node.GetTitle()} {Modifier.GetTitle(modifierKind)}";
+                    return $"Make {node.GetTitle()} {CSharpFacts.GetTitle(modifierKind)}";
             }
 
             return GetAddModifierTitle(modifierKind);

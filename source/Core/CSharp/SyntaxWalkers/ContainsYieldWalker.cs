@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -61,6 +63,10 @@ namespace Roslynator.CSharp.SyntaxWalkers
             var walker = new ContainsYieldWalker();
 
             walker.VisitBlock(block);
+
+            Debug.Assert(walker._success == block
+                .DescendantNodes(block.Span, node => !CSharpFacts.IsNestedMethod(node.Kind()))
+                .Any(f => f.Kind().Is(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement)), nameof(ContainsYieldWalker));
 
             return walker._success;
         }

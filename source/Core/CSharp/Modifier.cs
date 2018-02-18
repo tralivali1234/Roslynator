@@ -266,52 +266,52 @@ namespace Roslynator.CSharp
             return node;
         }
 
-        public static TNode RemoveAccess<TNode>(TNode node) where TNode : SyntaxNode
+        public static TNode RemoveAccessibility<TNode>(TNode node) where TNode : SyntaxNode
         {
             switch (node.Kind())
             {
                 case SyntaxKind.ClassDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((ClassDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((ClassDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.ConstructorDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((ConstructorDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((ConstructorDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.ConversionOperatorDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((ConversionOperatorDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((ConversionOperatorDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.DelegateDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((DelegateDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((DelegateDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.DestructorDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((DestructorDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((DestructorDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.EnumDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((EnumDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((EnumDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.EventDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((EventDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((EventDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.EventFieldDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((EventFieldDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((EventFieldDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.FieldDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((FieldDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((FieldDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.IndexerDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((IndexerDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((IndexerDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.InterfaceDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((InterfaceDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((InterfaceDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.MethodDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((MethodDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((MethodDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.OperatorDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((OperatorDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((OperatorDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.PropertyDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((PropertyDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((PropertyDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.StructDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((StructDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((StructDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.GetAccessorDeclaration:
                 case SyntaxKind.SetAccessorDeclaration:
                 case SyntaxKind.AddAccessorDeclaration:
                 case SyntaxKind.RemoveAccessorDeclaration:
                 case SyntaxKind.UnknownAccessorDeclaration:
-                    return (TNode)(SyntaxNode)RemoveAccess((AccessorDeclarationSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((AccessorDeclarationSyntax)(SyntaxNode)node);
                 case SyntaxKind.LocalDeclarationStatement:
-                    return (TNode)(SyntaxNode)RemoveAccess((LocalDeclarationStatementSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((LocalDeclarationStatementSyntax)(SyntaxNode)node);
                 case SyntaxKind.LocalFunctionStatement:
-                    return (TNode)(SyntaxNode)RemoveAccess((LocalFunctionStatementSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((LocalFunctionStatementSyntax)(SyntaxNode)node);
                 case SyntaxKind.Parameter:
-                    return (TNode)(SyntaxNode)RemoveAccess((ParameterSyntax)(SyntaxNode)node);
+                    return (TNode)(SyntaxNode)RemoveAccessibility((ParameterSyntax)(SyntaxNode)node);
             }
 
             Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
@@ -883,99 +883,99 @@ namespace Roslynator.CSharp
             return ParameterModifierHelper.Instance.RemoveModifierAt(parameter, index);
         }
 
-        public static ClassDeclarationSyntax RemoveAccess(ClassDeclarationSyntax classDeclaration)
+        public static ClassDeclarationSyntax RemoveAccessibility(ClassDeclarationSyntax classDeclaration)
         {
-            return ClassDeclarationModifierHelper.Instance.RemoveAccessModifiers(classDeclaration);
+            return ClassDeclarationModifierHelper.Instance.RemoveAccessibility(classDeclaration);
         }
 
-        public static ConstructorDeclarationSyntax RemoveAccess(ConstructorDeclarationSyntax constructorDeclaration)
+        public static ConstructorDeclarationSyntax RemoveAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
         {
-            return ConstructorDeclarationModifierHelper.Instance.RemoveAccessModifiers(constructorDeclaration);
+            return ConstructorDeclarationModifierHelper.Instance.RemoveAccessibility(constructorDeclaration);
         }
 
-        public static ConversionOperatorDeclarationSyntax RemoveAccess(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
+        public static ConversionOperatorDeclarationSyntax RemoveAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
-            return ConversionOperatorDeclarationModifierHelper.Instance.RemoveAccessModifiers(conversionOperatorDeclaration);
+            return ConversionOperatorDeclarationModifierHelper.Instance.RemoveAccessibility(conversionOperatorDeclaration);
         }
 
-        public static DelegateDeclarationSyntax RemoveAccess(DelegateDeclarationSyntax delegateDeclaration)
+        public static DelegateDeclarationSyntax RemoveAccessibility(DelegateDeclarationSyntax delegateDeclaration)
         {
-            return DelegateDeclarationModifierHelper.Instance.RemoveAccessModifiers(delegateDeclaration);
+            return DelegateDeclarationModifierHelper.Instance.RemoveAccessibility(delegateDeclaration);
         }
 
-        public static DestructorDeclarationSyntax RemoveAccess(DestructorDeclarationSyntax destructorDeclaration)
+        public static DestructorDeclarationSyntax RemoveAccessibility(DestructorDeclarationSyntax destructorDeclaration)
         {
-            return DestructorDeclarationModifierHelper.Instance.RemoveAccessModifiers(destructorDeclaration);
+            return DestructorDeclarationModifierHelper.Instance.RemoveAccessibility(destructorDeclaration);
         }
 
-        public static EnumDeclarationSyntax RemoveAccess(EnumDeclarationSyntax enumDeclaration)
+        public static EnumDeclarationSyntax RemoveAccessibility(EnumDeclarationSyntax enumDeclaration)
         {
-            return EnumDeclarationModifierHelper.Instance.RemoveAccessModifiers(enumDeclaration);
+            return EnumDeclarationModifierHelper.Instance.RemoveAccessibility(enumDeclaration);
         }
 
-        public static EventDeclarationSyntax RemoveAccess(EventDeclarationSyntax eventDeclaration)
+        public static EventDeclarationSyntax RemoveAccessibility(EventDeclarationSyntax eventDeclaration)
         {
-            return EventDeclarationModifierHelper.Instance.RemoveAccessModifiers(eventDeclaration);
+            return EventDeclarationModifierHelper.Instance.RemoveAccessibility(eventDeclaration);
         }
 
-        public static EventFieldDeclarationSyntax RemoveAccess(EventFieldDeclarationSyntax eventFieldDeclaration)
+        public static EventFieldDeclarationSyntax RemoveAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
-            return EventFieldDeclarationModifierHelper.Instance.RemoveAccessModifiers(eventFieldDeclaration);
+            return EventFieldDeclarationModifierHelper.Instance.RemoveAccessibility(eventFieldDeclaration);
         }
 
-        public static FieldDeclarationSyntax RemoveAccess(FieldDeclarationSyntax fieldDeclaration)
+        public static FieldDeclarationSyntax RemoveAccessibility(FieldDeclarationSyntax fieldDeclaration)
         {
-            return FieldDeclarationModifierHelper.Instance.RemoveAccessModifiers(fieldDeclaration);
+            return FieldDeclarationModifierHelper.Instance.RemoveAccessibility(fieldDeclaration);
         }
 
-        public static IndexerDeclarationSyntax RemoveAccess(IndexerDeclarationSyntax indexerDeclaration)
+        public static IndexerDeclarationSyntax RemoveAccessibility(IndexerDeclarationSyntax indexerDeclaration)
         {
-            return IndexerDeclarationModifierHelper.Instance.RemoveAccessModifiers(indexerDeclaration);
+            return IndexerDeclarationModifierHelper.Instance.RemoveAccessibility(indexerDeclaration);
         }
 
-        public static InterfaceDeclarationSyntax RemoveAccess(InterfaceDeclarationSyntax interfaceDeclaration)
+        public static InterfaceDeclarationSyntax RemoveAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return InterfaceDeclarationModifierHelper.Instance.RemoveAccessModifiers(interfaceDeclaration);
+            return InterfaceDeclarationModifierHelper.Instance.RemoveAccessibility(interfaceDeclaration);
         }
 
-        public static MethodDeclarationSyntax RemoveAccess(MethodDeclarationSyntax methodDeclaration)
+        public static MethodDeclarationSyntax RemoveAccessibility(MethodDeclarationSyntax methodDeclaration)
         {
-            return MethodDeclarationModifierHelper.Instance.RemoveAccessModifiers(methodDeclaration);
+            return MethodDeclarationModifierHelper.Instance.RemoveAccessibility(methodDeclaration);
         }
 
-        public static OperatorDeclarationSyntax RemoveAccess(OperatorDeclarationSyntax operatorDeclaration)
+        public static OperatorDeclarationSyntax RemoveAccessibility(OperatorDeclarationSyntax operatorDeclaration)
         {
-            return OperatorDeclarationModifierHelper.Instance.RemoveAccessModifiers(operatorDeclaration);
+            return OperatorDeclarationModifierHelper.Instance.RemoveAccessibility(operatorDeclaration);
         }
 
-        public static PropertyDeclarationSyntax RemoveAccess(PropertyDeclarationSyntax propertyDeclaration)
+        public static PropertyDeclarationSyntax RemoveAccessibility(PropertyDeclarationSyntax propertyDeclaration)
         {
-            return PropertyDeclarationModifierHelper.Instance.RemoveAccessModifiers(propertyDeclaration);
+            return PropertyDeclarationModifierHelper.Instance.RemoveAccessibility(propertyDeclaration);
         }
 
-        public static StructDeclarationSyntax RemoveAccess(StructDeclarationSyntax structDeclaration)
+        public static StructDeclarationSyntax RemoveAccessibility(StructDeclarationSyntax structDeclaration)
         {
-            return StructDeclarationModifierHelper.Instance.RemoveAccessModifiers(structDeclaration);
+            return StructDeclarationModifierHelper.Instance.RemoveAccessibility(structDeclaration);
         }
 
-        public static AccessorDeclarationSyntax RemoveAccess(AccessorDeclarationSyntax accessorDeclaration)
+        public static AccessorDeclarationSyntax RemoveAccessibility(AccessorDeclarationSyntax accessorDeclaration)
         {
-            return AccessorDeclarationModifierHelper.Instance.RemoveAccessModifiers(accessorDeclaration);
+            return AccessorDeclarationModifierHelper.Instance.RemoveAccessibility(accessorDeclaration);
         }
 
-        public static LocalDeclarationStatementSyntax RemoveAccess(LocalDeclarationStatementSyntax localDeclaration)
+        public static LocalDeclarationStatementSyntax RemoveAccessibility(LocalDeclarationStatementSyntax localDeclaration)
         {
-            return LocalDeclarationStatementModifierHelper.Instance.RemoveAccessModifiers(localDeclaration);
+            return LocalDeclarationStatementModifierHelper.Instance.RemoveAccessibility(localDeclaration);
         }
 
-        public static LocalFunctionStatementSyntax RemoveAccess(LocalFunctionStatementSyntax localFunction)
+        public static LocalFunctionStatementSyntax RemoveAccessibility(LocalFunctionStatementSyntax localFunction)
         {
-            return LocalFunctionStatementModifierHelper.Instance.RemoveAccessModifiers(localFunction);
+            return LocalFunctionStatementModifierHelper.Instance.RemoveAccessibility(localFunction);
         }
 
-        public static ParameterSyntax RemoveAccess(ParameterSyntax parameter)
+        public static ParameterSyntax RemoveAccessibility(ParameterSyntax parameter)
         {
-            return ParameterModifierHelper.Instance.RemoveAccessModifiers(parameter);
+            return ParameterModifierHelper.Instance.RemoveAccessibility(parameter);
         }
 
         public static ClassDeclarationSyntax RemoveAll(ClassDeclarationSyntax classDeclaration)
@@ -1071,14 +1071,6 @@ namespace Roslynator.CSharp
         public static ParameterSyntax RemoveAll(ParameterSyntax parameter)
         {
             return ParameterModifierHelper.Instance.RemoveModifiers(parameter);
-        }
-
-        internal static string GetTitle(SyntaxKind modifierKind)
-        {
-            if (modifierKind == SyntaxKind.ReadOnlyKeyword)
-                return "read-only";
-
-            return SyntaxFacts.GetText(modifierKind);
         }
     }
 }

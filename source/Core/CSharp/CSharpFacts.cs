@@ -7,6 +7,15 @@ namespace Roslynator.CSharp
 {
     internal static class CSharpFacts
     {
+        public static bool IsCommentTrivia(SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.SingleLineCommentTrivia,
+                SyntaxKind.MultiLineCommentTrivia,
+                SyntaxKind.SingleLineDocumentationCommentTrivia,
+                SyntaxKind.MultiLineDocumentationCommentTrivia);
+        }
+
         public static bool CanHaveStatements(SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
@@ -312,6 +321,14 @@ namespace Roslynator.CSharp
             }
 
             return false;
+        }
+
+        internal static string GetTitle(SyntaxKind kind)
+        {
+            if (kind == SyntaxKind.ReadOnlyKeyword)
+                return "read-only";
+
+            return SyntaxFacts.GetText(kind);
         }
     }
 }

@@ -4,7 +4,6 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //XTODO: CommentKinds
     [Flags]
     public enum CommentKinds
     {

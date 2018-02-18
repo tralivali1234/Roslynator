@@ -1298,7 +1298,6 @@ namespace Roslynator
             return default(TSymbol);
         }
 
-        //XTODO: ContainsMember
         public static bool ContainsMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)

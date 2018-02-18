@@ -4,7 +4,6 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //XTODO: PreprocessorDirectiveKinds
     [Flags]
     public enum PreprocessorDirectiveKinds
     {
@@ -45,9 +44,5 @@ namespace Roslynator.CSharp
             | Load
             | Bad
             | Shebang,
-
-        //All,
-        //AllExceptRegion,
-        //Region
     }
 }

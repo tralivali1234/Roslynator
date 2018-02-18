@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     if (node.Kind() == SyntaxKind.VariableDeclarator)
                                         node = node.Parent.Parent;
 
-                                    SyntaxNode newNode = CSharpAccessibility.ChangeExplicitAccessibility(node, newAccessibility);
+                                    SyntaxNode newNode = CSharpAccessibility.WithExplicitAccessibility(node, newAccessibility);
 
                                     return context.Document.ReplaceNodeAsync(node, newNode, cancellationToken);
                                 },

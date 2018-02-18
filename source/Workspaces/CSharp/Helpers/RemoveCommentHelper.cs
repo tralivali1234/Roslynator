@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -11,22 +8,12 @@ namespace Roslynator.CSharp.Helpers
 {
     internal static class RemoveCommentHelper
     {
-        public static Task<Document> RemoveCommentAsync(
-            Document document,
-            SyntaxTrivia comment,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public static SyntaxToken GetReplacementToken(SyntaxTrivia comment)
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
+            Debug.Assert(CSharpFacts.IsCommentTrivia(comment.Kind()), comment.Kind().ToString());
 
-            SyntaxToken newToken = GetNewToken(comment.Token, comment)
-                .WithFormatterAnnotation();
+            SyntaxToken token = comment.Token;
 
-            return document.ReplaceTokenAsync(comment.Token, newToken, cancellationToken);
-        }
-
-        private static SyntaxToken GetNewToken(SyntaxToken token, SyntaxTrivia comment)
-        {
             int index = token.LeadingTrivia.IndexOf(comment);
 
             if (index != -1)
@@ -109,15 +96,10 @@ namespace Roslynator.CSharp.Helpers
 
         private static bool IsAllowedTrivia(SyntaxTrivia trivia)
         {
-            switch (trivia.Kind())
-            {
-                case SyntaxKind.WhitespaceTrivia:
-                case SyntaxKind.EndOfLineTrivia:
-                case SyntaxKind.SingleLineCommentTrivia:
-                    return true;
-                default:
-                    return false;
-            }
+            return trivia.Kind().Is(
+                SyntaxKind.WhitespaceTrivia,
+                SyntaxKind.EndOfLineTrivia,
+                SyntaxKind.SingleLineCommentTrivia);
         }
     }
 }

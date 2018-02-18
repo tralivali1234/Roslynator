@@ -177,7 +177,7 @@ namespace Roslynator.CSharp.ModifierHelpers
             return AddIfNotEmptyOrWhitespace(trivia, triviaToAdd2);
         }
 
-        public TNode RemoveAccessModifiers(TNode node)
+        public TNode RemoveAccessibility(TNode node)
         {
             SyntaxTokenList modifiers = GetModifiers(node);
 
