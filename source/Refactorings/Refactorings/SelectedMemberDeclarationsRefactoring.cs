@@ -36,9 +36,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeAccessibility))
             {
-                AccessibilityKinds validAccessibilities = ChangeAccessibilityRefactoring.GetValidAccessibilities(selectedMembers, allowOverride: true);
+                Accessibilities validAccessibilities = ChangeAccessibilityRefactoring.GetValidAccessibilities(selectedMembers, allowOverride: true);
 
-                if (validAccessibilities != AccessibilityKinds.None)
+                if (validAccessibilities != Accessibilities.None)
                 {
                     bool canHaveMultipleDeclarations = CanHaveMultipleDeclarations();
 
@@ -52,9 +52,9 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.InitializeFieldFromConstructor))
                 InitializeFieldFromConstructorRefactoring.ComputeRefactoring(context, selectedMembers);
 
-            void TryRegisterRefactoring(AccessibilityKinds accessibilityKinds, Accessibility accessibility, bool canHaveMultipleDeclarations)
+            void TryRegisterRefactoring(Accessibilities accessibilities, Accessibility accessibility, bool canHaveMultipleDeclarations)
             {
-                if ((accessibilityKinds & accessibility.GetAccessibilityKind()) != 0)
+                if ((accessibilities & accessibility.GetAccessibilities()) != 0)
                 {
                     if (canHaveMultipleDeclarations)
                     {

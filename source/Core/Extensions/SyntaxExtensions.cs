@@ -62,26 +62,6 @@ namespace Roslynator
             return (shouldthrow) ? list.SingleOrDefault() : (list.Count == 1) ? list[0] : default(TNode);
         }
 
-        public static bool SpanContainsDirectives<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
-        {
-            int count = list.Count;
-
-            if (count == 0)
-                return false;
-
-            if (count == 1)
-                return list.First().SpanContainsDirectives();
-
-            for (int i = 1; i < count - 1; i++)
-            {
-                if (list[i].ContainsDirectives)
-                    return true;
-            }
-
-            return list.First().SpanOrTrailingTriviaContainsDirectives()
-                || list.Last().SpanOrLeadingTriviaContainsDirectives();
-        }
-
         internal static TNode LastButOne<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return list[list.Count - 2];
@@ -327,64 +307,24 @@ namespace Roslynator
                 .WithTrailingTrivia(token.TrailingTrivia);
         }
 
-        public static int GetSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            if (node.SyntaxTree != null)
-            {
-                return node.SyntaxTree.GetLineSpan(node.Span, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return node.SyntaxTree.GetLineSpan(node.Span, cancellationToken).StartLine();
         }
 
-        public static int GetFullSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanStartLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            if (node.SyntaxTree != null)
-            {
-                return node.SyntaxTree.GetLineSpan(node.FullSpan, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return node.SyntaxTree.GetLineSpan(node.FullSpan, cancellationToken).StartLine();
         }
 
-        public static int GetSpanEndLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanEndLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            if (node.SyntaxTree != null)
-            {
-                return node.SyntaxTree.GetLineSpan(node.Span, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return node.SyntaxTree.GetLineSpan(node.Span, cancellationToken).EndLine();
         }
 
-        public static int GetFullSpanEndLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanEndLine(this SyntaxNode node, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
-            if (node.SyntaxTree != null)
-            {
-                return node.SyntaxTree.GetLineSpan(node.FullSpan, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return node.SyntaxTree.GetLineSpan(node.FullSpan, cancellationToken).EndLine();
         }
 
         public static TNode FirstAncestor<TNode>(
@@ -605,52 +545,24 @@ namespace Roslynator
             return SyntaxTriviaList.Empty;
         }
 
-        public static int GetSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (token.SyntaxTree != null)
-            {
-                return token.SyntaxTree.GetLineSpan(token.Span, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return token.SyntaxTree.GetLineSpan(token.Span, cancellationToken).StartLine();
         }
 
-        public static int GetFullSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanStartLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (token.SyntaxTree != null)
-            {
-                return token.SyntaxTree.GetLineSpan(token.FullSpan, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return token.SyntaxTree.GetLineSpan(token.FullSpan, cancellationToken).StartLine();
         }
 
-        public static int GetSpanEndLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanEndLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (token.SyntaxTree != null)
-            {
-                return token.SyntaxTree.GetLineSpan(token.Span, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return token.SyntaxTree.GetLineSpan(token.Span, cancellationToken).EndLine();
         }
 
-        public static int GetFullSpanEndLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanEndLine(this SyntaxToken token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (token.SyntaxTree != null)
-            {
-                return token.SyntaxTree.GetLineSpan(token.FullSpan, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return token.SyntaxTree.GetLineSpan(token.FullSpan, cancellationToken).EndLine();
         }
 
         public static SyntaxToken WithoutLeadingTrivia(this SyntaxToken token)
@@ -753,52 +665,24 @@ namespace Roslynator
             return false;
         }
 
-        public static int GetSpanStartLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanStartLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (trivia.SyntaxTree != null)
-            {
-                return trivia.SyntaxTree.GetLineSpan(trivia.Span, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return trivia.SyntaxTree.GetLineSpan(trivia.Span, cancellationToken).StartLine();
         }
 
-        public static int GetFullSpanStartLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanStartLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (trivia.SyntaxTree != null)
-            {
-                return trivia.SyntaxTree.GetLineSpan(trivia.FullSpan, cancellationToken).StartLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return trivia.SyntaxTree.GetLineSpan(trivia.FullSpan, cancellationToken).StartLine();
         }
 
-        public static int GetSpanEndLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetSpanEndLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (trivia.SyntaxTree != null)
-            {
-                return trivia.SyntaxTree.GetLineSpan(trivia.Span, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return trivia.SyntaxTree.GetLineSpan(trivia.Span, cancellationToken).EndLine();
         }
 
-        public static int GetFullSpanEndLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
+        internal static int GetFullSpanEndLine(this SyntaxTrivia trivia, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (trivia.SyntaxTree != null)
-            {
-                return trivia.SyntaxTree.GetLineSpan(trivia.FullSpan, cancellationToken).EndLine();
-            }
-            else
-            {
-                return -1;
-            }
+            return trivia.SyntaxTree.GetLineSpan(trivia.FullSpan, cancellationToken).EndLine();
         }
 
         internal static TextSpan LeadingTriviaSpan(this SyntaxTrivia trivia)

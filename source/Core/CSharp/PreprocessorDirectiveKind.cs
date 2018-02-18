@@ -5,7 +5,7 @@ using System;
 namespace Roslynator.CSharp
 {
     [Flags]
-    public enum PreprocessorDirectiveKinds
+    public enum PreprocessorDirectiveKind
     {
         None = 0,
         If = 1,
@@ -14,7 +14,6 @@ namespace Roslynator.CSharp
         EndIf = 8,
         Region = 16,
         EndRegion = 32,
-        RegionOrEndRegion = Region | EndRegion,
         Define = 64,
         Undef = 128,
         Error = 256,

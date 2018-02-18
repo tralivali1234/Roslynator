@@ -11,7 +11,7 @@ namespace Roslynator
 {
     public static class SemanticModelExtensions
     {
-        public static Diagnostic GetDiagnostic(
+        internal static Diagnostic GetDiagnostic(
             this SemanticModel semanticModel,
             string id,
             TextSpan? span = null,

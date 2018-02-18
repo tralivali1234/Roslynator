@@ -423,10 +423,10 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
-        //TODO: GetModifierKinds, property
-        public ModifierKinds GetKinds()
+        //XTODO: GetKind
+        public ModifierKind GetKind()
         {
-            var kinds = ModifierKinds.None;
+            var kind = ModifierKind.None;
 
             for (int i = 0; i < Modifiers.Count; i++)
             {
@@ -434,102 +434,102 @@ namespace Roslynator.CSharp.Syntax
                 {
                     case SyntaxKind.PublicKeyword:
                         {
-                            kinds |= ModifierKinds.Public;
+                            kind |= ModifierKind.Public;
                             break;
                         }
                     case SyntaxKind.PrivateKeyword:
                         {
-                            kinds |= ModifierKinds.Private;
+                            kind |= ModifierKind.Private;
                             break;
                         }
                     case SyntaxKind.InternalKeyword:
                         {
-                            kinds |= ModifierKinds.Internal;
+                            kind |= ModifierKind.Internal;
                             break;
                         }
                     case SyntaxKind.ProtectedKeyword:
                         {
-                            kinds |= ModifierKinds.Protected;
+                            kind |= ModifierKind.Protected;
                             break;
                         }
                     case SyntaxKind.StaticKeyword:
                         {
-                            kinds |= ModifierKinds.Static;
+                            kind |= ModifierKind.Static;
                             break;
                         }
                     case SyntaxKind.ReadOnlyKeyword:
                         {
-                            kinds |= ModifierKinds.ReadOnly;
+                            kind |= ModifierKind.ReadOnly;
                             break;
                         }
                     case SyntaxKind.SealedKeyword:
                         {
-                            kinds |= ModifierKinds.Sealed;
+                            kind |= ModifierKind.Sealed;
                             break;
                         }
                     case SyntaxKind.ConstKeyword:
                         {
-                            kinds |= ModifierKinds.Const;
+                            kind |= ModifierKind.Const;
                             break;
                         }
                     case SyntaxKind.VolatileKeyword:
                         {
-                            kinds |= ModifierKinds.Volatile;
+                            kind |= ModifierKind.Volatile;
                             break;
                         }
                     case SyntaxKind.NewKeyword:
                         {
-                            kinds |= ModifierKinds.New;
+                            kind |= ModifierKind.New;
                             break;
                         }
                     case SyntaxKind.OverrideKeyword:
                         {
-                            kinds |= ModifierKinds.Override;
+                            kind |= ModifierKind.Override;
                             break;
                         }
                     case SyntaxKind.AbstractKeyword:
                         {
-                            kinds |= ModifierKinds.Abstract;
+                            kind |= ModifierKind.Abstract;
                             break;
                         }
                     case SyntaxKind.VirtualKeyword:
                         {
-                            kinds |= ModifierKinds.Virtual;
+                            kind |= ModifierKind.Virtual;
                             break;
                         }
                     case SyntaxKind.RefKeyword:
                         {
-                            kinds |= ModifierKinds.Ref;
+                            kind |= ModifierKind.Ref;
                             break;
                         }
                     case SyntaxKind.OutKeyword:
                         {
-                            kinds |= ModifierKinds.Out;
+                            kind |= ModifierKind.Out;
                             break;
                         }
                     case SyntaxKind.InKeyword:
                         {
-                            kinds |= ModifierKinds.In;
+                            kind |= ModifierKind.In;
                             break;
                         }
                     case SyntaxKind.ParamsKeyword:
                         {
-                            kinds |= ModifierKinds.Params;
+                            kind |= ModifierKind.Params;
                             break;
                         }
                     case SyntaxKind.UnsafeKeyword:
                         {
-                            kinds |= ModifierKinds.Unsafe;
+                            kind |= ModifierKind.Unsafe;
                             break;
                         }
                     case SyntaxKind.PartialKeyword:
                         {
-                            kinds |= ModifierKinds.Partial;
+                            kind |= ModifierKind.Partial;
                             break;
                         }
                     case SyntaxKind.AsyncKeyword:
                         {
-                            kinds |= ModifierKinds.Async;
+                            kind |= ModifierKind.Async;
                             break;
                         }
                     default:
@@ -540,7 +540,7 @@ namespace Roslynator.CSharp.Syntax
                 }
             }
 
-            return kinds;
+            return kind;
         }
 
         private void ThrowInvalidOperationIfNotInitialized()

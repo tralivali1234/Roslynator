@@ -5,7 +5,7 @@ using System;
 namespace Roslynator
 {
     [Flags]
-    internal enum AccessibilityKinds
+    internal enum Accessibilities
     {
         None = 0,
         Private = 1,

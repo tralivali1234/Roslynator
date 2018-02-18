@@ -9,22 +9,19 @@ namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class CommentRemover : CSharpSyntaxRewriter
     {
-        internal CommentRemover(SyntaxNode node, CommentKinds commentKinds, TextSpan span)
+        internal CommentRemover(SyntaxNode node, CommentKind kind, TextSpan span)
             : base(visitIntoStructuredTrivia: true)
         {
             Node = node;
-            CcommentKinds = commentKinds;
             Span = span;
 
-            ShouldRemoveSingleLineComment = (commentKinds & CommentKinds.SingleLine) != 0;
-            ShouldRemoveMultiLineComment = (commentKinds & CommentKinds.MultiLine) != 0;
-            ShouldRemoveSingleLineDocumentationComment = (commentKinds & CommentKinds.SingleLineDocumentation) != 0;
-            ShouldRemoveMultiLineDocumentationComment = (commentKinds & CommentKinds.MultiLineDocumentation) != 0;
+            ShouldRemoveSingleLineComment = (kind & CommentKind.SingleLine) != 0;
+            ShouldRemoveMultiLineComment = (kind & CommentKind.MultiLine) != 0;
+            ShouldRemoveSingleLineDocumentationComment = (kind & CommentKind.SingleLineDocumentation) != 0;
+            ShouldRemoveMultiLineDocumentationComment = (kind & CommentKind.MultiLineDocumentation) != 0;
         }
 
         public SyntaxNode Node { get; }
-
-        public CommentKinds CcommentKinds { get; }
 
         public TextSpan Span { get; }
 
@@ -93,12 +90,12 @@ namespace Roslynator.CSharp.SyntaxRewriters
             {
                 if (span.Start > 0)
                 {
-                    SyntaxTrivia trivia2 = Node.FindTrivia(span.Start - 1);
+                    SyntaxTrivia t = Node.FindTrivia(span.Start - 1);
 
-                    if (trivia2.Kind() != kind)
+                    if (t.Kind() != kind)
                         return false;
 
-                    span = trivia2.Span;
+                    span = t.Span;
                 }
 
                 return true;

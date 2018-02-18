@@ -5,7 +5,7 @@ using System;
 namespace Roslynator.CSharp
 {
     [Flags]
-    public enum CommentKinds
+    public enum CommentKind
     {
 
         None = 0,

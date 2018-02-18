@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ChangeAccessibilityRefactoring
     {
-        public static ImmutableArray<Accessibility> Accessibilities { get; } = ImmutableArray.Create(
+        public static ImmutableArray<Accessibility> AvailableAccessibilities { get; } = ImmutableArray.Create(
             Accessibility.Public,
             Accessibility.Internal,
             Accessibility.Protected,
@@ -28,17 +28,17 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static AccessibilityKinds GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
+        public static Accessibilities GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
-                return AccessibilityKinds.None;
+                return Accessibilities.None;
 
-            var allKinds = AccessibilityKinds.None;
+            var all = Accessibilities.None;
 
-            AccessibilityKinds validKinds = AccessibilityKinds.Public
-                | AccessibilityKinds.Internal
-                | AccessibilityKinds.Protected
-                | AccessibilityKinds.Private;
+            Accessibilities valid = Accessibilities.Public
+                | Accessibilities.Internal
+                | Accessibilities.Protected
+                | Accessibilities.Private;
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
@@ -49,10 +49,10 @@ namespace Roslynator.CSharp.Refactorings
                     accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(member);
 
                     if (accessibility == Accessibility.NotApplicable)
-                        return AccessibilityKinds.None;
+                        return Accessibilities.None;
                 }
 
-                AccessibilityKinds accessibilityKind = accessibility.GetAccessibilityKind();
+                Accessibilities accessibilities = accessibility.GetAccessibilities();
 
                 switch (accessibility)
                 {
@@ -63,39 +63,39 @@ namespace Roslynator.CSharp.Refactorings
                     case Accessibility.Internal:
                     case Accessibility.Public:
                         {
-                            allKinds |= accessibilityKind;
+                            all |= accessibilities;
                             break;
                         }
                     default:
                         {
                             Debug.Fail(accessibility.ToString());
-                            return AccessibilityKinds.None;
+                            return Accessibilities.None;
                         }
                 }
 
-                foreach (Accessibility accessibility2 in Accessibilities)
+                foreach (Accessibility accessibility2 in AvailableAccessibilities)
                 {
                     if (accessibility != accessibility2
                         && !CSharpAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
-                        validKinds &= ~accessibility2.GetAccessibilityKind();
+                        valid &= ~accessibility2.GetAccessibilities();
                     }
                 }
             }
 
-            switch (allKinds)
+            switch (all)
             {
-                case AccessibilityKinds.Private:
-                case AccessibilityKinds.Protected:
-                case AccessibilityKinds.Internal:
-                case AccessibilityKinds.Public:
+                case Accessibilities.Private:
+                case Accessibilities.Protected:
+                case Accessibilities.Internal:
+                case Accessibilities.Public:
                     {
-                        validKinds &= ~allKinds;
+                        valid &= ~all;
                         break;
                     }
             }
 
-            return validKinds;
+            return valid;
         }
 
         public static ISymbol GetBaseSymbolOrDefault(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
@@ -174,16 +174,16 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                ModifierKinds kinds = SyntaxInfo.ModifiersInfo(member).GetKinds();
+                ModifierKind kind = SyntaxInfo.ModifiersInfo(member).GetKind();
 
-                if (kinds.Any(ModifierKinds.Partial))
+                if (kind.Any(ModifierKind.Partial))
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 
                     foreach (SyntaxReference reference in symbol.DeclaringSyntaxReferences)
                         members.Add((MemberDeclarationSyntax)reference.GetSyntax(cancellationToken));
                 }
-                else if (kinds.Any(ModifierKinds.AbstractVirtualOverride))
+                else if (kind.Any(ModifierKind.AbstractVirtualOverride))
                 {
                     ISymbol symbol = GetBaseSymbolOrDefault(member, semanticModel, cancellationToken);
 

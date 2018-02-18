@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
                         syntaxReferences,
                         f => (MemberDeclarationSyntax)f.GetSyntax(context.CancellationToken));
 
-                    foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.Accessibilities)
+                    foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.AvailableAccessibilities)
                     {
                         if (accessibility != modifiersInfo.ExplicitAccessibility
                             && CSharpAccessibility.IsValidAccessibility(node, accessibility))
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.Accessibilities)
+            foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.AvailableAccessibilities)
             {
                 if (accessibility == modifiersInfo.ExplicitAccessibility)
                     continue;
@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol GetBaseSymbolOrDefault(SemanticModel semanticModel, CancellationToken cancellationToken)
             {
-                if (modifiersInfo.GetKinds().Any(ModifierKinds.AbstractVirtualOverride))
+                if (modifiersInfo.GetKind().Any(ModifierKind.AbstractVirtualOverride))
                     return ChangeAccessibilityRefactoring.GetBaseSymbolOrDefault(node, semanticModel, cancellationToken);
 
                 return null;

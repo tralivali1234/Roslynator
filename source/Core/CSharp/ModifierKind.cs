@@ -5,7 +5,7 @@ using System;
 namespace Roslynator.CSharp
 {
     [Flags]
-    public enum ModifierKinds
+    public enum ModifierKind
     {
         None = 0,
         New = 1,

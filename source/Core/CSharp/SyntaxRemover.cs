@@ -80,17 +80,20 @@ namespace Roslynator.CSharp
             return declaration;
         }
 
-        public static TNode RemoveComments<TNode>(TNode node, CommentKinds commentKinds) where TNode : SyntaxNode
-        {
-            return RemoveComments(node, node.FullSpan, commentKinds);
-        }
-
-        public static TNode RemoveComments<TNode>(TNode node, TextSpan span, CommentKinds commentKinds) where TNode : SyntaxNode
+        public static TNode RemoveComments<TNode>(TNode node, CommentKind kind) where TNode : SyntaxNode
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            var remover = new CommentRemover(node, commentKinds, span);
+            return RemoveComments(node, node.FullSpan, kind);
+        }
+
+        public static TNode RemoveComments<TNode>(TNode node, TextSpan span, CommentKind kind) where TNode : SyntaxNode
+        {
+            if (node == null)
+                throw new ArgumentNullException(nameof(node));
+
+            var remover = new CommentRemover(node, kind, span);
 
             return (TNode)remover.Visit(node);
         }

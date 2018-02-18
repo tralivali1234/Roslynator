@@ -20,11 +20,11 @@ namespace Roslynator
 
         protected abstract IReadOnlyList<T> Items { get; }
 
-        public virtual TextSpan Span { get; }
+        public TextSpan Span { get; }
 
-        public virtual int FirstIndex { get; }
+        public int FirstIndex { get; }
 
-        public virtual int LastIndex { get; }
+        public int LastIndex { get; }
 
         public int Count
         {

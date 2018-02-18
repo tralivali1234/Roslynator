@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Remove all region directives",
-                    cancellationToken => context.Document.RemovePreprocessorDirectivesAsync(PreprocessorDirectiveKinds.RegionOrEndRegion, cancellationToken));
+                    cancellationToken => context.Document.RemovePreprocessorDirectivesAsync(PreprocessorDirectiveKind.Region | PreprocessorDirectiveKind.EndRegion, cancellationToken));
             }
         }
 

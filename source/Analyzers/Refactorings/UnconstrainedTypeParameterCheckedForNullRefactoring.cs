@@ -36,9 +36,9 @@ namespace Roslynator.CSharp.Refactorings
             Analyze(context, (BinaryExpressionSyntax)context.Node, NullCheckStyles.NotEqualsToNull);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression, NullCheckStyles allowedKinds)
+        private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression, NullCheckStyles allowedStyles)
         {
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, allowedStyles: allowedKinds);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, allowedStyles: allowedStyles);
             if (nullCheck.Success
                 && IsUnconstrainedTypeParameter(context.SemanticModel.GetTypeSymbol(nullCheck.Expression, context.CancellationToken))
                 && !binaryExpression.SpanContainsDirectives())
