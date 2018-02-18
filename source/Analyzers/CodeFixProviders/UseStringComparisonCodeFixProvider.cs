@@ -108,7 +108,7 @@ namespace Roslynator.CSharp.CodeFixes
             INamedTypeSymbol comparisonSymbol,
             string comparisonName)
         {
-            if (!comparisonSymbol.ExistsMember<IFieldSymbol>(comparisonName))
+            if (!comparisonSymbol.ContainsMember<IFieldSymbol>(comparisonName))
                 return false;
 
             CodeAction codeAction = CodeAction.Create(
@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.CodeFixes
             INamedTypeSymbol comparisonSymbol,
             string comparisonName)
         {
-            if (!comparisonSymbol.ExistsMember<IFieldSymbol>(comparisonName))
+            if (!comparisonSymbol.ContainsMember<IFieldSymbol>(comparisonName))
                 return false;
 
             CodeAction codeAction = CodeAction.Create(

@@ -36,25 +36,25 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeAccessibility))
             {
-                AccessibilityFlags accessibilityFlags = ChangeAccessibilityRefactoring.GetAllowedAccessibilityFlags(selectedMembers, allowOverride: true);
+                AccessibilityKinds validAccessibilities = ChangeAccessibilityRefactoring.GetValidAccessibilities(selectedMembers, allowOverride: true);
 
-                if (accessibilityFlags != AccessibilityFlags.None)
+                if (validAccessibilities != AccessibilityKinds.None)
                 {
                     bool canHaveMultipleDeclarations = CanHaveMultipleDeclarations();
 
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Public, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Internal, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Protected, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Private, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Public, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Internal, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Protected, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Private, canHaveMultipleDeclarations);
                 }
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.InitializeFieldFromConstructor))
                 InitializeFieldFromConstructorRefactoring.ComputeRefactoring(context, selectedMembers);
 
-            void TryRegisterRefactoring(AccessibilityFlags accessibilityFlags, Accessibility accessibility, bool canHaveMultipleDeclarations)
+            void TryRegisterRefactoring(AccessibilityKinds accessibilityKinds, Accessibility accessibility, bool canHaveMultipleDeclarations)
             {
-                if ((accessibilityFlags & accessibility.GetAccessibilityFlag()) != 0)
+                if ((accessibilityKinds & accessibility.GetAccessibilityKind()) != 0)
                 {
                     if (canHaveMultipleDeclarations)
                     {

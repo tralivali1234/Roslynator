@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
 
             return typeSymbol?.TypeKind == TypeKind.Enum
-                && typeSymbol.ExistsMember<IFieldSymbol>();
+                && typeSymbol.ContainsMember<IFieldSymbol>();
         }
 
         private static bool IsEmptyOrContainsOnlyDefaultSection(SwitchStatementSyntax switchStatement)

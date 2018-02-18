@@ -13,6 +13,7 @@
     <AssemblyOriginatorKeyFile>Roslynator.CSharp.CodeFixes.snk</AssemblyOriginatorKeyFile>
     <NuspecFile>Roslynator.CodeFixes.nuspec</NuspecFile> 
     <NuspecProperties>configuration=$(Configuration)</NuspecProperties> 
+    <Copyright>Copyright (c) 2017-2018 Josef Pihrt</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

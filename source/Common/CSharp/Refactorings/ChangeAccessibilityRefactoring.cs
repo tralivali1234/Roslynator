@@ -28,17 +28,17 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static AccessibilityFlags GetAllowedAccessibilityFlags(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
+        public static AccessibilityKinds GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
-                return AccessibilityFlags.None;
+                return AccessibilityKinds.None;
 
-            var allFlags = AccessibilityFlags.None;
+            var allKinds = AccessibilityKinds.None;
 
-            AccessibilityFlags allowedFlags = AccessibilityFlags.Public
-                | AccessibilityFlags.Internal
-                | AccessibilityFlags.Protected
-                | AccessibilityFlags.Private;
+            AccessibilityKinds validKinds = AccessibilityKinds.Public
+                | AccessibilityKinds.Internal
+                | AccessibilityKinds.Protected
+                | AccessibilityKinds.Private;
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
@@ -49,10 +49,10 @@ namespace Roslynator.CSharp.Refactorings
                     accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(member);
 
                     if (accessibility == Accessibility.NotApplicable)
-                        return AccessibilityFlags.None;
+                        return AccessibilityKinds.None;
                 }
 
-                AccessibilityFlags flag = accessibility.GetAccessibilityFlag();
+                AccessibilityKinds accessibilityKind = accessibility.GetAccessibilityKind();
 
                 switch (accessibility)
                 {
@@ -63,13 +63,13 @@ namespace Roslynator.CSharp.Refactorings
                     case Accessibility.Internal:
                     case Accessibility.Public:
                         {
-                            allFlags |= flag;
+                            allKinds |= accessibilityKind;
                             break;
                         }
                     default:
                         {
                             Debug.Fail(accessibility.ToString());
-                            return AccessibilityFlags.None;
+                            return AccessibilityKinds.None;
                         }
                 }
 
@@ -78,24 +78,24 @@ namespace Roslynator.CSharp.Refactorings
                     if (accessibility != accessibility2
                         && !CSharpAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
-                        allowedFlags &= ~accessibility2.GetAccessibilityFlag();
+                        validKinds &= ~accessibility2.GetAccessibilityKind();
                     }
                 }
             }
 
-            switch (allFlags)
+            switch (allKinds)
             {
-                case AccessibilityFlags.Private:
-                case AccessibilityFlags.Protected:
-                case AccessibilityFlags.Internal:
-                case AccessibilityFlags.Public:
+                case AccessibilityKinds.Private:
+                case AccessibilityKinds.Protected:
+                case AccessibilityKinds.Internal:
+                case AccessibilityKinds.Public:
                     {
-                        allowedFlags &= ~allFlags;
+                        validKinds &= ~allKinds;
                         break;
                     }
             }
 
-            return allowedFlags;
+            return validKinds;
         }
 
         public static ISymbol GetBaseSymbolOrDefault(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)

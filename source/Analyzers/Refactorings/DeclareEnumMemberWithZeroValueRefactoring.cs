@@ -41,21 +41,21 @@ namespace Roslynator.CSharp.Refactorings
             switch (enumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((sbyte)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((sbyte)0));
                 case SpecialType.System_Byte:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((byte)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((byte)0));
                 case SpecialType.System_Int16:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((short)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((short)0));
                 case SpecialType.System_UInt16:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((ushort)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((ushort)0));
                 case SpecialType.System_Int32:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((int)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((int)0));
                 case SpecialType.System_UInt32:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((uint)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((uint)0));
                 case SpecialType.System_Int64:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((long)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((long)0));
                 case SpecialType.System_UInt64:
-                    return namedTypeSymbol.ExistsMember<IFieldSymbol>(f => f.HasConstantValue((ulong)0));
+                    return namedTypeSymbol.ContainsMember<IFieldSymbol>(f => f.HasConstantValue((ulong)0));
                 default:
                     {
                         Debug.Fail(enumUnderlyingType.SpecialType.ToString());

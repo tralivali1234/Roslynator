@@ -18,6 +18,22 @@ namespace Roslynator
             if (symbol == null)
                 throw new ArgumentNullException(nameof(symbol));
 
+            return FindFirstImplementedInterfaceMemberImpl(symbol, null, allInterfaces);
+        }
+
+        internal static ISymbol FindImplementedInterfaceMember(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false)
+        {
+            if (symbol == null)
+                throw new ArgumentNullException(nameof(symbol));
+
+            if (interfaceSymbol == null)
+                throw new ArgumentNullException(nameof(interfaceSymbol));
+
+            return FindFirstImplementedInterfaceMemberImpl(symbol, interfaceSymbol, allInterfaces);
+        }
+
+        private static ISymbol FindFirstImplementedInterfaceMemberImpl(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces)
+        {
             INamedTypeSymbol containingType = symbol.ContainingType;
 
             if (containingType != null)
@@ -26,12 +42,16 @@ namespace Roslynator
 
                 for (int i = 0; i < interfaces.Length; i++)
                 {
-                    ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
-
-                    for (int j = 0; j < members.Length; j++)
+                    if (interfaceSymbol == null
+                        || interfaces[i].Equals(interfaceSymbol))
                     {
-                        if (symbol.Equals(containingType.FindImplementationForInterfaceMember(members[j])))
-                            return members[j];
+                        ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
+
+                        for (int j = 0; j < members.Length; j++)
+                        {
+                            if (symbol.Equals(containingType.FindImplementationForInterfaceMember(members[j])))
+                                return members[j];
+                        }
                     }
                 }
             }
@@ -44,11 +64,32 @@ namespace Roslynator
             return FindFirstImplementedInterfaceMember(symbol, allInterfaces) != null;
         }
 
+        public static bool ImplementsInterfaceMember(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false)
+        {
+            return FindImplementedInterfaceMember(symbol, interfaceSymbol, allInterfaces) != null;
+        }
+
         internal static TSymbol FindFirstImplementedInterfaceMember<TSymbol>(this ISymbol symbol, bool allInterfaces = false) where TSymbol : ISymbol
         {
             if (symbol == null)
                 throw new ArgumentNullException(nameof(symbol));
 
+            return FindFirstImplementedInterfaceMemberImpl<TSymbol>(symbol, null, allInterfaces);
+        }
+
+        internal static TSymbol FindFirstImplementedInterfaceMember<TSymbol>(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false) where TSymbol : ISymbol
+        {
+            if (symbol == null)
+                throw new ArgumentNullException(nameof(symbol));
+
+            if (interfaceSymbol == null)
+                throw new ArgumentNullException(nameof(interfaceSymbol));
+
+            return FindFirstImplementedInterfaceMemberImpl<TSymbol>(symbol, interfaceSymbol, allInterfaces);
+        }
+
+        private static TSymbol FindFirstImplementedInterfaceMemberImpl<TSymbol>(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false) where TSymbol : ISymbol
+        {
             INamedTypeSymbol containingType = symbol.ContainingType;
 
             if (containingType != null)
@@ -57,14 +98,18 @@ namespace Roslynator
 
                 for (int i = 0; i < interfaces.Length; i++)
                 {
-                    ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
-
-                    for (int j = 0; j < members.Length; j++)
+                    if (interfaceSymbol == null
+                        || interfaces[i].Equals(interfaceSymbol))
                     {
-                        if ((members[j] is TSymbol tmember)
-                            && symbol.Equals(containingType.FindImplementationForInterfaceMember(tmember)))
+                        ImmutableArray<ISymbol> members = interfaces[i].GetMembers();
+
+                        for (int j = 0; j < members.Length; j++)
                         {
-                            return tmember;
+                            if ((members[j] is TSymbol tmember)
+                                && symbol.Equals(containingType.FindImplementationForInterfaceMember(tmember)))
+                            {
+                                return tmember;
+                            }
                         }
                     }
                 }
@@ -77,6 +122,13 @@ namespace Roslynator
         {
             return !EqualityComparer<TSymbol>.Default.Equals(
                 FindFirstImplementedInterfaceMember<TSymbol>(symbol, allInterfaces),
+                default(TSymbol));
+        }
+
+        public static bool ImplementsInterfaceMember<TSymbol>(this ISymbol symbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false) where TSymbol : ISymbol
+        {
+            return !EqualityComparer<TSymbol>.Default.Equals(
+                FindFirstImplementedInterfaceMember<TSymbol>(symbol, interfaceSymbol, allInterfaces),
                 default(TSymbol));
         }
 
@@ -315,7 +367,6 @@ namespace Roslynator
             return false;
         }
 
-        //TODO: ContainsAttribute
         public static bool HasAttribute(this ISymbol symbol, INamedTypeSymbol attributeSymbol)
         {
             if (symbol == null)
@@ -1011,7 +1062,7 @@ namespace Roslynator
             return false;
         }
 
-        public static bool Implements(this ITypeSymbol typeSymbol, ITypeSymbol interfaceSymbol, bool allInterfaces = false)
+        public static bool Implements(this ITypeSymbol typeSymbol, INamedTypeSymbol interfaceSymbol, bool allInterfaces = false)
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
@@ -1206,34 +1257,6 @@ namespace Roslynator
                 || InheritsFrom(type, baseType, includeInterfaces);
         }
 
-        public static ISymbol FindMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate = null)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
-
-            if (predicate != null)
-            {
-                return members.FirstOrDefault(predicate);
-            }
-            else
-            {
-                return members.FirstOrDefault();
-            }
-        }
-
-        public static ISymbol FindMember(this ITypeSymbol typeSymbol, Func<ISymbol, bool> predicate)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (predicate == null)
-                throw new ArgumentNullException(nameof(predicate));
-
-            return typeSymbol.GetMembers().FirstOrDefault(predicate);
-        }
-
         public static TSymbol FindMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)
@@ -1275,52 +1298,24 @@ namespace Roslynator
             return default(TSymbol);
         }
 
-        //TODO: HasMember
-        public static bool ExistsMember(this ITypeSymbol typeSymbol, string name, Func<ISymbol, bool> predicate = null)
+        //XTODO: ContainsMember
+        public static bool ContainsMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            ImmutableArray<ISymbol> members = typeSymbol.GetMembers(name);
-
-            if (predicate != null)
-            {
-                return members.Any(predicate);
-            }
-            else
-            {
-                return members.Any();
-            }
+            return ContainsMemberImpl(typeSymbol.GetMembers(), predicate);
         }
 
-        public static bool ExistsMember(this ITypeSymbol typeSymbol, Func<ISymbol, bool> predicate)
+        public static bool ContainsMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
         {
             if (typeSymbol == null)
                 throw new ArgumentNullException(nameof(typeSymbol));
 
-            if (predicate == null)
-                throw new ArgumentNullException(nameof(predicate));
-
-            return typeSymbol.GetMembers().Any(predicate);
+            return ContainsMemberImpl(typeSymbol.GetMembers(name), predicate);
         }
 
-        public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            return ExistsMemberImpl(typeSymbol.GetMembers(), predicate);
-        }
-
-        public static bool ExistsMember<TSymbol>(this ITypeSymbol typeSymbol, string name, Func<TSymbol, bool> predicate = null) where TSymbol : ISymbol
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            return ExistsMemberImpl(typeSymbol.GetMembers(name), predicate);
-        }
-
-        private static bool ExistsMemberImpl<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
+        private static bool ContainsMemberImpl<TSymbol>(ImmutableArray<ISymbol> members, Func<TSymbol, bool> predicate) where TSymbol : ISymbol
         {
             if (predicate != null)
             {
