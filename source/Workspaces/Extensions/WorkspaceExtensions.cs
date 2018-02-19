@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator
 {
     /// <summary>
-    /// A set of extension methods for <see cref="Document"/> and <see cref="Microsoft.CodeAnalysis.Solution"/>.
+    /// A set of extension methods for the workspace layer.
     /// </summary>
     public static class WorkspaceExtensions
     {

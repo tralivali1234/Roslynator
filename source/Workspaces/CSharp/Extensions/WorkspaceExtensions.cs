@@ -16,7 +16,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for the workspace layer.
     /// </summary>
     public static class WorkspaceExtensions
     {

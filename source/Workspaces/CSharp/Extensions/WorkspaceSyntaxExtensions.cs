@@ -13,7 +13,7 @@ using static Roslynator.CSharp.CSharpFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// A set of extension methods for the workspace layer.
+    /// A set of extension methods for syntax. These methods depends on the workspace layer.
     /// </summary>
     public static class WorkspaceSyntaxExtensions
     {
