@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Comparer for C# modifiers.
     /// </summary>
     public interface IModifierComparer : IComparer<SyntaxToken>
     {

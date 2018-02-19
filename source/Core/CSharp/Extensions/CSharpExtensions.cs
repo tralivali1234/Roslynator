@@ -10,12 +10,12 @@ using Roslynator.CSharp.Helpers;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for a <see cref="SemanticModel"/>.
     /// </summary>
     public static class CSharpExtensions
     {
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified attribute syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="attribute"></param>
@@ -32,7 +32,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified constructor initializer syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="constructorInitializer"></param>
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified cref syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="cref"></param>
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified expression syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="expression"></param>
@@ -83,7 +83,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified ordering syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="ordering"></param>
@@ -100,7 +100,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified select or group clause bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="selectOrGroupClause"></param>
@@ -117,7 +117,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns type information about an attribute syntax.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="attribute"></param>
@@ -134,7 +134,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns type information about a constructor initializer syntax.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="constructorInitializer"></param>
@@ -151,7 +151,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns type information about an expression syntax.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="expression"></param>
@@ -168,7 +168,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns type information about a select or group clause.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="selectOrGroupClause"></param>
@@ -243,7 +243,8 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Determines a parameter symbol that matches to the specified argument.
+        /// Returns null if no matching parameter is found.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="argument"></param>
@@ -268,7 +269,8 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Determines a parameter symbol that matches to the specified attribute argument.
+        /// Returns null if not matching parameter is found.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="attributeArgument"></param>
@@ -293,7 +295,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified expression represents default value of the specified type.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="typeSymbol"></param>

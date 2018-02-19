@@ -8,10 +8,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A wrapper for either an <see cref="IfStatementSyntax"/> or an <see cref="ElseClauseSyntax"/>.
     /// </summary>
     public readonly struct IfStatementOrElseClause : IEquatable<IfStatementOrElseClause>
     {
+        private readonly IfStatementSyntax _ifStatement;
+        private readonly ElseClauseSyntax _elseClause;
+
         internal IfStatementOrElseClause(SyntaxNode node)
         {
             if (node == null)
@@ -19,37 +22,58 @@ namespace Roslynator.CSharp
 
             SyntaxKind kind = node.Kind();
 
-            if (kind != SyntaxKind.IfStatement
-                && kind != SyntaxKind.ElseClause)
+            if (kind == SyntaxKind.IfStatement)
+            {
+                _ifStatement = (IfStatementSyntax)node;
+                _elseClause = null;
+            }
+            else if (kind == SyntaxKind.ElseClause)
+            {
+                _elseClause = (ElseClauseSyntax)node;
+                _ifStatement = null;
+            }
+            else
             {
                 throw new ArgumentException("Node must be if statement or else clause.", nameof(node));
             }
-
-            Kind = kind;
-            Node = node;
         }
 
         internal IfStatementOrElseClause(IfStatementSyntax ifStatement)
         {
-            Node = ifStatement ?? throw new ArgumentNullException(nameof(ifStatement));
-            Kind = SyntaxKind.IfStatement;
+            _ifStatement = ifStatement ?? throw new ArgumentNullException(nameof(ifStatement));
+            _elseClause = null;
         }
 
         internal IfStatementOrElseClause(ElseClauseSyntax elseClause)
         {
-            Node = elseClause ?? throw new ArgumentNullException(nameof(elseClause));
-            Kind = SyntaxKind.ElseClause;
+            _elseClause = elseClause ?? throw new ArgumentNullException(nameof(elseClause));
+            _ifStatement = null;
         }
 
-        internal SyntaxNode Node { get; }
+        internal SyntaxNode Node
+        {
+            get { return _ifStatement ?? (SyntaxNode)_elseClause; }
+        }
 
         /// <summary>
-        /// 
+        /// Gets an underlying node kind.
         /// </summary>
-        public SyntaxKind Kind { get; }
+        public SyntaxKind Kind
+        {
+            get
+            {
+                if (_ifStatement != null)
+                    return SyntaxKind.IfStatement;
+
+                if (_elseClause != null)
+                    return SyntaxKind.ElseClause;
+
+                return SyntaxKind.None;
+            }
+        }
 
         /// <summary>
-        /// 
+        /// Determines whether this <see cref="IfStatementOrElseClause"/> is wrapping an if statement.
         /// </summary>
         public bool IsIf
         {
@@ -57,7 +81,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this <see cref=" IfStatementOrElseClause"/> is wrapping an else clause.
         /// </summary>
         public bool IsElse
         {
@@ -65,7 +89,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IfStatementSyntax.Statement"/> or <see cref="ElseClauseSyntax.Statement"/>.
         /// </summary>
         public StatementSyntax Statement
         {
@@ -78,107 +102,73 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns the underlying if statement if this <see cref="IfStatementOrElseClause"/> is wrapping if statement.
         /// </summary>
         /// <returns></returns>
         public IfStatementSyntax AsIf()
         {
-            return (IsIf) ? (IfStatementSyntax)Node : null;
+            return _ifStatement;
         }
 
         /// <summary>
-        /// 
+        /// Returns the underlying else clause if this <see cref="ElseClauseSyntax"/> is wrapping else clause.
         /// </summary>
         /// <returns></returns>
         public ElseClauseSyntax AsElse()
         {
-            return (IsElse) ? (ElseClauseSyntax)Node : null;
+            return _elseClause;
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying node, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Node?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
-        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(IfStatementOrElseClause other)
         {
             return Node == other.Node;
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
-        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is IfStatementOrElseClause other
                 && Equals(other);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
-        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return Node?.GetHashCode() ?? 0;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
         public static bool operator ==(IfStatementOrElseClause left, IfStatementOrElseClause right)
         {
             return left.Equals(right);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
-        /// <returns></returns>
         public static bool operator !=(IfStatementOrElseClause left, IfStatementOrElseClause right)
         {
             return !left.Equals(right);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ifStatement"></param>
         public static implicit operator IfStatementOrElseClause(IfStatementSyntax ifStatement)
         {
             return new IfStatementOrElseClause(ifStatement);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ifOrElse"></param>
         public static implicit operator IfStatementSyntax(IfStatementOrElseClause ifOrElse)
         {
             return ifOrElse.AsIf();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="elseClause"></param>
         public static implicit operator IfStatementOrElseClause(ElseClauseSyntax elseClause)
         {
             return new IfStatementOrElseClause(elseClause);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ifOrElse"></param>
         public static implicit operator ElseClauseSyntax(IfStatementOrElseClause ifOrElse)
         {
             return ifOrElse.AsElse();

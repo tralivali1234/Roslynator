@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a <see cref="XmlNodeSyntax"/>.
     /// </summary>
     public readonly struct XmlElementInfo : IEquatable<XmlElementInfo>
     {

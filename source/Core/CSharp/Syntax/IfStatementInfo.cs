@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about <see cref="IfStatementSyntax"/>.
     /// </summary>
     public readonly struct IfStatementInfo : IEquatable<IfStatementInfo>
     {

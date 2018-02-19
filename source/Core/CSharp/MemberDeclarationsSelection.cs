@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Represents selected member declaration(s) in a <see cref="SyntaxList{TNode}"/>.
     /// </summary>
     public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
@@ -24,12 +24,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets a declaration that contains selected members.
         /// </summary>
         public MemberDeclarationSyntax Declaration { get; }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsSelection"/> based on the specified namespace declaration and span.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="span"></param>
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsSelection"/> based on the specified type declaration and span.
         /// </summary>
         /// <param name="typeDeclaration"></param>
         /// <param name="span"></param>
@@ -64,12 +64,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsSelection"/> based on the specified namespace declaration and span.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="span"></param>
         /// <param name="selectedMembers"></param>
-        /// <returns></returns>
+        /// <returns>True if the specified span contains at least one member; otherwise, false.</returns>
         public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(namespaceDeclaration, span, 1, int.MaxValue);
@@ -89,12 +89,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsSelection"/> based on the specified type declaration and span.
         /// </summary>
         /// <param name="typeDeclaration"></param>
         /// <param name="span"></param>
         /// <param name="selectedMembers"></param>
-        /// <returns></returns>
+        /// <returns>True if the specified span contains at least one member; otherwise, false.</returns>
         public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(typeDeclaration, span, 1, int.MaxValue);

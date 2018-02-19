@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of static methods that allows manipulation with modifiers.
     /// </summary>
     public static class Modifier
     {
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with a modifier of the specified kind inserted.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the specified modifier inserted.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -121,13 +121,15 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)Insert((ParameterSyntax)(SyntaxNode)node, modifier, comparer);
             }
 
+            //TODO:  throw ex
+
             Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
 
             return node;
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with a modifier of the specified kind removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -187,7 +189,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the specified modifier removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -247,7 +249,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with a modifier at the specified index removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -307,7 +309,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with accessibility modifiers removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -366,7 +368,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with all modifiers removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -425,7 +427,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="modifier"></param>
@@ -437,7 +439,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -449,7 +451,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -461,7 +463,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -473,7 +475,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -485,7 +487,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -497,7 +499,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <param name="modifier"></param>
@@ -509,7 +511,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -521,7 +523,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -533,7 +535,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -545,7 +547,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <param name="modifier"></param>
@@ -557,7 +559,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -569,7 +571,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <param name="modifier"></param>
@@ -581,7 +583,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -593,7 +595,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <param name="modifier"></param>
@@ -605,7 +607,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -617,7 +619,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <param name="modifier"></param>
@@ -629,7 +631,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -641,7 +643,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <param name="modifier"></param>
@@ -653,7 +655,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -665,7 +667,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="modifier"></param>
@@ -677,7 +679,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -689,7 +691,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <param name="modifier"></param>
@@ -701,7 +703,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -713,7 +715,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -725,7 +727,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -737,7 +739,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <param name="modifier"></param>
@@ -749,7 +751,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -761,7 +763,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="modifier"></param>
@@ -773,7 +775,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -785,7 +787,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -797,7 +799,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -809,7 +811,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier inserted.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <param name="modifier"></param>
@@ -821,7 +823,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -833,7 +835,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with the specified modifier inserted.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <param name="modifier"></param>
@@ -845,7 +847,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <param name="modifierKind"></param>
@@ -857,7 +859,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with the specified modifier inserted.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="modifier"></param>
@@ -869,7 +871,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with a modifier of the specified kind inserted.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="modifierKind"></param>
@@ -881,7 +883,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new list of modifiers with the modifier of the specified kind inserted.
         /// </summary>
         /// <param name="modifiers"></param>
         /// <param name="modifierKind"></param>
@@ -893,7 +895,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new list of modifiers with a specified modifier inserted.
         /// </summary>
         /// <param name="modifiers"></param>
         /// <param name="modifier"></param>
@@ -931,7 +933,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="modifier"></param>
@@ -942,7 +944,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -953,7 +955,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -964,7 +966,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -975,7 +977,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -986,7 +988,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -997,7 +999,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1008,7 +1010,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1019,7 +1021,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1030,7 +1032,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1041,7 +1043,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1052,7 +1054,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1063,7 +1065,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1074,7 +1076,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1085,7 +1087,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1096,7 +1098,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1107,7 +1109,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1118,7 +1120,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1129,7 +1131,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1140,7 +1142,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1151,7 +1153,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1162,7 +1164,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1173,7 +1175,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1184,7 +1186,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1195,7 +1197,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1206,7 +1208,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1217,7 +1219,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1228,7 +1230,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1239,7 +1241,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1250,7 +1252,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1261,7 +1263,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1272,7 +1274,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1283,7 +1285,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with the specified modifier removed.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <param name="modifier"></param>
@@ -1294,7 +1296,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <param name="modifierKind"></param>
@@ -1305,7 +1307,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with the specified modifier removed.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <param name="modifier"></param>
@@ -1316,7 +1318,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <param name="modifierKind"></param>
@@ -1327,7 +1329,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with the specified modifier removed.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="modifier"></param>
@@ -1338,7 +1340,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with a modifier of the specified kind removed.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="modifierKind"></param>
@@ -1349,7 +1351,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="index"></param>
@@ -1360,7 +1362,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <param name="index"></param>
@@ -1371,7 +1373,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <param name="index"></param>
@@ -1382,7 +1384,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <param name="index"></param>
@@ -1393,7 +1395,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <param name="index"></param>
@@ -1404,7 +1406,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <param name="index"></param>
@@ -1415,7 +1417,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <param name="index"></param>
@@ -1426,7 +1428,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <param name="index"></param>
@@ -1437,7 +1439,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <param name="index"></param>
@@ -1448,7 +1450,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <param name="index"></param>
@@ -1459,7 +1461,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="index"></param>
@@ -1470,7 +1472,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <param name="index"></param>
@@ -1481,7 +1483,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <param name="index"></param>
@@ -1492,7 +1494,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <param name="index"></param>
@@ -1503,7 +1505,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="index"></param>
@@ -1514,7 +1516,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <param name="index"></param>
@@ -1525,7 +1527,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <param name="index"></param>
@@ -1536,7 +1538,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with a modifier at the specified index removed.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <param name="index"></param>
@@ -1547,7 +1549,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with a modifier at the specified index removed.
         /// </summary>
         /// <param name="parameter"></param>
         /// <param name="index"></param>
@@ -1558,7 +1560,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -1568,7 +1570,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -1578,7 +1580,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -1588,7 +1590,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -1598,7 +1600,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -1608,7 +1610,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -1618,7 +1620,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -1628,7 +1630,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -1638,7 +1640,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -1648,7 +1650,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -1658,7 +1660,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -1668,7 +1670,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1678,7 +1680,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -1688,7 +1690,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1698,7 +1700,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -1708,7 +1710,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -1718,7 +1720,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <returns></returns>
@@ -1728,7 +1730,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with accessibility modifiers removed.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <returns></returns>
@@ -1738,7 +1740,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with accessibility modifiers removed.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
@@ -1748,7 +1750,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -1758,7 +1760,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -1768,7 +1770,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -1778,7 +1780,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -1788,7 +1790,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -1798,7 +1800,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -1808,7 +1810,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -1818,7 +1820,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -1828,7 +1830,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -1838,7 +1840,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -1848,7 +1850,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -1858,7 +1860,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1868,7 +1870,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -1878,7 +1880,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1888,7 +1890,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -1898,7 +1900,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -1908,7 +1910,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="localDeclaration"></param>
         /// <returns></returns>
@@ -1918,7 +1920,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new local function with all modifiers removed.
         /// </summary>
         /// <param name="localFunction"></param>
         /// <returns></returns>
@@ -1928,7 +1930,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new parameter with all modifiers removed.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>

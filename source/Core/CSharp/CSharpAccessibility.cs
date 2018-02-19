@@ -5,18 +5,17 @@ using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of static methods that are related to C# accessibility.
     /// </summary>
     public static class CSharpAccessibility
     {
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -64,7 +63,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -74,7 +73,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -94,7 +93,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -107,7 +106,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -127,7 +126,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -140,7 +139,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -150,7 +149,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumMemberDeclaration"></param>
         /// <returns></returns>
@@ -163,7 +162,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -176,7 +175,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -196,7 +195,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -209,7 +208,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -229,7 +228,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -239,7 +238,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -259,7 +258,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <returns></returns>
@@ -272,7 +271,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -285,7 +284,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -305,7 +304,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -315,7 +314,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="baseTypeDeclaration"></param>
         /// <returns></returns>
@@ -335,7 +334,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default accessibility of the specified declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -362,7 +361,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -410,7 +409,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -420,7 +419,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -440,7 +439,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -453,7 +452,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -473,7 +472,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -486,7 +485,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -496,7 +495,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumMemberDeclaration"></param>
         /// <returns></returns>
@@ -509,7 +508,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -529,7 +528,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -549,7 +548,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -562,7 +561,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -583,7 +582,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -593,7 +592,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -615,7 +614,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <returns></returns>
@@ -628,7 +627,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -641,7 +640,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -662,7 +661,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -672,7 +671,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a default explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="baseTypeDeclaration"></param>
         /// <returns></returns>
@@ -692,7 +691,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -739,7 +738,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -757,7 +756,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -780,7 +779,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -793,7 +792,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -811,7 +810,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -824,7 +823,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -842,7 +841,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumMemberDeclaration"></param>
         /// <returns></returns>
@@ -855,7 +854,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -876,7 +875,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -897,7 +896,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -915,7 +914,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -939,7 +938,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -957,7 +956,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -986,7 +985,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <returns></returns>
@@ -999,7 +998,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -1012,7 +1011,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1036,7 +1035,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -1054,7 +1053,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an accessibility of the specified declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -1151,7 +1150,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -1164,7 +1163,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -1177,7 +1176,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -1190,7 +1189,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -1203,7 +1202,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -1216,7 +1215,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -1229,7 +1228,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -1242,7 +1241,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -1255,7 +1254,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -1268,7 +1267,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -1281,7 +1280,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -1294,7 +1293,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -1307,7 +1306,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1320,7 +1319,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -1333,7 +1332,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1346,7 +1345,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -1359,7 +1358,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="incompleteMember"></param>
         /// <returns></returns>
@@ -1372,7 +1371,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns an explicit accessibility of the specified declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -1385,7 +1384,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Return true if the specified declaration is publicly visible.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -1430,7 +1429,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the specified explicit accessibility updated.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -1456,11 +1455,11 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the node can have specified accessibility.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="accessibility"></param>
-        /// <param name="ignoreOverride"></param>
+        /// <param name="ignoreOverride">Ignore "override" modifier.</param>
         /// <returns></returns>
         public static bool IsValidAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
         {

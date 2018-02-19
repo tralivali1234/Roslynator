@@ -15,7 +15,7 @@ namespace Test
     {
         public static void Bar()
         {
-            SyntaxNode x = null;
+            SyntaxNodeOrToken x;
         }
     }
 }

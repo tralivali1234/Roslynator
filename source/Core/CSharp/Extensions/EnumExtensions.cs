@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for enumerations.
     /// </summary>
     public static class EnumExtensions
     {
         /// <summary>
-        /// 
+        /// Returns true if the kind is one of the specified kinds.
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="kind1"></param>
@@ -23,7 +23,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the kind is one of the specified kinds.
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="kind1"></param>
@@ -38,7 +38,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the kind is one of the specified kinds.
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="kind1"></param>
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the kind is one of the specified kinds.
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="kind1"></param>
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the kind is one of the specified kinds.
         /// </summary>
         /// <param name="kind"></param>
         /// <param name="kind1"></param>

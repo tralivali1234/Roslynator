@@ -2,6 +2,7 @@
 
 namespace Roslynator
 {
+    //TODO: flags, Any
     /// <summary>
     /// 
     /// </summary>

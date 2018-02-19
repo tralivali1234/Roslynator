@@ -10,7 +10,7 @@ using static Roslynator.CSharp.CSharpFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of static methods for <see cref="ISymbol"/> and derived types.
     /// </summary>
     public static class SymbolExtensions
     {
@@ -22,7 +22,7 @@ namespace Roslynator.CSharp
 
         #region INamespaceOrTypeSymbol
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified namespace or type symbol.
         /// </summary>
         /// <param name="namespaceOrTypeSymbol"></param>
         /// <param name="format"></param>
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified namespace or type symbol
         /// </summary>
         /// <param name="namespaceOrTypeSymbol"></param>
         /// <param name="semanticModel"></param>
@@ -71,7 +71,7 @@ namespace Roslynator.CSharp
 
         #region INamespaceSymbol
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified namespace symbol.
         /// </summary>
         /// <param name="namespaceSymbol"></param>
         /// <param name="format"></param>
@@ -87,7 +87,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified namespace symbol.
         /// </summary>
         /// <param name="namespaceSymbol"></param>
         /// <param name="semanticModel"></param>
@@ -158,7 +158,7 @@ namespace Roslynator.CSharp
 
         #region ITypeSymbol
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified type symbol.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <param name="format"></param>
@@ -174,7 +174,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeSyntax"/> based on the specified type symbol.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <param name="semanticModel"></param>
@@ -201,7 +201,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ExpressionSyntax"/> that represents default value of the specified type symbol.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <param name="type"></param>
@@ -218,7 +218,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ExpressionSyntax"/> that represents default value of the specified type symbol.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <param name="semanticModel"></param>
@@ -291,7 +291,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified type can be used to declare constant value.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <returns></returns>

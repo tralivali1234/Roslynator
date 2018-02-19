@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Comparer for <see cref="MemberDeclarationSyntax"/>.
     /// </summary>
     public interface IMemberDeclarationComparer : IComparer<MemberDeclarationSyntax>
     {

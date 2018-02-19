@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+//TODO: zrušit
 namespace Roslynator.CSharp.Comparers
 {
     internal class MemberDeclarationComparer : IMemberDeclarationComparer

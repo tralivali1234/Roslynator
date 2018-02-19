@@ -5,42 +5,50 @@ using System;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Specifies C# comments.
     /// </summary>
     [Flags]
     public enum CommentKind
     {
 
         /// <summary>
-        /// 
+        /// None comment specified.
         /// </summary>
         None = 0,
+
         /// <summary>
-        /// 
+        /// Single-line comment.
         /// </summary>
         SingleLine = 1,
+
         /// <summary>
-        /// 
+        /// Multi-line comment.
         /// </summary>
         MultiLine = 2,
+
         /// <summary>
-        /// 
+        /// Non-documentation comment (single-line or multi-line).
         /// </summary>
         NonDocumentation = SingleLine | MultiLine,
+
         /// <summary>
-        /// 
+        /// Single-line documentation comment.
         /// </summary>
         SingleLineDocumentation = 4,
+
         /// <summary>
-        /// 
+        /// Multi-line documentation comment.
         /// </summary>
         MultiLineDocumentation = 8,
+
         /// <summary>
-        /// 
+        /// Documentation comment (single-line or multi-line).
         /// </summary>
         Documentation = SingleLineDocumentation | MultiLineDocumentation,
+
+        //TODO: Any
         /// <summary>
-        /// 
+        /// Any kind of comment.
         /// </summary>
         All = NonDocumentation |  Documentation
     }

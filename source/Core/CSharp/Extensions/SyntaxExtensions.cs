@@ -21,13 +21,13 @@ using static Roslynator.CSharp.CSharpFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for syntax (types derived from <see cref="CSharpSyntaxNode"/>).
     /// </summary>
     public static class SyntaxExtensions
     {
         #region AccessorDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified accessor is auto-implemented get accessor.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -37,7 +37,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true is the specified accessor is auto-implemented set accessor.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -62,7 +62,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns accessor body or expression body if the body is null.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -77,7 +77,7 @@ namespace Roslynator.CSharp
 
         #region AccessorListSyntax
         /// <summary>
-        /// 
+        /// Returns a get accessor contained in the specified list.
         /// </summary>
         /// <param name="accessorList"></param>
         /// <returns></returns>
@@ -87,7 +87,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a set accessor contained in the specified list.
         /// </summary>
         /// <param name="accessorList"></param>
         /// <returns></returns>
@@ -145,19 +145,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="block"></param>
-        /// <returns></returns>
-        public static TextSpan BracesSpan(this BlockSyntax block)
-        {
-            if (block == null)
-                throw new ArgumentNullException(nameof(block));
-
-            return TextSpan.FromBounds(block.OpenBraceToken.SpanStart, block.CloseBraceToken.Span.End);
-        }
-
         internal static bool ContainsYield(this BlockSyntax block)
         {
             return ContainsYieldWalker.ContainsYield(block);
@@ -209,6 +196,7 @@ namespace Roslynator.CSharp
         }
         #endregion BaseArgumentListSyntax
 
+        //TODO: pokračovat
         #region CastExpressionSyntax
         /// <summary>
         /// 
