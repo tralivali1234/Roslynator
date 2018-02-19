@@ -75,6 +75,7 @@ namespace Roslynator.CSharp.Refactorings
                 span = TextSpan.FromBounds(localInfo.Statement.SpanStart, statementsInfo.First(f => f.Span.Contains(position)).Span.End);
             }
 
+            //TODO: ?
             StatementsSelection selectedStatements = StatementsSelection.Create(statementsInfo, span);
 
             var refactoring = new WrapStatements.WrapInUsingStatementRefactoring();

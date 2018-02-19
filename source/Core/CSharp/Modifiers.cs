@@ -9,12 +9,12 @@ using static Roslynator.CSharp.CSharpFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Serves as a factory for a modifier list.
     /// </summary>
     public static class Modifiers
     {
         /// <summary>
-        /// 
+        /// Creates an empty list of modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList None()
@@ -23,7 +23,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Public()
@@ -32,7 +32,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Internal()
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Protected()
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Return modifier list that contains "protected internal" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedInternal()
@@ -59,7 +59,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Private()
@@ -68,7 +68,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private protected" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateProtected()
@@ -77,7 +77,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "virtual" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Virtual()
@@ -86,7 +86,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public virtual" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicVirtual()
@@ -95,7 +95,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal virtual" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalVirtual()
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected virtual" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedVirtual()
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public abstract" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicAbstract()
@@ -122,7 +122,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal abstract" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalAbstract()
@@ -131,7 +131,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected abstract" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedAbstract()
@@ -140,7 +140,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public override" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicOverride()
@@ -149,7 +149,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal override" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalOverride()
@@ -158,7 +158,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected override" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedOverride()
@@ -167,7 +167,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "const" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Const()
@@ -176,7 +176,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public const" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicConst()
@@ -185,7 +185,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal const" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalConst()
@@ -194,7 +194,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected const" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedConst()
@@ -203,7 +203,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private const" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateConst()
@@ -212,7 +212,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "static" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Static()
@@ -221,7 +221,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public static" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicStatic()
@@ -230,7 +230,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal static" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalStatic()
@@ -239,7 +239,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected static" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedStatic()
@@ -248,7 +248,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private static" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateStatic()
@@ -257,7 +257,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "static readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList StaticReadOnly()
@@ -266,7 +266,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public static readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicStaticReadOnly()
@@ -275,7 +275,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal static readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalStaticReadOnly()
@@ -284,7 +284,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected static readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedStaticReadOnly()
@@ -293,7 +293,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private static readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateStaticReadOnly()
@@ -302,7 +302,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "readonly" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ReadOnly()
@@ -311,7 +311,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicReadOnly()
@@ -320,7 +320,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalReadOnly()
@@ -329,7 +329,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "protected readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList ProtectedReadOnly()
@@ -338,7 +338,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateReadOnly()
@@ -347,7 +347,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "partial" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Partial()
@@ -356,7 +356,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicPartial()
@@ -365,7 +365,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalPartial()
@@ -374,7 +374,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivatePartial()
@@ -383,7 +383,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "public static partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PublicStaticPartial()
@@ -392,7 +392,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "internal static partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList InternalStaticPartial()
@@ -401,7 +401,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "private static partial" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList PrivateStaticPartial()
@@ -410,7 +410,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers from the specified accessibility.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <returns></returns>
@@ -441,7 +441,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "in" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList In()
@@ -450,7 +450,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "out" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Out()
@@ -459,7 +459,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "ref" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Ref()
@@ -468,7 +468,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "ref readonly" modifiers.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList RefReadOnly()
@@ -477,7 +477,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a list of modifiers that contains "params" modifier.
         /// </summary>
         /// <returns></returns>
         public static SyntaxTokenList Params()

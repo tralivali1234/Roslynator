@@ -28,8 +28,6 @@ namespace Roslynator.CSharp.Refactorings
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
         {
-            Debug.Assert(selectedStatements.Any());
-
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.WrapInUsingStatement))
             {
                 var refactoring = new WrapStatements.WrapInUsingStatementRefactoring();

@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.Refactorings
 
             Debug.Assert(methodSymbol.DeclaringSyntaxReferences.Any());
 
-            SyntaxNode node = await methodSymbol.GetSyntaxOrDefaultAsync(context.CancellationToken).ConfigureAwait(false);
+            SyntaxNode node = methodSymbol.GetSyntaxOrDefault(context.CancellationToken);
 
             switch (node)
             {

@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// Represents a method symbol.
     /// </summary>
     public readonly struct MethodInfo : IEquatable<MethodInfo>
     {
@@ -21,12 +21,12 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// A method symbol.
         /// </summary>
         public IMethodSymbol Symbol { get; }
 
         /// <summary>
-        /// 
+        /// Determines whether this method return type is the specified type.
         /// </summary>
         /// <param name="specialType"></param>
         /// <returns></returns>
@@ -36,7 +36,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method is contained in the specified type.
         /// </summary>
         /// <param name="specialType"></param>
         /// <returns></returns>
@@ -46,7 +46,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method return type is <see cref="object"/>.
         /// </summary>
         public bool ReturnsObject
         {
@@ -54,7 +54,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method return type is <see cref="bool"/>.
         /// </summary>
         public bool ReturnsBoolean
         {
@@ -62,7 +62,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method return type is <see cref="int"/>.
         /// </summary>
         public bool ReturnsInt
         {
@@ -70,31 +70,11 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method return type is <see cref="string"/>.
         /// </summary>
         public bool ReturnsString
         {
             get { return IsReturnType(SpecialType.System_String); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeArgument"></param>
-        /// <returns></returns>
-        public bool ReturnsIEnumerableOf(ITypeSymbol typeArgument)
-        {
-            return ReturnType.IsIEnumerableOf(typeArgument);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="typeArgumentPredicate"></param>
-        /// <returns></returns>
-        public bool ReturnsIEnumerableOf(Func<ITypeSymbol, bool> typeArgumentPredicate)
-        {
-            return ReturnType.IsIEnumerableOf(typeArgumentPredicate);
         }
 
         internal bool IsName(string name)
@@ -138,7 +118,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method is public.
         /// </summary>
         public bool IsPublic
         {
@@ -146,7 +126,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method is internal.
         /// </summary>
         public bool IsInternal
         {
@@ -154,7 +134,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determined whether this method is protected.
         /// </summary>
         public bool IsProtected
         {
@@ -162,7 +142,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this method is private.
         /// </summary>
         public bool IsPrivate
         {
@@ -350,166 +330,146 @@ namespace Roslynator
 
         #region IMethodSymbol
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.MethodKind"/>.
         /// </summary>
         public MethodKind MethodKind => Symbol.MethodKind;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsGenericMethod"/>.
         /// </summary>
         public bool IsGenericMethod => Symbol.IsGenericMethod;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsExtensionMethod"/>.
         /// </summary>
         public bool IsExtensionMethod => Symbol.IsExtensionMethod;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsAsync"/>.
         /// </summary>
         public bool IsAsync => Symbol.IsAsync;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ReturnsVoid"/>.
         /// </summary>
         public bool ReturnsVoid => Symbol.ReturnsVoid;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ReturnType"/>.
         /// </summary>
         public ITypeSymbol ReturnType => Symbol.ReturnType;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.TypeArguments"/>.
         /// </summary>
         public ImmutableArray<ITypeSymbol> TypeArguments => Symbol.TypeArguments;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.TypeParameters"/>.
         /// </summary>
         public ImmutableArray<ITypeParameterSymbol> TypeParameters => Symbol.TypeParameters;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.Parameters"/>.
         /// </summary>
         public ImmutableArray<IParameterSymbol> Parameters => Symbol.Parameters;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ConstructedFrom"/>.
         /// </summary>
         public IMethodSymbol ConstructedFrom => Symbol.ConstructedFrom;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.OverriddenMethod"/>.
         /// </summary>
         public IMethodSymbol OverriddenMethod => Symbol.OverriddenMethod;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ReducedFrom"/>.
         /// </summary>
         public IMethodSymbol ReducedFrom => Symbol.ReducedFrom;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.Kind"/>.
         /// </summary>
         public SymbolKind Kind => Symbol.Kind;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.Name"/>.
         /// </summary>
         public string Name => Symbol.Name;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.MetadataName"/>.
         /// </summary>
         public string MetadataName => Symbol.MetadataName;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ContainingSymbol"/>.
         /// </summary>
         public ISymbol ContainingSymbol => Symbol.ContainingSymbol;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ContainingType"/>.
         /// </summary>
         public INamedTypeSymbol ContainingType => Symbol.ContainingType;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.ContainingNamespace"/>.
         /// </summary>
         public INamespaceSymbol ContainingNamespace => Symbol.ContainingNamespace;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsStatic"/>.
         /// </summary>
         public bool IsStatic => Symbol.IsStatic;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsVirtual"/>.
         /// </summary>
         public bool IsVirtual => Symbol.IsVirtual;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsOverride"/>.
         /// </summary>
         public bool IsOverride => Symbol.IsOverride;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsAbstract"/>.
         /// </summary>
         public bool IsAbstract => Symbol.IsAbstract;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.IsSealed"/>.
         /// </summary>
         public bool IsSealed => Symbol.IsSealed;
 
         /// <summary>
-        /// 
+        /// Gets <see cref="IMethodSymbol.DeclaredAccessibility"/>.
         /// </summary>
         public Accessibility DeclaredAccessibility => Symbol.DeclaredAccessibility;
         #endregion IMethodSymbol
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
-        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is MethodInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
-        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(MethodInfo other)
         {
             return EqualityComparer<IMethodSymbol>.Default.Equals(Symbol, other.Symbol);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
-        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return Symbol?.GetHashCode() ?? 0;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(MethodInfo info1, MethodInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(MethodInfo info1, MethodInfo info2)
         {
             return !(info1 == info2);

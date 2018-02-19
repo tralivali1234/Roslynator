@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
+    //TODO: pub
     internal readonly struct ExtensionMethodInfo
     {
         private ExtensionMethodInfo(IMethodSymbol methodSymbol, IMethodSymbol reducedSymbol)

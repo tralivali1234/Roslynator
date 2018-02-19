@@ -35,7 +35,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Create a new document with the specified member declaration removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="member"></param>
@@ -110,7 +110,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with comments of the specified kind removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="kind"></param>
@@ -133,7 +133,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with comments of the specified kind removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="span"></param>
@@ -157,8 +157,9 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        //TODO: int
         /// <summary>
-        /// 
+        /// Creates a new document with trivia removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="cancellationToken"></param>
@@ -178,7 +179,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with trivia inside the specified span removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="span"></param>
@@ -200,7 +201,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with preprocessor directives of the specified kind removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="directiveKind"></param>
@@ -224,7 +225,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with preprocessor directives of the specified kind removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="span"></param>
@@ -347,7 +348,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new document with the specified region removed.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="region"></param>

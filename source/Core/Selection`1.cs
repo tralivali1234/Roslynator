@@ -10,65 +10,64 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// Represents consecutive sequence of selected items in a collection.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class Selection<T> : IReadOnlyList<T>
     {
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="Selection{T}"/>.
         /// </summary>
         /// <param name="span"></param>
         /// <param name="firstIndex"></param>
         /// <param name="lastIndex"></param>
         protected Selection(TextSpan span, int firstIndex, int lastIndex)
         {
+            if (firstIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(firstIndex), firstIndex, "Index of the first selected item must be greater than or equal to zero.");
+
+            if (lastIndex < firstIndex)
+                throw new ArgumentOutOfRangeException(nameof(lastIndex), lastIndex, "Index of the last selected item must be greater or equal to index of the first selected item.");
+
             Span = span;
             FirstIndex = firstIndex;
             LastIndex = lastIndex;
         }
 
         /// <summary>
-        /// 
+        /// Gets an underlying list that contains selected items.
         /// </summary>
         protected abstract IReadOnlyList<T> Items { get; }
 
         /// <summary>
-        /// 
+        /// Gets a span that contains selected items.
         /// </summary>
         public TextSpan Span { get; }
 
         /// <summary>
-        /// 
+        /// Gets an index of the first selected item.
         /// </summary>
         public int FirstIndex { get; }
 
         /// <summary>
-        /// 
+        /// Gets an index of the last selected item.
         /// </summary>
         public int LastIndex { get; }
 
         /// <summary>
-        /// 
+        /// Gets a number of selected items.
         /// </summary>
         public int Count
         {
-            get
-            {
-                if (Any())
-                {
-                    return LastIndex - FirstIndex + 1;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
+            get { return LastIndex - FirstIndex + 1; }
         }
 
-        /// <summary>Gets the element at the specified index in the read-only list.</summary>
-        /// <returns>The element at the specified index in the read-only list.</returns>
-        /// <param name="index">The zero-based index of the element to get. </param>
+        //TODO: explicit implementation.
+        /// <summary>
+        /// Gets the selected item at the specified index in the underlying list.
+        /// </summary>
+        /// <returns>The item at the specified index in the underlying list.</returns>
+        /// <param name="index">The zero-based index of the item to get. </param>
         public T this[int index]
         {
             get
@@ -84,16 +83,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool Any()
-        {
-            return FirstIndex != -1;
-        }
-
-        /// <summary>
-        /// 
+        /// Gets the first selected item.
         /// </summary>
         /// <returns></returns>
         public T First()
@@ -102,23 +92,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public T FirstOrDefault()
-        {
-            if (Any())
-            {
-                return Items[FirstIndex];
-            }
-            else
-            {
-                return default(T);
-            }
-        }
-
-        /// <summary>
-        /// 
+        /// Gets the last selected item.
         /// </summary>
         /// <returns></returns>
         public T Last()
@@ -126,33 +100,14 @@ namespace Roslynator
             return Items[LastIndex];
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public T LastOrDefault()
-        {
-            if (Any())
-            {
-                return Items[LastIndex];
-            }
-            else
-            {
-                return default(T);
-            }
-        }
-
         private IEnumerable<T> Enumerate()
         {
-            if (Any())
-            {
-                for (int i = FirstIndex; i <= LastIndex; i++)
-                    yield return Items[i];
-            }
+            for (int i = FirstIndex; i <= LastIndex; i++)
+                yield return Items[i];
         }
 
         /// <summary>
-        /// 
+        /// Returns an enumerator that iterates through a selected items.
         /// </summary>
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()

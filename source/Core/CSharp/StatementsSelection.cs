@@ -9,7 +9,7 @@ using Roslynator.CSharp.Syntax;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Represents selected statement(s) in a <see cref="SyntaxList{TNode}"/>.
     /// </summary>
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
@@ -24,7 +24,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified block and span.
         /// </summary>
         /// <param name="block"></param>
         /// <param name="span"></param>
@@ -38,7 +38,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified switch section and span.
         /// </summary>
         /// <param name="switchSection"></param>
         /// <param name="span"></param>
@@ -52,7 +52,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StatementsSelection"/> based the specified <see cref="StatementsInfo"/> and span.
         /// </summary>
         /// <param name="statementsInfo"></param>
         /// <param name="span"></param>
@@ -66,16 +66,19 @@ namespace Roslynator.CSharp
         {
             SelectionResult result = SelectionResult.Create(statements, span);
 
+            if (!result.Success)
+                throw new InvalidOperationException("No selected statement(s) found.");
+
             return new StatementsSelection(statements, span, result);
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified block and span.
         /// </summary>
         /// <param name="block"></param>
         /// <param name="span"></param>
         /// <param name="selectedStatements"></param>
-        /// <returns></returns>
+        /// <returns>True if the specified span contains at least one statement; otherwise, false.</returns>
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(block, span, 1, int.MaxValue);
@@ -103,12 +106,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified switch section and span.
         /// </summary>
         /// <param name="switchSection"></param>
         /// <param name="span"></param>
         /// <param name="selectedStatements"></param>
-        /// <returns></returns>
+        /// <returns>True if the specified span contains at least one statement; otherwise, false.</returns>
         public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(switchSection, span, 1, int.MaxValue);

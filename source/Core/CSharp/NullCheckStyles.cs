@@ -7,79 +7,73 @@ using System;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Specifies a null check.
     /// </summary>
     [Flags]
     public enum NullCheckStyles
     {
         /// <summary>
-        /// 
+        /// No null check specified.
         /// </summary>
         None = 0,
 
-        // x == null
         /// <summary>
-        /// 
+        /// x == null
         /// </summary>
         EqualsToNull = 1,
 
-        // x != null
         /// <summary>
-        /// 
+        /// x != null
         /// </summary>
         NotEqualsToNull = 2,
 
         /// <summary>
-        /// 
+        /// Expressions that use equality/inequality operator.
         /// </summary>
         ComparisonToNull = EqualsToNull | NotEqualsToNull,
 
-        // x is null
         /// <summary>
-        /// 
+        /// <code>x is null</code>
         /// </summary>
         IsNull = 4,
 
-        // !(x is null)
         /// <summary>
-        /// 
+        /// <code>!(x is null)</code>
         /// </summary>
         NotIsNull = 8,
 
         /// <summary>
-        /// 
+        /// Expressions that use pattern syntax.</code>
         /// </summary>
         IsPattern = IsNull | NotIsNull,
 
-        // !x.HasValue
         /// <summary>
-        /// 
+        /// <code>!x.HasValue</code>
         /// </summary>
         NotHasValue = 16,
 
         /// <summary>
-        /// 
+        /// Expressions that checks whether an expression is null.
         /// </summary>
         CheckingNull = EqualsToNull | IsNull | NotHasValue,
 
-        // x.HasValue
         /// <summary>
-        /// 
+        /// <code>x.HasValue</code>
         /// </summary>
         HasValue = 32,
 
         /// <summary>
-        /// 
+        /// Expressions that checks whether an expression is not null.
         /// </summary>
         CheckingNotNull = NotEqualsToNull | NotIsNull | HasValue,
 
         /// <summary>
-        /// 
+        /// Expressions that use <see cref="Nullable{T}.HasValue"/>.
         /// </summary>
         HasValueProperty = HasValue | NotHasValue,
 
         /// <summary>
-        /// 
+        /// All null check styles.
         /// </summary>
         All = CheckingNull | CheckingNotNull
     }

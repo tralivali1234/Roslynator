@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 TextLineCollectionSelection selectedLines = await SelectedLinesRefactoring.GetSelectedLinesAsync(context).ConfigureAwait(false);
 
-                if (selectedLines?.Any() == true)
+                if (selectedLines != null)
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.WrapInRegion))
                     {

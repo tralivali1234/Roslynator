@@ -489,14 +489,6 @@ namespace Roslynator
                 .GetSyntax(cancellationToken);
         }
 
-        internal static Task<SyntaxNode> GetSyntaxOrDefaultAsync(this ISymbol symbol, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return symbol
-                .DeclaringSyntaxReferences
-                .FirstOrDefault()?
-                .GetSyntaxAsync(cancellationToken);
-        }
-
         internal static bool TryGetSyntax<TNode>(this ISymbol symbol, out TNode node, CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
         {
             ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;

@@ -10,8 +10,9 @@ using Roslynator.Helpers;
 
 namespace Roslynator
 {
+    //TODO: ren
     /// <summary>
-    /// 
+    /// Provides methods to obtain an unique identifier.
     /// </summary>
     public abstract class NameGenerator
     {
@@ -20,7 +21,15 @@ namespace Roslynator
         internal static StringComparer OrdinalIgnoreCaseComparer { get; } = StringComparer.OrdinalIgnoreCase;
 
         /// <summary>
-        /// 
+        /// Default implementation of <see cref="NameGenerator"/> that adds number suffix to ensure uniqueness.
+        /// </summary>
+        public static NameGenerator Default
+        {
+            get { return NameGenerators.NumberSuffix; }
+        }
+
+        /// <summary>
+        /// Returns an unique name using the specified list of reserved names.
         /// </summary>
         /// <param name="baseName"></param>
         /// <param name="reservedNames"></param>
@@ -29,7 +38,7 @@ namespace Roslynator
         public abstract string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true);
 
         /// <summary>
-        /// 
+        /// Returns an unique name using the specified list of symbols.
         /// </summary>
         /// <param name="baseName"></param>
         /// <param name="symbols"></param>
@@ -38,15 +47,7 @@ namespace Roslynator
         public abstract string EnsureUniqueName(string baseName, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true);
 
         /// <summary>
-        /// 
-        /// </summary>
-        public static NameGenerator Default
-        {
-            get { return NameGenerators.NumberSuffix; }
-        }
-
-        /// <summary>
-        /// 
+        /// Returns a member name that will be unique at the specified position.
         /// </summary>
         /// <param name="baseName"></param>
         /// <param name="semanticModel"></param>
@@ -76,26 +77,27 @@ namespace Roslynator
             }
         }
 
+        //TODO: del
         /// <summary>
         /// 
         /// </summary>
         /// <param name="baseName"></param>
-        /// <param name="containingType"></param>
+        /// <param name="typeSymbol"></param>
         /// <param name="isCaseSensitive"></param>
         /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
-            INamedTypeSymbol containingType,
+            INamedTypeSymbol typeSymbol,
             bool isCaseSensitive = true)
         {
-            if (containingType == null)
-                throw new ArgumentNullException(nameof(containingType));
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
 
-            return EnsureUniqueName(baseName, containingType.GetMembers(), isCaseSensitive);
+            return EnsureUniqueName(baseName, typeSymbol.GetMembers(), isCaseSensitive);
         }
 
         /// <summary>
-        /// 
+        /// Return a local name that will be unique at the specified position.
         /// </summary>
         /// <param name="baseName"></param>
         /// <param name="semanticModel"></param>
@@ -149,24 +151,6 @@ namespace Roslynator
             return EnsureUniqueName(baseName, symbols, isCaseSensitive);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="baseName"></param>
-        /// <param name="enumSymbol"></param>
-        /// <param name="isCaseSensitive"></param>
-        /// <returns></returns>
-        public string EnsureUniqueEnumMemberName(
-            string baseName,
-            INamedTypeSymbol enumSymbol,
-            bool isCaseSensitive = true)
-        {
-            if (enumSymbol == null)
-                throw new ArgumentNullException(nameof(enumSymbol));
-
-            return EnsureUniqueName(baseName, enumSymbol.GetMembers(), isCaseSensitive);
-        }
-
         internal static bool IsUniqueMemberName(
             string name,
             SemanticModel semanticModel,
@@ -188,7 +172,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the name is not contained in the specified list. <see cref="ISymbol.Name"/> is used to compare names.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="symbols"></param>
@@ -208,7 +192,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the name is not contained in the specified list.
         /// </summary>
         /// <param name="name"></param>
         /// <param name="reservedNames"></param>
@@ -229,7 +213,7 @@ namespace Roslynator
 
         //XTODO: 
         /// <summary>
-        /// 
+        /// Creates a syntax identifier from the specified type symbol.
         /// </summary>
         /// <param name="typeSymbol"></param>
         /// <param name="firstCharToLower"></param>

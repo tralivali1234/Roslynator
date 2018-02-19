@@ -8,12 +8,13 @@ using Roslynator.CSharp.Syntax;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// 
+    /// Serves as a factory for types in Roslynator.CSharp.Syntax namespace.
     /// </summary>
     public static class SyntaxInfo
     {
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified declaration.
+        /// Check <see cref="Syntax.AccessibilityInfo.Success"/> to see if the operation succeded.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>

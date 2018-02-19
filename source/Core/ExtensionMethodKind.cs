@@ -8,15 +8,15 @@ namespace Roslynator
     public enum ExtensionMethodKind
     {
         /// <summary>
-        /// 
+        /// Unspecified extension method.
         /// </summary>
         None = 0,
         /// <summary>
-        /// 
+        /// Non-reduced extension method (with "this" parameter not removed).
         /// </summary>
         NonReduced = 1,
         /// <summary>
-        /// 
+        /// Reduced extension method (with "this" parameter removed).
         /// </summary>
         Reduced = 2,
     }
