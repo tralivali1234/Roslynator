@@ -58,23 +58,24 @@ namespace Roslynator.CSharp.Syntax
 
         private static GenericInfo Default { get; } = new GenericInfo();
 
+        //TODO: Node
         /// <summary>
-        /// 
+        /// Gets the declaration node (for example <see cref="ClassDeclarationSyntax"/> for a class).
         /// </summary>
         public SyntaxNode Declaration { get; }
 
         /// <summary>
-        /// 
+        /// Gets the kind of this generic syntax.
         /// </summary>
         public SyntaxKind Kind { get; }
 
         /// <summary>
-        /// 
+        /// x
         /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
         /// <summary>
-        /// 
+        /// x
         /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
@@ -82,12 +83,12 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// x
         /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
         /// <summary>
-        /// 
+        /// Searches for a type parameter with the specified name and returns the first occurrence within the type parameters.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -103,15 +104,15 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Searches for a constraint clause with the specified type parameter name and returns the first occurrence within the constraint clauses.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="typeParameterName"></param>
         /// <returns></returns>
-        public TypeParameterConstraintClauseSyntax FindConstraintClause(string name)
+        public TypeParameterConstraintClauseSyntax FindConstraintClause(string typeParameterName)
         {
             foreach (TypeParameterConstraintClauseSyntax constraintClause in ConstraintClauses)
             {
-                if (string.Equals(name, constraintClause.Name.Identifier.ValueText, StringComparison.Ordinal))
+                if (string.Equals(typeParameterName, constraintClause.Name.Identifier.ValueText, StringComparison.Ordinal))
                     return constraintClause;
             }
 
@@ -119,7 +120,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains a valid syntax.
         /// </summary>
         public bool Success
         {
@@ -268,7 +269,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// x
         /// </summary>
         /// <param name="typeParameterList"></param>
         /// <returns></returns>
@@ -297,7 +298,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="GenericInfo"/> with the specified type parameter removed.
         /// </summary>
         /// <param name="typeParameter"></param>
         /// <returns></returns>
