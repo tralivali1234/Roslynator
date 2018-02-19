@@ -6,10 +6,25 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IModifierComparer : IComparer<SyntaxToken>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="modifier"></param>
+        /// <returns></returns>
         int GetInsertIndex(SyntaxTokenList modifiers, SyntaxToken modifier);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="modifierKind"></param>
+        /// <returns></returns>
         int GetInsertIndex(SyntaxTokenList modifiers, SyntaxKind modifierKind);
     }
 }

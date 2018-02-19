@@ -9,26 +9,58 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SyntaxExtensions
     {
         #region SeparatedSyntaxList<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="index"></param>
+        /// <param name="newNode"></param>
+        /// <returns></returns>
         public static SeparatedSyntaxList<TNode> ReplaceAt<TNode>(this SeparatedSyntaxList<TNode> list, int index, TNode newNode) where TNode : SyntaxNode
         {
             return list.Replace(list[index], newNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool IsFirst<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.Any()
                 && list.First() == node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool IsLast<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.Any()
                 && list.Last() == node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool Any<TNode>(this SeparatedSyntaxList<TNode> list, Func<TNode, bool> predicate) where TNode : SyntaxNode
         {
             if (predicate == null)
@@ -43,6 +75,13 @@ namespace Roslynator
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool All<TNode>(this SeparatedSyntaxList<TNode> list, Func<TNode, bool> predicate) where TNode : SyntaxNode
         {
             if (predicate == null)
@@ -74,23 +113,52 @@ namespace Roslynator
         #endregion SeparatedSyntaxList<T>
 
         #region SyntaxList<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="index"></param>
+        /// <param name="newNode"></param>
+        /// <returns></returns>
         public static SyntaxList<TNode> ReplaceAt<TNode>(this SyntaxList<TNode> list, int index, TNode newNode) where TNode : SyntaxNode
         {
             return list.Replace(list[index], newNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool IsFirst<TNode>(this SyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.Any()
                 && list.First() == node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool IsLast<TNode>(this SyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.Any()
                 && list.Last() == node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool Any<TNode>(this SyntaxList<TNode> list, Func<TNode, bool> predicate) where TNode : SyntaxNode
         {
             if (predicate == null)
@@ -105,6 +173,13 @@ namespace Roslynator
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool All<TNode>(this SyntaxList<TNode> list, Func<TNode, bool> predicate) where TNode : SyntaxNode
         {
             if (predicate == null)
@@ -119,6 +194,13 @@ namespace Roslynator
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool Contains<TNode>(this SyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.IndexOf(node) != -1;
@@ -129,6 +211,12 @@ namespace Roslynator
             return (shouldThrow) ? list.SingleOrDefault() : ((list.Count == 1) ? list[0] : default(TNode));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
         public static bool SpanContainsDirectives<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
         {
             int count = list.Count;
@@ -161,6 +249,11 @@ namespace Roslynator
         #endregion SyntaxList<T>
 
         #region SyntaxNode
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static SyntaxTriviaList GetLeadingAndTrailingTrivia(this SyntaxNode node)
         {
             if (node == null)
@@ -183,6 +276,13 @@ namespace Roslynator
             return SyntaxTriviaList.Empty;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode PrependToLeadingTrivia<TNode>(this TNode node, IEnumerable<SyntaxTrivia> trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -194,6 +294,13 @@ namespace Roslynator
             return node.WithLeadingTrivia(node.GetLeadingTrivia().InsertRange(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode PrependToLeadingTrivia<TNode>(this TNode node, SyntaxTrivia trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -202,6 +309,13 @@ namespace Roslynator
             return node.WithLeadingTrivia(node.GetLeadingTrivia().Insert(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode PrependToTrailingTrivia<TNode>(this TNode node, IEnumerable<SyntaxTrivia> trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -213,6 +327,13 @@ namespace Roslynator
             return node.WithTrailingTrivia(node.GetTrailingTrivia().InsertRange(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode PrependToTrailingTrivia<TNode>(this TNode node, SyntaxTrivia trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -221,6 +342,13 @@ namespace Roslynator
             return node.WithTrailingTrivia(node.GetTrailingTrivia().Insert(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode AppendToLeadingTrivia<TNode>(this TNode node, IEnumerable<SyntaxTrivia> trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -232,6 +360,13 @@ namespace Roslynator
             return node.WithLeadingTrivia(node.GetLeadingTrivia().AddRange(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode AppendToLeadingTrivia<TNode>(this TNode node, SyntaxTrivia trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -240,6 +375,13 @@ namespace Roslynator
             return node.WithLeadingTrivia(node.GetLeadingTrivia().Add(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode AppendToTrailingTrivia<TNode>(this TNode node, IEnumerable<SyntaxTrivia> trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -251,6 +393,13 @@ namespace Roslynator
             return node.WithTrailingTrivia(node.GetTrailingTrivia().AddRange(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static TNode AppendToTrailingTrivia<TNode>(this TNode node, SyntaxTrivia trivia) where TNode : SyntaxNode
         {
             if (node == null)
@@ -259,6 +408,11 @@ namespace Roslynator
             return node.WithTrailingTrivia(node.GetTrailingTrivia().Add(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool SpanContainsDirectives(this SyntaxNode node)
         {
             if (node == null)
@@ -287,6 +441,12 @@ namespace Roslynator
                 && !node.GetLeadingTrivia().Any(f => f.IsDirective);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static bool ContainsDirectives(this SyntaxNode node, TextSpan span)
         {
             if (node == null)
@@ -297,6 +457,13 @@ namespace Roslynator
                 && node.DescendantTrivia(span).Any(f => f.IsDirective);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static TNode WithTriviaFrom<TNode>(this TNode node, SyntaxToken token) where TNode : SyntaxNode
         {
             if (node == null)
@@ -327,6 +494,14 @@ namespace Roslynator
             return node.SyntaxTree.GetLineSpan(node.FullSpan, cancellationToken).EndLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="predicate"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static TNode FirstAncestor<TNode>(
             this SyntaxNode node,
             Func<TNode, bool> predicate = null,
@@ -376,6 +551,14 @@ namespace Roslynator
             return (condition) ? node.WithAdditionalAnnotations(annotations) : node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="descendIntoChildren"></param>
+        /// <param name="descendIntoTrivia"></param>
+        /// <returns></returns>
         public static TNode FirstDescendant<TNode>(
             this SyntaxNode node,
             Func<SyntaxNode, bool> descendIntoChildren = null,
@@ -390,6 +573,15 @@ namespace Roslynator
             return default(TNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="span"></param>
+        /// <param name="descendIntoChildren"></param>
+        /// <param name="descendIntoTrivia"></param>
+        /// <returns></returns>
         public static TNode FirstDescendant<TNode>(
             this SyntaxNode node,
             TextSpan span,
@@ -405,6 +597,14 @@ namespace Roslynator
             return default(TNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="descendIntoChildren"></param>
+        /// <param name="descendIntoTrivia"></param>
+        /// <returns></returns>
         public static TNode FirstDescendantOrSelf<TNode>(
             this SyntaxNode node,
             Func<SyntaxNode, bool> descendIntoChildren = null,
@@ -419,6 +619,15 @@ namespace Roslynator
             return default(TNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="span"></param>
+        /// <param name="descendIntoChildren"></param>
+        /// <param name="descendIntoTrivia"></param>
+        /// <returns></returns>
         public static TNode FirstDescendantOrSelf<TNode>(
             this SyntaxNode node,
             TextSpan span,
@@ -436,6 +645,11 @@ namespace Roslynator
         #endregion SyntaxNode
 
         #region SyntaxNodeOrToken
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeOrToken"></param>
+        /// <returns></returns>
         public static SyntaxNodeOrToken WithoutTrivia(this SyntaxNodeOrToken nodeOrToken)
         {
             if (nodeOrToken.IsNode)
@@ -448,6 +662,11 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeOrToken"></param>
+        /// <returns></returns>
         public static SyntaxNodeOrToken WithoutLeadingTrivia(this SyntaxNodeOrToken nodeOrToken)
         {
             if (nodeOrToken.IsNode)
@@ -460,6 +679,11 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeOrToken"></param>
+        /// <returns></returns>
         public static SyntaxNodeOrToken WithoutTrailingTrivia(this SyntaxNodeOrToken nodeOrToken)
         {
             if (nodeOrToken.IsNode)
@@ -474,6 +698,12 @@ namespace Roslynator
         #endregion SyntaxNodeOrToken
 
         #region SyntaxToken
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken PrependToLeadingTrivia(this SyntaxToken token, IEnumerable<SyntaxTrivia> trivia)
         {
             if (trivia == null)
@@ -482,11 +712,23 @@ namespace Roslynator
             return token.WithLeadingTrivia(token.LeadingTrivia.InsertRange(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken PrependToLeadingTrivia(this SyntaxToken token, SyntaxTrivia trivia)
         {
             return token.WithLeadingTrivia(token.LeadingTrivia.Insert(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken PrependToTrailingTrivia(this SyntaxToken token, IEnumerable<SyntaxTrivia> trivia)
         {
             if (trivia == null)
@@ -495,11 +737,23 @@ namespace Roslynator
             return token.WithTrailingTrivia(token.TrailingTrivia.InsertRange(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken PrependToTrailingTrivia(this SyntaxToken token, SyntaxTrivia trivia)
         {
             return token.WithTrailingTrivia(token.TrailingTrivia.Insert(0, trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken AppendToTrailingTrivia(this SyntaxToken token, IEnumerable<SyntaxTrivia> trivia)
         {
             if (trivia == null)
@@ -508,11 +762,23 @@ namespace Roslynator
             return token.WithTrailingTrivia(token.TrailingTrivia.AddRange(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken AppendToTrailingTrivia(this SyntaxToken token, SyntaxTrivia trivia)
         {
             return token.WithTrailingTrivia(token.TrailingTrivia.Add(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken AppendToLeadingTrivia(this SyntaxToken token, IEnumerable<SyntaxTrivia> trivia)
         {
             if (trivia == null)
@@ -521,11 +787,22 @@ namespace Roslynator
             return token.WithLeadingTrivia(token.LeadingTrivia.AddRange(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static SyntaxToken AppendToLeadingTrivia(this SyntaxToken token, SyntaxTrivia trivia)
         {
             return token.WithLeadingTrivia(token.LeadingTrivia.Add(trivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxTriviaList LeadingAndTrailingTrivia(this SyntaxToken token)
         {
             SyntaxTriviaList leadingTrivia = token.LeadingTrivia;
@@ -565,16 +842,32 @@ namespace Roslynator
             return token.SyntaxTree.GetLineSpan(token.FullSpan, cancellationToken).EndLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken WithoutLeadingTrivia(this SyntaxToken token)
         {
             return token.WithLeadingTrivia(default(SyntaxTriviaList));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken WithoutTrailingTrivia(this SyntaxToken token)
         {
             return token.WithTrailingTrivia(default(SyntaxTriviaList));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static SyntaxToken WithTriviaFrom(this SyntaxToken token, SyntaxNode node)
         {
             if (node == null)
@@ -597,11 +890,24 @@ namespace Roslynator
         #endregion SyntaxToken
 
         #region SyntaxTokenList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="index"></param>
+        /// <param name="newToken"></param>
+        /// <returns></returns>
         public static SyntaxTokenList ReplaceAt(this SyntaxTokenList tokenList, int index, SyntaxToken newToken)
         {
             return tokenList.Replace(tokenList[index], newToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool Any(this SyntaxTokenList list, Func<SyntaxToken, bool> predicate)
         {
             if (predicate == null)
@@ -616,6 +922,12 @@ namespace Roslynator
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool All(this SyntaxTokenList list, Func<SyntaxToken, bool> predicate)
         {
             if (predicate == null)
@@ -630,6 +942,12 @@ namespace Roslynator
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static bool Contains(this SyntaxTokenList tokens, SyntaxToken token)
         {
             return tokens.IndexOf(token) != -1;
@@ -637,6 +955,12 @@ namespace Roslynator
         #endregion SyntaxTokenList
 
         #region SyntaxTrivia
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="triviaList"></param>
+        /// <returns></returns>
         public static bool TryGetContainingList(this SyntaxTrivia trivia, out SyntaxTriviaList triviaList)
         {
             SyntaxToken token = trivia.Token;
@@ -697,11 +1021,24 @@ namespace Roslynator
         #endregion SyntaxTrivia
 
         #region SyntaxTriviaList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="index"></param>
+        /// <param name="newTrivia"></param>
+        /// <returns></returns>
         public static SyntaxTriviaList ReplaceAt(this SyntaxTriviaList triviaList, int index, SyntaxTrivia newTrivia)
         {
             return triviaList.Replace(triviaList[index], newTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool Any(this SyntaxTriviaList list, Func<SyntaxTrivia, bool> predicate)
         {
             if (predicate == null)
@@ -716,6 +1053,12 @@ namespace Roslynator
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public static bool All(this SyntaxTriviaList list, Func<SyntaxTrivia, bool> predicate)
         {
             if (predicate == null)

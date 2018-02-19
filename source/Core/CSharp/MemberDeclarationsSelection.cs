@@ -7,6 +7,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MemberDeclarationsSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
         private MemberDeclarationsSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, SelectionResult result)
@@ -20,8 +23,17 @@ namespace Roslynator.CSharp
             Declaration = declaration;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MemberDeclarationSyntax Declaration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static MemberDeclarationsSelection Create(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span)
         {
             if (namespaceDeclaration == null)
@@ -30,6 +42,12 @@ namespace Roslynator.CSharp
             return Create(namespaceDeclaration, namespaceDeclaration.Members, span);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeDeclaration"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static MemberDeclarationsSelection Create(TypeDeclarationSyntax typeDeclaration, TextSpan span)
         {
             if (typeDeclaration == null)
@@ -45,6 +63,13 @@ namespace Roslynator.CSharp
             return new MemberDeclarationsSelection(memberDeclaration, members, span, result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedMembers"></param>
+        /// <returns></returns>
         public static bool TryCreate(NamespaceDeclarationSyntax namespaceDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(namespaceDeclaration, span, 1, int.MaxValue);
@@ -63,6 +88,13 @@ namespace Roslynator.CSharp
             return selectedMembers != null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeDeclaration"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedMembers"></param>
+        /// <returns></returns>
         public static bool TryCreate(TypeDeclarationSyntax typeDeclaration, TextSpan span, out MemberDeclarationsSelection selectedMembers)
         {
             selectedMembers = Create(typeDeclaration, span, 1, int.MaxValue);

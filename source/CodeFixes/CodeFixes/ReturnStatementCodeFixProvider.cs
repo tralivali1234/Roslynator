@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                 ISymbol containingSymbol = semanticModel.GetEnclosingSymbol(returnStatement.SpanStart, context.CancellationToken);
 
-                                if (containingSymbol?.IsKind(SymbolKind.Method) == true)
+                                if (containingSymbol?.Kind == SymbolKind.Method)
                                 {
                                     var methodSymbol = (IMethodSymbol)containingSymbol;
 

@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceNodeAsync(value, newValue, cancellationToken).ConfigureAwait(false);
         }
 
-        private struct EnumFieldInfo
+        private readonly struct EnumFieldInfo
         {
             public EnumFieldInfo(IFieldSymbol symbol)
             {

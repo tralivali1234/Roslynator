@@ -9,7 +9,10 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct MemberInvocationExpressionInfo : IEquatable<MemberInvocationExpressionInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct MemberInvocationExpressionInfo : IEquatable<MemberInvocationExpressionInfo>
     {
         private MemberInvocationExpressionInfo(
             ExpressionSyntax expression,
@@ -23,37 +26,64 @@ namespace Roslynator.CSharp.Syntax
 
         private static MemberInvocationExpressionInfo Default { get; } = new MemberInvocationExpressionInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ExpressionSyntax Expression { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SimpleNameSyntax Name { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ArgumentListSyntax ArgumentList { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SeparatedSyntaxList<ArgumentSyntax> Arguments
         {
             get { return ArgumentList?.Arguments ?? default(SeparatedSyntaxList<ArgumentSyntax>); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public InvocationExpressionSyntax InvocationExpression
         {
             get { return (InvocationExpressionSyntax)ArgumentList?.Parent; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MemberAccessExpressionSyntax MemberAccessExpression
         {
             get { return (MemberAccessExpressionSyntax)Expression?.Parent; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxToken OperatorToken
         {
             get { return MemberAccessExpression?.OperatorToken ?? default(SyntaxToken); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string NameText
         {
             get { return Name?.Identifier.ValueText; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Expression != null; }
@@ -116,31 +146,53 @@ namespace Roslynator.CSharp.Syntax
             return new MemberInvocationExpressionInfo(newMemberAccess.Expression, newMemberAccess.Name, newInvocation.ArgumentList);
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return InvocationExpression?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is MemberInvocationExpressionInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(MemberInvocationExpressionInfo other)
         {
             return EqualityComparer<InvocationExpressionSyntax>.Default.Equals(InvocationExpression, other.InvocationExpression);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<InvocationExpressionSyntax>.Default.GetHashCode(InvocationExpression);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return !(info1 == info2);

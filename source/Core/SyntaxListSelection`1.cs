@@ -6,6 +6,10 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public class SyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
         private SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, SelectionResult result)
@@ -13,16 +17,35 @@ namespace Roslynator
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="lastIndex"></param>
         protected SyntaxListSelection(SyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
             : base(span, firstIndex, lastIndex)
         {
             UnderlyingList = list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxList<TNode> UnderlyingList { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override IReadOnlyList<TNode> Items => UnderlyingList;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static SyntaxListSelection<TNode> Create(SyntaxList<TNode> list, TextSpan span)
         {
             SelectionResult result = SelectionResult.Create(list, span);
@@ -30,6 +53,13 @@ namespace Roslynator
             return new SyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
         public static bool TryCreate(SyntaxList<TNode> list, TextSpan span, out SyntaxListSelection<TNode> selection)
         {
             selection = Create(list, span, 1, int.MaxValue);

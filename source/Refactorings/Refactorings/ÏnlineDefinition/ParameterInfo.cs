@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.InlineDefinition
 {
-    internal struct ParameterInfo
+    internal readonly struct ParameterInfo
     {
         public ParameterInfo(IParameterSymbol parameterSymbol, ExpressionSyntax expression, bool isThis = false)
         {

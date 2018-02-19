@@ -10,7 +10,10 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct NullCheckExpressionInfo : IEquatable<NullCheckExpressionInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct NullCheckExpressionInfo : IEquatable<NullCheckExpressionInfo>
     {
         private NullCheckExpressionInfo(
             ExpressionSyntax containingExpression,
@@ -25,22 +28,40 @@ namespace Roslynator.CSharp.Syntax
         private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
 
         //XTODO: rename
+        /// <summary>
+        /// 
+        /// </summary>
         public ExpressionSyntax ContainingExpression { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ExpressionSyntax Expression { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public NullCheckStyles Style { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsCheckingNull
         {
             get { return (Style & NullCheckStyles.CheckingNull) != 0; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsCheckingNotNull
         {
             get { return (Style & NullCheckStyles.CheckingNotNull) != 0; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Style != NullCheckStyles.None; }
@@ -295,31 +316,53 @@ namespace Roslynator.CSharp.Syntax
                 && SyntaxUtility.IsPropertyOfNullableOfT(expression, name, semanticModel, cancellationToken);
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return ContainingExpression?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is NullCheckExpressionInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(NullCheckExpressionInfo other)
         {
             return EqualityComparer<ExpressionSyntax>.Default.Equals(ContainingExpression, other.ContainingExpression);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<ExpressionSyntax>.Default.GetHashCode(ContainingExpression);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(NullCheckExpressionInfo info1, NullCheckExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(NullCheckExpressionInfo info1, NullCheckExpressionInfo info2)
         {
             return !(info1 == info2);

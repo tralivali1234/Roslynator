@@ -9,8 +9,18 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class Selection<T> : IReadOnlyList<T>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="span"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="lastIndex"></param>
         protected Selection(TextSpan span, int firstIndex, int lastIndex)
         {
             Span = span;
@@ -18,14 +28,29 @@ namespace Roslynator
             LastIndex = lastIndex;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected abstract IReadOnlyList<T> Items { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextSpan Span { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int FirstIndex { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int LastIndex { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get
@@ -41,6 +66,9 @@ namespace Roslynator
             }
         }
 
+        /// <summary>Gets the element at the specified index in the read-only list.</summary>
+        /// <returns>The element at the specified index in the read-only list.</returns>
+        /// <param name="index">The zero-based index of the element to get. </param>
         public T this[int index]
         {
             get
@@ -55,16 +83,28 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool Any()
         {
             return FirstIndex != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public T First()
         {
             return Items[FirstIndex];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public T FirstOrDefault()
         {
             if (Any())
@@ -77,11 +117,19 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public T Last()
         {
             return Items[LastIndex];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public T LastOrDefault()
         {
             if (Any())
@@ -103,6 +151,10 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
             return Enumerate().GetEnumerator();
@@ -113,7 +165,7 @@ namespace Roslynator
             return GetEnumerator();
         }
 
-        internal struct SelectionResult
+        internal readonly struct SelectionResult
         {
             public SelectionResult(int firstIndex, int lastIndex)
             {

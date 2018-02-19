@@ -6,6 +6,10 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
         private SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, SelectionResult result)
@@ -13,16 +17,35 @@ namespace Roslynator
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="lastIndex"></param>
         protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
             : base(span, firstIndex, lastIndex)
         {
             UnderlyingList = list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SeparatedSyntaxList<TNode> UnderlyingList { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override IReadOnlyList<TNode> Items => UnderlyingList;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
             SelectionResult result = SelectionResult.Create(list, span);
@@ -30,6 +53,13 @@ namespace Roslynator
             return new SeparatedSyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="selection"></param>
+        /// <returns></returns>
         public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, out SeparatedSyntaxListSelection<TNode> selection)
         {
             selection = Create(list, span, 1, int.MaxValue);

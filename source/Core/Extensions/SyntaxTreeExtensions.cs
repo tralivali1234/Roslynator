@@ -7,8 +7,18 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SyntaxTreeExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="span"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static int GetStartLine(
             this SyntaxTree syntaxTree,
             TextSpan span,
@@ -20,6 +30,13 @@ namespace Roslynator
             return syntaxTree.GetLineSpan(span, cancellationToken).StartLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="span"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static int GetEndLine(
             this SyntaxTree syntaxTree,
             TextSpan span,
@@ -31,6 +48,13 @@ namespace Roslynator
             return syntaxTree.GetLineSpan(span, cancellationToken).EndLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="span"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static bool IsMultiLineSpan(
             this SyntaxTree syntaxTree,
             TextSpan span,
@@ -42,6 +66,13 @@ namespace Roslynator
             return syntaxTree.GetLineSpan(span, cancellationToken).IsMultiLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="span"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static bool IsSingleLineSpan(
             this SyntaxTree syntaxTree,
             TextSpan span,

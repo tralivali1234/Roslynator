@@ -10,8 +10,16 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class CSharpAccessibility
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(MemberDeclarationSyntax declaration)
         {
             if (declaration == null)
@@ -55,11 +63,21 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(ClassDeclarationSyntax classDeclaration)
         {
             return GetDefaultAccessibility((TypeDeclarationSyntax)classDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -75,6 +93,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversionOperatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
             if (conversionOperatorDeclaration == null)
@@ -83,6 +106,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(DelegateDeclarationSyntax delegateDeclaration)
         {
             if (delegateDeclaration == null)
@@ -98,6 +126,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(DestructorDeclarationSyntax destructorDeclaration)
         {
             if (destructorDeclaration == null)
@@ -106,11 +139,21 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(EnumDeclarationSyntax enumDeclaration)
         {
             return GetDefaultAccessibility((BaseTypeDeclarationSyntax)enumDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumMemberDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(EnumMemberDeclarationSyntax enumMemberDeclaration)
         {
             if (enumMemberDeclaration == null)
@@ -119,6 +162,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
@@ -127,6 +175,11 @@ namespace Roslynator.CSharp
             return Accessibility.Private;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventFieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
             if (eventFieldDeclaration == null)
@@ -142,6 +195,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(FieldDeclarationSyntax fieldDeclaration)
         {
             if (fieldDeclaration == null)
@@ -150,6 +208,11 @@ namespace Roslynator.CSharp
             return Accessibility.Private;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -165,11 +228,21 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
         {
             return GetDefaultAccessibility((BaseTypeDeclarationSyntax)interfaceDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -185,6 +258,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -193,6 +271,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -201,6 +284,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -216,11 +304,21 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(StructDeclarationSyntax structDeclaration)
         {
             return GetDefaultAccessibility((BaseTypeDeclarationSyntax)structDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseTypeDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(BaseTypeDeclarationSyntax baseTypeDeclaration)
         {
             if (baseTypeDeclaration == null)
@@ -236,6 +334,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultAccessibility(AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
@@ -258,6 +361,11 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(MemberDeclarationSyntax declaration)
         {
             if (declaration == null)
@@ -301,11 +409,21 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(ClassDeclarationSyntax classDeclaration)
         {
             return GetDefaultExplicitAccessibility((TypeDeclarationSyntax)classDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -321,6 +439,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversionOperatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
             if (conversionOperatorDeclaration == null)
@@ -329,6 +452,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(DelegateDeclarationSyntax delegateDeclaration)
         {
             if (delegateDeclaration == null)
@@ -344,6 +472,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(DestructorDeclarationSyntax destructorDeclaration)
         {
             if (destructorDeclaration == null)
@@ -352,11 +485,21 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(EnumDeclarationSyntax enumDeclaration)
         {
             return GetDefaultExplicitAccessibility((BaseTypeDeclarationSyntax)enumDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumMemberDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(EnumMemberDeclarationSyntax enumMemberDeclaration)
         {
             if (enumMemberDeclaration == null)
@@ -365,6 +508,11 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
@@ -380,6 +528,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventFieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
             if (eventFieldDeclaration == null)
@@ -395,6 +548,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(FieldDeclarationSyntax fieldDeclaration)
         {
             if (fieldDeclaration == null)
@@ -403,6 +561,11 @@ namespace Roslynator.CSharp
             return Accessibility.Private;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -419,11 +582,21 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
         {
             return GetDefaultExplicitAccessibility((BaseTypeDeclarationSyntax)interfaceDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -441,6 +614,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -449,6 +627,11 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -457,6 +640,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -473,11 +661,21 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(StructDeclarationSyntax structDeclaration)
         {
             return GetDefaultExplicitAccessibility((BaseTypeDeclarationSyntax)structDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseTypeDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetDefaultExplicitAccessibility(BaseTypeDeclarationSyntax baseTypeDeclaration)
         {
             if (baseTypeDeclaration == null)
@@ -493,6 +691,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(MemberDeclarationSyntax declaration)
         {
             if (declaration == null)
@@ -535,6 +738,11 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(ClassDeclarationSyntax classDeclaration)
         {
             if (classDeclaration == null)
@@ -548,6 +756,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -566,6 +779,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversionOperatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
             if (conversionOperatorDeclaration == null)
@@ -574,6 +792,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(DelegateDeclarationSyntax delegateDeclaration)
         {
             if (delegateDeclaration == null)
@@ -587,6 +810,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(DestructorDeclarationSyntax destructorDeclaration)
         {
             if (destructorDeclaration == null)
@@ -595,6 +823,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(EnumDeclarationSyntax enumDeclaration)
         {
             if (enumDeclaration == null)
@@ -608,6 +841,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumMemberDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(EnumMemberDeclarationSyntax enumMemberDeclaration)
         {
             if (enumMemberDeclaration == null)
@@ -616,6 +854,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
@@ -632,6 +875,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventFieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
             if (eventFieldDeclaration == null)
@@ -648,6 +896,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(FieldDeclarationSyntax fieldDeclaration)
         {
             if (fieldDeclaration == null)
@@ -661,6 +914,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -680,6 +938,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
         {
             if (interfaceDeclaration == null)
@@ -693,6 +956,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -717,6 +985,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -725,6 +998,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -733,6 +1011,11 @@ namespace Roslynator.CSharp
             return Accessibility.Public;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -752,6 +1035,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(StructDeclarationSyntax structDeclaration)
         {
             if (structDeclaration == null)
@@ -765,6 +1053,11 @@ namespace Roslynator.CSharp
             return accessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetAccessibility(AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
@@ -857,6 +1150,11 @@ namespace Roslynator.CSharp
             return Accessibility.NotApplicable;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(SyntaxNode declaration)
         {
             if (declaration == null)
@@ -865,6 +1163,11 @@ namespace Roslynator.CSharp
             return SyntaxInfo.ModifiersInfo(declaration).ExplicitAccessibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(ClassDeclarationSyntax classDeclaration)
         {
             if (classDeclaration == null)
@@ -873,6 +1176,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(classDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -881,6 +1189,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(constructorDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversionOperatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
             if (conversionOperatorDeclaration == null)
@@ -889,6 +1202,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(conversionOperatorDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(DelegateDeclarationSyntax delegateDeclaration)
         {
             if (delegateDeclaration == null)
@@ -897,6 +1215,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(delegateDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destructorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(DestructorDeclarationSyntax destructorDeclaration)
         {
             if (destructorDeclaration == null)
@@ -905,6 +1228,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(destructorDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(EnumDeclarationSyntax enumDeclaration)
         {
             if (enumDeclaration == null)
@@ -913,6 +1241,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(enumDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
@@ -921,6 +1254,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(eventDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventFieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
             if (eventFieldDeclaration == null)
@@ -929,6 +1267,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(eventFieldDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(FieldDeclarationSyntax fieldDeclaration)
         {
             if (fieldDeclaration == null)
@@ -937,6 +1280,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(fieldDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -945,6 +1293,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(indexerDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(InterfaceDeclarationSyntax interfaceDeclaration)
         {
             if (interfaceDeclaration == null)
@@ -953,6 +1306,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(interfaceDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -961,6 +1319,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(methodDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -969,6 +1332,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(operatorDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -977,6 +1345,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(propertyDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(StructDeclarationSyntax structDeclaration)
         {
             if (structDeclaration == null)
@@ -985,6 +1358,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(structDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(IncompleteMemberSyntax incompleteMember)
         {
             if (incompleteMember == null)
@@ -993,6 +1371,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(incompleteMember.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static Accessibility GetExplicitAccessibility(AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
@@ -1001,6 +1384,11 @@ namespace Roslynator.CSharp
             return GetExplicitAccessibility(accessorDeclaration.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
         public static bool IsPubliclyVisible(MemberDeclarationSyntax declaration)
         {
             if (declaration == null)
@@ -1041,6 +1429,14 @@ namespace Roslynator.CSharp
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="newAccessibility"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static TNode WithExplicitAccessibility<TNode>(
             TNode node,
             Accessibility newAccessibility,
@@ -1059,6 +1455,13 @@ namespace Roslynator.CSharp
             return (TNode)newInfo.Node;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="accessibility"></param>
+        /// <param name="ignoreOverride"></param>
+        /// <returns></returns>
         public static bool IsValidAccessibility(SyntaxNode node, Accessibility accessibility, bool ignoreOverride = false)
         {
             if (node == null)

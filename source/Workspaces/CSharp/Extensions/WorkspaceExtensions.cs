@@ -15,6 +15,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class WorkspaceExtensions
     {
         internal static Task<Document> RemoveNodeAsync(
@@ -31,6 +34,13 @@ namespace Roslynator.CSharp
             return document.RemoveNodeAsync(node, SyntaxRemover.GetOptions(node), cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="member"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<Document> RemoveMemberAsync(
             this Document document,
             MemberDeclarationSyntax member,
@@ -99,6 +109,13 @@ namespace Roslynator.CSharp
             return document.RemoveNodeAsync(statement, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="kind"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveCommentsAsync(
             this Document document,
             CommentKind kind,
@@ -115,6 +132,14 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="span"></param>
+        /// <param name="kind"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveCommentsAsync(
             this Document document,
             TextSpan span,
@@ -132,6 +157,12 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveTriviaAsync(
             this Document document,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -146,6 +177,13 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="span"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveTriviaAsync(
             this Document document,
             TextSpan span,
@@ -161,6 +199,13 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="directiveKind"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
             PreprocessorDirectiveKind directiveKind,
@@ -178,6 +223,14 @@ namespace Roslynator.CSharp
             return document.WithText(newSourceText);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="span"></param>
+        /// <param name="directiveKind"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemovePreprocessorDirectivesAsync(
             this Document document,
             TextSpan span,
@@ -293,6 +346,13 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="region"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveRegionAsync(
             this Document document,
             RegionInfo region,

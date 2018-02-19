@@ -121,7 +121,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 ISymbol associatedSymbol = methodSymbol.AssociatedSymbol;
 
-                if (associatedSymbol?.IsKind(SymbolKind.Property) == true)
+                if (associatedSymbol?.Kind == SymbolKind.Property)
                 {
                     var propertySymbol = (IPropertySymbol)associatedSymbol;
 

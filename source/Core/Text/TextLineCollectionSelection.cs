@@ -6,6 +6,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Text
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TextLineCollectionSelection : Selection<TextLine>
     {
         private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, SelectionResult result)
@@ -19,10 +22,22 @@ namespace Roslynator.Text
             UnderlyingLines = lines;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextLineCollection UnderlyingLines { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override IReadOnlyList<TextLine> Items => UnderlyingLines;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static TextLineCollectionSelection Create(TextLineCollection lines, TextSpan span)
         {
             if (lines == null)
@@ -33,6 +48,13 @@ namespace Roslynator.Text
             return new TextLineCollectionSelection(lines, span, result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedLines"></param>
+        /// <returns></returns>
         public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selectedLines)
         {
             selectedLines = Create(lines, span, 1, int.MaxValue);

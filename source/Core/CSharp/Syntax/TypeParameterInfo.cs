@@ -8,7 +8,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct TypeParameterInfo : IEquatable<TypeParameterInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct TypeParameterInfo : IEquatable<TypeParameterInfo>
     {
         private TypeParameterInfo(
             TypeParameterSyntax typeParameter,
@@ -24,24 +27,45 @@ namespace Roslynator.CSharp.Syntax
 
         private static TypeParameterInfo Default { get; } = new TypeParameterInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeParameterSyntax TypeParameter { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name
         {
             get { return TypeParameter?.Identifier.ValueText; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxNode Declaration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
             get { return TypeParameterList?.Parameters ?? default(SeparatedSyntaxList<TypeParameterSyntax>); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeParameterConstraintClauseSyntax ConstraintClause
         {
             get
@@ -58,6 +82,9 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return TypeParameter != null; }
@@ -212,31 +239,53 @@ namespace Roslynator.CSharp.Syntax
             return Default;
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return TypeParameter?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is TypeParameterInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(TypeParameterInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(TypeParameterInfo info1, TypeParameterInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(TypeParameterInfo info1, TypeParameterInfo info2)
         {
             return !(info1 == info2);

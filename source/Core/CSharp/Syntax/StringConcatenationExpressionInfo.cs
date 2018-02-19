@@ -16,7 +16,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>, IReadOnlyList<ExpressionSyntax>
+    internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>, IReadOnlyList<ExpressionSyntax>
     {
         private StringConcatenationExpressionInfo(
             BinaryExpressionSyntax addExpression,

@@ -8,228 +8,412 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Modifiers
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList None()
         {
             return TokenList();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Public()
         {
             return TokenList(PublicKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Internal()
         {
             return TokenList(InternalKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Protected()
         {
             return TokenList(ProtectedKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedInternal()
         {
             return TokenList(ProtectedKeyword(), InternalKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Private()
         {
             return TokenList(PrivateKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateProtected()
         {
             return TokenList(PrivateKeyword(), ProtectedKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Virtual()
         {
             return TokenList(VirtualKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicVirtual()
         {
             return TokenList(PublicKeyword(), VirtualKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalVirtual()
         {
             return TokenList(InternalKeyword(), VirtualKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedVirtual()
         {
             return TokenList(ProtectedKeyword(), VirtualKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicAbstract()
         {
             return TokenList(PublicKeyword(), AbstractKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalAbstract()
         {
             return TokenList(InternalKeyword(), AbstractKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedAbstract()
         {
             return TokenList(ProtectedKeyword(), AbstractKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicOverride()
         {
             return TokenList(PublicKeyword(), OverrideKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalOverride()
         {
             return TokenList(InternalKeyword(), OverrideKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedOverride()
         {
             return TokenList(ProtectedKeyword(), OverrideKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Const()
         {
             return TokenList(ConstKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicConst()
         {
             return TokenList(PublicKeyword(), ConstKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalConst()
         {
             return TokenList(InternalKeyword(), ConstKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedConst()
         {
             return TokenList(ProtectedKeyword(), ConstKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateConst()
         {
             return TokenList(PrivateKeyword(), ConstKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Static()
         {
             return TokenList(StaticKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicStatic()
         {
             return TokenList(PublicKeyword(), StaticKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalStatic()
         {
             return TokenList(InternalKeyword(), StaticKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedStatic()
         {
             return TokenList(ProtectedKeyword(), StaticKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateStatic()
         {
             return TokenList(PrivateKeyword(), StaticKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList StaticReadOnly()
         {
             return TokenList(StaticKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicStaticReadOnly()
         {
             return TokenList(PublicKeyword(), StaticKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalStaticReadOnly()
         {
             return TokenList(InternalKeyword(), StaticKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedStaticReadOnly()
         {
             return TokenList(ProtectedKeyword(), StaticKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateStaticReadOnly()
         {
             return TokenList(PrivateKeyword(), StaticKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ReadOnly()
         {
             return TokenList(ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicReadOnly()
         {
             return TokenList(PublicKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalReadOnly()
         {
             return TokenList(InternalKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList ProtectedReadOnly()
         {
             return TokenList(ProtectedKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateReadOnly()
         {
             return TokenList(PrivateKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Partial()
         {
             return TokenList(PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicPartial()
         {
             return TokenList(PublicKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalPartial()
         {
             return TokenList(InternalKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivatePartial()
         {
             return TokenList(PrivateKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PublicStaticPartial()
         {
             return TokenList(PublicKeyword(), StaticKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList InternalStaticPartial()
         {
             return TokenList(InternalKeyword(), StaticKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList PrivateStaticPartial()
         {
             return TokenList(PrivateKeyword(), StaticKeyword(), PartialKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessibility"></param>
+        /// <returns></returns>
         public static SyntaxTokenList FromAccessibility(Accessibility accessibility)
         {
             switch (accessibility)
@@ -256,26 +440,46 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList In()
         {
             return TokenList(InKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Out()
         {
             return TokenList(OutKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Ref()
         {
             return TokenList(RefKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList RefReadOnly()
         {
             return TokenList(RefKeyword(), ReadOnlyKeyword());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static SyntaxTokenList Params()
         {
             return TokenList(ParamsKeyword());

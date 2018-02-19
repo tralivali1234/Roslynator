@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
-    internal struct BinaryExpressionSelection
+    internal readonly struct BinaryExpressionSelection
     {
         private BinaryExpressionSelection(BinaryExpressionSyntax binaryExpression, ImmutableArray<ExpressionSyntax> expressions, TextSpan span)
         {

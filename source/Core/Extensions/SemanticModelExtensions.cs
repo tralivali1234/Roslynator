@@ -9,6 +9,9 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SemanticModelExtensions
     {
         internal static Diagnostic GetDiagnostic(
@@ -31,6 +34,13 @@ namespace Roslynator
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static INamedTypeSymbol GetEnclosingNamedType(
             this SemanticModel semanticModel,
             int position,
@@ -39,6 +49,14 @@ namespace Roslynator
             return GetEnclosingSymbol<INamedTypeSymbol>(semanticModel, position, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TSymbol"></typeparam>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static TSymbol GetEnclosingSymbol<TSymbol>(
             this SemanticModel semanticModel,
             int position,
@@ -60,6 +78,13 @@ namespace Roslynator
             return default(TSymbol);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="node"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ISymbol GetSymbol(
             this SemanticModel semanticModel,
             SyntaxNode node,
@@ -68,6 +93,13 @@ namespace Roslynator
             return ModelExtensions.GetSymbolInfo(semanticModel, node, cancellationToken).Symbol;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="node"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ITypeSymbol GetTypeSymbol(
             this SemanticModel semanticModel,
             SyntaxNode node,
@@ -76,6 +108,12 @@ namespace Roslynator
             return ModelExtensions.GetTypeInfo(semanticModel, node, cancellationToken).Type;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="fullyQualifiedMetadataName"></param>
+        /// <returns></returns>
         public static INamedTypeSymbol GetTypeByMetadataName(this SemanticModel semanticModel, string fullyQualifiedMetadataName)
         {
             if (semanticModel == null)

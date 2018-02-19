@@ -10,7 +10,10 @@ using Roslynator.CSharp.Comparers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct AccessibilityInfo : IEquatable<AccessibilityInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
         private AccessibilityInfo(SyntaxNode node, SyntaxTokenList modifiers, int tokenIndex, int secondTokenIndex = -1)
         {
@@ -22,24 +25,45 @@ namespace Roslynator.CSharp.Syntax
 
         private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxNode Node { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxTokenList Modifiers { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int TokenIndex { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int SecondTokenIndex { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxToken Token
         {
             get { return GetTokenOrDefault(TokenIndex); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxToken SecondToken
         {
             get { return GetTokenOrDefault(SecondTokenIndex); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Accessibility ExplicitAccessibility
         {
             get
@@ -88,6 +112,9 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Node != null; }
@@ -337,6 +364,11 @@ namespace Roslynator.CSharp.Syntax
             return new ModifiersInfo(Node, Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newModifiers"></param>
+        /// <returns></returns>
         public AccessibilityInfo WithModifiers(SyntaxTokenList newModifiers)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -346,6 +378,12 @@ namespace Roslynator.CSharp.Syntax
             return Create(info.Node, info.Modifiers);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newAccessibility"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public AccessibilityInfo WithExplicitAccessibility(Accessibility newAccessibility, IModifierComparer comparer = null)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -419,32 +457,54 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(AccessibilityInfo)} is not initalized.");
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return Node?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is AccessibilityInfo other
                 && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(AccessibilityInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(AccessibilityInfo info1, AccessibilityInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(AccessibilityInfo info1, AccessibilityInfo info2)
         {
             return !(info1 == info2);

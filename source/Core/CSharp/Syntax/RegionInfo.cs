@@ -9,7 +9,10 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct RegionInfo : IEquatable<RegionInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct RegionInfo : IEquatable<RegionInfo>
     {
         private RegionInfo(RegionDirectiveTriviaSyntax directive, EndRegionDirectiveTriviaSyntax endDirective)
         {
@@ -19,15 +22,27 @@ namespace Roslynator.CSharp.Syntax
 
         private static RegionInfo Default { get; } = new RegionInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public RegionDirectiveTriviaSyntax Directive { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EndRegionDirectiveTriviaSyntax EndDirective { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Directive != null; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextSpan Span
         {
             get
@@ -38,6 +53,9 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextSpan FullSpan
         {
             get
@@ -48,6 +66,9 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsEmpty
         {
             get
@@ -137,31 +158,53 @@ namespace Roslynator.CSharp.Syntax
             return new RegionInfo((RegionDirectiveTriviaSyntax)list[0], endRegionDirective);
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return Directive?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is RegionInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(RegionInfo other)
         {
             return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.Equals(Directive, other.Directive);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.GetHashCode(Directive);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(RegionInfo info1, RegionInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(RegionInfo info1, RegionInfo info2)
         {
             return !(info1 == info2);

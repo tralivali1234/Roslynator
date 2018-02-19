@@ -9,6 +9,9 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SymbolExtensions
     {
         private static SymbolDisplayFormat DefaultSymbolDisplayFormat { get; } = new SymbolDisplayFormat(
@@ -18,6 +21,12 @@ namespace Roslynator.CSharp
                 | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
 
         #region INamespaceOrTypeSymbol
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceOrTypeSymbol"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SymbolDisplayFormat format = null)
         {
             if (namespaceOrTypeSymbol == null)
@@ -33,6 +42,14 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceOrTypeSymbol"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToMinimalTypeSyntax(this INamespaceOrTypeSymbol namespaceOrTypeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (namespaceOrTypeSymbol == null)
@@ -53,6 +70,12 @@ namespace Roslynator.CSharp
         #endregion INamespaceOrTypeSymbol
 
         #region INamespaceSymbol
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceSymbol"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToTypeSyntax(this INamespaceSymbol namespaceSymbol, SymbolDisplayFormat format = null)
         {
             if (namespaceSymbol == null)
@@ -63,6 +86,14 @@ namespace Roslynator.CSharp
             return ParseTypeName(namespaceSymbol.ToDisplayString(format ?? DefaultSymbolDisplayFormat));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceSymbol"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToMinimalTypeSyntax(this INamespaceSymbol namespaceSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (namespaceSymbol == null)
@@ -126,6 +157,12 @@ namespace Roslynator.CSharp
         #endregion IParameterSymbol
 
         #region ITypeSymbol
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToTypeSyntax(this ITypeSymbol typeSymbol, SymbolDisplayFormat format = null)
         {
             if (typeSymbol == null)
@@ -136,6 +173,14 @@ namespace Roslynator.CSharp
             return ParseTypeName(typeSymbol.ToDisplayString(format ?? DefaultSymbolDisplayFormat));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static TypeSyntax ToMinimalTypeSyntax(this ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (typeSymbol == null)
@@ -155,6 +200,12 @@ namespace Roslynator.CSharp
                 throw new ArgumentException($"Type '{typeSymbol.ToDisplayString()}' does not support explicit declaration.", nameof(typeSymbol));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, TypeSyntax type)
         {
             if (typeSymbol == null)
@@ -166,6 +217,14 @@ namespace Roslynator.CSharp
             return GetDefaultValueSyntaxImpl(typeSymbol, type, default(SemanticModel), -1, default(SymbolDisplayFormat));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
         public static ExpressionSyntax GetDefaultValueSyntax(this ITypeSymbol typeSymbol, SemanticModel semanticModel, int position, SymbolDisplayFormat format = null)
         {
             if (typeSymbol == null)
@@ -231,6 +290,11 @@ namespace Roslynator.CSharp
             return DefaultExpression(type);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <returns></returns>
         public static bool SupportsConstantValue(this ITypeSymbol typeSymbol)
         {
             if (typeSymbol == null)

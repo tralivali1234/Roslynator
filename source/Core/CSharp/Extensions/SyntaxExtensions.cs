@@ -20,14 +20,27 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SyntaxExtensions
     {
         #region AccessorDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static bool IsAutoGetter(this AccessorDeclarationSyntax accessorDeclaration)
         {
             return IsAutoAccessor(accessorDeclaration, SyntaxKind.GetAccessorDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static bool IsAutoSetter(this AccessorDeclarationSyntax accessorDeclaration)
         {
             return IsAutoAccessor(accessorDeclaration, SyntaxKind.SetAccessorDeclaration);
@@ -48,6 +61,11 @@ namespace Roslynator.CSharp
                 && accessorDeclaration.BodyOrExpressionBody() == null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
@@ -58,11 +76,21 @@ namespace Roslynator.CSharp
         #endregion AccessorDeclarationSyntax
 
         #region AccessorListSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorList"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Getter(this AccessorListSyntax accessorList)
         {
             return Accessor(accessorList, SyntaxKind.GetAccessorDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessorList"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Setter(this AccessorListSyntax accessorList)
         {
             return Accessor(accessorList, SyntaxKind.SetAccessorDeclaration);
@@ -117,6 +145,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this BlockSyntax block)
         {
             if (block == null)
@@ -177,6 +210,11 @@ namespace Roslynator.CSharp
         #endregion BaseArgumentListSyntax
 
         #region CastExpressionSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="castExpression"></param>
+        /// <returns></returns>
         public static TextSpan ParenthesesSpan(this CastExpressionSyntax castExpression)
         {
             if (castExpression == null)
@@ -189,6 +227,12 @@ namespace Roslynator.CSharp
         #endregion CastExpressionSyntax
 
         #region ClassDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             MemberDeclarationSyntax member)
@@ -199,6 +243,12 @@ namespace Roslynator.CSharp
             return classDeclaration.WithMembers(SingletonList(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public static ClassDeclarationSyntax WithMembers(
             this ClassDeclarationSyntax classDeclaration,
             IEnumerable<MemberDeclarationSyntax> members)
@@ -209,6 +259,11 @@ namespace Roslynator.CSharp
             return classDeclaration.WithMembers(List(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this ClassDeclarationSyntax classDeclaration)
         {
             if (classDeclaration == null)
@@ -219,6 +274,11 @@ namespace Roslynator.CSharp
                 classDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this ClassDeclarationSyntax classDeclaration)
         {
             if (classDeclaration == null)
@@ -229,11 +289,24 @@ namespace Roslynator.CSharp
                 classDeclaration.CloseBraceToken.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static MemberDeclarationSyntax RemoveMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(classDeclaration, member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static ClassDeclarationSyntax InsertMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (classDeclaration == null)
@@ -247,6 +320,11 @@ namespace Roslynator.CSharp
         #endregion ClassDeclarationSyntax
 
         #region CommonForEachStatementSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forEachStatement"></param>
+        /// <returns></returns>
         public static TextSpan ParenthesesSpan(this CommonForEachStatementSyntax forEachStatement)
         {
             if (forEachStatement == null)
@@ -257,6 +335,12 @@ namespace Roslynator.CSharp
         #endregion CommonForEachStatementSyntax
 
         #region CompilationUnitSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static CompilationUnitSyntax WithMembers(
             this CompilationUnitSyntax compilationUnit,
             MemberDeclarationSyntax member)
@@ -267,6 +351,12 @@ namespace Roslynator.CSharp
             return compilationUnit.WithMembers(SingletonList(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public static CompilationUnitSyntax WithMembers(
             this CompilationUnitSyntax compilationUnit,
             IEnumerable<MemberDeclarationSyntax> members)
@@ -277,6 +367,13 @@ namespace Roslynator.CSharp
             return compilationUnit.WithMembers(List(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="keepSingleLineCommentsOnTop"></param>
+        /// <param name="usings"></param>
+        /// <returns></returns>
         public static CompilationUnitSyntax AddUsings(this CompilationUnitSyntax compilationUnit, bool keepSingleLineCommentsOnTop, params UsingDirectiveSyntax[] usings)
         {
             if (compilationUnit == null)
@@ -331,11 +428,24 @@ namespace Roslynator.CSharp
             return compilationUnit.AddUsings(usings);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static CompilationUnitSyntax RemoveMember(this CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(compilationUnit, member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static CompilationUnitSyntax InsertMember(this CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (compilationUnit == null)
@@ -349,6 +459,11 @@ namespace Roslynator.CSharp
         #endregion CompilationUnitSyntax
 
         #region ConstructorDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -359,6 +474,11 @@ namespace Roslynator.CSharp
                 constructorDeclaration.ParameterList?.Span.End ?? constructorDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpanIncludingInitializer(this ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -371,6 +491,11 @@ namespace Roslynator.CSharp
                     ?? constructorDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constructorDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
@@ -381,6 +506,11 @@ namespace Roslynator.CSharp
         #endregion ConstructorDeclarationSyntax
 
         #region ConversionOperatorDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this ConversionOperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -393,6 +523,11 @@ namespace Roslynator.CSharp
                     ?? operatorDeclaration.OperatorKeyword.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="conversionOperatorDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
             if (conversionOperatorDeclaration == null)
@@ -403,6 +538,11 @@ namespace Roslynator.CSharp
         #endregion ConversionOperatorDeclarationSyntax
 
         #region DelegateDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="delegateDeclaration"></param>
+        /// <returns></returns>
         public static bool ReturnsVoid(this DelegateDeclarationSyntax delegateDeclaration)
         {
             return delegateDeclaration?.ReturnType?.IsVoid() == true;
@@ -410,6 +550,11 @@ namespace Roslynator.CSharp
         #endregion DelegateDeclarationSyntax
 
         #region DestructorDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destructorDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this DestructorDeclarationSyntax destructorDeclaration)
         {
             if (destructorDeclaration == null)
@@ -439,6 +584,12 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="documentationComment"></param>
+        /// <param name="localName"></param>
+        /// <returns></returns>
         public static IEnumerable<XmlElementSyntax> Elements(this DocumentationCommentTriviaSyntax documentationComment, string localName)
         {
             if (documentationComment == null)
@@ -477,6 +628,11 @@ namespace Roslynator.CSharp
             return SingleStatementOrDefault(elseClause.Statement);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elseClause"></param>
+        /// <returns></returns>
         public static IfStatementSyntax GetTopmostIf(this ElseClauseSyntax elseClause)
         {
             if (elseClause == null)
@@ -488,6 +644,11 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elseClause"></param>
+        /// <returns></returns>
         public static bool IsElseIf(this ElseClauseSyntax elseClause)
         {
             if (elseClause == null)
@@ -498,6 +659,11 @@ namespace Roslynator.CSharp
         #endregion ElseClauseSyntax
 
         #region EndRegionDirectiveTriviaSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endRegionDirective"></param>
+        /// <returns></returns>
         public static RegionDirectiveTriviaSyntax GetRegionDirective(this EndRegionDirectiveTriviaSyntax endRegionDirective)
         {
             if (endRegionDirective == null)
@@ -508,6 +674,11 @@ namespace Roslynator.CSharp
             return (region.Success) ? region.Directive : null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endRegionDirective"></param>
+        /// <returns></returns>
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
         {
             if (endRegionDirective == null)
@@ -528,6 +699,11 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="endRegionDirective"></param>
+        /// <returns></returns>
         public static bool HasPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
         {
             return GetPreprocessingMessageTrivia(endRegionDirective).IsKind(SyntaxKind.PreprocessingMessageTrivia);
@@ -535,6 +711,11 @@ namespace Roslynator.CSharp
         #endregion EndRegionDirectiveTriviaSyntax
 
         #region EnumDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enumDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this EnumDeclarationSyntax enumDeclaration)
         {
             if (enumDeclaration == null)
@@ -547,6 +728,11 @@ namespace Roslynator.CSharp
         #endregion EnumDeclarationSyntax
 
         #region EventDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
@@ -559,6 +745,11 @@ namespace Roslynator.CSharp
         #endregion EventDeclarationSyntax
 
         #region ExpressionSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static ExpressionSyntax WalkUpParentheses(this ExpressionSyntax expression)
         {
             if (expression == null)
@@ -570,6 +761,11 @@ namespace Roslynator.CSharp
             return expression;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         public static ExpressionSyntax WalkDownParentheses(this ExpressionSyntax expression)
         {
             if (expression == null)
@@ -597,6 +793,11 @@ namespace Roslynator.CSharp
         #endregion ExpressionSyntax
 
         #region FieldDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldDeclaration"></param>
+        /// <returns></returns>
         public static bool IsConst(this FieldDeclarationSyntax fieldDeclaration)
         {
             if (fieldDeclaration == null)
@@ -607,6 +808,11 @@ namespace Roslynator.CSharp
         #endregion FieldDeclarationSyntax
 
         #region ForStatementSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="forStatement"></param>
+        /// <returns></returns>
         public static TextSpan ParenthesesSpan(this ForStatementSyntax forStatement)
         {
             if (forStatement == null)
@@ -622,6 +828,11 @@ namespace Roslynator.CSharp
             return SingleStatementOrDefault(ifStatement.Statement);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ifStatement"></param>
+        /// <returns></returns>
         public static bool IsSimpleIf(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -631,6 +842,11 @@ namespace Roslynator.CSharp
                 && ifStatement.Else == null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ifStatement"></param>
+        /// <returns></returns>
         public static bool IsSimpleIfElse(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -640,6 +856,11 @@ namespace Roslynator.CSharp
                 && ifStatement.Else?.Statement?.IsKind(SyntaxKind.IfStatement) == false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ifStatement"></param>
+        /// <returns></returns>
         public static IEnumerable<IfStatementOrElseClause> GetCascade(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -673,6 +894,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ifStatement"></param>
+        /// <returns></returns>
         public static IfStatementSyntax GetTopmostIf(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -695,6 +921,11 @@ namespace Roslynator.CSharp
             return ifStatement;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ifStatement"></param>
+        /// <returns></returns>
         public static bool IsTopmostIf(this IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
@@ -730,16 +961,34 @@ namespace Roslynator.CSharp
         #endregion IfStatementSyntax
 
         #region IEnumerable<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
         public static SyntaxList<TNode> ToSyntaxList<TNode>(this IEnumerable<TNode> nodes) where TNode : SyntaxNode
         {
             return List(nodes);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
         public static SeparatedSyntaxList<TNode> ToSeparatedSyntaxList<TNode>(this IEnumerable<TNode> nodes) where TNode : SyntaxNode
         {
             return SeparatedList(nodes);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="nodesAndTokens"></param>
+        /// <returns></returns>
         public static SeparatedSyntaxList<TNode> ToSeparatedSyntaxList<TNode>(this IEnumerable<SyntaxNodeOrToken> nodesAndTokens) where TNode : SyntaxNode
         {
             return SeparatedList<TNode>(nodesAndTokens);
@@ -747,6 +996,11 @@ namespace Roslynator.CSharp
         #endregion IEnumerable<T>
 
         #region IndexerDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -757,6 +1011,11 @@ namespace Roslynator.CSharp
                 indexerDeclaration.ParameterList?.Span.End ?? indexerDeclaration.ThisKeyword.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Getter(this IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -767,6 +1026,11 @@ namespace Roslynator.CSharp
                 .Getter();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indexerDeclaration"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Setter(this IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
@@ -779,6 +1043,11 @@ namespace Roslynator.CSharp
         #endregion IndexerDeclarationSyntax
 
         #region InterfaceDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this InterfaceDeclarationSyntax interfaceDeclaration)
         {
             if (interfaceDeclaration == null)
@@ -789,6 +1058,11 @@ namespace Roslynator.CSharp
                 interfaceDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this InterfaceDeclarationSyntax interfaceDeclaration)
         {
             if (interfaceDeclaration == null)
@@ -799,11 +1073,24 @@ namespace Roslynator.CSharp
                 interfaceDeclaration.CloseBraceToken.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static MemberDeclarationSyntax RemoveMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(interfaceDeclaration, member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static InterfaceDeclarationSyntax InsertMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (interfaceDeclaration == null)
@@ -815,6 +1102,12 @@ namespace Roslynator.CSharp
             return interfaceDeclaration.WithMembers(interfaceDeclaration.Members.Insert(member, comparer));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static InterfaceDeclarationSyntax WithMembers(
             this InterfaceDeclarationSyntax interfaceDeclaration,
             MemberDeclarationSyntax member)
@@ -825,6 +1118,12 @@ namespace Roslynator.CSharp
             return interfaceDeclaration.WithMembers(SingletonList(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interfaceDeclaration"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public static InterfaceDeclarationSyntax WithMembers(
             this InterfaceDeclarationSyntax interfaceDeclaration,
             IEnumerable<MemberDeclarationSyntax> members)
@@ -837,6 +1136,11 @@ namespace Roslynator.CSharp
         #endregion InterfaceDeclarationSyntax
 
         #region InterpolatedStringExpressionSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interpolatedString"></param>
+        /// <returns></returns>
         public static bool IsVerbatim(this InterpolatedStringExpressionSyntax interpolatedString)
         {
             if (interpolatedString == null)
@@ -900,6 +1204,11 @@ namespace Roslynator.CSharp
         #endregion InvocationExpressionSyntax
 
         #region LiteralExpressionSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="literalExpression"></param>
+        /// <returns></returns>
         public static bool IsVerbatimStringLiteral(this LiteralExpressionSyntax literalExpression)
         {
             if (literalExpression == null)
@@ -936,6 +1245,11 @@ namespace Roslynator.CSharp
             return s;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="literalExpression"></param>
+        /// <returns></returns>
         public static bool IsHexNumericLiteral(this LiteralExpressionSyntax literalExpression)
         {
             if (literalExpression == null)
@@ -947,6 +1261,11 @@ namespace Roslynator.CSharp
         #endregion LiteralExpressionSyntax
 
         #region LocalFunctionStatementSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="localFunctionStatement"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this LocalFunctionStatementSyntax localFunctionStatement)
         {
             if (localFunctionStatement == null)
@@ -955,11 +1274,21 @@ namespace Roslynator.CSharp
             return localFunctionStatement.Body ?? (CSharpSyntaxNode)localFunctionStatement.ExpressionBody;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="localFunctionStatement"></param>
+        /// <returns></returns>
         public static bool ReturnsVoid(this LocalFunctionStatementSyntax localFunctionStatement)
         {
             return localFunctionStatement?.ReturnType?.IsVoid() == true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="localFunctionStatement"></param>
+        /// <returns></returns>
         public static bool ContainsYield(this LocalFunctionStatementSyntax localFunctionStatement)
         {
             if (localFunctionStatement == null)
@@ -970,6 +1299,11 @@ namespace Roslynator.CSharp
         #endregion LocalFunctionStatementSyntax
 
         #region MemberDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static SyntaxTrivia GetSingleLineDocumentationCommentTrivia(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -984,6 +1318,11 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static SyntaxTrivia GetDocumentationCommentTrivia(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -998,6 +1337,11 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static DocumentationCommentTriviaSyntax GetSingleLineDocumentationComment(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -1016,6 +1360,11 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static DocumentationCommentTriviaSyntax GetDocumentationComment(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -1033,6 +1382,11 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static bool HasSingleLineDocumentationComment(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -1043,6 +1397,11 @@ namespace Roslynator.CSharp
                 .Any(f => f.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static bool HasDocumentationComment(this MemberDeclarationSyntax member)
         {
             if (member == null)
@@ -1108,6 +1467,11 @@ namespace Roslynator.CSharp
             return member.WithLeadingTrivia(newLeadingTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static bool ContainsYield(this MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -1118,11 +1482,21 @@ namespace Roslynator.CSharp
         #endregion MemberDeclarationSyntax
 
         #region MethodDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static bool ReturnsVoid(this MethodDeclarationSyntax methodDeclaration)
         {
             return methodDeclaration?.ReturnType?.IsVoid() == true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -1143,6 +1517,11 @@ namespace Roslynator.CSharp
                 .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
@@ -1153,11 +1532,24 @@ namespace Roslynator.CSharp
         #endregion MethodDeclarationSyntax
 
         #region NamespaceDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static MemberDeclarationSyntax RemoveMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(namespaceDeclaration, member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static NamespaceDeclarationSyntax InsertMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (namespaceDeclaration == null)
@@ -1169,6 +1561,12 @@ namespace Roslynator.CSharp
             return namespaceDeclaration.WithMembers(namespaceDeclaration.Members.Insert(member, comparer));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static NamespaceDeclarationSyntax WithMembers(
             this NamespaceDeclarationSyntax namespaceDeclaration,
             MemberDeclarationSyntax member)
@@ -1179,6 +1577,12 @@ namespace Roslynator.CSharp
             return namespaceDeclaration.WithMembers(SingletonList(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public static NamespaceDeclarationSyntax WithMembers(
             this NamespaceDeclarationSyntax namespaceDeclaration,
             IEnumerable<MemberDeclarationSyntax> members)
@@ -1189,6 +1593,11 @@ namespace Roslynator.CSharp
             return namespaceDeclaration.WithMembers(List(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -1199,6 +1608,11 @@ namespace Roslynator.CSharp
                 namespaceDeclaration.Name?.Span.End ?? namespaceDeclaration.NamespaceKeyword.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -1211,6 +1625,11 @@ namespace Roslynator.CSharp
         #endregion NamespaceDeclarationSyntax
 
         #region OperatorDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -1221,6 +1640,11 @@ namespace Roslynator.CSharp
                 operatorDeclaration.ParameterList?.Span.End ?? operatorDeclaration.OperatorToken.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode BodyOrExpressionBody(this OperatorDeclarationSyntax operatorDeclaration)
         {
             if (operatorDeclaration == null)
@@ -1229,6 +1653,11 @@ namespace Roslynator.CSharp
             return operatorDeclaration.Body ?? (CSharpSyntaxNode)operatorDeclaration.ExpressionBody;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operatorDeclaration"></param>
+        /// <returns></returns>
         public static bool ReturnsVoid(this OperatorDeclarationSyntax operatorDeclaration)
         {
             return operatorDeclaration?.ReturnType?.IsVoid() == true;
@@ -1236,6 +1665,11 @@ namespace Roslynator.CSharp
         #endregion OperatorDeclarationSyntax
 
         #region ParameterSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
         public static bool IsParams(this ParameterSyntax parameter)
         {
             if (parameter == null)
@@ -1258,6 +1692,11 @@ namespace Roslynator.CSharp
         #endregion ParameterSyntax
 
         #region PropertyDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -1268,6 +1707,11 @@ namespace Roslynator.CSharp
                 propertyDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Getter(this PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -1276,6 +1720,11 @@ namespace Roslynator.CSharp
             return propertyDeclaration.AccessorList?.Getter();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDeclaration"></param>
+        /// <returns></returns>
         public static AccessorDeclarationSyntax Setter(this PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
@@ -1286,6 +1735,11 @@ namespace Roslynator.CSharp
         #endregion PropertyDeclarationSyntax
 
         #region RegionDirectiveTriviaSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regionDirective"></param>
+        /// <returns></returns>
         public static EndRegionDirectiveTriviaSyntax GetEndRegionDirective(this RegionDirectiveTriviaSyntax regionDirective)
         {
             if (regionDirective == null)
@@ -1296,6 +1750,11 @@ namespace Roslynator.CSharp
             return (region.Success) ? region.EndDirective : null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regionDirective"></param>
+        /// <returns></returns>
         public static SyntaxTrivia GetPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)
         {
             if (regionDirective == null)
@@ -1316,6 +1775,11 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="regionDirective"></param>
+        /// <returns></returns>
         public static bool HasPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)
         {
             return GetPreprocessingMessageTrivia(regionDirective).IsKind(SyntaxKind.PreprocessingMessageTrivia);
@@ -1323,21 +1787,49 @@ namespace Roslynator.CSharp
         #endregion RegionDirectiveTriviaSyntax
 
         #region SeparatedSyntaxList<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static int LastIndexOf<TNode>(this SeparatedSyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             return list.LastIndexOf(f => f.IsKind(kind));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool Contains<TNode>(this SeparatedSyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             return list.IndexOf(kind) != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static bool Contains<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
         {
             return list.IndexOf(node) != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static TNode Find<TNode>(this SeparatedSyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             int index = list.IndexOf(kind);
@@ -1418,6 +1910,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <returns></returns>
         public static StatementSyntax PreviousStatementOrDefault(this StatementSyntax statement)
         {
             if (statement == null)
@@ -1434,6 +1931,11 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <returns></returns>
         public static StatementSyntax NextStatementOrDefault(this StatementSyntax statement)
         {
             if (statement == null)
@@ -1450,6 +1952,12 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <param name="statements"></param>
+        /// <returns></returns>
         public static bool TryGetContainingList(this StatementSyntax statement, out SyntaxList<StatementSyntax> statements)
         {
             SyntaxNode parent = statement?.Parent;
@@ -1485,6 +1993,13 @@ namespace Roslynator.CSharp
                 : statement;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statement"></param>
+        /// <param name="ifInsideElse"></param>
+        /// <param name="usingInsideUsing"></param>
+        /// <returns></returns>
         public static bool IsEmbedded(
             this StatementSyntax statement,
             bool ifInsideElse = true,
@@ -1516,6 +2031,12 @@ namespace Roslynator.CSharp
         #endregion StatementSyntax
 
         #region StructDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static StructDeclarationSyntax WithMembers(
             this StructDeclarationSyntax structDeclaration,
             MemberDeclarationSyntax member)
@@ -1526,6 +2047,12 @@ namespace Roslynator.CSharp
             return structDeclaration.WithMembers(SingletonList(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public static StructDeclarationSyntax WithMembers(
             this StructDeclarationSyntax structDeclaration,
             IEnumerable<MemberDeclarationSyntax> members)
@@ -1536,6 +2063,11 @@ namespace Roslynator.CSharp
             return structDeclaration.WithMembers(List(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan HeaderSpan(this StructDeclarationSyntax structDeclaration)
         {
             if (structDeclaration == null)
@@ -1546,6 +2078,11 @@ namespace Roslynator.CSharp
                 structDeclaration.Identifier.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <returns></returns>
         public static TextSpan BracesSpan(this StructDeclarationSyntax structDeclaration)
         {
             if (structDeclaration == null)
@@ -1556,11 +2093,24 @@ namespace Roslynator.CSharp
                 structDeclaration.CloseBraceToken.Span.End);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public static MemberDeclarationSyntax RemoveMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(structDeclaration, member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="structDeclaration"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static StructDeclarationSyntax InsertMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (structDeclaration == null)
@@ -1574,6 +2124,11 @@ namespace Roslynator.CSharp
         #endregion StructDeclarationSyntax
 
         #region SwitchSectionSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="switchSection"></param>
+        /// <returns></returns>
         public static bool ContainsDefaultLabel(this SwitchSectionSyntax switchSection)
         {
             return switchSection?.Labels.Any(f => f.IsKind(SyntaxKind.DefaultSwitchLabel)) == true;
@@ -1581,16 +2136,37 @@ namespace Roslynator.CSharp
         #endregion SwitchSectionSyntax
 
         #region SyntaxList<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static int LastIndexOf<TNode>(this SyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             return list.LastIndexOf(f => f.IsKind(kind));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool Contains<TNode>(this SyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             return list.IndexOf(kind) != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static TNode Find<TNode>(this SyntaxList<TNode> list, SyntaxKind kind) where TNode : SyntaxNode
         {
             int index = list.IndexOf(kind);
@@ -1601,6 +2177,13 @@ namespace Roslynator.CSharp
             return default(TNode);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static SyntaxList<MemberDeclarationSyntax> Insert(this SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (member == null)
@@ -1668,6 +2251,13 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statements"></param>
+        /// <param name="statement"></param>
+        /// <param name="beforeLocalFunction"></param>
+        /// <returns></returns>
         public static bool IsLast(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
@@ -1687,6 +2277,13 @@ namespace Roslynator.CSharp
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statements"></param>
+        /// <param name="statement"></param>
+        /// <param name="beforeLocalFunction"></param>
+        /// <returns></returns>
         public static SyntaxList<StatementSyntax> Add(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
@@ -1840,6 +2437,13 @@ namespace Roslynator.CSharp
             return DescendantPreprocessorDirectives(node, span, predicate: f => f.IsKind(SyntaxKind.RegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static bool IsDescendantOf(this SyntaxNode node, SyntaxKind kind, bool ascendOutOfTrivia = true)
         {
             if (node == null)
@@ -1848,6 +2452,13 @@ namespace Roslynator.CSharp
             return node.Ancestors(ascendOutOfTrivia).Any(f => f.IsKind(kind));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2)
         {
             if (node == null)
@@ -1859,6 +2470,14 @@ namespace Roslynator.CSharp
                 || kind == kind2;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             if (node == null)
@@ -1871,6 +2490,15 @@ namespace Roslynator.CSharp
                 || kind == kind3;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             if (node == null)
@@ -1884,6 +2512,16 @@ namespace Roslynator.CSharp
                 || kind == kind4;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             if (node == null)
@@ -1898,6 +2536,17 @@ namespace Roslynator.CSharp
                 || kind == kind5;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <param name="kind6"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             if (node == null)
@@ -1913,31 +2562,82 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind)
         {
             return node?.Parent?.IsKind(kind) == true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2)
         {
             return IsKind(node?.Parent, kind1, kind2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             return IsKind(node?.Parent, kind1, kind2, kind3);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             return IsKind(node?.Parent, kind1, kind2, kind3, kind4);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             return IsKind(node?.Parent, kind1, kind2, kind3, kind4, kind5);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <param name="kind6"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             return IsKind(node?.Parent, kind1, kind2, kind3, kind4, kind5, kind6);
@@ -2042,6 +2742,12 @@ namespace Roslynator.CSharp
             return end;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static TNode TrimLeadingTrivia<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2061,6 +2767,12 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static TNode TrimTrailingTrivia<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2080,6 +2792,12 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static TNode TrimTrivia<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2100,6 +2818,13 @@ namespace Roslynator.CSharp
                 GetEndIndex(node, includeExteriorTrivia: true, trim: true));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestor(
             this SyntaxNode node,
             SyntaxKind kind,
@@ -2108,6 +2833,14 @@ namespace Roslynator.CSharp
             return FirstAncestor(node, f => f.IsKind(kind), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestor(
             this SyntaxNode node,
             SyntaxKind kind1,
@@ -2117,6 +2850,15 @@ namespace Roslynator.CSharp
             return FirstAncestor(node, f => f.IsKind(kind1, kind2), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestor(
             this SyntaxNode node,
             SyntaxKind kind1,
@@ -2127,6 +2869,13 @@ namespace Roslynator.CSharp
             return FirstAncestor(node, f => f.IsKind(kind1, kind2, kind3), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="predicate"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestor(this SyntaxNode node, Func<SyntaxNode, bool> predicate, bool ascendOutOfTrivia = true)
         {
             if (node == null)
@@ -2147,6 +2896,13 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestorOrSelf(
             this SyntaxNode node,
             SyntaxKind kind,
@@ -2155,6 +2911,14 @@ namespace Roslynator.CSharp
             return FirstAncestorOrSelf(node, f => f.IsKind(kind), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestorOrSelf(
             this SyntaxNode node,
             SyntaxKind kind1,
@@ -2164,6 +2928,15 @@ namespace Roslynator.CSharp
             return FirstAncestorOrSelf(node, f => f.IsKind(kind1, kind2), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestorOrSelf(
             this SyntaxNode node,
             SyntaxKind kind1,
@@ -2174,6 +2947,13 @@ namespace Roslynator.CSharp
             return FirstAncestorOrSelf(node, f => f.IsKind(kind1, kind2, kind3), ascendOutOfTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="predicate"></param>
+        /// <param name="ascendOutOfTrivia"></param>
+        /// <returns></returns>
         public static SyntaxNode FirstAncestorOrSelf(this SyntaxNode node, Func<SyntaxNode, bool> predicate, bool ascendOutOfTrivia = true)
         {
             if (node == null)
@@ -2243,6 +3023,13 @@ namespace Roslynator.CSharp
             return Modifier.Insert(node, modifier, comparer);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static TNode RemoveTrivia<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2251,6 +3038,13 @@ namespace Roslynator.CSharp
             return SyntaxRemover.RemoveTrivia(node, span);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static TNode RemoveWhitespace<TNode>(this TNode node, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2259,6 +3053,14 @@ namespace Roslynator.CSharp
             return SyntaxRemover.RemoveWhitespace(node, span);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="replacement"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static TNode ReplaceWhitespace<TNode>(this TNode node, SyntaxTrivia replacement, TextSpan? span = null) where TNode : SyntaxNode
         {
             if (node == null)
@@ -2362,6 +3164,13 @@ namespace Roslynator.CSharp
         #endregion SyntaxNode
 
         #region SyntaxToken
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2)
         {
             SyntaxKind kind = token.Kind();
@@ -2370,6 +3179,14 @@ namespace Roslynator.CSharp
                 || kind == kind2;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             SyntaxKind kind = token.Kind();
@@ -2379,6 +3196,15 @@ namespace Roslynator.CSharp
                 || kind == kind3;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             SyntaxKind kind = token.Kind();
@@ -2389,6 +3215,16 @@ namespace Roslynator.CSharp
                 || kind == kind4;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             SyntaxKind kind = token.Kind();
@@ -2400,6 +3236,17 @@ namespace Roslynator.CSharp
                 || kind == kind5;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <param name="kind6"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             SyntaxKind kind = token.Kind();
@@ -2412,6 +3259,11 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken TrimLeadingTrivia(this SyntaxToken token)
         {
             SyntaxTriviaList leadingTrivia = token.LeadingTrivia;
@@ -2427,6 +3279,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken TrimTrailingTrivia(this SyntaxToken token)
         {
             SyntaxTriviaList trailingTrivia = token.TrailingTrivia;
@@ -2442,6 +3299,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken TrimTrivia(this SyntaxToken token)
         {
             return token
@@ -2449,26 +3311,66 @@ namespace Roslynator.CSharp
                 .TrimTrailingTrivia();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool Contains(this SyntaxTokenList tokenList, SyntaxKind kind)
         {
             return tokenList.IndexOf(kind) != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2)
         {
             return ContainsAny(tokenList, (int)kind1, (int)kind2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3, (int)kind4);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool ContainsAny(this SyntaxTokenList tokenList, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             return ContainsAny(tokenList, (int)kind1, (int)kind2, (int)kind3, (int)kind4, (int)kind5);
@@ -2544,31 +3446,82 @@ namespace Roslynator.CSharp
             return false;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind)
         {
             return token.Parent?.IsKind(kind) == true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2)
         {
             return IsKind(token.Parent, kind1, kind2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             return IsKind(token.Parent, kind1, kind2, kind3);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             return IsKind(token.Parent, kind1, kind2, kind3, kind4);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             return IsKind(token.Parent, kind1, kind2, kind3, kind4, kind5);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <param name="kind6"></param>
+        /// <returns></returns>
         public static bool IsParentKind(this SyntaxToken token, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             return IsKind(token.Parent, kind1, kind2, kind3, kind4, kind5, kind6);
@@ -2576,6 +3529,12 @@ namespace Roslynator.CSharp
         #endregion SyntaxToken
 
         #region SyntaxTokenList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenList"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static SyntaxToken Find(this SyntaxTokenList tokenList, SyntaxKind kind)
         {
             foreach (SyntaxToken token in tokenList)
@@ -2599,6 +3558,13 @@ namespace Roslynator.CSharp
         #endregion SyntaxTokenList
 
         #region SyntaxTrivia
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxTrivia trivia, SyntaxKind kind1, SyntaxKind kind2)
         {
             SyntaxKind kind = trivia.Kind();
@@ -2607,6 +3573,14 @@ namespace Roslynator.CSharp
                 || kind == kind2;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxTrivia trivia, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3)
         {
             SyntaxKind kind = trivia.Kind();
@@ -2616,6 +3590,15 @@ namespace Roslynator.CSharp
                 || kind == kind3;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxTrivia trivia, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4)
         {
             SyntaxKind kind = trivia.Kind();
@@ -2626,6 +3609,16 @@ namespace Roslynator.CSharp
                 || kind == kind4;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxTrivia trivia, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5)
         {
             SyntaxKind kind = trivia.Kind();
@@ -2637,6 +3630,17 @@ namespace Roslynator.CSharp
                 || kind == kind5;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <param name="kind1"></param>
+        /// <param name="kind2"></param>
+        /// <param name="kind3"></param>
+        /// <param name="kind4"></param>
+        /// <param name="kind5"></param>
+        /// <param name="kind6"></param>
+        /// <returns></returns>
         public static bool IsKind(this SyntaxTrivia trivia, SyntaxKind kind1, SyntaxKind kind2, SyntaxKind kind3, SyntaxKind kind4, SyntaxKind kind5, SyntaxKind kind6)
         {
             SyntaxKind kind = trivia.Kind();
@@ -2649,21 +3653,41 @@ namespace Roslynator.CSharp
                 || kind == kind6;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static bool IsWhitespaceTrivia(this SyntaxTrivia trivia)
         {
             return trivia.IsKind(SyntaxKind.WhitespaceTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static bool IsEndOfLineTrivia(this SyntaxTrivia trivia)
         {
             return trivia.IsKind(SyntaxKind.EndOfLineTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static bool IsWhitespaceOrEndOfLineTrivia(this SyntaxTrivia trivia)
         {
             return trivia.IsKind(SyntaxKind.WhitespaceTrivia, SyntaxKind.EndOfLineTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trivia"></param>
+        /// <returns></returns>
         public static bool IsDocumentationCommentTrivia(this SyntaxTrivia trivia)
         {
             return SyntaxFacts.IsDocumentationCommentTrivia(trivia.Kind());
@@ -2678,6 +3702,12 @@ namespace Roslynator.CSharp
         #endregion SyntaxTrivia
 
         #region SyntaxTriviaList
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static int LastIndexOf(this SyntaxTriviaList triviaList, SyntaxKind kind)
         {
             for (int i = triviaList.Count - 1; i >= 0; i--)
@@ -2689,11 +3719,23 @@ namespace Roslynator.CSharp
             return -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool Contains(this SyntaxTriviaList triviaList, SyntaxKind kind)
         {
             return triviaList.IndexOf(kind) != -1;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static SyntaxTrivia Find(this SyntaxTriviaList triviaList, SyntaxKind kind)
         {
             foreach (SyntaxTrivia trivia in triviaList)
@@ -2705,6 +3747,11 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <returns></returns>
         public static SyntaxTriviaList TrimStart(this SyntaxTriviaList triviaList)
         {
             for (int i = 0; i < triviaList.Count; i++)
@@ -2725,6 +3772,11 @@ namespace Roslynator.CSharp
             return SyntaxTriviaList.Empty;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <returns></returns>
         public static SyntaxTriviaList TrimEnd(this SyntaxTriviaList triviaList)
         {
             for (int i = triviaList.Count - 1; i >= 0; i--)
@@ -2745,6 +3797,11 @@ namespace Roslynator.CSharp
             return SyntaxTriviaList.Empty;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <returns></returns>
         public static bool IsEmptyOrWhitespace(this SyntaxTriviaList triviaList)
         {
             foreach (SyntaxTrivia trivia in triviaList)
@@ -2769,6 +3826,13 @@ namespace Roslynator.CSharp
         #endregion SyntaxTriviaList
 
         #region TypeDeclarationSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeDeclaration"></param>
+        /// <param name="member"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
         public static TypeDeclarationSyntax InsertMember(this TypeDeclarationSyntax typeDeclaration, MemberDeclarationSyntax member, IMemberDeclarationComparer comparer = null)
         {
             if (typeDeclaration == null)
@@ -2841,6 +3905,11 @@ namespace Roslynator.CSharp
         #endregion TypeParameterListSyntax
 
         #region TypeSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static bool IsVoid(this TypeSyntax type)
         {
             if (type == null)
@@ -2852,6 +3921,11 @@ namespace Roslynator.CSharp
         #endregion TypeSyntax
 
         #region UsingStatementSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usingStatement"></param>
+        /// <returns></returns>
         public static CSharpSyntaxNode DeclarationOrExpression(this UsingStatementSyntax usingStatement)
         {
             if (usingStatement == null)
@@ -2891,6 +3965,11 @@ namespace Roslynator.CSharp
         #endregion XmlNameSyntax
 
         #region YieldStatementSyntax
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yieldStatement"></param>
+        /// <returns></returns>
         public static bool IsYieldReturn(this YieldStatementSyntax yieldStatement)
         {
             if (yieldStatement == null)
@@ -2899,6 +3978,11 @@ namespace Roslynator.CSharp
             return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.ReturnKeyword);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yieldStatement"></param>
+        /// <returns></returns>
         public static bool IsYieldBreak(this YieldStatementSyntax yieldStatement)
         {
             if (yieldStatement == null)

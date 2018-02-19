@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator.CSharp.Analyzers.UnusedMember
 {
-    internal struct NodeSymbolInfo
+    internal readonly struct NodeSymbolInfo
     {
         public NodeSymbolInfo(string name, SyntaxNode node, ISymbol symbol = null)
         {

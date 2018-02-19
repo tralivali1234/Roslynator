@@ -6,39 +6,81 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Flags]
     public enum NullCheckStyles
     {
+        /// <summary>
+        /// 
+        /// </summary>
         None = 0,
 
         // x == null
+        /// <summary>
+        /// 
+        /// </summary>
         EqualsToNull = 1,
 
         // x != null
+        /// <summary>
+        /// 
+        /// </summary>
         NotEqualsToNull = 2,
 
+        /// <summary>
+        /// 
+        /// </summary>
         ComparisonToNull = EqualsToNull | NotEqualsToNull,
 
         // x is null
+        /// <summary>
+        /// 
+        /// </summary>
         IsNull = 4,
 
         // !(x is null)
+        /// <summary>
+        /// 
+        /// </summary>
         NotIsNull = 8,
 
+        /// <summary>
+        /// 
+        /// </summary>
         IsPattern = IsNull | NotIsNull,
 
         // !x.HasValue
+        /// <summary>
+        /// 
+        /// </summary>
         NotHasValue = 16,
 
+        /// <summary>
+        /// 
+        /// </summary>
         CheckingNull = EqualsToNull | IsNull | NotHasValue,
 
         // x.HasValue
+        /// <summary>
+        /// 
+        /// </summary>
         HasValue = 32,
 
+        /// <summary>
+        /// 
+        /// </summary>
         CheckingNotNull = NotEqualsToNull | NotIsNull | HasValue,
 
+        /// <summary>
+        /// 
+        /// </summary>
         HasValueProperty = HasValue | NotHasValue,
 
+        /// <summary>
+        /// 
+        /// </summary>
         All = CheckingNull | CheckingNotNull
     }
 }

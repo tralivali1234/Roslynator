@@ -9,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct HexNumericLiteralExpressionInfo : IEquatable<HexNumericLiteralExpressionInfo>
+    internal readonly struct HexNumericLiteralExpressionInfo : IEquatable<HexNumericLiteralExpressionInfo>
     {
         private HexNumericLiteralExpressionInfo(LiteralExpressionSyntax literalExpression, SyntaxToken token)
         {

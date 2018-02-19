@@ -244,7 +244,7 @@ namespace Roslynator.CSharp.Refactorings
             return NameGenerator.Default.EnsureUniqueName(name, reservedNames);
         }
 
-        private struct FieldInfo
+        private readonly struct FieldInfo
         {
             private FieldInfo(TypeSyntax type, string name, string nameCamelCase)
             {

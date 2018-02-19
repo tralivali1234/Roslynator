@@ -516,7 +516,7 @@ namespace Roslynator.CSharp
                 : default(StringLiteralParserResult);
         }
 
-        private struct StringLiteralParserResult
+        private readonly struct StringLiteralParserResult
         {
             private StringLiteralParserResult(string text, bool success)
             {

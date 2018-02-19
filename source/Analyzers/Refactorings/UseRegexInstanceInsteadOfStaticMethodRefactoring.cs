@@ -172,7 +172,7 @@ namespace Roslynator.CSharp.Refactorings
             return new ArgumentListPair(argumentList, ArgumentList(arguments2.ToArray()));
         }
 
-        private struct ArgumentListPair
+        private readonly struct ArgumentListPair
         {
             public ArgumentListPair(ArgumentListSyntax argumentList1, ArgumentListSyntax argumentList2)
             {

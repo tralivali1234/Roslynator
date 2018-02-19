@@ -4,23 +4,46 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class FileLinePositionSpanExtensions
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileLinePositionSpan"></param>
+        /// <returns></returns>
         public static int StartLine(this FileLinePositionSpan fileLinePositionSpan)
         {
             return fileLinePositionSpan.StartLinePosition.Line;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileLinePositionSpan"></param>
+        /// <returns></returns>
         public static int EndLine(this FileLinePositionSpan fileLinePositionSpan)
         {
             return fileLinePositionSpan.EndLinePosition.Line;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileLinePositionSpan"></param>
+        /// <returns></returns>
         public static bool IsMultiLine(this FileLinePositionSpan fileLinePositionSpan)
         {
             return fileLinePositionSpan.StartLine() != fileLinePositionSpan.EndLine();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileLinePositionSpan"></param>
+        /// <returns></returns>
         public static bool IsSingleLine(this FileLinePositionSpan fileLinePositionSpan)
         {
             return fileLinePositionSpan.StartLine() == fileLinePositionSpan.EndLine();

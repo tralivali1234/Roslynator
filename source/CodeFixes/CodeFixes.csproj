@@ -11,6 +11,7 @@
     <CodeAnalysisRuleSet>..\global.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Roslynator.CSharp.CodeFixes.snk</AssemblyOriginatorKeyFile>
+    <LangVersion>7.2</LangVersion>
     <NuspecFile>Roslynator.CodeFixes.nuspec</NuspecFile> 
     <NuspecProperties>configuration=$(Configuration)</NuspecProperties> 
     <Copyright>Copyright (c) 2017-2018 Josef Pihrt</Copyright>

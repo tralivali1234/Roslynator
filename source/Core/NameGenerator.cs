@@ -10,21 +10,50 @@ using Roslynator.Helpers;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class NameGenerator
     {
         internal static StringComparer OrdinalComparer { get; } = StringComparer.Ordinal;
 
         internal static StringComparer OrdinalIgnoreCaseComparer { get; } = StringComparer.OrdinalIgnoreCase;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="reservedNames"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public abstract string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="symbols"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public abstract string EnsureUniqueName(string baseName, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true);
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static NameGenerator Default
         {
             get { return NameGenerators.NumberSuffix; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
             SemanticModel semanticModel,
@@ -47,6 +76,13 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="containingType"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
             INamedTypeSymbol containingType,
@@ -58,6 +94,15 @@ namespace Roslynator
             return EnsureUniqueName(baseName, containingType.GetMembers(), isCaseSensitive);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public string EnsureUniqueLocalName(
             string baseName,
             SemanticModel semanticModel,
@@ -104,6 +149,13 @@ namespace Roslynator
             return EnsureUniqueName(baseName, symbols, isCaseSensitive);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="enumSymbol"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public string EnsureUniqueEnumMemberName(
             string baseName,
             INamedTypeSymbol enumSymbol,
@@ -135,6 +187,13 @@ namespace Roslynator
             return IsUniqueName(name, containingType.GetMembers(), isCaseSensitive);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="symbols"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
@@ -148,6 +207,13 @@ namespace Roslynator
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="reservedNames"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
@@ -162,6 +228,12 @@ namespace Roslynator
         }
 
         //XTODO: 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="firstCharToLower"></param>
+        /// <returns></returns>
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);

@@ -9,7 +9,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct GenericInfo : IEquatable<GenericInfo>
+    /// <summary>
+    /// Provides information about generic syntax (class, struct, interface, delegate, method or local function).
+    /// </summary>
+    public readonly struct GenericInfo : IEquatable<GenericInfo>
     {
         private GenericInfo(ClassDeclarationSyntax classDeclaration)
             : this(classDeclaration, SyntaxKind.ClassDeclaration, classDeclaration.TypeParameterList, classDeclaration.ConstraintClauses)
@@ -55,19 +58,39 @@ namespace Roslynator.CSharp.Syntax
 
         private static GenericInfo Default { get; } = new GenericInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxNode Declaration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxKind Kind { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
             get { return TypeParameterList?.Parameters ?? default(SeparatedSyntaxList<TypeParameterSyntax>); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public TypeParameterSyntax FindTypeParameter(string name)
         {
             foreach (TypeParameterSyntax typeParameter in TypeParameters)
@@ -79,6 +102,11 @@ namespace Roslynator.CSharp.Syntax
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public TypeParameterConstraintClauseSyntax FindConstraintClause(string name)
         {
             foreach (TypeParameterConstraintClauseSyntax constraintClause in ConstraintClauses)
@@ -90,6 +118,9 @@ namespace Roslynator.CSharp.Syntax
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Declaration != null; }
@@ -236,6 +267,11 @@ namespace Roslynator.CSharp.Syntax
             return new GenericInfo(structDeclaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeParameterList"></param>
+        /// <returns></returns>
         public GenericInfo WithTypeParameterList(TypeParameterListSyntax typeParameterList)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -260,6 +296,11 @@ namespace Roslynator.CSharp.Syntax
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeParameter"></param>
+        /// <returns></returns>
         public GenericInfo RemoveTypeParameter(TypeParameterSyntax typeParameter)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -295,6 +336,11 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constraintClauses"></param>
+        /// <returns></returns>
         public GenericInfo WithConstraintClauses(SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -319,6 +365,11 @@ namespace Roslynator.CSharp.Syntax
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constraintClause"></param>
+        /// <returns></returns>
         public GenericInfo RemoveConstraintClause(TypeParameterConstraintClauseSyntax constraintClause)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -343,6 +394,10 @@ namespace Roslynator.CSharp.Syntax
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public GenericInfo RemoveConstraintClauses()
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -368,31 +423,53 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(GenericInfo)} is not initalized.");
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return Declaration?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is GenericInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(GenericInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(GenericInfo info1, GenericInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(GenericInfo info1, GenericInfo info2)
         {
             return !(info1 == info2);

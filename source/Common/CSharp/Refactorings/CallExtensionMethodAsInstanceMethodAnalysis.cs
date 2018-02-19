@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    public struct CallExtensionMethodAsInstanceMethodAnalysis : IEquatable<CallExtensionMethodAsInstanceMethodAnalysis>
+    public readonly struct CallExtensionMethodAsInstanceMethodAnalysis : IEquatable<CallExtensionMethodAsInstanceMethodAnalysis>
     {
         public CallExtensionMethodAsInstanceMethodAnalysis(
             InvocationExpressionSyntax invocationExpression,

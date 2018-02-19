@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Documentation
 {
-    internal struct DocumentationCommentData
+    internal readonly struct DocumentationCommentData
     {
         internal DocumentationCommentData(SyntaxTrivia comment, DocumentationCommentOrigin origin)
         {

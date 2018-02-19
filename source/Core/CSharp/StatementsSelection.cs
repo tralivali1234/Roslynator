@@ -8,6 +8,9 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
         private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, SelectionResult result)
@@ -20,6 +23,12 @@ namespace Roslynator.CSharp
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static StatementsSelection Create(BlockSyntax block, TextSpan span)
         {
             if (block == null)
@@ -28,6 +37,12 @@ namespace Roslynator.CSharp
             return CreateImpl(block.Statements, span);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="switchSection"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span)
         {
             if (switchSection == null)
@@ -36,6 +51,12 @@ namespace Roslynator.CSharp
             return CreateImpl(switchSection.Statements, span);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="statementsInfo"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static StatementsSelection Create(StatementsInfo statementsInfo, TextSpan span)
         {
             return CreateImpl(statementsInfo.Statements, span);
@@ -48,6 +69,13 @@ namespace Roslynator.CSharp
             return new StatementsSelection(statements, span, result);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedStatements"></param>
+        /// <returns></returns>
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(block, span, 1, int.MaxValue);
@@ -74,6 +102,13 @@ namespace Roslynator.CSharp
             return Create(block.Statements, span, minCount, maxCount);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="switchSection"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedStatements"></param>
+        /// <returns></returns>
         public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, out StatementsSelection selectedStatements)
         {
             selectedStatements = Create(switchSection, span, 1, int.MaxValue);

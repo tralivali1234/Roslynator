@@ -137,7 +137,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.RemoveNodeAsync(baseType, removeOptions, cancellationToken);
         }
 
-        private struct SymbolInterfaceInfo
+        private readonly struct SymbolInterfaceInfo
         {
             public SymbolInterfaceInfo(BaseTypeSyntax baseType, INamedTypeSymbol symbol, ImmutableArray<INamedTypeSymbol> interfaces)
             {

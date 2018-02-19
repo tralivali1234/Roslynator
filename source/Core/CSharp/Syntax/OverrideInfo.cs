@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct OverrideInfo : IEquatable<OverrideInfo>
+    internal readonly struct OverrideInfo : IEquatable<OverrideInfo>
     {
         public OverrideInfo(ISymbol symbol, ISymbol overriddenSymbol)
         {

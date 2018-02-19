@@ -11,7 +11,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>, IReadOnlyList<ExpressionSyntax>
+    internal readonly struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>, IReadOnlyList<ExpressionSyntax>
     {
         private BinaryExpressionChainInfo(
             BinaryExpressionSyntax binaryExpression,

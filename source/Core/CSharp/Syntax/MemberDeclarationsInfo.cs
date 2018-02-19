@@ -10,7 +10,10 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct MemberDeclarationsInfo : IEquatable<MemberDeclarationsInfo>, IReadOnlyList<MemberDeclarationSyntax>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct MemberDeclarationsInfo : IEquatable<MemberDeclarationsInfo>, IReadOnlyList<MemberDeclarationSyntax>
     {
         internal MemberDeclarationsInfo(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members)
         {
@@ -20,25 +23,43 @@ namespace Roslynator.CSharp.Syntax
 
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MemberDeclarationSyntax Declaration { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxList<MemberDeclarationSyntax> Members { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxKind Kind
         {
             get { return Declaration?.Kind() ?? SyntaxKind.None; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Success
         {
             get { return Declaration != null; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count
         {
             get { return Members.Count; }
         }
 
+        /// <summary>Gets the element at the specified index in the read-only list.</summary>
+        /// <returns>The element at the specified index in the read-only list.</returns>
+        /// <param name="index">The zero-based index of the element to get. </param>
         public MemberDeclarationSyntax this[int index]
         {
             get { return Members[index]; }
@@ -54,6 +75,10 @@ namespace Roslynator.CSharp.Syntax
             return ((IReadOnlyList<MemberDeclarationSyntax>)Members).GetEnumerator();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public SyntaxList<MemberDeclarationSyntax>.Enumerator GetEnumerator()
         {
             return Members.GetEnumerator();
@@ -125,11 +150,21 @@ namespace Roslynator.CSharp.Syntax
             return new MemberDeclarationsInfo(selectedMembers.Declaration, selectedMembers.UnderlyingList);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo WithMembers(IEnumerable<MemberDeclarationSyntax> members)
         {
             return WithMembers(List(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo WithMembers(SyntaxList<MemberDeclarationSyntax> members)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -168,6 +203,12 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -206,6 +247,12 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="oldNode"></param>
+        /// <param name="newNode"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
         {
             ThrowInvalidOperationIfNotInitialized();
@@ -244,91 +291,181 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo Add(MemberDeclarationSyntax member)
         {
             return WithMembers(Members.Add(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo AddRange(IEnumerable<MemberDeclarationSyntax> members)
         {
             return WithMembers(Members.AddRange(members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public bool Any()
         {
             return Members.Any();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public MemberDeclarationSyntax First()
         {
             return Members.First();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public MemberDeclarationSyntax FirstOrDefault()
         {
             return Members.FirstOrDefault();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public int IndexOf(Func<MemberDeclarationSyntax, bool> predicate)
         {
             return Members.IndexOf(predicate);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public int IndexOf(MemberDeclarationSyntax member)
         {
             return Members.IndexOf(member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="statement"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo Insert(int index, MemberDeclarationSyntax statement)
         {
             return WithMembers(Members.Insert(index, statement));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo InsertRange(int index, IEnumerable<MemberDeclarationSyntax> members)
         {
             return WithMembers(Members.InsertRange(index, members));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public MemberDeclarationSyntax Last()
         {
             return Members.Last();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public int LastIndexOf(Func<MemberDeclarationSyntax, bool> predicate)
         {
             return Members.LastIndexOf(predicate);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public int LastIndexOf(MemberDeclarationSyntax member)
         {
             return Members.LastIndexOf(member);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public MemberDeclarationSyntax LastOrDefault()
         {
             return Members.LastOrDefault();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo Remove(MemberDeclarationSyntax member)
         {
             return WithMembers(Members.Remove(member));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo RemoveAt(int index)
         {
             return WithMembers(Members.RemoveAt(index));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNode"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo Replace(MemberDeclarationSyntax nodeInList, MemberDeclarationSyntax newNode)
         {
             return WithMembers(Members.Replace(nodeInList, newNode));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="newNode"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo ReplaceAt(int index, MemberDeclarationSyntax newNode)
         {
             return WithMembers(Members.ReplaceAt(index, newNode));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNodes"></param>
+        /// <returns></returns>
         public MemberDeclarationsInfo ReplaceRange(MemberDeclarationSyntax nodeInList, IEnumerable<MemberDeclarationSyntax> newNodes)
         {
             return WithMembers(Members.ReplaceRange(nodeInList, newNodes));
@@ -340,31 +477,53 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(MemberDeclarationsInfo)} is not initalized.");
         }
 
+        /// <summary>Returns the fully qualified type name of this instance.</summary>
+        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
         public override string ToString()
         {
             return Declaration?.ToString() ?? base.ToString();
         }
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is MemberDeclarationsInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(MemberDeclarationsInfo other)
         {
             return EqualityComparer<MemberDeclarationSyntax>.Default.Equals(Declaration, other.Declaration);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<MemberDeclarationSyntax>.Default.GetHashCode(Declaration);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
         {
             return !(info1 == info2);

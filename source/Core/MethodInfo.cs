@@ -8,7 +8,10 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    public struct MethodInfo : IEquatable<MethodInfo>
+    /// <summary>
+    /// 
+    /// </summary>
+    public readonly struct MethodInfo : IEquatable<MethodInfo>
     {
         internal MethodInfo(IMethodSymbol symbol)
         {
@@ -17,43 +20,78 @@ namespace Roslynator
             Symbol = symbol;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IMethodSymbol Symbol { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
         public bool IsReturnType(SpecialType specialType)
         {
             return ReturnType.SpecialType == specialType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
         public bool IsContainingType(SpecialType specialType)
         {
             return ContainingType?.SpecialType == specialType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ReturnsObject
         {
             get { return IsReturnType(SpecialType.System_Object); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ReturnsBoolean
         {
             get { return IsReturnType(SpecialType.System_Boolean); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ReturnsInt
         {
             get { return IsReturnType(SpecialType.System_Int32); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ReturnsString
         {
             get { return IsReturnType(SpecialType.System_String); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeArgument"></param>
+        /// <returns></returns>
         public bool ReturnsIEnumerableOf(ITypeSymbol typeArgument)
         {
             return ReturnType.IsIEnumerableOf(typeArgument);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeArgumentPredicate"></param>
+        /// <returns></returns>
         public bool ReturnsIEnumerableOf(Func<ITypeSymbol, bool> typeArgumentPredicate)
         {
             return ReturnType.IsIEnumerableOf(typeArgumentPredicate);
@@ -99,21 +137,33 @@ namespace Roslynator
                 && parameters[1].Type.SpecialType == secondParameterType;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsPublic
         {
             get { return DeclaredAccessibility == Accessibility.Public; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsInternal
         {
             get { return DeclaredAccessibility == Accessibility.Internal; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsProtected
         {
             get { return DeclaredAccessibility == Accessibility.Protected; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsPrivate
         {
             get { return DeclaredAccessibility == Accessibility.Private; }
@@ -299,75 +349,167 @@ namespace Roslynator
         }
 
         #region IMethodSymbol
+        /// <summary>
+        /// 
+        /// </summary>
         public MethodKind MethodKind => Symbol.MethodKind;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsGenericMethod => Symbol.IsGenericMethod;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsExtensionMethod => Symbol.IsExtensionMethod;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsAsync => Symbol.IsAsync;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ReturnsVoid => Symbol.ReturnsVoid;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITypeSymbol ReturnType => Symbol.ReturnType;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ImmutableArray<ITypeSymbol> TypeArguments => Symbol.TypeArguments;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ImmutableArray<ITypeParameterSymbol> TypeParameters => Symbol.TypeParameters;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ImmutableArray<IParameterSymbol> Parameters => Symbol.Parameters;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IMethodSymbol ConstructedFrom => Symbol.ConstructedFrom;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IMethodSymbol OverriddenMethod => Symbol.OverriddenMethod;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IMethodSymbol ReducedFrom => Symbol.ReducedFrom;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SymbolKind Kind => Symbol.Kind;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name => Symbol.Name;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string MetadataName => Symbol.MetadataName;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ISymbol ContainingSymbol => Symbol.ContainingSymbol;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public INamedTypeSymbol ContainingType => Symbol.ContainingType;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public INamespaceSymbol ContainingNamespace => Symbol.ContainingNamespace;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsStatic => Symbol.IsStatic;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsVirtual => Symbol.IsVirtual;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsOverride => Symbol.IsOverride;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsAbstract => Symbol.IsAbstract;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsSealed => Symbol.IsSealed;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Accessibility DeclaredAccessibility => Symbol.DeclaredAccessibility;
         #endregion IMethodSymbol
 
+        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <param name="obj">The object to compare with the current instance. </param>
         public override bool Equals(object obj)
         {
             return obj is MethodInfo other && Equals(other);
         }
 
+        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <param name="other">An object to compare with this object.</param>
         public bool Equals(MethodInfo other)
         {
             return EqualityComparer<IMethodSymbol>.Default.Equals(Symbol, other.Symbol);
         }
 
+        /// <summary>Returns the hash code for this instance.</summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return Symbol?.GetHashCode() ?? 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator ==(MethodInfo info1, MethodInfo info2)
         {
             return info1.Equals(info2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
         public static bool operator !=(MethodInfo info1, MethodInfo info2)
         {
             return !(info1 == info2);

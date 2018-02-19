@@ -10,9 +10,19 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// A set of extension methods for <see cref="Document"/> and <see cref="Microsoft.CodeAnalysis.Solution"/>.
+    /// </summary>
     public static class WorkspaceExtensions
     {
         #region Document
+        /// <summary>
+        /// Creates a new document updated with the specified text change.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="textChange"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> WithTextChangeAsync(
             this Document document,
             TextChange textChange,
@@ -28,6 +38,13 @@ namespace Roslynator
             return document.WithText(newSourceText);
         }
 
+        /// <summary>
+        /// Creates a new document updated with the specified text changes.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="textChanges"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> WithTextChangesAsync(
             this Document document,
             TextChange[] textChanges,
@@ -46,6 +63,13 @@ namespace Roslynator
             return document.WithText(newSourceText);
         }
 
+        /// <summary>
+        /// Creates a new document updated with the specified text changes.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="textChanges"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> WithTextChangesAsync(
             this Document document,
             IEnumerable<TextChange> textChanges,
@@ -64,6 +88,14 @@ namespace Roslynator
             return document.WithText(newSourceText);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old node replaced with a new node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldNode"></param>
+        /// <param name="newNode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceNodeAsync(
             this Document document,
             SyntaxNode oldNode,
@@ -86,6 +118,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old node replaced with new nodes.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldNode"></param>
+        /// <param name="newNodes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceNodeAsync(
             this Document document,
             SyntaxNode oldNode,
@@ -108,6 +148,15 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old nodes replaced with new nodes.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="document"></param>
+        /// <param name="nodes"></param>
+        /// <param name="computeReplacementNode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceNodesAsync<TNode>(
             this Document document,
             IEnumerable<TNode> nodes,
@@ -130,6 +179,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old token replaced with a new token.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldToken"></param>
+        /// <param name="newToken"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceTokenAsync(
             this Document document,
             SyntaxToken oldToken,
@@ -146,6 +203,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old token replaced with new tokens.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldToken"></param>
+        /// <param name="newTokens"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceTokenAsync(
             this Document document,
             SyntaxToken oldToken,
@@ -165,6 +230,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old trivia replaced with a new trivia.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldTrivia"></param>
+        /// <param name="newTrivia"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceTriviaAsync(
             this Document document,
             SyntaxTrivia oldTrivia,
@@ -181,6 +254,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified old trivia replaced with a new trivia.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="oldTrivia"></param>
+        /// <param name="newTrivia"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> ReplaceTriviaAsync(
             this Document document,
             SyntaxTrivia oldTrivia,
@@ -200,6 +281,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with a new node inserted before the specified node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<Document> InsertNodeBeforeAsync(
             this Document document,
             SyntaxNode nodeInList,
@@ -212,6 +301,14 @@ namespace Roslynator
             return InsertNodesBeforeAsync(document, nodeInList, new SyntaxNode[] { newNode }, cancellationToken);
         }
 
+        /// <summary>
+        /// Creates a new document with new nodes inserted before the specified node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNodes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> InsertNodesBeforeAsync(
             this Document document,
             SyntaxNode nodeInList,
@@ -234,6 +331,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with a new node inserted after the specified node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static Task<Document> InsertNodeAfterAsync(
             this Document document,
             SyntaxNode nodeInList,
@@ -246,6 +351,14 @@ namespace Roslynator
             return InsertNodesAfterAsync(document, nodeInList, new SyntaxNode[] { newNode }, cancellationToken);
         }
 
+        /// <summary>
+        /// Creates a new document with new nodes inserted after the specified node.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="nodeInList"></param>
+        /// <param name="newNodes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> InsertNodesAfterAsync(
             this Document document,
             SyntaxNode nodeInList,
@@ -268,6 +381,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified node removed.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="node"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveNodeAsync(
             this Document document,
             SyntaxNode node,
@@ -287,6 +408,14 @@ namespace Roslynator
             return document.WithSyntaxRoot(newRoot);
         }
 
+        /// <summary>
+        /// Creates a new document with the specified nodes removed.
+        /// </summary>
+        /// <param name="document"></param>
+        /// <param name="nodes"></param>
+        /// <param name="options"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Document> RemoveNodesAsync(
             this Document document,
             IEnumerable<SyntaxNode> nodes,
@@ -313,6 +442,15 @@ namespace Roslynator
         #endregion Document
 
         #region Solution
+        /// <summary>
+        /// Creates a new solution with the specified old node replaced with a new node.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="solution"></param>
+        /// <param name="oldNode"></param>
+        /// <param name="newNode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Solution> ReplaceNodeAsync<TNode>(
             this Solution solution,
             TNode oldNode,
@@ -337,6 +475,15 @@ namespace Roslynator
             return solution.WithDocumentSyntaxRoot(document.Id, newRoot);
         }
 
+        /// <summary>
+        /// Creates a new solution with the specified old nodes replaced with new nodes.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="solution"></param>
+        /// <param name="nodes"></param>
+        /// <param name="computeReplacementNodes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<Solution> ReplaceNodesAsync<TNode>(
             this Solution solution,
             IEnumerable<TNode> nodes,

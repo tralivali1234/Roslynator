@@ -8,9 +8,20 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class DiagnosticsExtensions
     {
         #region SymbolAnalysisContext
+        /// <summary>
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
+        /// This method simply wraps creation of a <see cref="Diagnostics"/> and reporting it.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="node"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -27,6 +38,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="token"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -40,6 +58,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="trivia"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -53,6 +78,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
+        /// <param name="location"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -65,6 +97,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -79,6 +119,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -93,6 +141,15 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SymbolAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -116,6 +173,13 @@ namespace Roslynator
         #endregion SymbolAnalysisContext
 
         #region SyntaxNodeAnalysisContext
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="node"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -132,6 +196,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="token"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -145,6 +216,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="trivia"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -158,6 +236,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -170,6 +255,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -184,6 +277,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -198,6 +299,15 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxNodeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -240,6 +350,13 @@ namespace Roslynator
         #endregion SyntaxNodeAnalysisContext
 
         #region SyntaxTreeAnalysisContext
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="node"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -256,6 +373,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="token"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -269,6 +393,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="trivia"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -282,6 +413,13 @@ namespace Roslynator
                 messageArgs: messageArgs);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -294,6 +432,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -308,6 +454,14 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,
@@ -322,6 +476,15 @@ namespace Roslynator
                 messageArgs: messageArgs));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="descriptor"></param>
+        /// <param name="location"></param>
+        /// <param name="additionalLocations"></param>
+        /// <param name="properties"></param>
+        /// <param name="messageArgs"></param>
         public static void ReportDiagnostic(
             this SyntaxTreeAnalysisContext context,
             DiagnosticDescriptor descriptor,

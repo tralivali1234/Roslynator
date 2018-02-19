@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    internal struct InterpolatedStringContentConversion
+    internal readonly struct InterpolatedStringContentConversion
     {
         private InterpolatedStringContentConversion(
             SyntaxKind kind,

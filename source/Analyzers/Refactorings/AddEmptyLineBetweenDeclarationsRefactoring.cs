@@ -208,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(memberDeclaration, newNode, cancellationToken);
         }
 
-        private struct TokenPair
+        private readonly struct TokenPair
         {
             public TokenPair(BlockSyntax block)
             {

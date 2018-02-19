@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    internal struct DocumentReferenceInfo
+    internal readonly struct DocumentReferenceInfo
     {
         public DocumentReferenceInfo(Document document, SyntaxNode root, ImmutableArray<SyntaxNode> references)
         {
