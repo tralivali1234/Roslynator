@@ -52,7 +52,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsSelection"/> based the specified <see cref="StatementsInfo"/> and span.
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified <see cref="StatementsInfo"/> and span.
         /// </summary>
         /// <param name="statementsInfo"></param>
         /// <param name="span"></param>

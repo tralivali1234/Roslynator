@@ -508,7 +508,7 @@ namespace Roslynator.CSharp
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return GetExtensionMethodInfo(semanticModel, expression, ExtensionMethodKind.None, cancellationToken);
+            return GetExtensionMethodInfo(semanticModel, expression, ExtensionMethodKind.Any, cancellationToken);
         }
 
         /// <summary>

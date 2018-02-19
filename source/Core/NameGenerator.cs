@@ -10,7 +10,7 @@ using Roslynator.Helpers;
 
 namespace Roslynator
 {
-    //TODO: ren
+    //XTODO: rename
     /// <summary>
     /// Provides methods to obtain an unique identifier.
     /// </summary>
@@ -77,7 +77,6 @@ namespace Roslynator
             }
         }
 
-        //TODO: del
         /// <summary>
         /// 
         /// </summary>

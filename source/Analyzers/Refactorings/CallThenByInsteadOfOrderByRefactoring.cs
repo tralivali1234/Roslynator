@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsOrderByOrOrderByDescending(InvocationExpressionSyntax invocationExpression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.None, cancellationToken);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
 
             return methodInfo.Symbol != null
                 && methodInfo.IsName("OrderBy", "OrderByDescending")

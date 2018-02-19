@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp
 {
-    //TODO: public
     public static class CSharpFacts
     {
         public static bool IsCommentTrivia(SyntaxKind kind)

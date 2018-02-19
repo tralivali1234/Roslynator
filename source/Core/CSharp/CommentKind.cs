@@ -46,9 +46,8 @@ namespace Roslynator.CSharp
         /// </summary>
         Documentation = SingleLineDocumentation | MultiLineDocumentation,
 
-        //TODO: Any
         /// <summary>
-        /// Any kind of comment.
+        /// Documentation or non-documentation comment.
         /// </summary>
         All = NonDocumentation |  Documentation
     }

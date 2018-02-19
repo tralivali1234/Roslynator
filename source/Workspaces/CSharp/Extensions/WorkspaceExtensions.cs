@@ -157,27 +157,6 @@ namespace Roslynator.CSharp
             return document.WithSyntaxRoot(newRoot);
         }
 
-        //TODO: int
-        /// <summary>
-        /// Creates a new document with trivia removed.
-        /// </summary>
-        /// <param name="document"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static async Task<Document> RemoveTriviaAsync(
-            this Document document,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-
-            SyntaxNode newRoot = SyntaxRemover.RemoveTrivia(root);
-
-            return document.WithSyntaxRoot(newRoot);
-        }
-
         /// <summary>
         /// Creates a new document with trivia inside the specified span removed.
         /// </summary>

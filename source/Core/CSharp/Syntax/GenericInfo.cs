@@ -58,7 +58,6 @@ namespace Roslynator.CSharp.Syntax
 
         private static GenericInfo Default { get; } = new GenericInfo();
 
-        //TODO: Node
         /// <summary>
         /// Gets the declaration node (for example <see cref="ClassDeclarationSyntax"/> for a class).
         /// </summary>

@@ -2,16 +2,15 @@
 
 namespace Roslynator
 {
-    //TODO: flags, Any
     /// <summary>
     /// 
     /// </summary>
     public enum ExtensionMethodKind
     {
         /// <summary>
-        /// Unspecified extension method.
+        /// Any extension method (non-reduced or reduced).
         /// </summary>
-        None = 0,
+        Any = 0,
         /// <summary>
         /// Non-reduced extension method (with "this" parameter not removed).
         /// </summary>

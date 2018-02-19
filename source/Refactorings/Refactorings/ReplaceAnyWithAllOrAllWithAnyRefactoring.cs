@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             string fromMethodName,
             string toMethodName)
         {
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.None, context.CancellationToken);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, context.CancellationToken);
 
             if (methodInfo.Symbol == null)
                 return false;

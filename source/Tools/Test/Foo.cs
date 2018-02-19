@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Test
 {
@@ -15,7 +16,9 @@ namespace Test
     {
         public static void Bar()
         {
+            Document d;
             SyntaxNodeOrToken x;
+            GenericInfo g;
         }
     }
 }

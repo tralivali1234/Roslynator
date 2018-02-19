@@ -196,10 +196,9 @@ namespace Roslynator.CSharp
         }
         #endregion BaseArgumentListSyntax
 
-        //TODO: pokračovat
         #region CastExpressionSyntax
         /// <summary>
-        /// 
+        /// The absolute span of the parentheses, not including its leading and trailing trivia.
         /// </summary>
         /// <param name="castExpression"></param>
         /// <returns></returns>
@@ -248,22 +247,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="classDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this ClassDeclarationSyntax classDeclaration)
-        {
-            if (classDeclaration == null)
-                throw new ArgumentNullException(nameof(classDeclaration));
-
-            return TextSpan.FromBounds(
-                classDeclaration.Span.Start,
-                classDeclaration.Identifier.Span.End);
-        }
-
-        /// <summary>
-        /// 
+        /// The absolute span of the braces, not including its leading and trailing trivia.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -278,7 +262,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="member"></param>
@@ -289,7 +273,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ClassDeclarationSyntax"/> with the specified member inserted.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="member"></param>
@@ -309,7 +293,7 @@ namespace Roslynator.CSharp
 
         #region CommonForEachStatementSyntax
         /// <summary>
-        /// 
+        /// The absolute span of the parentheses, not including its leading and trailing trivia.
         /// </summary>
         /// <param name="forEachStatement"></param>
         /// <returns></returns>
@@ -356,7 +340,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="CompilationUnitSyntax"/> with the specified using directives added.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <param name="keepSingleLineCommentsOnTop"></param>
@@ -417,7 +401,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="CompilationUnitSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <param name="member"></param>
@@ -428,7 +412,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="CompilationUnitSyntax"/> with the specified member inserted.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <param name="member"></param>
@@ -447,27 +431,7 @@ namespace Roslynator.CSharp
         #endregion CompilationUnitSyntax
 
         #region ConstructorDeclarationSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="constructorDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this ConstructorDeclarationSyntax constructorDeclaration)
-        {
-            if (constructorDeclaration == null)
-                throw new ArgumentNullException(nameof(constructorDeclaration));
-
-            return TextSpan.FromBounds(
-                constructorDeclaration.Span.Start,
-                constructorDeclaration.ParameterList?.Span.End ?? constructorDeclaration.Identifier.Span.End);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="constructorDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpanIncludingInitializer(this ConstructorDeclarationSyntax constructorDeclaration)
+        internal static TextSpan HeaderSpan(this ConstructorDeclarationSyntax constructorDeclaration)
         {
             if (constructorDeclaration == null)
                 throw new ArgumentNullException(nameof(constructorDeclaration));
@@ -480,7 +444,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns constructor body or expression body if the body is null.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -495,24 +459,7 @@ namespace Roslynator.CSharp
 
         #region ConversionOperatorDeclarationSyntax
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="operatorDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this ConversionOperatorDeclarationSyntax operatorDeclaration)
-        {
-            if (operatorDeclaration == null)
-                throw new ArgumentNullException(nameof(operatorDeclaration));
-
-            return TextSpan.FromBounds(
-                operatorDeclaration.Span.Start,
-                operatorDeclaration.ParameterList?.Span.End
-                    ?? operatorDeclaration.Type?.Span.End
-                    ?? operatorDeclaration.OperatorKeyword.Span.End);
-        }
-
-        /// <summary>
-        /// 
+        /// Returns conversion operator body or expression body if the body is null.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -527,7 +474,7 @@ namespace Roslynator.CSharp
 
         #region DelegateDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns true the specified delegate return type is <see cref="void"/>.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -539,7 +486,7 @@ namespace Roslynator.CSharp
 
         #region DestructorDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns destructor body or expression body if the body is null.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -573,7 +520,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets a list of xml elements with the specified local name.
         /// </summary>
         /// <param name="documentationComment"></param>
         /// <param name="localName"></param>
@@ -617,7 +564,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns topmost if statement of the if-else cascade the specified else clause is part of.
         /// </summary>
         /// <param name="elseClause"></param>
         /// <returns></returns>
@@ -633,7 +580,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified else clause's statement is if statement.
         /// </summary>
         /// <param name="elseClause"></param>
         /// <returns></returns>
@@ -648,7 +595,7 @@ namespace Roslynator.CSharp
 
         #region EndRegionDirectiveTriviaSyntax
         /// <summary>
-        /// 
+        /// Returns region directive that is related to the specified endregion directive. Returns null if no matching region directive is found.
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
@@ -663,7 +610,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets preprocessing message for the specified endregion directive if such message exists.
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
@@ -688,7 +635,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true the specified endregion directive has preprocessing messaage trivia.
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
@@ -716,12 +663,7 @@ namespace Roslynator.CSharp
         #endregion EnumDeclarationSyntax
 
         #region EventDeclarationSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="eventDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this EventDeclarationSyntax eventDeclaration)
+        internal static TextSpan HeaderSpan(this EventDeclarationSyntax eventDeclaration)
         {
             if (eventDeclaration == null)
                 throw new ArgumentNullException(nameof(eventDeclaration));
@@ -782,7 +724,7 @@ namespace Roslynator.CSharp
 
         #region FieldDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified field declaration is a const declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -797,7 +739,7 @@ namespace Roslynator.CSharp
 
         #region ForStatementSyntax
         /// <summary>
-        /// 
+        /// Absolute span of the parentheses, not including the leading and trailing trivia.
         /// </summary>
         /// <param name="forStatement"></param>
         /// <returns></returns>
@@ -817,7 +759,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified if statement is not part of an if-else cascade.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -831,7 +773,8 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified if statement represents a simple if-else.
+        /// Simple if-else is defined as follows: it is not a child of an else clause, it has an else clause and the else clause does not continue with another if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -845,7 +788,8 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets a list of if-else cascade elements beginning with this if statement.
+        /// If-else cascade contains one or more if statements and optional else clause at the end if the cascade does not end with if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -883,7 +827,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns topmost if statement of the if-else cascade the specified if statement is part of.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -910,7 +854,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified if statement is not a child of an else clause.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -950,7 +894,7 @@ namespace Roslynator.CSharp
 
         #region IEnumerable<T>
         /// <summary>
-        /// 
+        /// Creates a list of syntax nodes from a sequence of nodes.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="nodes"></param>
@@ -961,7 +905,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a separated list of syntax nodes from a sequence of nodes.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="nodes"></param>
@@ -972,7 +916,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a separated list of syntax nodes from a sequence of nodes and tokens.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="nodesAndTokens"></param>
@@ -984,12 +928,7 @@ namespace Roslynator.CSharp
         #endregion IEnumerable<T>
 
         #region IndexerDeclarationSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="indexerDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this IndexerDeclarationSyntax indexerDeclaration)
+        internal static TextSpan HeaderSpan(this IndexerDeclarationSyntax indexerDeclaration)
         {
             if (indexerDeclaration == null)
                 throw new ArgumentNullException(nameof(indexerDeclaration));
@@ -1000,7 +939,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a get accessor that is contained in the specified indexer declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -1015,7 +954,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns a set accessor that is contained in the specified indexer declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -1036,21 +975,6 @@ namespace Roslynator.CSharp
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
-        public static TextSpan HeaderSpan(this InterfaceDeclarationSyntax interfaceDeclaration)
-        {
-            if (interfaceDeclaration == null)
-                throw new ArgumentNullException(nameof(interfaceDeclaration));
-
-            return TextSpan.FromBounds(
-                interfaceDeclaration.Span.Start,
-                interfaceDeclaration.Identifier.Span.End);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="interfaceDeclaration"></param>
-        /// <returns></returns>
         public static TextSpan BracesSpan(this InterfaceDeclarationSyntax interfaceDeclaration)
         {
             if (interfaceDeclaration == null)
@@ -1062,7 +986,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="InterfaceDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1073,7 +997,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="InterfaceDeclarationSyntax"/> with the specified member inserted.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1125,7 +1049,7 @@ namespace Roslynator.CSharp
 
         #region InterpolatedStringExpressionSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified interpolated string is a verbatim.
         /// </summary>
         /// <param name="interpolatedString"></param>
         /// <returns></returns>
@@ -1193,7 +1117,7 @@ namespace Roslynator.CSharp
 
         #region LiteralExpressionSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified literal expression is a verbatim string literal expression.
         /// </summary>
         /// <param name="literalExpression"></param>
         /// <returns></returns>
@@ -1234,7 +1158,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified literal expression is a hexadecimal numeric literal expression.
         /// </summary>
         /// <param name="literalExpression"></param>
         /// <returns></returns>
@@ -1250,7 +1174,7 @@ namespace Roslynator.CSharp
 
         #region LocalFunctionStatementSyntax
         /// <summary>
-        /// 
+        /// Returns body or expression body if the body is null.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -1263,7 +1187,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified local function' return type is <see cref="void"/>.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -1273,7 +1197,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified local function contains yield statement. Nested local functions are excluded.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -1288,7 +1212,7 @@ namespace Roslynator.CSharp
 
         #region MemberDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns single-line documentation comment that is part of the specified declaration.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1307,7 +1231,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns documentation comment that is part of the specified declaration.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1326,7 +1250,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns single-line documentation comment syntax that is part of the specified declaration.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1335,15 +1259,10 @@ namespace Roslynator.CSharp
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            SyntaxTrivia trivia = member.GetSingleLineDocumentationCommentTrivia();
+            SyntaxNode structure = member.GetSingleLineDocumentationCommentTrivia().GetStructure();
 
-            if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
-            {
-                var comment = trivia.GetStructure() as DocumentationCommentTriviaSyntax;
-
-                if (comment?.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia)
-                    return comment;
-            }
+            if (structure?.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia)
+                return (DocumentationCommentTriviaSyntax)structure;
 
             return null;
         }
@@ -1480,12 +1399,7 @@ namespace Roslynator.CSharp
             return methodDeclaration?.ReturnType?.IsVoid() == true;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="methodDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this MethodDeclarationSyntax methodDeclaration)
+        internal static TextSpan HeaderSpan(this MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
                 throw new ArgumentNullException(nameof(methodDeclaration));
@@ -1586,21 +1500,6 @@ namespace Roslynator.CSharp
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <returns></returns>
-        public static TextSpan HeaderSpan(this NamespaceDeclarationSyntax namespaceDeclaration)
-        {
-            if (namespaceDeclaration == null)
-                throw new ArgumentNullException(nameof(namespaceDeclaration));
-
-            return TextSpan.FromBounds(
-                namespaceDeclaration.Span.Start,
-                namespaceDeclaration.Name?.Span.End ?? namespaceDeclaration.NamespaceKeyword.Span.End);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="namespaceDeclaration"></param>
-        /// <returns></returns>
         public static TextSpan BracesSpan(this NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -1613,21 +1512,6 @@ namespace Roslynator.CSharp
         #endregion NamespaceDeclarationSyntax
 
         #region OperatorDeclarationSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="operatorDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this OperatorDeclarationSyntax operatorDeclaration)
-        {
-            if (operatorDeclaration == null)
-                throw new ArgumentNullException(nameof(operatorDeclaration));
-
-            return TextSpan.FromBounds(
-                operatorDeclaration.Span.Start,
-                operatorDeclaration.ParameterList?.Span.End ?? operatorDeclaration.OperatorToken.Span.End);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -1680,12 +1564,7 @@ namespace Roslynator.CSharp
         #endregion ParameterSyntax
 
         #region PropertyDeclarationSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="propertyDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this PropertyDeclarationSyntax propertyDeclaration)
+        internal static TextSpan HeaderSpan(this PropertyDeclarationSyntax propertyDeclaration)
         {
             if (propertyDeclaration == null)
                 throw new ArgumentNullException(nameof(propertyDeclaration));
@@ -2049,21 +1928,6 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(structDeclaration));
 
             return structDeclaration.WithMembers(List(members));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="structDeclaration"></param>
-        /// <returns></returns>
-        public static TextSpan HeaderSpan(this StructDeclarationSyntax structDeclaration)
-        {
-            if (structDeclaration == null)
-                throw new ArgumentNullException(nameof(structDeclaration));
-
-            return TextSpan.FromBounds(
-                structDeclaration.Span.Start,
-                structDeclaration.Identifier.Span.End);
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.None, cancellationToken);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, cancellationToken);
 
             if (methodInfo.Symbol == null)
                 return;
@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodName, semanticModel))
                 return;
 
-            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.None, cancellationToken);
+            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, cancellationToken);
 
             if (methodInfo2.Symbol == null)
                 return;

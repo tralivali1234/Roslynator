@@ -62,7 +62,6 @@ namespace Roslynator
             get { return LastIndex - FirstIndex + 1; }
         }
 
-        //TODO: explicit implementation.
         /// <summary>
         /// Gets the selected item at the specified index in the underlying list.
         /// </summary>

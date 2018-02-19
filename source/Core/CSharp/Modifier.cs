@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -119,13 +120,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)Insert((LocalFunctionStatementSyntax)(SyntaxNode)node, modifier, comparer);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)Insert((ParameterSyntax)(SyntaxNode)node, modifier, comparer);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)Insert((IncompleteMemberSyntax)(SyntaxNode)node, modifier, comparer);
             }
 
-            //TODO:  throw ex
-
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -181,11 +180,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)Remove((LocalFunctionStatementSyntax)(SyntaxNode)node, modifierKind);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)Remove((ParameterSyntax)(SyntaxNode)node, modifierKind);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)Remove((IncompleteMemberSyntax)(SyntaxNode)node, modifierKind);
             }
 
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -241,11 +240,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)Remove((LocalFunctionStatementSyntax)(SyntaxNode)node, modifier);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)Remove((ParameterSyntax)(SyntaxNode)node, modifier);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)Remove((IncompleteMemberSyntax)(SyntaxNode)node, modifier);
             }
 
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -301,11 +300,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)RemoveAt((LocalFunctionStatementSyntax)(SyntaxNode)node, index);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)RemoveAt((ParameterSyntax)(SyntaxNode)node, index);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)RemoveAt((IncompleteMemberSyntax)(SyntaxNode)node, index);
             }
 
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -360,11 +359,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)RemoveAccessibility((LocalFunctionStatementSyntax)(SyntaxNode)node);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)RemoveAccessibility((ParameterSyntax)(SyntaxNode)node);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)RemoveAccessibility((IncompleteMemberSyntax)(SyntaxNode)node);
             }
 
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -419,11 +418,11 @@ namespace Roslynator.CSharp
                     return (TNode)(SyntaxNode)RemoveAll((LocalFunctionStatementSyntax)(SyntaxNode)node);
                 case SyntaxKind.Parameter:
                     return (TNode)(SyntaxNode)RemoveAll((ParameterSyntax)(SyntaxNode)node);
+                case SyntaxKind.IncompleteMember:
+                    return (TNode)(SyntaxNode)RemoveAll((IncompleteMemberSyntax)(SyntaxNode)node);
             }
 
-            Debug.Assert(node.IsKind(SyntaxKind.IncompleteMember), node.ToString());
-
-            return node;
+            throw new ArgumentException($"'{node.Kind()}' does not have modifiers.", nameof(node));
         }
 
         /// <summary>
@@ -880,6 +879,30 @@ namespace Roslynator.CSharp
         public static ParameterSyntax Insert(ParameterSyntax parameter, SyntaxKind modifierKind, IModifierComparer comparer = null)
         {
             return ParameterModifierHelper.Instance.InsertModifier(parameter, modifierKind, comparer);
+        }
+
+        /// <summary>
+        /// Creates a new incomplete member with the specified modifier inserted.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <param name="modifier"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax Insert(IncompleteMemberSyntax incompleteMember, SyntaxToken modifier, IModifierComparer comparer = null)
+        {
+            return IncompleteMemberModifierHelper.Instance.InsertModifier(incompleteMember, modifier, comparer);
+        }
+
+        /// <summary>
+        /// Creates a new incomplete member with a modifier of the specified kind inserted.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <param name="modifierKind"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax Insert(IncompleteMemberSyntax incompleteMember, SyntaxKind modifierKind, IModifierComparer comparer = null)
+        {
+            return IncompleteMemberModifierHelper.Instance.InsertModifier(incompleteMember, modifierKind, comparer);
         }
 
         /// <summary>
@@ -1351,6 +1374,28 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// Creates a new incomplete member with the specified modifier removed.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <param name="modifier"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax Remove(IncompleteMemberSyntax incompleteMember, SyntaxToken modifier)
+        {
+            return IncompleteMemberModifierHelper.Instance.RemoveModifier(incompleteMember, modifier);
+        }
+
+        /// <summary>
+        /// Creates a new incomplete member with a modifier of the specified kind removed.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <param name="modifierKind"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax Remove(IncompleteMemberSyntax incompleteMember, SyntaxKind modifierKind)
+        {
+            return IncompleteMemberModifierHelper.Instance.RemoveModifier(incompleteMember, modifierKind);
+        }
+
+        /// <summary>
         /// Creates a new declaration with a modifier at the specified index removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
@@ -1560,6 +1605,17 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// Creates a new incomplete member with a modifier at the specified index removed.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax RemoveAt(IncompleteMemberSyntax incompleteMember, int index)
+        {
+            return IncompleteMemberModifierHelper.Instance.RemoveModifierAt(incompleteMember, index);
+        }
+
+        /// <summary>
         /// Creates a new declaration with accessibility modifiers removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
@@ -1750,6 +1806,16 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// Creates a new incomplete member with accessibility modifiers removed.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax RemoveAccessibility(IncompleteMemberSyntax incompleteMember)
+        {
+            return IncompleteMemberModifierHelper.Instance.RemoveAccessibility(incompleteMember);
+        }
+
+        /// <summary>
         /// Creates a new declaration with all modifiers removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
@@ -1937,6 +2003,16 @@ namespace Roslynator.CSharp
         public static ParameterSyntax RemoveAll(ParameterSyntax parameter)
         {
             return ParameterModifierHelper.Instance.RemoveModifiers(parameter);
+        }
+
+        /// <summary>
+        /// Creates a new incomplete member with all modifiers removed.
+        /// </summary>
+        /// <param name="incompleteMember"></param>
+        /// <returns></returns>
+        public static IncompleteMemberSyntax RemoveAll(IncompleteMemberSyntax incompleteMember)
+        {
+            return IncompleteMemberModifierHelper.Instance.RemoveModifiers(incompleteMember);
         }
     }
 }
