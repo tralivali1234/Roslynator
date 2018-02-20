@@ -14,7 +14,7 @@ namespace Roslynator.CSharp
     {
         /// <summary>
         /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified declaration.
-        /// Check <see cref="Syntax.AccessibilityInfo.Success"/> to see if the operation succeded.
+        /// Check <see cref="Syntax.AccessibilityInfo.Success"/> to see if the operation succeeded.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>

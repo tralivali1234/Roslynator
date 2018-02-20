@@ -62,7 +62,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Returns accessor body or expression body if the body is null.
+        /// Returns accessor body or an expression body if the body is null.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -444,7 +444,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Returns constructor body or expression body if the body is null.
+        /// Returns constructor body or an expression body if the body is null.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -459,7 +459,7 @@ namespace Roslynator.CSharp
 
         #region ConversionOperatorDeclarationSyntax
         /// <summary>
-        /// Returns conversion operator body or expression body if the body is null.
+        /// Returns conversion operator body or an expression body if the body is null.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -486,7 +486,7 @@ namespace Roslynator.CSharp
 
         #region DestructorDeclarationSyntax
         /// <summary>
-        /// Returns destructor body or expression body if the body is null.
+        /// Returns destructor body or an expression body if the body is null.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -635,7 +635,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Returns true the specified endregion directive has preprocessing messaage trivia.
+        /// Returns true the specified endregion directive has preprocessing message trivia.
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
@@ -1174,7 +1174,7 @@ namespace Roslynator.CSharp
 
         #region LocalFunctionStatementSyntax
         /// <summary>
-        /// Returns body or expression body if the body is null.
+        /// Returns local function body or an expression body if the body is null.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -1268,7 +1268,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns documentation comment syntax that is part of the specified declaration.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1290,7 +1290,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified declaration has a single-line documentation comment.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1305,7 +1305,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified declaration has a documentation comment.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -1375,7 +1375,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified method contains yield statement. Nested local functions are excluded.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1390,7 +1390,7 @@ namespace Roslynator.CSharp
 
         #region MethodDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified method return type is <see cref="void"/>.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1420,7 +1420,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns method body or an expression body if the body is null.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -1435,7 +1435,7 @@ namespace Roslynator.CSharp
 
         #region NamespaceDeclarationSyntax
         /// <summary>
-        /// 
+        /// Creates a new <see cref="NamespaceDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1446,7 +1446,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="NamespaceDeclarationSyntax"/> with the specified member inserted.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1513,7 +1513,7 @@ namespace Roslynator.CSharp
 
         #region OperatorDeclarationSyntax
         /// <summary>
-        /// 
+        /// Returns operator body or an expression body if the body is null.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -1524,21 +1524,11 @@ namespace Roslynator.CSharp
 
             return operatorDeclaration.Body ?? (CSharpSyntaxNode)operatorDeclaration.ExpressionBody;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="operatorDeclaration"></param>
-        /// <returns></returns>
-        public static bool ReturnsVoid(this OperatorDeclarationSyntax operatorDeclaration)
-        {
-            return operatorDeclaration?.ReturnType?.IsVoid() == true;
-        }
         #endregion OperatorDeclarationSyntax
 
         #region ParameterSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified parameter has "params" modifier.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
@@ -1575,7 +1565,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns property get accessor, if any.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1588,7 +1578,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns property set accessor, if any.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -1603,7 +1593,7 @@ namespace Roslynator.CSharp
 
         #region RegionDirectiveTriviaSyntax
         /// <summary>
-        /// 
+        /// Returns endregion directive that is related to the specified region directive. Returns null if no matching endregion directive is found.
         /// </summary>
         /// <param name="regionDirective"></param>
         /// <returns></returns>
@@ -1618,7 +1608,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets preprocessing message for the specified region directive if such message exists.
         /// </summary>
         /// <param name="regionDirective"></param>
         /// <returns></returns>
@@ -1643,7 +1633,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true the specified region directive has preprocessing message trivia.
         /// </summary>
         /// <param name="regionDirective"></param>
         /// <returns></returns>
@@ -1655,7 +1645,7 @@ namespace Roslynator.CSharp
 
         #region SeparatedSyntaxList<T>
         /// <summary>
-        /// 
+        /// Searches for a node of the specified kind and returns the zero-based index of the last occurrence within the entire <see cref="SeparatedSyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -1667,7 +1657,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Searches for a node of the specified kind and returns the zero-based index of the first occurrence within the entire <see cref="SeparatedSyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -1679,7 +1669,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is in the <see cref="SeparatedSyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -1691,7 +1681,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Searches for a node of the specified kind and returns the first occurrence within the entire <see cref="SeparatedSyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -1777,8 +1767,10 @@ namespace Roslynator.CSharp
             }
         }
 
+        //TODO: PreviousStatement
         /// <summary>
-        /// 
+        /// Gets the previous statement of the specified statement.
+        /// If the specified statement is not contained in the list, or if there is no previous statement, then this method returns null.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
@@ -1798,8 +1790,10 @@ namespace Roslynator.CSharp
             return null;
         }
 
+        //TODO: NextStatement
         /// <summary>
-        /// 
+        /// Gets the next statement of the specified statement.
+        /// If the specified statement is not contained in the list, or if there is no next statement, then this method returns null.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
@@ -1820,11 +1814,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets a list the specified statement is contained in.
+        /// This method succeeds if the statement is in a block's statements or a switch section's statements.
         /// </summary>
         /// <param name="statement"></param>
         /// <param name="statements"></param>
-        /// <returns></returns>
+        /// <returns>True if the statement is contained in the list; otherwise, false.</returns>
         public static bool TryGetContainingList(this StatementSyntax statement, out SyntaxList<StatementSyntax> statements)
         {
             SyntaxNode parent = statement?.Parent;
@@ -1861,11 +1856,11 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified statement is an embedded statement.
         /// </summary>
         /// <param name="statement"></param>
-        /// <param name="ifInsideElse"></param>
-        /// <param name="usingInsideUsing"></param>
+        /// <param name="ifInsideElse">If statement that is a child of an else statement should be considered as an embedded statement.</param>
+        /// <param name="usingInsideUsing">Using statement that is a child of an using statement should be considered as en embedded statement.</param>
         /// <returns></returns>
         public static bool IsEmbedded(
             this StatementSyntax statement,
@@ -1946,7 +1941,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StructDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="member"></param>
@@ -1957,7 +1952,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StructDeclarationSyntax"/> with the specified member inserted.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="member"></param>
@@ -1977,7 +1972,7 @@ namespace Roslynator.CSharp
 
         #region SwitchSectionSyntax
         /// <summary>
-        /// 
+        /// Returns true if the specified switch section contains default switch label.
         /// </summary>
         /// <param name="switchSection"></param>
         /// <returns></returns>
@@ -1989,7 +1984,7 @@ namespace Roslynator.CSharp
 
         #region SyntaxList<T>
         /// <summary>
-        /// 
+        /// Searches for a node of the specified kind and returns the zero-based index of the last occurrence within the entire <see cref="SyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -2001,7 +1996,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node of the specified kind is in the <see cref="SyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -2013,7 +2008,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Searches for a node of the specified kind and returns the first occurrence within the entire <see cref="SyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -2030,7 +2025,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new list with the specified node inserted.
         /// </summary>
         /// <param name="members"></param>
         /// <param name="member"></param>
@@ -2103,12 +2098,13 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
+        //TODO: ren beforeLocalFunction
         /// <summary>
-        /// 
+        /// Returns true if the specified statement is a last statement in the list.
         /// </summary>
         /// <param name="statements"></param>
         /// <param name="statement"></param>
-        /// <param name="beforeLocalFunction"></param>
+        /// <param name="beforeLocalFunction">Ignore local function statements at the end of the list.</param>
         /// <returns></returns>
         public static bool IsLast(
             this SyntaxList<StatementSyntax> statements,
@@ -2130,11 +2126,11 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new list with the specified node added or inserted.
         /// </summary>
         /// <param name="statements"></param>
         /// <param name="statement"></param>
-        /// <param name="beforeLocalFunction"></param>
+        /// <param name="beforeLocalFunction">Insert statement before local function statements at the end of the list.</param>
         /// <returns></returns>
         public static SyntaxList<StatementSyntax> Add(
             this SyntaxList<StatementSyntax> statements,
@@ -2161,6 +2157,7 @@ namespace Roslynator.CSharp
         }
         #endregion SyntaxList<T>
 
+        //TODO: mov CSharpFacts
         #region SyntaxNode
         internal static string GetTitle(this SyntaxNode node)
         {
@@ -2290,7 +2287,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node is a descendant of a node with the specified kind.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind"></param>
@@ -2305,7 +2302,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2323,7 +2320,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2343,7 +2340,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2365,7 +2362,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2389,7 +2386,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2415,7 +2412,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is the specified kind.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind"></param>
@@ -2426,7 +2423,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2438,7 +2435,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2451,7 +2448,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2465,7 +2462,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2480,7 +2477,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a node parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2594,8 +2591,9 @@ namespace Roslynator.CSharp
             return end;
         }
 
+        //TODO: com
         /// <summary>
-        /// 
+        /// Creates a new node with its leading trivia removed of all leading white-space trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2671,7 +2669,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kind.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind"></param>
@@ -2686,7 +2684,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2703,7 +2701,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2722,7 +2720,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor that matches the predicate.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="predicate"></param>
@@ -2749,7 +2747,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kind.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind"></param>
@@ -2764,7 +2762,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2781,7 +2779,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor of the specified kinds.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="kind1"></param>
@@ -2800,7 +2798,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Gets the first ancestor that matches the predicate.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="predicate"></param>
@@ -2876,7 +2874,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the trivia removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2891,7 +2889,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the whitespace removed.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2906,7 +2904,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node with the whitespace replaced.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -3017,7 +3015,7 @@ namespace Roslynator.CSharp
 
         #region SyntaxToken
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3032,7 +3030,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3049,7 +3047,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3068,7 +3066,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3089,7 +3087,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3164,7 +3162,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token of the specified kind is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind"></param>
@@ -3175,7 +3173,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token of the specified kinds is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind1"></param>
@@ -3187,7 +3185,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token of the specified kinds is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind1"></param>
@@ -3200,7 +3198,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token of the specified kinds is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind1"></param>
@@ -3214,7 +3212,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token of the specified kinds is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind1"></param>
@@ -3299,7 +3297,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is the specified kind.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind"></param>
@@ -3310,7 +3308,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3322,7 +3320,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3335,7 +3333,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3349,7 +3347,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3364,7 +3362,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token parent's kind is one of the specified kinds.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="kind1"></param>
@@ -3382,7 +3380,7 @@ namespace Roslynator.CSharp
 
         #region SyntaxTokenList
         /// <summary>
-        /// 
+        /// Searches for a token of the specified kind and returns the first occurrence within the entire <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="kind"></param>
@@ -3411,7 +3409,7 @@ namespace Roslynator.CSharp
 
         #region SyntaxTrivia
         /// <summary>
-        /// 
+        /// Returns true if a trivia's kind is one of the specified kinds.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="kind1"></param>
@@ -3426,7 +3424,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="kind1"></param>
@@ -3443,7 +3441,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="kind1"></param>
@@ -3462,7 +3460,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="kind1"></param>
@@ -3483,7 +3481,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a token's kind is one of the specified kinds.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="kind1"></param>
@@ -3506,7 +3504,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the trivia is <see cref="SyntaxKind.WhitespaceTrivia"/>.
         /// </summary>
         /// <param name="trivia"></param>
         /// <returns></returns>
@@ -3516,7 +3514,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the trivia is <see cref="SyntaxKind.EndOfLineTrivia"/>.
         /// </summary>
         /// <param name="trivia"></param>
         /// <returns></returns>
@@ -3526,7 +3524,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the trivia is either <see cref="SyntaxKind.WhitespaceTrivia"/> or <see cref="SyntaxKind.EndOfLineTrivia"/>.
         /// </summary>
         /// <param name="trivia"></param>
         /// <returns></returns>
@@ -3535,6 +3533,7 @@ namespace Roslynator.CSharp
             return trivia.IsKind(SyntaxKind.WhitespaceTrivia, SyntaxKind.EndOfLineTrivia);
         }
 
+        //TODO: int
         /// <summary>
         /// 
         /// </summary>
@@ -3555,7 +3554,7 @@ namespace Roslynator.CSharp
 
         #region SyntaxTriviaList
         /// <summary>
-        /// 
+        /// Searches for a trivia of the specified kind and returns the zero-based index of the last occurrence within the entire <see cref="SyntaxTriviaList"/>.
         /// </summary>
         /// <param name="triviaList"></param>
         /// <param name="kind"></param>
@@ -3572,7 +3571,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if a trivia of the specified kind is in the <see cref="SyntaxTriviaList"/>.
         /// </summary>
         /// <param name="triviaList"></param>
         /// <param name="kind"></param>
@@ -3583,7 +3582,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Searches for a trivia of the specified kind and returns the first occurrence within the entire <see cref="SyntaxList{TNode}"/>.
         /// </summary>
         /// <param name="triviaList"></param>
         /// <param name="kind"></param>
@@ -3650,7 +3649,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the list of either empty or contains only whitespace.
         /// </summary>
         /// <param name="triviaList"></param>
         /// <returns></returns>
@@ -3677,9 +3676,10 @@ namespace Roslynator.CSharp
         }
         #endregion SyntaxTriviaList
 
+        //TODO: InserMember?
         #region TypeDeclarationSyntax
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TypeDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="typeDeclaration"></param>
         /// <param name="member"></param>
@@ -3758,7 +3758,7 @@ namespace Roslynator.CSharp
 
         #region TypeSyntax
         /// <summary>
-        /// 
+        /// Returns true if the type is <see cref="void"/>.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -3774,7 +3774,7 @@ namespace Roslynator.CSharp
 
         #region UsingStatementSyntax
         /// <summary>
-        /// 
+        /// Returns using statement's declaration or an expression if the declaration is null.
         /// </summary>
         /// <param name="usingStatement"></param>
         /// <returns></returns>
@@ -3816,6 +3816,7 @@ namespace Roslynator.CSharp
         }
         #endregion XmlNameSyntax
 
+        //TODO: del
         #region YieldStatementSyntax
         /// <summary>
         /// 
@@ -3830,6 +3831,7 @@ namespace Roslynator.CSharp
             return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.ReturnKeyword);
         }
 
+        //TODO: del
         /// <summary>
         /// 
         /// </summary>
