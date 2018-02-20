@@ -759,7 +759,8 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Returns true if the specified if statement is not part of an if-else cascade.
+        /// Returns true if the specified if statement is a simple if statement.
+        /// Simple if statement is defined as follows: it is not a child of an else clause and it has no else clause.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -774,7 +775,7 @@ namespace Roslynator.CSharp
 
         /// <summary>
         /// Returns true if the specified if statement represents a simple if-else.
-        /// Simple if-else is defined as follows: it is not a child of an else clause, it has an else clause and the else clause does not continue with another if statement.
+        /// Simple if-else is defined as follows: it is not a child of an else clause and it has an else clause and the else clause does not continue with another if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -2096,20 +2097,19 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
-        //TODO: ren beforeLocalFunction
         /// <summary>
         /// Returns true if the specified statement is a last statement in the list.
         /// </summary>
         /// <param name="statements"></param>
         /// <param name="statement"></param>
-        /// <param name="beforeLocalFunction">Ignore local function statements at the end of the list.</param>
+        /// <param name="ignoreLocalFunctions">Ignore local function statements at the end of the list.</param>
         /// <returns></returns>
         public static bool IsLast(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
-            bool beforeLocalFunction)
+            bool ignoreLocalFunctions)
         {
-            if (!beforeLocalFunction)
+            if (!ignoreLocalFunctions)
                 return statements.IsLast(statement);
 
             for (int i = statements.Count - 1; i >= 0; i--)
@@ -2128,17 +2128,17 @@ namespace Roslynator.CSharp
         /// </summary>
         /// <param name="statements"></param>
         /// <param name="statement"></param>
-        /// <param name="beforeLocalFunction">Insert statement before local function statements at the end of the list.</param>
+        /// <param name="ignoreLocalFunctions">Insert statement before local function statements at the end of the list.</param>
         /// <returns></returns>
         public static SyntaxList<StatementSyntax> Add(
             this SyntaxList<StatementSyntax> statements,
             StatementSyntax statement,
-            bool beforeLocalFunction)
+            bool ignoreLocalFunctions)
         {
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
 
-            if (!beforeLocalFunction)
+            if (!ignoreLocalFunctions)
                 return statements.Add(statement);
 
             int count = statements.Count;
@@ -3434,9 +3434,8 @@ namespace Roslynator.CSharp
             return trivia.IsKind(SyntaxKind.WhitespaceTrivia, SyntaxKind.EndOfLineTrivia);
         }
 
-        //TODO: int
         /// <summary>
-        /// 
+        /// Returns true if the trivia is a documentation comment trivia.
         /// </summary>
         /// <param name="trivia"></param>
         /// <returns></returns>

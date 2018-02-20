@@ -10,7 +10,8 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a simple if-else.
+    /// Simple if-else is defined as follows: it is not a child of an else clause and it has an else clause and the else clause does not continue with another if statement.
     /// </summary>
     public readonly struct SimpleIfElseInfo : IEquatable<SimpleIfElseInfo>
     {
@@ -29,27 +30,27 @@ namespace Roslynator.CSharp.Syntax
         private static SimpleIfElseInfo Default { get; } = new SimpleIfElseInfo();
 
         /// <summary>
-        /// 
+        /// The if statement.
         /// </summary>
         public IfStatementSyntax IfStatement { get; }
 
         /// <summary>
-        /// 
+        /// The condition.
         /// </summary>
         public ExpressionSyntax Condition { get; }
 
         /// <summary>
-        /// 
+        /// The statement that is executed if the condition evaluates to true.
         /// </summary>
         public StatementSyntax WhenTrue { get; }
 
         /// <summary>
-        /// 
+        /// The statement that is executed if the condition evaluates to false.
         /// </summary>
         public StatementSyntax WhenFalse { get; }
 
         /// <summary>
-        /// 
+        /// The else clause.
         /// </summary>
         public ElseClauseSyntax Else
         {
@@ -85,30 +86,38 @@ namespace Roslynator.CSharp.Syntax
             return new SimpleIfElseInfo(ifStatement, condition, whenTrue, whenFalse);
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return IfStatement?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is SimpleIfElseInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(SimpleIfElseInfo other)
         {
             return EqualityComparer<IfStatementSyntax>.Default.Equals(IfStatement, other.IfStatement);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

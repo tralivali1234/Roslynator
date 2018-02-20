@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a type parameter constraint.
     /// </summary>
     public readonly struct TypeParameterConstraintInfo : IEquatable<TypeParameterConstraintInfo>
     {
@@ -31,17 +31,17 @@ namespace Roslynator.CSharp.Syntax
         private static TypeParameterConstraintInfo Default { get; } = new TypeParameterConstraintInfo();
 
         /// <summary>
-        /// 
+        /// The type parameter constraint.
         /// </summary>
         public TypeParameterConstraintSyntax Constraint { get; }
 
         /// <summary>
-        /// 
+        /// The constraint clause that contains this constraint in <see cref="TypeParameterConstraintClauseSyntax.Constraints"/> collection.
         /// </summary>
         public TypeParameterConstraintClauseSyntax ConstraintClause { get; }
 
         /// <summary>
-        /// 
+        /// A list of constraints that contains this constraint.
         /// </summary>
         public SeparatedSyntaxList<TypeParameterConstraintSyntax> Constraints
         {
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The identifier name of this constraint.
         /// </summary>
         public IdentifierNameSyntax Name
         {
@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The name of this constraint.
         /// </summary>
         public string NameText
         {
@@ -65,17 +65,17 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Declaration node that contains this type parameter in its type parameter list.
         /// </summary>
         public SyntaxNode Declaration { get; }
 
         /// <summary>
-        /// 
+        /// Type parameter list that contains this type parameter.
         /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
         /// <summary>
-        /// 
+        /// A list of type parameters that contains this type parameter.
         /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
@@ -83,12 +83,12 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// A list of constraint clauses.
         /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
         /// <summary>
-        /// 
+        /// The type parameter that this constraint is declared for. Returns null if a type parameter is not declared.
         /// </summary>
         public TypeParameterSyntax TypeParameter
         {
@@ -105,7 +105,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -231,30 +231,38 @@ namespace Roslynator.CSharp.Syntax
             return Default;
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Constraint?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is TypeParameterConstraintInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(TypeParameterConstraintInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Syntax
         public ExpressionSyntax WhenFalse { get; }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -101,30 +101,38 @@ namespace Roslynator.CSharp.Syntax
             return new ConditionalExpressionInfo(condition, whenTrue, whenFalse);
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return ConditionalExpression?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is ConditionalExpressionInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(ConditionalExpressionInfo other)
         {
             return EqualityComparer<ConditionalExpressionSyntax>.Default.Equals(ConditionalExpression, other.ConditionalExpression);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

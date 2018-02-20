@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -57,7 +57,9 @@ namespace Roslynator.CSharp.Syntax
             get { return Members.Count; }
         }
 
-        /// <summary>Gets the element at the specified index in the read-only list.</summary>
+        /// <summary>
+        /// Gets the element at the specified index in the read-only list.
+        /// </summary>
         /// <returns>The element at the specified index in the read-only list.</returns>
         /// <param name="index">The zero-based index of the element to get. </param>
         public MemberDeclarationSyntax this[int index]
@@ -362,11 +364,11 @@ namespace Roslynator.CSharp.Syntax
         /// 
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="statement"></param>
+        /// <param name="member"></param>
         /// <returns></returns>
-        public MemberDeclarationsInfo Insert(int index, MemberDeclarationSyntax statement)
+        public MemberDeclarationsInfo Insert(int index, MemberDeclarationSyntax member)
         {
-            return WithMembers(Members.Insert(index, statement));
+            return WithMembers(Members.Insert(index, member));
         }
 
         /// <summary>
@@ -441,34 +443,34 @@ namespace Roslynator.CSharp.Syntax
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="nodeInList"></param>
-        /// <param name="newNode"></param>
+        /// <param name="memberInList"></param>
+        /// <param name="newMember"></param>
         /// <returns></returns>
-        public MemberDeclarationsInfo Replace(MemberDeclarationSyntax nodeInList, MemberDeclarationSyntax newNode)
+        public MemberDeclarationsInfo Replace(MemberDeclarationSyntax memberInList, MemberDeclarationSyntax newMember)
         {
-            return WithMembers(Members.Replace(nodeInList, newNode));
+            return WithMembers(Members.Replace(memberInList, newMember));
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="newNode"></param>
+        /// <param name="newMember"></param>
         /// <returns></returns>
-        public MemberDeclarationsInfo ReplaceAt(int index, MemberDeclarationSyntax newNode)
+        public MemberDeclarationsInfo ReplaceAt(int index, MemberDeclarationSyntax newMember)
         {
-            return WithMembers(Members.ReplaceAt(index, newNode));
+            return WithMembers(Members.ReplaceAt(index, newMember));
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="nodeInList"></param>
-        /// <param name="newNodes"></param>
+        /// <param name="memberInList"></param>
+        /// <param name="newMembers"></param>
         /// <returns></returns>
-        public MemberDeclarationsInfo ReplaceRange(MemberDeclarationSyntax nodeInList, IEnumerable<MemberDeclarationSyntax> newNodes)
+        public MemberDeclarationsInfo ReplaceRange(MemberDeclarationSyntax memberInList, IEnumerable<MemberDeclarationSyntax> newMembers)
         {
-            return WithMembers(Members.ReplaceRange(nodeInList, newNodes));
+            return WithMembers(Members.ReplaceRange(memberInList, newMembers));
         }
 
         private void ThrowInvalidOperationIfNotInitialized()
@@ -477,30 +479,38 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(MemberDeclarationsInfo)} is not initalized.");
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Declaration?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is MemberDeclarationsInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(MemberDeclarationsInfo other)
         {
             return EqualityComparer<MemberDeclarationSyntax>.Default.Equals(Declaration, other.Declaration);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

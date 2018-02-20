@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a local declaration statement with a single variable.
     /// </summary>
     public readonly struct SingleLocalDeclarationStatementInfo : IEquatable<SingleLocalDeclarationStatementInfo>
     {
@@ -27,22 +27,22 @@ namespace Roslynator.CSharp.Syntax
         private static SingleLocalDeclarationStatementInfo Default { get; } = new SingleLocalDeclarationStatementInfo();
 
         /// <summary>
-        /// 
+        /// The local declaration statement.
         /// </summary>
         public LocalDeclarationStatementSyntax Statement { get; }
 
         /// <summary>
-        /// 
+        /// The variable declaration.
         /// </summary>
         public VariableDeclarationSyntax Declaration { get; }
 
         /// <summary>
-        /// 
+        /// The variable declarator.
         /// </summary>
         public VariableDeclaratorSyntax Declarator { get; }
 
         /// <summary>
-        /// 
+        /// The variable initializer, if any.
         /// </summary>
         public EqualsValueClauseSyntax Initializer
         {
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The modifier list.
         /// </summary>
         public SyntaxTokenList Modifiers
         {
@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The type of a declaration.
         /// </summary>
         public TypeSyntax Type
         {
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Variable identifier.
         /// </summary>
         public SyntaxToken Identifier
         {
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Variable name.
         /// </summary>
         public string IdentifierText
         {
@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The equals token.
         /// </summary>
         public SyntaxToken EqualsToken
         {
@@ -90,7 +90,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The semicolon.
         /// </summary>
         public SyntaxToken SemicolonToken
         {
@@ -98,7 +98,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -162,30 +162,38 @@ namespace Roslynator.CSharp.Syntax
             return new SingleLocalDeclarationStatementInfo(localDeclarationStatement, declaration, declarator);
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Statement?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is SingleLocalDeclarationStatementInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(SingleLocalDeclarationStatementInfo other)
         {
             return EqualityComparer<LocalDeclarationStatementSyntax>.Default.Equals(Statement, other.Statement);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

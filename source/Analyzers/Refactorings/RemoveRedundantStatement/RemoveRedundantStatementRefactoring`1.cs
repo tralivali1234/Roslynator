@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
             if (!(statement.Parent is BlockSyntax block))
                 return false;
 
-            if (!block.Statements.IsLast(statement, beforeLocalFunction: true))
+            if (!block.Statements.IsLast(statement, ignoreLocalFunctions: true))
                 return false;
 
             SyntaxNode parent = block.Parent;
@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
                             if (block == null)
                                 return false;
 
-                            if (!block.Statements.IsLast(containingStatement, beforeLocalFunction: true))
+                            if (!block.Statements.IsLast(containingStatement, ignoreLocalFunctions: true))
                                 return false;
 
                             parent = block.Parent;
@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
                             if (block == null)
                                 return false;
 
-                            if (!block.Statements.IsLast(containingStatement, beforeLocalFunction: true))
+                            if (!block.Statements.IsLast(containingStatement, ignoreLocalFunctions: true))
                                 return false;
 
                             parent = block.Parent;

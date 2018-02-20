@@ -59,22 +59,22 @@ namespace Roslynator.CSharp.Syntax
         private static GenericInfo Default { get; } = new GenericInfo();
 
         /// <summary>
-        /// Gets the declaration node (for example <see cref="ClassDeclarationSyntax"/> for a class).
+        /// The declaration node (for example <see cref="ClassDeclarationSyntax"/> for a class).
         /// </summary>
         public SyntaxNode Declaration { get; }
 
         /// <summary>
-        /// Gets the kind of this generic syntax.
+        /// The kind of this generic syntax.
         /// </summary>
         public SyntaxKind Kind { get; }
 
         /// <summary>
-        /// x
+        /// Type parameter list.
         /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
         /// <summary>
-        /// x
+        /// A list of type parameters.
         /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// x
+        /// A list of constraint clauses.
         /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
@@ -119,7 +119,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains a valid syntax.
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -268,7 +268,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// x
+        /// Creates a new <see cref="GenericInfo"/> with the type parameter list updated.
         /// </summary>
         /// <param name="typeParameterList"></param>
         /// <returns></returns>
@@ -337,7 +337,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// x
+        /// Creates a new <see cref="GenericInfo"/> with the constraint clauses updated.
         /// </summary>
         /// <param name="constraintClauses"></param>
         /// <returns></returns>
@@ -424,7 +424,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Returns the string representation of the declaration node, not including its leading and trailing trivia.
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
         /// </summary>
         /// <returns></returns>
         public override string ToString()

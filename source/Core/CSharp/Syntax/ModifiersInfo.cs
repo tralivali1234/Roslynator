@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about modifiers.
     /// </summary>
     public readonly struct ModifiersInfo : IEquatable<ModifiersInfo>
     {
@@ -23,110 +23,112 @@ namespace Roslynator.CSharp.Syntax
         private static ModifiersInfo Default { get; } = new ModifiersInfo();
 
         /// <summary>
-        /// 
+        /// The node that has the modifiers.
         /// </summary>
         public SyntaxNode Node { get; }
 
         /// <summary>
-        /// 
+        /// The modifier list.
         /// </summary>
         public SyntaxTokenList Modifiers { get; }
 
         /// <summary>
-        /// 
+        /// The explicit accessibility.
         /// </summary>
         public Accessibility ExplicitAccessibility
         {
             get { return CSharpAccessibility.GetExplicitAccessibility(Modifiers); }
         }
 
+        //TODO: property Accessibility
+
         /// <summary>
-        /// 
+        /// True if the modifier list contains "new" modifier.
         /// </summary>
         public bool IsNew => Modifiers.Contains(SyntaxKind.NewKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "const" modifier.
         /// </summary>
         public bool IsConst => Modifiers.Contains(SyntaxKind.ConstKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "static" modifier.
         /// </summary>
         public bool IsStatic => Modifiers.Contains(SyntaxKind.StaticKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "virtual" modifier.
         /// </summary>
         public bool IsVirtual => Modifiers.Contains(SyntaxKind.VirtualKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "sealed" modifier.
         /// </summary>
         public bool IsSealed => Modifiers.Contains(SyntaxKind.SealedKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "override" modifier.
         /// </summary>
         public bool IsOverride => Modifiers.Contains(SyntaxKind.OverrideKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "abstract" modifier.
         /// </summary>
         public bool IsAbstract => Modifiers.Contains(SyntaxKind.AbstractKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "readonly" modifier.
         /// </summary>
         public bool IsReadOnly => Modifiers.Contains(SyntaxKind.ReadOnlyKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "extern" modifier.
         /// </summary>
         public bool IsExtern => Modifiers.Contains(SyntaxKind.ExternKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "unsafe" modifier.
         /// </summary>
         public bool IsUnsafe => Modifiers.Contains(SyntaxKind.UnsafeKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "volatile" modifier.
         /// </summary>
         public bool IsVolatile => Modifiers.Contains(SyntaxKind.VolatileKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "async" modifier.
         /// </summary>
         public bool IsAsync => Modifiers.Contains(SyntaxKind.AsyncKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "partial" modifier.
         /// </summary>
         public bool IsPartial => Modifiers.Contains(SyntaxKind.PartialKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "ref" modifier.
         /// </summary>
         public bool IsRef => Modifiers.Contains(SyntaxKind.RefKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "out" modifier.
         /// </summary>
         public bool IsOut => Modifiers.Contains(SyntaxKind.OutKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "in" modifier.
         /// </summary>
         public bool IsIn => Modifiers.Contains(SyntaxKind.InKeyword);
 
         /// <summary>
-        /// 
+        /// True if the modifier list contains "params" modifier.
         /// </summary>
         public bool IsParams => Modifiers.Contains(SyntaxKind.ParamsKeyword);
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -355,7 +357,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ModifiersInfo"/> with the specified modifiers updated.
         /// </summary>
         /// <param name="modifiers"></param>
         /// <returns></returns>
@@ -496,7 +498,7 @@ namespace Roslynator.CSharp.Syntax
 
         //XTODO: GetKind
         /// <summary>
-        /// 
+        /// Gets the modifier kind.
         /// </summary>
         /// <returns></returns>
         public ModifierKind GetKind()
@@ -624,30 +626,38 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(ModifiersInfo)} is not initalized.");
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Node?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is ModifiersInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(ModifiersInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

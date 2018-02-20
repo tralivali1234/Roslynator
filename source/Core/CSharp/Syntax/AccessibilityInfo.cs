@@ -11,7 +11,7 @@ using Roslynator.CSharp.Comparers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a node and its accessibility modifiers.
     /// </summary>
     public readonly struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
@@ -26,27 +26,27 @@ namespace Roslynator.CSharp.Syntax
         private static AccessibilityInfo Default { get; } = new AccessibilityInfo();
 
         /// <summary>
-        /// 
+        /// The node that contains the modifiers.
         /// </summary>
         public SyntaxNode Node { get; }
 
         /// <summary>
-        /// 
+        /// Modifiers that may contain accessibility modifers.
         /// </summary>
         public SyntaxTokenList Modifiers { get; }
 
         /// <summary>
-        /// 
+        /// Zero-based index of the first accessibility modifer.
         /// </summary>
         public int TokenIndex { get; }
 
         /// <summary>
-        /// 
+        /// Zero-based index of the second accessibility modifier.
         /// </summary>
         public int SecondTokenIndex { get; }
 
         /// <summary>
-        /// 
+        /// First accessibility modifer.
         /// </summary>
         public SyntaxToken Token
         {
@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Second accessibility modifier.
         /// </summary>
         public SyntaxToken SecondToken
         {
@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Explicit accessibility, i.e. accessibility defined by accessibility modifiers.
         /// </summary>
         public Accessibility ExplicitAccessibility
         {
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains any underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -365,7 +365,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="AccessibilityInfo"/> with modifiers updated.
         /// </summary>
         /// <param name="newModifiers"></param>
         /// <returns></returns>
@@ -379,7 +379,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="AccessibilityInfo"/> with accessibility modifiers updated.
         /// </summary>
         /// <param name="newAccessibility"></param>
         /// <param name="comparer"></param>
@@ -457,31 +457,39 @@ namespace Roslynator.CSharp.Syntax
                 throw new InvalidOperationException($"{nameof(AccessibilityInfo)} is not initalized.");
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Node?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is AccessibilityInfo other
                 && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(AccessibilityInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

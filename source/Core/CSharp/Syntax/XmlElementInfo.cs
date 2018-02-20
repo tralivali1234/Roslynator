@@ -22,19 +22,19 @@ namespace Roslynator.CSharp.Syntax
         private static XmlElementInfo Default { get; } = new XmlElementInfo();
 
         /// <summary>
-        /// 
+        /// The xml element.
         /// </summary>
         public XmlNodeSyntax Element { get; }
 
         /// <summary>
-        /// 
+        /// Local name of the element.
         /// </summary>
         public string LocalName { get; }
 
         internal XmlElementKind ElementKind { get; }
 
         /// <summary>
-        /// 
+        /// Element kind.
         /// </summary>
         public SyntaxKind Kind
         {
@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether the element is <see cref="SyntaxKind.XmlEmptyElement"/>.
         /// </summary>
         public bool IsEmptyElement
         {
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines
         /// </summary>
         public bool Success
         {
@@ -119,23 +119,38 @@ namespace Roslynator.CSharp.Syntax
                 || IsLocalName(localName2, comparison);
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return Element?.ToString() ?? base.ToString();
+        }
+
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is XmlElementInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(XmlElementInfo other)
         {
             return EqualityComparer<XmlNodeSyntax>.Default.Equals(Element, other.Element);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

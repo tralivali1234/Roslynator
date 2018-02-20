@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a region.
     /// </summary>
     public readonly struct RegionInfo : IEquatable<RegionInfo>
     {
@@ -23,17 +23,17 @@ namespace Roslynator.CSharp.Syntax
         private static RegionInfo Default { get; } = new RegionInfo();
 
         /// <summary>
-        /// 
+        /// #region directive.
         /// </summary>
         public RegionDirectiveTriviaSyntax Directive { get; }
 
         /// <summary>
-        /// 
+        /// #endregion directive.
         /// </summary>
         public EndRegionDirectiveTriviaSyntax EndDirective { get; }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The absolute span of this region, not including its leading and trailing trivia.
         /// </summary>
         public TextSpan Span
         {
@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The absolute span of this region, including its leading and trailing trivia.
         /// </summary>
         public TextSpan FullSpan
         {
@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this region is empty, i.e. contains only white-space.
         /// </summary>
         public bool IsEmpty
         {
@@ -158,30 +158,38 @@ namespace Roslynator.CSharp.Syntax
             return new RegionInfo((RegionDirectiveTriviaSyntax)list[0], endRegionDirective);
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return Directive?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is RegionInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(RegionInfo other)
         {
             return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.Equals(Directive, other.Directive);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {

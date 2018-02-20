@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a type parameter.
     /// </summary>
     public readonly struct TypeParameterInfo : IEquatable<TypeParameterInfo>
     {
@@ -28,12 +28,12 @@ namespace Roslynator.CSharp.Syntax
         private static TypeParameterInfo Default { get; } = new TypeParameterInfo();
 
         /// <summary>
-        /// 
+        /// The type parameter.
         /// </summary>
         public TypeParameterSyntax TypeParameter { get; }
 
         /// <summary>
-        /// 
+        /// The type parameter name.
         /// </summary>
         public string Name
         {
@@ -41,17 +41,17 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Declaration node that contains this type parameter in its type parameter list.
         /// </summary>
         public SyntaxNode Declaration { get; }
 
         /// <summary>
-        /// 
+        /// Type parameter list that contains this type parameter.
         /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
         /// <summary>
-        /// 
+        /// A list of type parameters that contains this type parameter.
         /// </summary>
         public SeparatedSyntaxList<TypeParameterSyntax> TypeParameters
         {
@@ -59,12 +59,12 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// A list of constraint clauses.
         /// </summary>
         public SyntaxList<TypeParameterConstraintClauseSyntax> ConstraintClauses { get; }
 
         /// <summary>
-        /// 
+        /// The type parameter constraint clause. Returns null if a constraint clause if not declared.
         /// </summary>
         public TypeParameterConstraintClauseSyntax ConstraintClause
         {
@@ -83,7 +83,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Determines whether this instance contains an underlying syntax.
         /// </summary>
         public bool Success
         {
@@ -239,30 +239,38 @@ namespace Roslynator.CSharp.Syntax
             return Default;
         }
 
-        /// <summary>Returns the fully qualified type name of this instance.</summary>
-        /// <returns>A <see cref="string" /> containing a fully qualified type name.</returns>
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return TypeParameter?.ToString() ?? base.ToString();
         }
 
-        /// <summary>Indicates whether this instance and a specified object are equal.</summary>
-        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
         /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is TypeParameterInfo other && Equals(other);
         }
 
-        /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
-        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
         /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(TypeParameterInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
-        /// <summary>Returns the hash code for this instance.</summary>
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
