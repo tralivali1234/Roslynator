@@ -87,7 +87,7 @@ namespace Roslynator.CSharp.CodeFixes
             Document document = context.Document;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Remove {memberDeclaration.GetTitle()}",
+                $"Remove {CSharpFacts.GetTitle(memberDeclaration)}",
                 cancellationToken => document.RemoveMemberAsync(memberDeclaration, cancellationToken),
                 EquivalenceKey.Create(diagnostic, additionalKey));
 
@@ -107,7 +107,7 @@ namespace Roslynator.CSharp.CodeFixes
             Document document = context.Document;
 
             CodeAction codeAction = CodeAction.Create(
-                title ?? $"Remove {statement.GetTitle()}",
+                title ?? $"Remove {CSharpFacts.GetTitle(statement)}",
                 cancellationToken => document.RemoveStatementAsync(statement, cancellationToken),
                 EquivalenceKey.Create(diagnostic, additionalKey));
 

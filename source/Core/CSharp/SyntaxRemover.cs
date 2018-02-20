@@ -114,7 +114,7 @@ namespace Roslynator.CSharp
             return (TNode)WhitespaceRemover.GetInstance(span).Visit(node);
         }
 
-        public static MemberDeclarationSyntax RemoveMember(ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
+        public static ClassDeclarationSyntax RemoveMember(ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
         {
             if (classDeclaration == null)
                 throw new ArgumentNullException(nameof(classDeclaration));
@@ -148,7 +148,7 @@ namespace Roslynator.CSharp
             return compilationUnit.RemoveNode(compilationUnit.Members[index], GetOptions(newMember));
         }
 
-        public static MemberDeclarationSyntax RemoveMember(InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
+        public static InterfaceDeclarationSyntax RemoveMember(InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
         {
             if (interfaceDeclaration == null)
                 throw new ArgumentNullException(nameof(interfaceDeclaration));
@@ -165,7 +165,7 @@ namespace Roslynator.CSharp
             return interfaceDeclaration.RemoveNode(interfaceDeclaration.Members[index], GetOptions(newMember));
         }
 
-        public static MemberDeclarationSyntax RemoveMember(NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
+        public static NamespaceDeclarationSyntax RemoveMember(NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
         {
             if (namespaceDeclaration == null)
                 throw new ArgumentNullException(nameof(namespaceDeclaration));
@@ -182,7 +182,7 @@ namespace Roslynator.CSharp
             return namespaceDeclaration.RemoveNode(namespaceDeclaration.Members[index], GetOptions(newMember));
         }
 
-        public static MemberDeclarationSyntax RemoveMember(StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
+        public static StructDeclarationSyntax RemoveMember(StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
         {
             if (structDeclaration == null)
                 throw new ArgumentNullException(nameof(structDeclaration));
@@ -197,6 +197,23 @@ namespace Roslynator.CSharp
             structDeclaration = structDeclaration.WithMembers(structDeclaration.Members.ReplaceAt(index, newMember));
 
             return structDeclaration.RemoveNode(structDeclaration.Members[index], GetOptions(newMember));
+        }
+
+        public static TypeDeclarationSyntax RemoveMember(TypeDeclarationSyntax typeDeclaration, MemberDeclarationSyntax member)
+        {
+            if (typeDeclaration == null)
+                throw new ArgumentNullException(nameof(typeDeclaration));
+
+            if (member == null)
+                throw new ArgumentNullException(nameof(member));
+
+            int index = typeDeclaration.Members.IndexOf(member);
+
+            MemberDeclarationSyntax newMember = RemoveSingleLineDocumentationComment(member);
+
+            typeDeclaration = typeDeclaration.WithMembers(typeDeclaration.Members.ReplaceAt(index, newMember));
+
+            return typeDeclaration.RemoveNode(typeDeclaration.Members[index], GetOptions(newMember));
         }
     }
 }

@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
                 s = "base";
             }
 
-            return $"Add comment from {s} {memberDeclaration.GetTitle()}";
+            return $"Add comment from {s} {CSharpFacts.GetTitle(memberDeclaration)}";
         }
 
         public static Task<Document> RefactorAsync(

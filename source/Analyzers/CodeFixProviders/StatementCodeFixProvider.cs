@@ -111,7 +111,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case DiagnosticIdentifiers.RemoveRedundantStatement:
                         {
                             CodeAction codeAction = CodeAction.Create(
-                                $"Remove redundant {statement.GetTitle()}",
+                                $"Remove redundant {CSharpFacts.GetTitle(statement)}",
                                 cancellationToken => RemoveRedundantStatementRefactoring.RefactorAsync(context.Document, statement, cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 

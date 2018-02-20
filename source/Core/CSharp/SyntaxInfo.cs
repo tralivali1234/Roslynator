@@ -7,6 +7,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
+    //TODO: odmazat připonu Info z názvů metod
     /// <summary>
     /// Serves as a factory for types in Roslynator.CSharp.Syntax namespace.
     /// </summary>
@@ -24,7 +25,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified class declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -34,7 +35,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified constructor declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -44,7 +45,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified conversion operator declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -54,7 +55,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified delegate declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -64,7 +65,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified destructor declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -74,7 +75,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified enum declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -84,7 +85,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified event declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -94,7 +95,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified event field declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -104,7 +105,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified field declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -114,7 +115,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified indexer declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -124,7 +125,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified interface declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -134,7 +135,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified method declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -144,7 +145,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified operator declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -154,7 +155,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified property declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -164,7 +165,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified struct declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -174,7 +175,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified incomplete member.
         /// </summary>
         /// <param name="incompleteMember"></param>
         /// <returns></returns>
@@ -184,7 +185,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AccessibilityInfo"/> from the specified accessor declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -194,7 +195,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AsExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -212,7 +213,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.AsExpressionInfo"/> from the specified binary expression.
         /// </summary>
         /// <param name="binaryExpression"></param>
         /// <param name="walkDownParentheses"></param>
@@ -244,7 +245,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.BinaryExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -262,7 +263,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.BinaryExpressionInfo"/> from the specified binary expression.
         /// </summary>
         /// <param name="binaryExpression"></param>
         /// <param name="walkDownParentheses"></param>
@@ -280,7 +281,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ConditionalExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -298,7 +299,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ConditionalExpressionInfo"/> from the specified conditional expression.
         /// </summary>
         /// <param name="conditionalExpression"></param>
         /// <param name="walkDownParentheses"></param>
@@ -316,7 +317,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified type parameter constraint.
         /// </summary>
         /// <param name="typeParameterConstraint"></param>
         /// <returns></returns>
@@ -326,7 +327,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified constraint clause.
         /// </summary>
         /// <param name="constraintClause"></param>
         /// <returns></returns>
@@ -336,7 +337,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -346,7 +347,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified type parameter list.
         /// </summary>
         /// <param name="typeParameterList"></param>
         /// <returns></returns>
@@ -356,7 +357,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified class declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -366,7 +367,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified delegate declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -376,7 +377,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified interface declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -386,7 +387,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified local function.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -396,7 +397,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified method declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -406,7 +407,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.GenericInfo"/> from the specified struct declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -426,7 +427,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.IfStatementInfo"/> from the specified if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <returns></returns>
@@ -436,7 +437,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.LocalDeclarationStatementInfo"/> from the specified local declaration statement.
         /// </summary>
         /// <param name="localDeclarationStatement"></param>
         /// <param name="allowMissing"></param>
@@ -449,7 +450,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.LocalDeclarationStatementInfo"/> from the specified expression.
         /// </summary>
         /// <param name="expression"></param>
         /// <param name="allowMissing"></param>
@@ -462,7 +463,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -472,7 +473,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -482,7 +483,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -492,7 +493,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -502,7 +503,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
@@ -517,7 +518,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberInvocationExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -535,7 +536,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberInvocationExpressionInfo"/> from the specified invocation expression.
         /// </summary>
         /// <param name="invocationExpression"></param>
         /// <param name="allowMissing"></param>
@@ -550,7 +551,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberInvocationStatementInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="allowMissing"></param>
@@ -565,7 +566,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberInvocationStatementInfo"/> from the specified expression statement.
         /// </summary>
         /// <param name="expressionStatement"></param>
         /// <param name="allowMissing"></param>
@@ -580,7 +581,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.MemberInvocationStatementInfo"/> from the specified invocation expression.
         /// </summary>
         /// <param name="invocationExpression"></param>
         /// <param name="allowMissing"></param>
@@ -595,7 +596,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -605,7 +606,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified class declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
@@ -615,7 +616,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified constructor declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
@@ -625,7 +626,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified conversion operator declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
@@ -635,7 +636,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified delegate declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
@@ -645,7 +646,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified destructor declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
@@ -655,7 +656,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified enum declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -665,7 +666,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified event declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
@@ -675,7 +676,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified event field declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
@@ -685,7 +686,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified field declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
@@ -695,7 +696,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified indexer declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
@@ -705,7 +706,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified interface declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -715,7 +716,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified method declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
@@ -725,7 +726,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified operator declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
@@ -735,7 +736,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified property declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
@@ -745,7 +746,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified struct declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -755,7 +756,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified incomplete member.
         /// </summary>
         /// <param name="incompleteMember"></param>
         /// <returns></returns>
@@ -765,7 +766,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified accessor declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
@@ -775,7 +776,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified local declaration statement.
         /// </summary>
         /// <param name="localDeclarationStatement"></param>
         /// <returns></returns>
@@ -785,7 +786,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified local function.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
@@ -795,7 +796,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified parameter.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
@@ -805,7 +806,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.NullCheckExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="allowedStyles"></param>
@@ -829,7 +830,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.NullCheckExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="semanticModel"></param>
@@ -931,7 +932,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.RegionInfo"/> from the specified region directive.
         /// </summary>
         /// <param name="regionDirective"></param>
         /// <returns></returns>
@@ -941,7 +942,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.RegionInfo"/> from the specified endregion directive.
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
@@ -951,7 +952,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleAssignmentExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -966,7 +967,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleAssignmentExpressionInfo"/> from the specified assignment expression.
         /// </summary>
         /// <param name="assignmentExpression"></param>
         /// <param name="walkDownParentheses"></param>
@@ -981,7 +982,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleAssignmentStatementInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -996,7 +997,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleAssignmentStatementInfo"/> from the specified assignment expression.
         /// </summary>
         /// <param name="assignmentExpression"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1011,7 +1012,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleAssignmentStatementInfo"/> from the specified expression statement.
         /// </summary>
         /// <param name="expressionStatement"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1026,7 +1027,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleIfElseInfo"/> from the specified if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1041,7 +1042,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleIfStatementInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1056,7 +1057,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SimpleIfStatementInfo"/> from the specified if statement.
         /// </summary>
         /// <param name="ifStatement"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1071,7 +1072,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SingleLocalDeclarationStatementInfo"/> from the specified local declaration statement.
         /// </summary>
         /// <param name="localDeclarationStatement"></param>
         /// <param name="allowMissing"></param>
@@ -1084,7 +1085,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SingleLocalDeclarationStatementInfo"/> from the specified variable declaration.
         /// </summary>
         /// <param name="variableDeclaration"></param>
         /// <param name="allowMissing"></param>
@@ -1097,7 +1098,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SingleLocalDeclarationStatementInfo"/> from the specified value.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -1107,7 +1108,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SingleParameterLambdaExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="walkDownParentheses"></param>
@@ -1122,7 +1123,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.SingleParameterLambdaExpressionInfo"/> from the specified lambda expression.
         /// </summary>
         /// <param name="lambdaExpression"></param>
         /// <param name="allowMissing"></param>
@@ -1135,7 +1136,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.StatementsInfo"/> from the specified statement.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
@@ -1176,7 +1177,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.TypeParameterConstraintInfo"/> from the specified constraint.
         /// </summary>
         /// <param name="constraint"></param>
         /// <param name="allowMissing"></param>
@@ -1187,7 +1188,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.TypeParameterInfo"/> from the specified type parameter.
         /// </summary>
         /// <param name="typeParameter"></param>
         /// <returns></returns>
@@ -1197,7 +1198,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="Syntax.XmlElementInfo"/> from the specified xml node.
         /// </summary>
         /// <param name="xmlNode"></param>
         /// <returns></returns>

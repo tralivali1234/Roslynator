@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
                 InlineRefactoring<TNode, TDeclaration, TSymbol> refactoring = CreateRefactoring(context.Document, node, enclosingType, symbol, declaration, parameterInfos, semanticModel, declarationSemanticModel, context.CancellationToken);
 
-                string title = declaration.GetTitle();
+                string title = CSharpFacts.GetTitle(declaration);
 
                 if (expression != null)
                 {

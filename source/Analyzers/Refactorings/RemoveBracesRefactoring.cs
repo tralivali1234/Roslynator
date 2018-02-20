@@ -169,7 +169,7 @@ namespace Roslynator.CSharp.Refactorings
                 return;
             }
 
-            string title = block.Parent.GetTitle();
+            string title = CSharpFacts.GetTitle(block.Parent);
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveBraces, block, title);
 

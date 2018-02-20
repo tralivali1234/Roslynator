@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
             FileLinePositionSpan fileSpan = GetFileLinePositionSpan(member, context.CancellationToken);
 
             context.RegisterRefactoring(
-                $"Comment out {member.GetTitle()}",
+                $"Comment out {CSharpFacts.GetTitle(member)}",
                 cancellationToken => RefactorAsync(context.Document, fileSpan.StartLine(), fileSpan.EndLine(), cancellationToken));
         }
 
@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             FileLinePositionSpan fileSpan = GetFileLinePositionSpan(localFunctionStatement, context.CancellationToken);
 
             context.RegisterRefactoring(
-                $"Comment out {localFunctionStatement.GetTitle()}",
+                $"Comment out {CSharpFacts.GetTitle(localFunctionStatement)}",
                 cancellationToken => RefactorAsync(context.Document, fileSpan.StartLine(), fileSpan.EndLine(), cancellationToken));
         }
 

@@ -1,12 +1,110 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
     public static class CSharpFacts
     {
+        internal static string GetTitle(SyntaxNode node)
+        {
+            switch (node.Kind())
+            {
+                case SyntaxKind.IfStatement:
+                    return "if statement";
+                case SyntaxKind.ElseClause:
+                    return "else clause";
+                case SyntaxKind.DoStatement:
+                    return "do statement";
+                case SyntaxKind.ForEachStatement:
+                case SyntaxKind.ForEachVariableStatement:
+                    return "foreach statement";
+                case SyntaxKind.ForStatement:
+                    return "for statement";
+                case SyntaxKind.UsingStatement:
+                    return "using statement";
+                case SyntaxKind.WhileStatement:
+                    return "while statement";
+                case SyntaxKind.LockStatement:
+                    return "lock statement";
+                case SyntaxKind.FixedStatement:
+                    return "fixed statement";
+                case SyntaxKind.SwitchStatement:
+                    return "switch statement";
+                case SyntaxKind.BreakStatement:
+                    return "break statement";
+                case SyntaxKind.ContinueStatement:
+                    return "continue statement";
+                case SyntaxKind.ReturnStatement:
+                    return "return statement";
+                case SyntaxKind.YieldReturnStatement:
+                    return "yield return statement";
+                case SyntaxKind.YieldBreakStatement:
+                    return "yield break statement";
+                case SyntaxKind.MethodDeclaration:
+                    return "method";
+                case SyntaxKind.OperatorDeclaration:
+                    return "operator method";
+                case SyntaxKind.ConversionOperatorDeclaration:
+                    return "conversion method";
+                case SyntaxKind.ConstructorDeclaration:
+                    return "constructor";
+                case SyntaxKind.DestructorDeclaration:
+                    return "destructor";
+                case SyntaxKind.PropertyDeclaration:
+                    return "property";
+                case SyntaxKind.IndexerDeclaration:
+                    return "indexer";
+                case SyntaxKind.EventDeclaration:
+                case SyntaxKind.EventFieldDeclaration:
+                    return "event";
+                case SyntaxKind.FieldDeclaration:
+                    return (((FieldDeclarationSyntax)node).Modifiers.Contains(SyntaxKind.ConstKeyword)) ? "const" : "field";
+                case SyntaxKind.DelegateDeclaration:
+                    return "delegate";
+                case SyntaxKind.NamespaceDeclaration:
+                    return "namespace";
+                case SyntaxKind.ClassDeclaration:
+                    return "class";
+                case SyntaxKind.StructDeclaration:
+                    return "struct";
+                case SyntaxKind.InterfaceDeclaration:
+                    return "interface";
+                case SyntaxKind.EnumDeclaration:
+                    return "enum";
+                case SyntaxKind.IncompleteMember:
+                    return "member";
+                case SyntaxKind.GetAccessorDeclaration:
+                case SyntaxKind.SetAccessorDeclaration:
+                case SyntaxKind.AddAccessorDeclaration:
+                case SyntaxKind.RemoveAccessorDeclaration:
+                case SyntaxKind.UnknownAccessorDeclaration:
+                    return "accessor";
+                case SyntaxKind.LocalDeclarationStatement:
+                    return "local declaration";
+                case SyntaxKind.LocalFunctionStatement:
+                    return "local function";
+                case SyntaxKind.Parameter:
+                    return "parameter";
+                default:
+                    {
+                        Debug.Fail(node.Kind().ToString());
+
+                        if (node is StatementSyntax)
+                            return "statement";
+
+                        if (node is MemberDeclarationSyntax)
+                            return "member";
+
+                        throw new ArgumentException("", nameof(node));
+                    }
+            }
+        }
+
         public static bool IsCommentTrivia(SyntaxKind kind)
         {
             return kind.Is(

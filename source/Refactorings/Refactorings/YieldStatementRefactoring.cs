@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Refactorings.ReplaceStatementWithIf;
 
@@ -12,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, YieldStatementSyntax yieldStatement)
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.CallToMethod)
-                && yieldStatement.IsYieldReturn())
+                && yieldStatement.Kind() == SyntaxKind.YieldReturnStatement)
             {
                 ExpressionSyntax expression = yieldStatement.Expression;
 

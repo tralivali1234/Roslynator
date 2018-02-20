@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, ifStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(ifStatement));
         }
 
         private static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, elseClause.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(elseClause));
         }
 
         private static void AnalyzeCommonForEachStatement(SyntaxNodeAnalysisContext context)
@@ -70,7 +70,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, forEachStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(forEachStatement));
         }
 
         private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, forStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(forStatement));
         }
 
         private static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, usingStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(usingStatement));
         }
 
         private static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
@@ -106,7 +106,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, whileStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(whileStatement));
         }
 
         private static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, doStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(doStatement));
         }
 
         private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, lockStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(lockStatement));
         }
 
         private static void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
@@ -142,7 +142,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, fixedStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBraces, statement, CSharpFacts.GetTitle(fixedStatement));
         }
     }
 }

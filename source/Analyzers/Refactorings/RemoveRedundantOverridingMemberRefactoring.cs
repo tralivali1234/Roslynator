@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 methodDeclaration,
-                methodDeclaration.GetTitle());
+                CSharpFacts.GetTitle(methodDeclaration));
         }
 
         private static bool CheckParameters(
@@ -233,7 +233,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 propertyDeclaration,
-                propertyDeclaration.GetTitle());
+                CSharpFacts.GetTitle(propertyDeclaration));
         }
 
         internal static bool IsFixable(
@@ -367,7 +367,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 indexerDeclaration,
-                indexerDeclaration.GetTitle());
+                CSharpFacts.GetTitle(indexerDeclaration));
         }
 
         internal static bool IsFixable(

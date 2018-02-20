@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.CodeFixes
                             diagnostic,
                             memberDeclaration,
                             SyntaxKind.StaticKeyword,
-                            title: $"Make containing {memberDeclaration.GetTitle()} non-static",
+                            title: $"Make containing {CSharpFacts.GetTitle(memberDeclaration)} non-static",
                             additionalKey: CodeFixIdentifiers.MakeMemberNonStatic);
                         }
 

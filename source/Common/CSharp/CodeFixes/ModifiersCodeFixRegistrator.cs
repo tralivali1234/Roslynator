@@ -433,7 +433,7 @@ namespace Roslynator.CSharp.CodeFixes
                 case SyntaxKind.AbstractKeyword:
                 case SyntaxKind.ReadOnlyKeyword:
                 case SyntaxKind.AsyncKeyword:
-                    return $"Make {node.GetTitle()} {CSharpFacts.GetTitle(modifierKind)}";
+                    return $"Make {CSharpFacts.GetTitle(node)} {CSharpFacts.GetTitle(modifierKind)}";
             }
 
             return GetAddModifierTitle(modifierKind);

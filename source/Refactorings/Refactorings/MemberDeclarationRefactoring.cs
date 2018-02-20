@@ -42,14 +42,14 @@ namespace Roslynator.CSharp.Refactorings
                                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveMember))
                                 {
                                     context.RegisterRefactoring(
-                                        "Remove " + member.GetTitle(),
+                                        "Remove " + CSharpFacts.GetTitle(member),
                                         cancellationToken => context.Document.RemoveMemberAsync(member, cancellationToken));
                                 }
 
                                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.DuplicateMember))
                                 {
                                     context.RegisterRefactoring(
-                                        "Duplicate " + member.GetTitle(),
+                                        "Duplicate " + CSharpFacts.GetTitle(member),
                                         cancellationToken => DuplicateMemberDeclarationRefactoring.RefactorAsync(context.Document, member, cancellationToken));
                                 }
                             }

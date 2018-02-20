@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!localInfo.Success)
                 return;
 
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(localDeclaration.NextStatementOrDefault());
+            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(localDeclaration.NextStatement());
 
             if (!assignmentInfo.Success)
                 return;

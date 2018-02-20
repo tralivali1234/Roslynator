@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(assignmentInfo.Left is IdentifierNameSyntax identifierName))
                 return;
 
-            StatementSyntax nextStatement = assignmentInfo.Statement.NextStatementOrDefault();
+            StatementSyntax nextStatement = assignmentInfo.Statement.NextStatement();
 
             if (nextStatement == null)
                 return;
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
 
             statements = statements.RemoveAt(index);
 
-            var returnStatement = (ReturnStatementSyntax)statement.NextStatementOrDefault();
+            var returnStatement = (ReturnStatementSyntax)statement.NextStatement();
 
             IEnumerable<SyntaxTrivia> trivia = statementsInfo
                 .Node

@@ -155,16 +155,16 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
                     if (variableDeclaration.Variables.Count == 1)
                     {
-                        ReportDiagnostic(context, variableDeclaration.Parent, variableDeclaration.Parent.GetTitle());
+                        ReportDiagnostic(context, variableDeclaration.Parent, CSharpFacts.GetTitle(variableDeclaration.Parent));
                     }
                     else
                     {
-                        ReportDiagnostic(context, variableDeclarator, variableDeclaration.Parent.GetTitle());
+                        ReportDiagnostic(context, variableDeclarator, CSharpFacts.GetTitle(variableDeclaration.Parent));
                     }
                 }
                 else
                 {
-                    ReportDiagnostic(context, node, node.GetTitle());
+                    ReportDiagnostic(context, node, CSharpFacts.GetTitle(node));
                 }
             }
         }

@@ -140,7 +140,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.AddBracesWhenExpressionSpansOverMultipleLines,
                 embeddedStatement,
-                statement.GetTitle());
+                CSharpFacts.GetTitle(statement));
         }
 
         public static Task<Document> RefactorAsync(

@@ -122,7 +122,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     }
                 }
             }
-            else if (ifStatement.NextStatementOrDefault() is ReturnStatementSyntax returnStatement)
+            else if (ifStatement.NextStatement() is ReturnStatementSyntax returnStatement)
             {
                 return Analyze(ifStatement, returnStatement, options, semanticModel, cancellationToken);
             }
@@ -159,7 +159,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     if (options.UseExpression)
                     {
                         if (ifStatement.IsSimpleIf()
-                            && (ifStatement.PreviousStatementOrDefault() is IfStatementSyntax previousIf)
+                            && (ifStatement.PreviousStatement() is IfStatementSyntax previousIf)
                             && previousIf.IsSimpleIf()
                             && (previousIf.SingleStatementOrDefault() is ReturnStatementSyntax returnStatement)
                             && returnStatement.Expression?.WalkDownParentheses().Kind() == kind1)

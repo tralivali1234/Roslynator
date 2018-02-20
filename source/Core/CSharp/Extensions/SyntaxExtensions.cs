@@ -262,12 +262,12 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="MemberDeclarationSyntax"/> with the specified member removed.
+        /// Creates a new <see cref="ClassDeclarationSyntax"/> with the specified member removed.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static MemberDeclarationSyntax RemoveMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
+        public static ClassDeclarationSyntax RemoveMember(this ClassDeclarationSyntax classDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(classDeclaration, member);
         }
@@ -991,7 +991,7 @@ namespace Roslynator.CSharp
         /// <param name="interfaceDeclaration"></param>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static MemberDeclarationSyntax RemoveMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
+        public static InterfaceDeclarationSyntax RemoveMember(this InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(interfaceDeclaration, member);
         }
@@ -1440,7 +1440,7 @@ namespace Roslynator.CSharp
         /// <param name="namespaceDeclaration"></param>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static MemberDeclarationSyntax RemoveMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
+        public static NamespaceDeclarationSyntax RemoveMember(this NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(namespaceDeclaration, member);
         }
@@ -1767,14 +1767,13 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: PreviousStatement
         /// <summary>
         /// Gets the previous statement of the specified statement.
         /// If the specified statement is not contained in the list, or if there is no previous statement, then this method returns null.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public static StatementSyntax PreviousStatementOrDefault(this StatementSyntax statement)
+        public static StatementSyntax PreviousStatement(this StatementSyntax statement)
         {
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
@@ -1790,14 +1789,13 @@ namespace Roslynator.CSharp
             return null;
         }
 
-        //TODO: NextStatement
         /// <summary>
         /// Gets the next statement of the specified statement.
         /// If the specified statement is not contained in the list, or if there is no next statement, then this method returns null.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public static StatementSyntax NextStatementOrDefault(this StatementSyntax statement)
+        public static StatementSyntax NextStatement(this StatementSyntax statement)
         {
             if (statement == null)
                 throw new ArgumentNullException(nameof(statement));
@@ -1946,7 +1944,7 @@ namespace Roslynator.CSharp
         /// <param name="structDeclaration"></param>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static MemberDeclarationSyntax RemoveMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
+        public static StructDeclarationSyntax RemoveMember(this StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
         {
             return SyntaxRemover.RemoveMember(structDeclaration, member);
         }
@@ -2157,103 +2155,7 @@ namespace Roslynator.CSharp
         }
         #endregion SyntaxList<T>
 
-        //TODO: mov CSharpFacts
         #region SyntaxNode
-        internal static string GetTitle(this SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.IfStatement:
-                    return "if statement";
-                case SyntaxKind.ElseClause:
-                    return "else clause";
-                case SyntaxKind.DoStatement:
-                    return "do statement";
-                case SyntaxKind.ForEachStatement:
-                case SyntaxKind.ForEachVariableStatement:
-                    return "foreach statement";
-                case SyntaxKind.ForStatement:
-                    return "for statement";
-                case SyntaxKind.UsingStatement:
-                    return "using statement";
-                case SyntaxKind.WhileStatement:
-                    return "while statement";
-                case SyntaxKind.LockStatement:
-                    return "lock statement";
-                case SyntaxKind.FixedStatement:
-                    return "fixed statement";
-                case SyntaxKind.SwitchStatement:
-                    return "switch statement";
-                case SyntaxKind.BreakStatement:
-                    return "break statement";
-                case SyntaxKind.ContinueStatement:
-                    return "continue statement";
-                case SyntaxKind.ReturnStatement:
-                    return "return statement";
-                case SyntaxKind.YieldReturnStatement:
-                    return "yield return statement";
-                case SyntaxKind.YieldBreakStatement:
-                    return "yield break statement";
-                case SyntaxKind.MethodDeclaration:
-                    return "method";
-                case SyntaxKind.OperatorDeclaration:
-                    return "operator method";
-                case SyntaxKind.ConversionOperatorDeclaration:
-                    return "conversion method";
-                case SyntaxKind.ConstructorDeclaration:
-                    return "constructor";
-                case SyntaxKind.DestructorDeclaration:
-                    return "destructor";
-                case SyntaxKind.PropertyDeclaration:
-                    return "property";
-                case SyntaxKind.IndexerDeclaration:
-                    return "indexer";
-                case SyntaxKind.EventDeclaration:
-                case SyntaxKind.EventFieldDeclaration:
-                    return "event";
-                case SyntaxKind.FieldDeclaration:
-                    return (((FieldDeclarationSyntax)node).Modifiers.Contains(SyntaxKind.ConstKeyword)) ? "const" : "field";
-                case SyntaxKind.DelegateDeclaration:
-                    return "delegate";
-                case SyntaxKind.NamespaceDeclaration:
-                    return "namespace";
-                case SyntaxKind.ClassDeclaration:
-                    return "class";
-                case SyntaxKind.StructDeclaration:
-                    return "struct";
-                case SyntaxKind.InterfaceDeclaration:
-                    return "interface";
-                case SyntaxKind.EnumDeclaration:
-                    return "enum";
-                case SyntaxKind.IncompleteMember:
-                    return "member";
-                case SyntaxKind.GetAccessorDeclaration:
-                case SyntaxKind.SetAccessorDeclaration:
-                case SyntaxKind.AddAccessorDeclaration:
-                case SyntaxKind.RemoveAccessorDeclaration:
-                case SyntaxKind.UnknownAccessorDeclaration:
-                    return "accessor";
-                case SyntaxKind.LocalDeclarationStatement:
-                    return "local declaration";
-                case SyntaxKind.LocalFunctionStatement:
-                    return "local function";
-                case SyntaxKind.Parameter:
-                    return "parameter";
-                default:
-                    {
-                        Debug.Fail(node.Kind().ToString());
-
-                        if (node is StatementSyntax)
-                            return "statement";
-
-                        if (node is MemberDeclarationSyntax)
-                            return "member";
-
-                        throw new ArgumentException("", nameof(node));
-                    }
-            }
-        }
-
         internal static IEnumerable<DirectiveTriviaSyntax> DescendantPreprocessorDirectives(this SyntaxNode node, Func<DirectiveTriviaSyntax, bool> predicate = null)
         {
             return DescendantPreprocessorDirectives(node, node.FullSpan, predicate);
@@ -2591,9 +2493,8 @@ namespace Roslynator.CSharp
             return end;
         }
 
-        //TODO: com
         /// <summary>
-        /// Creates a new node with its leading trivia removed of all leading white-space trivia.
+        /// 
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -3676,8 +3577,18 @@ namespace Roslynator.CSharp
         }
         #endregion SyntaxTriviaList
 
-        //TODO: InserMember?
         #region TypeDeclarationSyntax
+        /// <summary>
+        /// Creates a new <see cref="TypeDeclarationSyntax"/> with the specified member removed.
+        /// </summary>
+        /// <param name="typeDeclaration"></param>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        public static TypeDeclarationSyntax RemoveMember(this TypeDeclarationSyntax typeDeclaration, MemberDeclarationSyntax member)
+        {
+            return SyntaxRemover.RemoveMember(typeDeclaration, member);
+        }
+
         /// <summary>
         /// Creates a new <see cref="TypeDeclarationSyntax"/> with the specified member removed.
         /// </summary>
@@ -3815,35 +3726,5 @@ namespace Roslynator.CSharp
                 || string.Equals(name, localName2, comparison);
         }
         #endregion XmlNameSyntax
-
-        //TODO: del
-        #region YieldStatementSyntax
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="yieldStatement"></param>
-        /// <returns></returns>
-        public static bool IsYieldReturn(this YieldStatementSyntax yieldStatement)
-        {
-            if (yieldStatement == null)
-                throw new ArgumentNullException(nameof(yieldStatement));
-
-            return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.ReturnKeyword);
-        }
-
-        //TODO: del
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="yieldStatement"></param>
-        /// <returns></returns>
-        public static bool IsYieldBreak(this YieldStatementSyntax yieldStatement)
-        {
-            if (yieldStatement == null)
-                throw new ArgumentNullException(nameof(yieldStatement));
-
-            return yieldStatement.ReturnOrBreakKeyword.IsKind(SyntaxKind.BreakKeyword);
-        }
-        #endregion YieldStatementSyntax
     }
 }

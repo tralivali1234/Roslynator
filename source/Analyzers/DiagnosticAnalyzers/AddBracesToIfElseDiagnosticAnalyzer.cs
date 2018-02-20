@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, ifStatement.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, CSharpFacts.GetTitle(ifStatement));
         }
 
         private static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (statement == null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, elseClause.GetTitle());
+            context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElse, statement, CSharpFacts.GetTitle(elseClause));
         }
     }
 }
