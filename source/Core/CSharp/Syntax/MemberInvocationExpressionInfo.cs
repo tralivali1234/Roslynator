@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about invocation expression.
     /// </summary>
     public readonly struct MemberInvocationExpressionInfo : IEquatable<MemberInvocationExpressionInfo>
     {
@@ -27,22 +27,22 @@ namespace Roslynator.CSharp.Syntax
         private static MemberInvocationExpressionInfo Default { get; } = new MemberInvocationExpressionInfo();
 
         /// <summary>
-        /// 
+        /// The expression that contains the member being invoked.
         /// </summary>
         public ExpressionSyntax Expression { get; }
 
         /// <summary>
-        /// 
+        /// The name of the member being invoked.
         /// </summary>
         public SimpleNameSyntax Name { get; }
 
         /// <summary>
-        /// 
+        /// The argumet list.
         /// </summary>
         public ArgumentListSyntax ArgumentList { get; }
 
         /// <summary>
-        /// 
+        /// The list of the arguments.
         /// </summary>
         public SeparatedSyntaxList<ArgumentSyntax> Arguments
         {
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The invocation expression.
         /// </summary>
         public InvocationExpressionSyntax InvocationExpression
         {
@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The member access expression.
         /// </summary>
         public MemberAccessExpressionSyntax MemberAccessExpression
         {
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The operator in the member access expression.
         /// </summary>
         public SyntaxToken OperatorToken
         {
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The name of the member being invoked.
         /// </summary>
         public string NameText
         {
@@ -131,10 +131,7 @@ namespace Roslynator.CSharp.Syntax
             if (argumentList == null)
                 return Default;
 
-            return new MemberInvocationExpressionInfo(
-                expression,
-                name,
-                argumentList);
+            return new MemberInvocationExpressionInfo(expression, name, argumentList);
         }
 
         internal MemberInvocationExpressionInfo WithName(string name)

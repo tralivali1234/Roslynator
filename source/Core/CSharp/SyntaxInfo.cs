@@ -982,18 +982,18 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.SimpleAssignmentStatementInfo"/> from the specified node.
+        /// Creates a new <see cref="Syntax.SimpleAssignmentStatementInfo"/> from the specified statement.
         /// </summary>
-        /// <param name="node"></param>
+        /// <param name="statement"></param>
         /// <param name="walkDownParentheses"></param>
         /// <param name="allowMissing"></param>
         /// <returns></returns>
         public static SimpleAssignmentStatementInfo SimpleAssignmentStatementInfo(
-            SyntaxNode node,
+            StatementSyntax statement,
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return Syntax.SimpleAssignmentStatementInfo.Create(node, walkDownParentheses, allowMissing);
+            return Syntax.SimpleAssignmentStatementInfo.Create(statement, walkDownParentheses, allowMissing);
         }
 
         /// <summary>

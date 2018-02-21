@@ -17,7 +17,14 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ExpressionSyntax expression)
         {
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(expression.Parent.Parent);
+            expression = expression.WalkUpParentheses();
+
+            var assignmentExpression = expression.Parent as AssignmentExpressionSyntax;
+
+            if (expression != assignmentExpression?.Left)
+                return;
+
+            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(assignmentExpression);
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
@@ -34,9 +41,6 @@ namespace Roslynator.CSharp.Refactorings
             CancellationToken cancellationToken)
         {
             if (!assignmentInfo.Success)
-                return false;
-
-            if (assignmentInfo.Left != expression)
                 return false;
 
             if (assignmentInfo.Right.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression))

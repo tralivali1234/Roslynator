@@ -62,18 +62,10 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(Walk(node, walkDownParentheses) as AssignmentExpressionSyntax, walkDownParentheses, allowMissing);
+            return Create(WalkAndCheck(node, allowMissing, walkDownParentheses) as AssignmentExpressionSyntax, walkDownParentheses, allowMissing);
         }
 
         internal static SimpleAssignmentExpressionInfo Create(
-            AssignmentExpressionSyntax assignmentExpression,
-            bool walkDownParentheses = true,
-            bool allowMissing = false)
-        {
-            return CreateCore(assignmentExpression, walkDownParentheses, allowMissing);
-        }
-
-        internal static SimpleAssignmentExpressionInfo CreateCore(
             AssignmentExpressionSyntax assignmentExpression,
             bool walkDownParentheses = true,
             bool allowMissing = false)

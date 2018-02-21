@@ -20,4 +20,7 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1714:Flags enums should have plural names", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.PreprocessorDirectiveKind")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1714:Flags enums should have plural names", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.CommentKind")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1714:Flags enums should have plural names", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.ModifierKind")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2231:Overload operator equals on overriding value type Equals", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
 

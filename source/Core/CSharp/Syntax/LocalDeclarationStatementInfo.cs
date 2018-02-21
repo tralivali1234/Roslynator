@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about local declaration statement.
     /// </summary>
     public readonly struct LocalDeclarationStatementInfo : IEquatable<LocalDeclarationStatementInfo>
     {
@@ -27,12 +27,12 @@ namespace Roslynator.CSharp.Syntax
         private static LocalDeclarationStatementInfo Default { get; } = new LocalDeclarationStatementInfo();
 
         /// <summary>
-        /// 
+        /// The local declaration statement.
         /// </summary>
         public LocalDeclarationStatementSyntax Statement { get; }
 
         /// <summary>
-        /// 
+        /// The modifier list.
         /// </summary>
         public SyntaxTokenList Modifiers
         {
@@ -40,17 +40,17 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The type of the declaration.
         /// </summary>
         public TypeSyntax Type { get; }
 
         /// <summary>
-        /// 
+        /// The variable declaration.
         /// </summary>
         public VariableDeclarationSyntax Declaration { get; }
 
         /// <summary>
-        /// 
+        /// A list of variables.
         /// </summary>
         public SeparatedSyntaxList<VariableDeclaratorSyntax> Variables
         {
@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The semicolon token.
         /// </summary>
         public SyntaxToken SemicolonToken
         {

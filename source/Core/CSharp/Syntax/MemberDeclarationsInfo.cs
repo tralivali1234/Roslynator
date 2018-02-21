@@ -11,7 +11,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about a list of member declarations.
     /// </summary>
     public readonly struct MemberDeclarationsInfo : IEquatable<MemberDeclarationsInfo>, IReadOnlyList<MemberDeclarationSyntax>
     {
@@ -24,17 +24,17 @@ namespace Roslynator.CSharp.Syntax
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
         /// <summary>
-        /// 
+        /// The declaration that contains the members.
         /// </summary>
         public MemberDeclarationSyntax Declaration { get; }
 
         /// <summary>
-        /// 
+        /// A list of members.
         /// </summary>
         public SyntaxList<MemberDeclarationSyntax> Members { get; }
 
         /// <summary>
-        /// 
+        /// A kind of the declaration.
         /// </summary>
         public SyntaxKind Kind
         {
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// A number of members in the list.
         /// </summary>
         public int Count
         {
@@ -58,10 +58,10 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Gets the element at the specified index in the read-only list.
+        /// Gets the member at the specified index in the list.
         /// </summary>
-        /// <returns>The element at the specified index in the read-only list.</returns>
-        /// <param name="index">The zero-based index of the element to get. </param>
+        /// <returns>The member at the specified index in the list.</returns>
+        /// <param name="index">The zero-based index of the member to get. </param>
         public MemberDeclarationSyntax this[int index]
         {
             get { return Members[index]; }
@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Gets the enumerator for the list of members.
         /// </summary>
         /// <returns></returns>
         public SyntaxList<MemberDeclarationSyntax>.Enumerator GetEnumerator()
@@ -153,7 +153,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the members updated.
         /// </summary>
         /// <param name="members"></param>
         /// <returns></returns>
@@ -163,7 +163,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the members updated.
         /// </summary>
         /// <param name="members"></param>
         /// <returns></returns>
@@ -206,7 +206,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified node removed.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="options"></param>
@@ -250,7 +250,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified old node replaced with a new node.
         /// </summary>
         /// <param name="oldNode"></param>
         /// <param name="newNode"></param>
@@ -294,7 +294,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified member added at the end.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -304,7 +304,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified members added at the end.
         /// </summary>
         /// <param name="members"></param>
         /// <returns></returns>
@@ -314,7 +314,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// True if the list has at least one member.
         /// </summary>
         /// <returns></returns>
         public bool Any()
@@ -323,7 +323,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The first member in the list.
         /// </summary>
         /// <returns></returns>
         public MemberDeclarationSyntax First()
@@ -332,7 +332,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The first member in the list or null if the list is empty.
         /// </summary>
         /// <returns></returns>
         public MemberDeclarationSyntax FirstOrDefault()
@@ -341,7 +341,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Searches for a member that matches the predicate and returns returns zero-based index of the first occurrence in the list.
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
@@ -351,7 +351,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The index of the member in the list.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -361,7 +361,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified member inserted at the index.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="member"></param>
@@ -372,7 +372,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified members inserted at the index.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="members"></param>
@@ -383,7 +383,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The last member in the list.
         /// </summary>
         /// <returns></returns>
         public MemberDeclarationSyntax Last()
@@ -392,7 +392,16 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The last member in the list or null if the list is empty.
+        /// </summary>
+        /// <returns></returns>
+        public MemberDeclarationSyntax LastOrDefault()
+        {
+            return Members.LastOrDefault();
+        }
+
+        /// <summary>
+        /// Searches for a member that matches the predicate and returns returns zero-based index of the last occurrence in the list.
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
@@ -402,7 +411,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Searches for a member and returns zero-based index of the last occurrence in the list.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -412,16 +421,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public MemberDeclarationSyntax LastOrDefault()
-        {
-            return Members.LastOrDefault();
-        }
-
-        /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified member removed.
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
@@ -431,7 +431,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the member at the specified index removed.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -441,7 +441,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified member replaced with the new member.
         /// </summary>
         /// <param name="memberInList"></param>
         /// <param name="newMember"></param>
@@ -452,7 +452,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the member at the specified index replaced with a new member.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="newMember"></param>
@@ -463,7 +463,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="MemberDeclarationsInfo"/> with the specified member replaced with new members.
         /// </summary>
         /// <param name="memberInList"></param>
         /// <param name="newMembers"></param>

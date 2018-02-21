@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about invocation expression in an expression statement.
     /// </summary>
     public readonly struct MemberInvocationStatementInfo : IEquatable<MemberInvocationStatementInfo>
     {
@@ -29,27 +29,27 @@ namespace Roslynator.CSharp.Syntax
         private static MemberInvocationStatementInfo Default { get; } = new MemberInvocationStatementInfo();
 
         /// <summary>
-        /// 
+        /// The invocation expression.
         /// </summary>
         public InvocationExpressionSyntax InvocationExpression { get; }
 
         /// <summary>
-        /// 
+        /// The expression that contains the member being invoked.
         /// </summary>
         public ExpressionSyntax Expression { get; }
 
         /// <summary>
-        /// 
+        /// The name of the member being invoked.
         /// </summary>
         public SimpleNameSyntax Name { get; }
 
         /// <summary>
-        /// 
+        /// The argument list.
         /// </summary>
         public ArgumentListSyntax ArgumentList { get; }
 
         /// <summary>
-        /// 
+        /// A list of arguments.
         /// </summary>
         public SeparatedSyntaxList<ArgumentSyntax> Arguments
         {
@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The expression statement that contains the invocation expression.
         /// </summary>
         public ExpressionStatementSyntax Statement
         {
@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The member access expression.
         /// </summary>
         public MemberAccessExpressionSyntax MemberAccessExpression
         {
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The name of the member being invoked.
         /// </summary>
         public string NameText
         {
@@ -125,32 +125,16 @@ namespace Roslynator.CSharp.Syntax
 
         private static MemberInvocationStatementInfo CreateCore(InvocationExpressionSyntax invocationExpression, bool allowMissing)
         {
-            if (!(invocationExpression.Expression is MemberAccessExpressionSyntax memberAccessExpression))
-                return Default;
+            MemberInvocationExpressionInfo info = MemberInvocationExpressionInfo.Create(invocationExpression, allowMissing);
 
-            if (memberAccessExpression.Kind() != SyntaxKind.SimpleMemberAccessExpression)
-                return Default;
-
-            ExpressionSyntax expression = memberAccessExpression.Expression;
-
-            if (!Check(expression, allowMissing))
-                return Default;
-
-            SimpleNameSyntax name = memberAccessExpression.Name;
-
-            if (!Check(name, allowMissing))
-                return Default;
-
-            ArgumentListSyntax argumentList = invocationExpression.ArgumentList;
-
-            if (argumentList == null)
+            if (!info.Success)
                 return Default;
 
             return new MemberInvocationStatementInfo(
                 invocationExpression,
-                expression,
-                name,
-                argumentList);
+                info.Expression,
+                info.Name,
+                info.ArgumentList);
         }
 
         /// <summary>

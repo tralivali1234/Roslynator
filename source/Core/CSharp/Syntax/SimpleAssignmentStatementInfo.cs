@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
@@ -24,8 +23,16 @@ namespace Roslynator.CSharp.Syntax
             Right = right;
         }
 
+        private SimpleAssignmentStatementInfo(SimpleAssignmentExpressionInfo info)
+        {
+            AssignmentExpression = info.AssignmentExpression;
+            Left = info.Left;
+            Right = info.Right;
+        }
+
         private static SimpleAssignmentStatementInfo Default { get; } = new SimpleAssignmentStatementInfo();
 
+        //TODO: Expression
         /// <summary>
         /// The simple assignment expression.
         /// </summary>
@@ -50,6 +57,7 @@ namespace Roslynator.CSharp.Syntax
             get { return AssignmentExpression?.OperatorToken ?? default(SyntaxToken); }
         }
 
+        //TODO: cache
         /// <summary>
         /// The expression statement the simple assignment expression is contained in.
         /// </summary>
@@ -66,20 +74,13 @@ namespace Roslynator.CSharp.Syntax
             get { return AssignmentExpression != null; }
         }
 
+        //TODO: ?
         internal static SimpleAssignmentStatementInfo Create(
-            SyntaxNode node,
+            StatementSyntax statement,
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            switch (node)
-            {
-                case ExpressionStatementSyntax expressionStatement:
-                    return Create(expressionStatement, walkDownParentheses, allowMissing);
-                case AssignmentExpressionSyntax assignmentExpression:
-                    return Create(assignmentExpression, walkDownParentheses, allowMissing);
-            }
-
-            return Default;
+            return Create(statement as ExpressionStatementSyntax, walkDownParentheses, allowMissing);
         }
 
         internal static SimpleAssignmentStatementInfo Create(
@@ -92,22 +93,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(expression, allowMissing))
                 return Default;
 
-            if (expression?.Kind() != SyntaxKind.SimpleAssignmentExpression)
-                return Default;
-
-            var assignmentExpression = (AssignmentExpressionSyntax)expression;
-
-            ExpressionSyntax left = WalkAndCheck(assignmentExpression.Left, allowMissing, walkDownParentheses);
-
-            if (left == null)
-                return Default;
-
-            ExpressionSyntax right = WalkAndCheck(assignmentExpression.Right, allowMissing, walkDownParentheses);
-
-            if (right == null)
-                return Default;
-
-            return new SimpleAssignmentStatementInfo(assignmentExpression, left, right);
+            return Create(expression as AssignmentExpressionSyntax, walkDownParentheses, allowMissing);
         }
 
         internal static SimpleAssignmentStatementInfo Create(
@@ -115,23 +101,12 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            if (assignmentExpression?.Kind() != SyntaxKind.SimpleAssignmentExpression)
+            SimpleAssignmentExpressionInfo info = SimpleAssignmentExpressionInfo.Create(assignmentExpression, walkDownParentheses, allowMissing);
+
+            if (!info.Success)
                 return Default;
 
-            if (!(assignmentExpression.Parent is ExpressionStatementSyntax expressionStatement))
-                return Default;
-
-            ExpressionSyntax left = WalkAndCheck(assignmentExpression.Left, allowMissing, walkDownParentheses);
-
-            if (left == null)
-                return Default;
-
-            ExpressionSyntax right = WalkAndCheck(assignmentExpression.Right, allowMissing, walkDownParentheses);
-
-            if (right == null)
-                return Default;
-
-            return new SimpleAssignmentStatementInfo(assignmentExpression, left, right);
+            return new SimpleAssignmentStatementInfo(info);
         }
 
         /// <summary>
@@ -140,6 +115,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
+            //TODO: ?? ""
             return Statement?.ToString() ?? base.ToString();
         }
 

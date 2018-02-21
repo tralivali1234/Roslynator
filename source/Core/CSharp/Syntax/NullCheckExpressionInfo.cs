@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
 
-        //XTODO: rename FullExpression
+        //XTODO: rename FullExpression, NullCheckExpression
         /// <summary>
         /// The null check expression, e.g. "x == null".
         /// </summary>

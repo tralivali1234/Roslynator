@@ -2479,6 +2479,23 @@ namespace Roslynator.CSharp
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="identifier"></param>
+        /// <param name="members"></param>
+        /// <returns></returns>
+        public static EnumDeclarationSyntax EnumDeclaration(SyntaxTokenList modifiers, SyntaxToken identifier, SeparatedSyntaxList<EnumMemberDeclarationSyntax> members)
+        {
+            return SyntaxFactory.EnumDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                identifier,
+                default(BaseListSyntax),
+                members);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -2593,6 +2610,22 @@ namespace Roslynator.CSharp
                     initializer));
         }
 
+        public static EventFieldDeclarationSyntax EventFieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, string identifier)
+        {
+            return EventFieldDeclaration(
+                modifiers,
+                type,
+                Identifier(identifier));
+        }
+
+        public static EventFieldDeclarationSyntax EventFieldDeclaration(SyntaxTokenList modifiers, TypeSyntax type, SyntaxToken identifier)
+        {
+            return SyntaxFactory.EventFieldDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                VariableDeclaration(type, identifier));
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -2655,6 +2688,154 @@ namespace Roslynator.CSharp
         /// 
         /// </summary>
         /// <param name="modifiers"></param>
+        /// <param name="returnType"></param>
+        /// <param name="operatorToken"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public static OperatorDeclarationSyntax OperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax returnType,
+            SyntaxToken operatorToken,
+            ParameterListSyntax parameterList,
+            BlockSyntax body)
+        {
+            return SyntaxFactory.OperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                returnType,
+                operatorToken,
+                parameterList,
+                body,
+                default(ArrowExpressionClauseSyntax));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="returnType"></param>
+        /// <param name="operatorToken"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="expressionBody"></param>
+        /// <returns></returns>
+        public static OperatorDeclarationSyntax OperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax returnType,
+            SyntaxToken operatorToken,
+            ParameterListSyntax parameterList,
+            ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SyntaxFactory.OperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                returnType,
+                operatorToken,
+                parameterList,
+                default(BlockSyntax),
+                expressionBody);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public static ConversionOperatorDeclarationSyntax ImplicitConversionOperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            ParameterListSyntax parameterList,
+            BlockSyntax body)
+        {
+            return SyntaxFactory.ConversionOperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                ImplicitKeyword(),
+                type,
+                parameterList,
+                body,
+                default(ArrowExpressionClauseSyntax));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="expressionBody"></param>
+        /// <returns></returns>
+        public static ConversionOperatorDeclarationSyntax ImplicitConversionOperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            ParameterListSyntax parameterList,
+            ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SyntaxFactory.ConversionOperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                ImplicitKeyword(),
+                type,
+                parameterList,
+                default(BlockSyntax),
+                expressionBody);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="body"></param>
+        /// <returns></returns>
+        public static ConversionOperatorDeclarationSyntax ExplicitConversionOperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            ParameterListSyntax parameterList,
+            BlockSyntax body)
+        {
+            return SyntaxFactory.ConversionOperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                ExplicitKeyword(),
+                type,
+                parameterList,
+                body,
+                default(ArrowExpressionClauseSyntax));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="expressionBody"></param>
+        /// <returns></returns>
+        public static ConversionOperatorDeclarationSyntax ExplicitConversionOperatorDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            ParameterListSyntax parameterList,
+            ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SyntaxFactory.ConversionOperatorDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                ExplicitKeyword(),
+                type,
+                parameterList,
+                default(BlockSyntax),
+                expressionBody);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
         /// <param name="type"></param>
         /// <param name="identifier"></param>
         /// <param name="accessorList"></param>
@@ -2702,6 +2883,53 @@ namespace Roslynator.CSharp
                 default(AccessorListSyntax),
                 expressionBody,
                 default(EqualsValueClauseSyntax));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="accessorList"></param>
+        /// <returns></returns>
+        public static IndexerDeclarationSyntax IndexerDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            BracketedParameterListSyntax parameterList,
+            AccessorListSyntax accessorList)
+        {
+            return SyntaxFactory.IndexerDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                type,
+                default(ExplicitInterfaceSpecifierSyntax),
+                parameterList,
+                accessorList);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="modifiers"></param>
+        /// <param name="type"></param>
+        /// <param name="parameterList"></param>
+        /// <param name="expressionBody"></param>
+        /// <returns></returns>
+        public static IndexerDeclarationSyntax IndexerDeclaration(
+            SyntaxTokenList modifiers,
+            TypeSyntax type,
+            BracketedParameterListSyntax parameterList,
+            ArrowExpressionClauseSyntax expressionBody)
+        {
+            return SyntaxFactory.IndexerDeclaration(
+                default(SyntaxList<AttributeListSyntax>),
+                modifiers,
+                type,
+                default(ExplicitInterfaceSpecifierSyntax),
+                parameterList,
+                default(AccessorListSyntax),
+                expressionBody);
         }
         #endregion MemberDeclaration
 

@@ -753,6 +753,7 @@ namespace Roslynator.CSharp
         #endregion ForStatementSyntax
 
         #region IfStatementSyntax
+        //TODO: SingleNonBlockStatementOrDefault(bool shouldThrow)
         internal static StatementSyntax SingleStatementOrDefault(this IfStatementSyntax ifStatement)
         {
             return SingleStatementOrDefault(ifStatement.Statement);
@@ -3725,5 +3726,16 @@ namespace Roslynator.CSharp
                 || string.Equals(name, localName2, comparison);
         }
         #endregion XmlNameSyntax
+
+        //TODO: 
+        public static bool IsYieldBreak(this YieldStatementSyntax yieldStatement)
+        {
+            return yieldStatement.IsKind(SyntaxKind.YieldBreakStatement);
+        }
+
+        public static bool IsYieldReturn(this YieldStatementSyntax yieldStatement)
+        {
+            return yieldStatement.IsKind(SyntaxKind.YieldReturnStatement);
+        }
     }
 }
