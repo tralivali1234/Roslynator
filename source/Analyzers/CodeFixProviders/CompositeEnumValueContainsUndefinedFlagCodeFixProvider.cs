@@ -7,17 +7,23 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CompositeEnumValueContainsUndefinedFlagCodeFixProvider))]
     [Shared]
-    public class CompositeEnumValueContainsUndefinedFlagCodeFixProvider : AbstractCodeFixProvider
+    public class CompositeEnumValueContainsUndefinedFlagCodeFixProvider : BaseCodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(DiagnosticIdentifiers.CompositeEnumValueContainsUndefinedFlag); }
+        }
+
+        public override FixAllProvider GetFixAllProvider()
+        {
+            return null;
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -27,14 +33,16 @@ namespace Roslynator.CSharp.CodeFixes
             if (!TryFindFirstAncestorOrSelf(root, context.Span, out EnumDeclarationSyntax enumDeclaration))
                 return;
 
-            string value = context.Diagnostics[0].Properties["Value"];
+            Diagnostic diagnostic = context.Diagnostics[0];
+
+            string value = diagnostic.Properties["Value"];
 
             CodeAction codeAction = CodeAction.Create(
                 $"Declare enum member with value {value}",
                 cancellationToken => CompositeEnumValueContainsUndefinedFlagRefactoring.RefactorAsync(context.Document, enumDeclaration, value, cancellationToken),
-                GetEquivalenceKey(DiagnosticIdentifiers.CompositeEnumValueContainsUndefinedFlag));
+                GetEquivalenceKey(diagnostic));
 
-            context.RegisterCodeFix(codeAction, context.Diagnostics[0]);
+            context.RegisterCodeFix(codeAction, diagnostic);
         }
     }
 }

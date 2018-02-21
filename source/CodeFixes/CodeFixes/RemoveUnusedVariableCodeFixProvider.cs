@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -58,7 +59,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             {
                                                 CodeAction codeAction = CodeAction.Create(
                                                     "Remove unused variable",
-                                                    cancellationToken => context.Document.RemoveNodeAsync(localDeclarationStatement, RemoveHelper.GetRemoveOptions(localDeclarationStatement), cancellationToken),
+                                                    cancellationToken => context.Document.RemoveNodeAsync(localDeclarationStatement, cancellationToken),
                                                     GetEquivalenceKey(diagnostic));
 
                                                 context.RegisterCodeFix(codeAction, diagnostic);
@@ -68,7 +69,7 @@ namespace Roslynator.CSharp.CodeFixes
                                         {
                                             CodeAction codeAction = CodeAction.Create(
                                                 "Remove unused variable",
-                                                cancellationToken => context.Document.RemoveNodeAsync(variableDeclarator, RemoveHelper.GetRemoveOptions(variableDeclarator), cancellationToken),
+                                                cancellationToken => context.Document.RemoveNodeAsync(variableDeclarator, cancellationToken),
                                                 GetEquivalenceKey(diagnostic));
 
                                             context.RegisterCodeFix(codeAction, diagnostic);
@@ -86,7 +87,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             {
                                                 CatchDeclarationSyntax newNode = catchDeclaration
                                                     .WithIdentifier(default(SyntaxToken))
-                                                    .WithCloseParenToken(catchDeclaration.CloseParenToken.PrependToLeadingTrivia(token.GetLeadingAndTrailingTrivia()))
+                                                    .WithCloseParenToken(catchDeclaration.CloseParenToken.PrependToLeadingTrivia(token.GetAllTrivia()))
                                                     .WithFormatterAnnotation();
 
                                                 return context.Document.ReplaceNodeAsync(catchDeclaration, newNode, cancellationToken);

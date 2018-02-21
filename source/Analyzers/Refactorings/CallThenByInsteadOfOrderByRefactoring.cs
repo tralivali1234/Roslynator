@@ -28,8 +28,8 @@ namespace Roslynator.CSharp.Refactorings
                         case "OrderBy":
                         case "OrderByDescending":
                             {
-                                if (IsLinqExtensionOfIEnumerableOfT(context, invocationInfo.InvocationExpression)
-                                    && IsLinqExtensionOfIEnumerableOfT(context, invocationInfo2.InvocationExpression))
+                                if (IsOrderByOrOrderByDescending(invocationInfo.InvocationExpression, context.SemanticModel, context.CancellationToken)
+                                    && IsOrderByOrOrderByDescending(invocationInfo2.InvocationExpression, context.SemanticModel, context.CancellationToken))
                                 {
                                     context.ReportDiagnostic(
                                         DiagnosticDescriptors.CallThenByInsteadOfOrderBy,
@@ -44,11 +44,13 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool IsLinqExtensionOfIEnumerableOfT(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationExpression)
+        private static bool IsOrderByOrOrderByDescending(InvocationExpressionSyntax invocationExpression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            return context.SemanticModel.TryGetExtensionMethodInfo(invocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.None, context.CancellationToken)
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
+
+            return methodInfo.Symbol != null
                 && methodInfo.IsName("OrderBy", "OrderByDescending")
-                && methodInfo.IsLinqExtensionOfIEnumerableOfT();
+                && methodInfo.IsLinqExtensionOfIEnumerableOfT(semanticModel);
         }
 
         public static Task<Document> RefactorAsync(
@@ -57,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             string newName,
             CancellationToken cancellationToken)
         {
-            InvocationExpressionSyntax newInvocationExpression = RefactoringHelper.ChangeInvokedMethodName(invocationExpression, newName);
+            InvocationExpressionSyntax newInvocationExpression = RefactoringUtility.ChangeInvokedMethodName(invocationExpression, newName);
 
             return document.ReplaceNodeAsync(invocationExpression, newInvocationExpression, cancellationToken);
         }

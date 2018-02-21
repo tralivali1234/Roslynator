@@ -72,10 +72,9 @@ namespace Roslynator.CSharp.Refactorings
             foreach (BlockSyntax block in GetBlockStatements(topmostIf))
             {
                 if (block == selectedBlock)
-                {
                     continue;
-                }
-                else if (IsEmbeddableBlock(block))
+
+                if (IsEmbeddableBlock(block))
                 {
                     success = true;
                 }
@@ -90,11 +89,11 @@ namespace Roslynator.CSharp.Refactorings
 
         private static IEnumerable<BlockSyntax> GetBlockStatements(IfStatementSyntax ifStatement)
         {
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 StatementSyntax statement = ifOrElse.Statement;
 
-                if (statement?.IsKind(SyntaxKind.Block) == true)
+                if (statement?.Kind() == SyntaxKind.Block)
                     yield return (BlockSyntax)statement;
             }
         }
@@ -130,7 +129,8 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsEmbeddableBlock(BlockSyntax block)
         {
-            return block.Parent?.Kind().CanContainEmbeddedStatement() == true
+            return block.Parent != null
+                && CSharpFacts.CanHaveEmbeddedStatement(block.Parent.Kind())
                 && block
                     .Statements
                     .SingleOrDefault(shouldThrow: false)?

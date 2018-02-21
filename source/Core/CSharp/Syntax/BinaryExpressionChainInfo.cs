@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
@@ -9,19 +11,19 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct BinaryExpressionChainInfo
+    internal readonly struct BinaryExpressionChainInfo : IEquatable<BinaryExpressionChainInfo>, IReadOnlyList<ExpressionSyntax>
     {
-        private static BinaryExpressionChainInfo Default { get; } = new BinaryExpressionChainInfo();
-
         private BinaryExpressionChainInfo(
             BinaryExpressionSyntax binaryExpression,
             SyntaxKind kind,
-            IEnumerable<ExpressionSyntax> expressions)
+            ImmutableArray<ExpressionSyntax> expressions)
         {
             BinaryExpression = binaryExpression;
             Kind = kind;
-            Expressions = ImmutableArray.CreateRange(expressions);
+            Expressions = expressions;
         }
+
+        private static BinaryExpressionChainInfo Default { get; } = new BinaryExpressionChainInfo();
 
         public BinaryExpressionSyntax BinaryExpression { get; }
 
@@ -32,6 +34,31 @@ namespace Roslynator.CSharp.Syntax
         public bool Success
         {
             get { return BinaryExpression != null; }
+        }
+
+        public int Count
+        {
+            get { return Expressions.Length; }
+        }
+
+        public ExpressionSyntax this[int index]
+        {
+            get { return Expressions[index]; }
+        }
+
+        IEnumerator<ExpressionSyntax> IEnumerable<ExpressionSyntax>.GetEnumerator()
+        {
+            return ((IEnumerable<ExpressionSyntax>)Expressions).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Expressions).GetEnumerator();
+        }
+
+        public ImmutableArray<ExpressionSyntax>.Enumerator GetEnumerator()
+        {
+            return Expressions.GetEnumerator();
         }
 
         internal static BinaryExpressionChainInfo Create(
@@ -51,21 +78,19 @@ namespace Roslynator.CSharp.Syntax
 
         private static BinaryExpressionChainInfo CreateCore(BinaryExpressionSyntax binaryExpression, SyntaxKind kind)
         {
-            List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
 
-            if (expressions == null)
+            if (expressions.IsDefault)
                 return Default;
-
-            expressions.Reverse();
 
             return new BinaryExpressionChainInfo(binaryExpression, kind, expressions);
         }
 
-        private static List<ExpressionSyntax> GetExpressions(
+        private static ImmutableArray<ExpressionSyntax> GetExpressions(
             BinaryExpressionSyntax binaryExpression,
             SyntaxKind kind)
         {
-            List<ExpressionSyntax> expressions = null;
+            ImmutableArray<ExpressionSyntax>.Builder builder = null;
             bool success = true;
 
             while (success)
@@ -78,7 +103,7 @@ namespace Roslynator.CSharp.Syntax
 
                     if (right?.IsMissing == false)
                     {
-                        (expressions ?? (expressions = new List<ExpressionSyntax>())).Add(right);
+                        (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(right);
 
                         ExpressionSyntax left = binaryExpression.Left;
 
@@ -88,24 +113,49 @@ namespace Roslynator.CSharp.Syntax
                             {
                                 binaryExpression = (BinaryExpressionSyntax)left;
                                 success = true;
-                                continue;
                             }
                             else
                             {
-                                expressions.Add(left);
-                                return expressions;
+                                builder.Add(left);
+                                builder.Reverse();
+                                return builder.ToImmutable();
                             }
                         }
                     }
                 }
             }
 
-            return null;
+            return default(ImmutableArray<ExpressionSyntax>);
         }
 
         public override string ToString()
         {
             return BinaryExpression?.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BinaryExpressionChainInfo other && Equals(other);
+        }
+
+        public bool Equals(BinaryExpressionChainInfo other)
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(BinaryExpression, other.BinaryExpression);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.GetHashCode(BinaryExpression);
+        }
+
+        public static bool operator ==(BinaryExpressionChainInfo info1, BinaryExpressionChainInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(BinaryExpressionChainInfo info1, BinaryExpressionChainInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

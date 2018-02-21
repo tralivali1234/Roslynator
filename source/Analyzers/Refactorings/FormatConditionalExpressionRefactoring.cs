@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -76,7 +77,9 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxToken questionToken = conditionalExpression.QuestionToken;
             SyntaxToken colonToken = conditionalExpression.ColonToken;
 
-            var builder = new SyntaxNodeTextBuilder(conditionalExpression);
+            StringBuilder sb = StringBuilderCache.GetInstance();
+
+            var builder = new SyntaxNodeTextBuilder(conditionalExpression, sb);
 
             builder.AppendLeadingTrivia();
             builder.AppendSpan(condition);
@@ -87,7 +90,7 @@ namespace Roslynator.CSharp.Refactorings
 
             builder.AppendTrailingTrivia();
 
-            ExpressionSyntax newNode = SyntaxFactory.ParseExpression(builder.ToString());
+            ExpressionSyntax newNode = SyntaxFactory.ParseExpression(StringBuilderCache.GetStringAndFree(sb));
 
             return document.ReplaceNodeAsync(conditionalExpression, newNode, cancellationToken);
         }

@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -92,7 +93,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             MethodDeclarationSyntax newNode = methodDeclaration
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();
@@ -117,7 +118,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             ConstructorDeclarationSyntax newNode = constructorDeclaration
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();
@@ -142,7 +143,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             DestructorDeclarationSyntax newNode = destructorDeclaration
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();
@@ -167,7 +168,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             OperatorDeclarationSyntax newNode = operatorDeclaration
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();
@@ -192,7 +193,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             ConversionOperatorDeclarationSyntax newNode = conversionOperatorDeclaration
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();
@@ -217,7 +218,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 .WithBody(Block(
                                     Token(default(SyntaxTriviaList), SyntaxKind.OpenBraceToken, TriviaList(ElasticSpace)),
                                     default(SyntaxList<StatementSyntax>),
-                                    Token(default(SyntaxTriviaList), SyntaxKind.CloseBraceToken, semicolonToken.GetLeadingAndTrailingTrivia())));
+                                    Token(default(SyntaxTriviaList), SyntaxKind.CloseBraceToken, semicolonToken.LeadingAndTrailingTrivia())));
 
                             SyntaxToken keyword = newNode.Keyword;
 
@@ -244,7 +245,7 @@ namespace Roslynator.CSharp.CodeFixes
                         return cancellationToken =>
                         {
                             LocalFunctionStatementSyntax newNode = localFunction
-                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetLeadingAndTrailingTrivia()))
+                                .WithParameterList(parameterList.AppendToTrailingTrivia(semicolonToken.GetAllTrivia()))
                                 .WithSemicolonToken(default(SyntaxToken))
                                 .WithBody(Block())
                                 .WithFormatterAnnotation();

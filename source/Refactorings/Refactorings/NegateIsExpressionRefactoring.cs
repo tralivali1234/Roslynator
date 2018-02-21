@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = expression.Parent;
 
-                if (parent?.IsKind(SyntaxKind.ParenthesizedExpression) == true)
+                if (parent?.Kind() == SyntaxKind.ParenthesizedExpression)
                 {
                     if (parent.IsParentKind(SyntaxKind.LogicalNotExpression))
                     {
@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            ExpressionSyntax newNode = LogicalNegationHelper.LogicallyNegate(expression, semanticModel, cancellationToken);
+            ExpressionSyntax newNode = Negation.LogicallyNegate(expression, semanticModel, cancellationToken);
 
             return await document.ReplaceNodeAsync(expression, newNode, cancellationToken).ConfigureAwait(false);
         }

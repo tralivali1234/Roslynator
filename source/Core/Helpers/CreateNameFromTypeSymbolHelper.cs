@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Roslynator.CSharp;
-using Roslynator.Utilities;
 
 namespace Roslynator.Helpers
 {
@@ -141,7 +140,7 @@ namespace Roslynator.Helpers
                 }
             }
             else if (typeSymbol.IsAnonymousType
-                || typeSymbol.SupportsPredefinedType())
+                || CSharpFacts.IsPredefinedType(typeSymbol.SpecialType))
             {
                 return null;
             }

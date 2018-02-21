@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -39,7 +40,7 @@ namespace Roslynator.CSharp.CodeFixes
             var typeSymbol = semanticModel.GetSymbol(node, context.CancellationToken) as INamedTypeSymbol;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Use predefined type '{SymbolDisplay.GetString(typeSymbol)}'",
+                $"Use predefined type '{SymbolDisplay.ToDisplayString(typeSymbol, SymbolDisplayFormats.Default)}'",
                 cancellationToken => UsePredefinedTypeRefactoring.RefactorAsync(context.Document, node, typeSymbol, cancellationToken),
                 GetEquivalenceKey(DiagnosticIdentifiers.UsePredefinedType));
 

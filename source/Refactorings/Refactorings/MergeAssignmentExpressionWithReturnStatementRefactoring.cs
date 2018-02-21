@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     var statement = (ExpressionStatementSyntax)en.Current;
 
-                    if (statement.Expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true
+                    if (statement.Expression?.Kind() == SyntaxKind.SimpleAssignmentExpression
                         && en.MoveNext()
                         && en.Current.IsKind(SyntaxKind.ReturnStatement))
                     {

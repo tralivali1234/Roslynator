@@ -2,12 +2,14 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -24,7 +26,12 @@ namespace Roslynator.CSharp.CodeFixes
         {
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindTrivia(root, context.Span.Start, out SyntaxTrivia trivia, kind: SyntaxKind.EndOfLineTrivia))
+            if (!TryFindTrivia(root, context.Span.Start, out SyntaxTrivia trivia))
+                return;
+
+            Debug.Assert(trivia.Kind() == SyntaxKind.EndOfLineTrivia, trivia.Kind().ToString());
+
+            if (trivia.Kind() != SyntaxKind.EndOfLineTrivia)
                 return;
 
             CodeAction codeAction = CodeAction.Create(

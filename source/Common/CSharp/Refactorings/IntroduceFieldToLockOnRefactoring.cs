@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpTypeFactory;
@@ -29,52 +30,54 @@ namespace Roslynator.CSharp.Refactorings
             if (lockStatement == null)
                 throw new ArgumentNullException(nameof(lockStatement));
 
-            MemberDeclarationSyntax containingMember = lockStatement.FirstAncestorOrSelf<MemberDeclarationSyntax>();
+            MemberDeclarationSyntax containingMember = lockStatement.FirstAncestor<MemberDeclarationSyntax>();
 
-            if (containingMember != null)
-            {
-                var containingDeclaration = (MemberDeclarationSyntax)containingMember
-                    .Ancestors()
-                    .FirstOrDefault(f => f.IsKind(
-                        SyntaxKind.ClassDeclaration,
-                        SyntaxKind.InterfaceDeclaration,
-                        SyntaxKind.StructDeclaration));
+            Debug.Assert(containingMember != null);
 
-                if (containingDeclaration != null)
-                {
-                    SyntaxList<MemberDeclarationSyntax> members = containingDeclaration.GetMembers();
+            if (containingMember == null)
+                return document;
 
-                    int index = members.IndexOf(containingMember);
+            var containingType = (TypeDeclarationSyntax)containingMember
+                .Ancestors()
+                .FirstOrDefault(f => f.IsKind(
+                    SyntaxKind.ClassDeclaration,
+                    SyntaxKind.InterfaceDeclaration,
+                    SyntaxKind.StructDeclaration));
 
-                    SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            Debug.Assert(containingType != null);
 
-                    string name = NameGenerator.Default.EnsureUniqueLocalName(
-                        LockObjectName,
-                        semanticModel,
-                        lockStatement.Expression.SpanStart,
-                        cancellationToken: cancellationToken);
+            if (containingType == null)
+                return document;
 
-                    LockStatementSyntax newLockStatement = lockStatement
-                        .WithExpression(IdentifierName(Identifier(name).WithRenameAnnotation()));
+            SyntaxList<MemberDeclarationSyntax> members = containingType.Members;
 
-                    MemberDeclarationSyntax newContainingMember = containingMember
-                        .ReplaceNode(lockStatement, newLockStatement);
+            int index = members.IndexOf(containingMember);
 
-                    bool isStatic = containingMember.GetModifiers().Contains(SyntaxKind.StaticKeyword);
+            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-                    FieldDeclarationSyntax field = CreateFieldDeclaration(name, isStatic).WithFormatterAnnotation();
+            string name = NameGenerator.Default.EnsureUniqueLocalName(
+                LockObjectName,
+                semanticModel,
+                lockStatement.Expression.SpanStart,
+                cancellationToken: cancellationToken);
 
-                    SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceAt(index, newContainingMember);
+            LockStatementSyntax newLockStatement = lockStatement
+                .WithExpression(IdentifierName(Identifier(name).WithRenameAnnotation()));
 
-                    newMembers = newMembers.InsertMember(field, MemberDeclarationComparer.ByKind);
+            MemberDeclarationSyntax newContainingMember = containingMember
+                .ReplaceNode(lockStatement, newLockStatement);
 
-                    MemberDeclarationSyntax newNode = containingDeclaration.WithMembers(newMembers);
+            bool isStatic = SyntaxInfo.ModifiersInfo(containingMember).IsStatic;
 
-                    return await document.ReplaceNodeAsync(containingDeclaration, newNode, cancellationToken).ConfigureAwait(false);
-                }
-            }
+            FieldDeclarationSyntax field = CreateFieldDeclaration(name, isStatic).WithFormatterAnnotation();
 
-            return document;
+            SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceAt(index, newContainingMember);
+
+            newMembers = newMembers.Insert(field);
+
+            MemberDeclarationSyntax newNode = containingType.WithMembers(newMembers);
+
+            return await document.ReplaceNodeAsync(containingType, newNode, cancellationToken).ConfigureAwait(false);
         }
 
         private static FieldDeclarationSyntax CreateFieldDeclaration(string name, bool isStatic)

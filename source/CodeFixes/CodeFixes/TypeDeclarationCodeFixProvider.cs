@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
+using Roslynator.CodeFixes;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpSyntax;
@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     MethodDeclarationSyntax methodDeclaration = ObjectEqualsMethodDeclaration(type);
 
-                                    TypeDeclarationSyntax newNode = typeDeclaration.InsertMember(methodDeclaration, MemberDeclarationComparer.ByKind);
+                                    TypeDeclarationSyntax newNode = typeDeclaration.InsertMember(methodDeclaration);
 
                                     return context.Document.ReplaceNodeAsync(typeDeclaration, newNode, cancellationToken);
                                 },
@@ -90,7 +90,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Override object.GetHashCode",
                                 cancellationToken =>
                                 {
-                                    TypeDeclarationSyntax newNode = typeDeclaration.InsertMember(methodDeclaration, MemberDeclarationComparer.ByKind);
+                                    TypeDeclarationSyntax newNode = typeDeclaration.InsertMember(methodDeclaration);
 
                                     return context.Document.ReplaceNodeAsync(typeDeclaration, newNode, cancellationToken);
                                 },
@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.CodeFixes
             return MethodDeclaration(
                 Modifiers.PublicOverride(),
                 IntType(),
-                "GetHashCode",
+                Identifier("GetHashCode"),
                 ParameterList(),
                 Block(ThrowNewNotImplementedExceptionStatement()));
         }

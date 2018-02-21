@@ -8,7 +8,8 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
+using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -37,38 +38,38 @@ namespace Roslynator.CSharp.CodeFixes
                 {
                     case CompilerDiagnosticIdentifiers.UserDefinedOperatorMustBeDeclaredStaticAndPublic:
                         {
-                            SyntaxTokenList modifiers = memberDeclaration.GetModifiers();
+                            ModifiersInfo info = SyntaxInfo.ModifiersInfo(memberDeclaration);
 
                             string title = "Add ";
 
-                            if (modifiers.Contains(SyntaxKind.PublicKeyword))
+                            if (info.ExplicitAccessibility == Accessibility.Public)
                             {
-                                title += "'static' modifier";
+                                title += "modifier 'static'";
                             }
-                            else if (modifiers.Contains(SyntaxKind.StaticKeyword))
+                            else if (info.IsStatic)
                             {
-                                title += "'public' modifier";
+                                title += "modifier 'public'";
                             }
                             else
                             {
-                                title += "'public static' modifiers";
+                                title += "modifiers 'public static'";
                             }
 
                             CodeAction codeAction = CodeAction.Create(
                                 title,
                                 cancellationToken =>
                                 {
+                                    SyntaxTokenList modifiers = info.Modifiers;
+
                                     SyntaxTokenList newModifiers = modifiers;
 
                                     if (!modifiers.Contains(SyntaxKind.PublicKeyword))
-                                        newModifiers = newModifiers.InsertModifier(SyntaxKind.PublicKeyword, ModifierComparer.Instance);
+                                        newModifiers = Modifier.Insert(newModifiers, SyntaxKind.PublicKeyword);
 
                                     if (!modifiers.Contains(SyntaxKind.StaticKeyword))
-                                        newModifiers = newModifiers.InsertModifier(SyntaxKind.StaticKeyword, ModifierComparer.Instance);
+                                        newModifiers = Modifier.Insert(newModifiers, SyntaxKind.StaticKeyword);
 
-                                    MemberDeclarationSyntax newMemberDeclaration = memberDeclaration.WithModifiers(newModifiers);
-
-                                    return context.Document.ReplaceNodeAsync(memberDeclaration, newMemberDeclaration, cancellationToken);
+                                    return context.Document.ReplaceModifiersAsync(info, newModifiers, cancellationToken);
                                 },
                                 GetEquivalenceKey(diagnostic));
 

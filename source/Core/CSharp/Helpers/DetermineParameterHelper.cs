@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -19,12 +19,6 @@ namespace Roslynator.CSharp.Helpers
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (argument == null)
-                throw new ArgumentNullException(nameof(argument));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
             if (!(argument.Parent is BaseArgumentListSyntax argumentList))
                 return null;
 
@@ -36,7 +30,14 @@ namespace Roslynator.CSharp.Helpers
             if (symbol == null)
                 return null;
 
-            return DetermineParameter(argument, argumentList.Arguments, symbol.GetParameters(), allowParams);
+            ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
+
+            Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+            if (parameters.IsDefault)
+                return null;
+
+            return DetermineParameter(argument, argumentList.Arguments, parameters, allowParams);
         }
 
         internal static IParameterSymbol DetermineParameter(
@@ -84,12 +85,6 @@ namespace Roslynator.CSharp.Helpers
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (attributeArgument == null)
-                throw new ArgumentNullException(nameof(attributeArgument));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
             if (attributeArgument.NameEquals != null)
                 return null;
 
@@ -106,7 +101,14 @@ namespace Roslynator.CSharp.Helpers
             if (symbol == null)
                 return null;
 
-            return DetermineParameter(attributeArgument, argumentList.Arguments, symbol.GetParameters(), allowParams);
+            ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
+
+            Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+            if (parameters.IsDefault)
+                return null;
+
+            return DetermineParameter(attributeArgument, argumentList.Arguments, parameters, allowParams);
         }
 
         internal static IParameterSymbol DetermineParameter(

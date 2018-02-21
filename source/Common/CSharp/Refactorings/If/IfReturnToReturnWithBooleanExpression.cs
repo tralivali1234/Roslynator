@@ -18,9 +18,9 @@ namespace Roslynator.CSharp.Refactorings.If
         {
         }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
-            get { return RefactoringKind.IfReturnToReturnWithBooleanExpression; }
+            get { return IfRefactoringKind.IfReturnToReturnWithBooleanExpression; }
         }
 
         public override string Title

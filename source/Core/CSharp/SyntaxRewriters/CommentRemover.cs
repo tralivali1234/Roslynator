@@ -1,40 +1,37 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class CommentRemover : CSharpSyntaxRewriter
     {
-        private CommentRemover(SyntaxNode node, CommentRemoveOptions removeOptions, TextSpan span)
+        internal CommentRemover(SyntaxNode node, CommentKind kind, TextSpan span)
             : base(visitIntoStructuredTrivia: true)
         {
             Node = node;
-            RemoveOptions = removeOptions;
             Span = span;
+
+            ShouldRemoveSingleLineComment = (kind & CommentKind.SingleLine) != 0;
+            ShouldRemoveMultiLineComment = (kind & CommentKind.MultiLine) != 0;
+            ShouldRemoveSingleLineDocumentationComment = (kind & CommentKind.SingleLineDocumentation) != 0;
+            ShouldRemoveMultiLineDocumentationComment = (kind & CommentKind.MultiLineDocumentation) != 0;
         }
 
         public SyntaxNode Node { get; }
-        public CommentRemoveOptions RemoveOptions { get; }
+
         public TextSpan Span { get; }
 
-        public static TNode RemoveComments<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
-        {
-            return RemoveComments(node, CommentRemoveOptions.All, span);
-        }
+        private bool ShouldRemoveSingleLineComment { get; }
 
-        public static TNode RemoveComments<TNode>(TNode node, CommentRemoveOptions removeOptions, TextSpan? span = null) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
+        private bool ShouldRemoveMultiLineComment { get; }
 
-            var remover = new CommentRemover(node, removeOptions, span ?? node.FullSpan);
+        private bool ShouldRemoveSingleLineDocumentationComment { get; }
 
-            return (TNode)remover.Visit(node);
-        }
+        private bool ShouldRemoveMultiLineDocumentationComment { get; }
 
         public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
         {
@@ -45,27 +42,41 @@ namespace Roslynator.CSharp.SyntaxRewriters
                 switch (trivia.Kind())
                 {
                     case SyntaxKind.SingleLineCommentTrivia:
+                        {
+                            if (ShouldRemoveSingleLineComment)
+                                return EmptyWhitespace();
+
+                            break;
+                        }
                     case SyntaxKind.MultiLineCommentTrivia:
                         {
-                            if (RemoveOptions != CommentRemoveOptions.Documentation)
-                                return CSharpFactory.EmptyWhitespace();
+                            if (ShouldRemoveMultiLineComment)
+                                return EmptyWhitespace();
 
                             break;
                         }
                     case SyntaxKind.SingleLineDocumentationCommentTrivia:
+                        {
+                            if (ShouldRemoveSingleLineDocumentationComment)
+                                return EmptyWhitespace();
+
+                            break;
+                        }
                     case SyntaxKind.MultiLineDocumentationCommentTrivia:
                         {
-                            if (RemoveOptions != CommentRemoveOptions.AllExceptDocumentation)
-                                return CSharpFactory.EmptyWhitespace();
+                            if (ShouldRemoveMultiLineDocumentationComment)
+                                return EmptyWhitespace();
 
                             break;
                         }
                     case SyntaxKind.EndOfLineTrivia:
                         {
-                            if (RemoveOptions != CommentRemoveOptions.Documentation
-                                && ShouldRemoveEndOfLine(span))
+                            if (ShouldRemoveSingleLineComment
+                                && ShouldRemoveEndOfLine(SyntaxKind.SingleLineCommentTrivia)
+                                && ShouldRemoveEndOfLine(SyntaxKind.WhitespaceTrivia)
+                                && ShouldRemoveEndOfLine(SyntaxKind.EndOfLineTrivia))
                             {
-                                return CSharpFactory.EmptyWhitespace();
+                                return EmptyWhitespace();
                             }
 
                             break;
@@ -74,28 +85,21 @@ namespace Roslynator.CSharp.SyntaxRewriters
             }
 
             return base.VisitTrivia(trivia);
-        }
 
-        private bool ShouldRemoveEndOfLine(TextSpan span)
-        {
-            return ShouldRemoveEndOfLine(SyntaxKind.SingleLineCommentTrivia, ref span)
-                && ShouldRemoveEndOfLine(SyntaxKind.WhitespaceTrivia, ref span)
-                && ShouldRemoveEndOfLine(SyntaxKind.EndOfLineTrivia, ref span);
-        }
-
-        private bool ShouldRemoveEndOfLine(SyntaxKind kind, ref TextSpan span)
-        {
-            if (span.Start > 0)
+            bool ShouldRemoveEndOfLine(SyntaxKind kind)
             {
-                SyntaxTrivia trivia = Node.FindTrivia(span.Start - 1);
+                if (span.Start > 0)
+                {
+                    SyntaxTrivia t = Node.FindTrivia(span.Start - 1);
 
-                if (trivia.Kind() != kind)
-                    return false;
+                    if (t.Kind() != kind)
+                        return false;
 
-                span = trivia.Span;
+                    span = t.Span;
+                }
+
+                return true;
             }
-
-            return true;
         }
     }
 }

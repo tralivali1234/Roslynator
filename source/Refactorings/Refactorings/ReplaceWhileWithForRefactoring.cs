@@ -74,11 +74,11 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            SyntaxList<StatementSyntax> statements = selectedStatements.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
 
             ITypeSymbol typeSymbol = null;
 
-            for (int i = selectedStatements.StartIndex; i < selectedStatements.EndIndex; i++)
+            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
                 StatementSyntax statement = statements[i];
 
@@ -106,7 +106,7 @@ namespace Roslynator.CSharp.Refactorings
                         return false;
                     }
 
-                    for (int j = selectedStatements.EndIndex + 1; j < statements.Count; j++)
+                    for (int j = selectedStatements.LastIndex + 1; j < statements.Count; j++)
                     {
                         foreach (SyntaxNode node in statements[j].DescendantNodes())
                         {
@@ -125,9 +125,9 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool VerifyExpressionStatements(StatementsSelection selectedStatements)
         {
-            for (int i = selectedStatements.StartIndex; i < selectedStatements.EndIndex; i++)
+            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
-                StatementSyntax statement = selectedStatements.Statements[i];
+                StatementSyntax statement = selectedStatements.UnderlyingList[i];
 
                 if (!(statement is ExpressionStatementSyntax expressionStatement))
                     return false;
@@ -269,7 +269,8 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax expression = expressionStatement.Expression;
 
-                    if (expression?.Kind().IsIncrementOrDecrementExpression() == true)
+                    if (expression != null
+                        && CSharpFacts.IsIncrementOrDecrementExpression(expression.Kind()))
                     {
                         yield return expression;
                     }

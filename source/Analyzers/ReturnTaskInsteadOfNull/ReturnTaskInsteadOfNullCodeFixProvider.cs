@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.CodeFixes;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 {
@@ -31,12 +31,14 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 
             InvocationExpressionSyntax newExpression = ReturnTaskInsteadOfNullRefactoring.CreateNewExpression(expression, semanticModel, context.CancellationToken);
 
+            Diagnostic diagnostic = context.Diagnostics[0];
+
             CodeAction codeAction = CodeAction.Create(
                 $"Replace '{expression}' with '{newExpression}'",
                 cancellationToken => context.Document.ReplaceNodeAsync(expression, newExpression, cancellationToken),
-                GetEquivalenceKey(DiagnosticIdentifiers.ReturnTaskInsteadOfNull));
+                GetEquivalenceKey(diagnostic));
 
-            context.RegisterCodeFix(codeAction, context.Diagnostics[0]);
+            context.RegisterCodeFix(codeAction, diagnostic);
         }
     }
 }

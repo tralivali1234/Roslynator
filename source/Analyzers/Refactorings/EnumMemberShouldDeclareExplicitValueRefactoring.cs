@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.Utilities;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -62,7 +61,7 @@ namespace Roslynator.CSharp.Refactorings
 
             INamedTypeSymbol enumSymbol = fieldSymbol.ContainingType;
 
-            if (enumSymbol.IsEnumWithFlagsAttribute(semanticModel))
+            if (enumSymbol.IsEnumWithFlags(semanticModel))
             {
                 return GetFlagsValue(enumMember, enumSymbol, semanticModel, cancellationToken);
             }

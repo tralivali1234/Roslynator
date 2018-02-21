@@ -51,7 +51,7 @@ namespace Roslynator.CSharp.Refactorings
                 newElseClause = elseClause.WithStatement(whenTrue.WithTriviaFrom(whenFalse));
 
             IfStatementSyntax newIfStatement = ifStatement
-                .WithCondition(LogicalNegationHelper.LogicallyNegate(ifStatement.Condition, semanticModel, cancellationToken))
+                .WithCondition(Negation.LogicallyNegate(ifStatement.Condition, semanticModel, cancellationToken))
                 .WithStatement(whenFalse.WithTriviaFrom(whenTrue))
                 .WithElse(newElseClause)
                 .WithFormatterAnnotation();

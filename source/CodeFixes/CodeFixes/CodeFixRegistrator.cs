@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.CodeFixes
             SemanticModel semanticModel,
             string additionalKey = null)
         {
-            string typeName = SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, type.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(newTypeSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             string title = $"Change type to '{typeName}'";
 
@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                     return document.ReplaceNodeAsync(type, newType, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                     return document.ReplaceNodeAsync(type, newType, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -66,14 +66,14 @@ namespace Roslynator.CSharp.CodeFixes
             ITypeSymbol destinationType,
             SemanticModel semanticModel)
         {
-            string typeName = SymbolDisplay.GetMinimalString(destinationType, semanticModel, expression.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(destinationType, semanticModel, expression.SpanStart, SymbolDisplayFormats.Default);
 
             TypeSyntax newType = SyntaxFactory.ParseTypeName(typeName);
 
             CodeAction codeAction = CodeAction.Create(
                 $"Cast to '{typeName}'",
                 cancellationToken => AddCastExpressionRefactoring.RefactorAsync(context.Document, expression, newType, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, CodeFixIdentifiers.AddCastExpression));
+                EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.AddCastExpression));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -87,9 +87,9 @@ namespace Roslynator.CSharp.CodeFixes
             Document document = context.Document;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Remove {memberDeclaration.GetTitle()}",
+                $"Remove {CSharpFacts.GetTitle(memberDeclaration)}",
                 cancellationToken => document.RemoveMemberAsync(memberDeclaration, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -107,9 +107,9 @@ namespace Roslynator.CSharp.CodeFixes
             Document document = context.Document;
 
             CodeAction codeAction = CodeAction.Create(
-                title ?? $"Remove {statement.GetTitle()}",
+                title ?? $"Remove {CSharpFacts.GetTitle(statement)}",
                 cancellationToken => document.RemoveStatementAsync(statement, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
@@ -146,11 +146,11 @@ namespace Roslynator.CSharp.CodeFixes
                 "Replace 'null' with default value",
                 cancellationToken =>
                 {
-                    ExpressionSyntax newNode = typeSymbol.ToDefaultValueSyntax(semanticModel, expression.SpanStart);
+                    ExpressionSyntax newNode = typeSymbol.GetDefaultValueSyntax(semanticModel, expression.SpanStart);
 
                     return document.ReplaceNodeAsync(expression, newNode, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey));
+                EquivalenceKey.Create(diagnostic, additionalKey));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }

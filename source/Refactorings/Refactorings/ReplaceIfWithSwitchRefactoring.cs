@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -20,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 if (ifOrElse.IsIf)
                 {
@@ -72,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax right = binaryExpression.Right.WalkDownParentheses();
 
-                    if (right?.IsKind(SyntaxKind.EqualsExpression) == true)
+                    if (right?.Kind() == SyntaxKind.EqualsExpression)
                     {
                         var equalsExpression = (BinaryExpressionSyntax)right;
 
@@ -221,7 +222,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static IEnumerable<SwitchSectionSyntax> CreateSwitchSections(IfStatementSyntax ifStatement)
         {
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 if (ifOrElse.IsIf)
                 {
@@ -316,7 +317,7 @@ namespace Roslynator.CSharp.Refactorings
 
             bool IsLoopOrNestedMethod(SyntaxKind kind)
             {
-                return kind.IsLoop() || kind.IsNestedMethod();
+                return IsLoopStatement(kind) || IsNestedMethod(kind);
             }
 
             bool ShouldCheckBreakStatement()
@@ -328,10 +329,10 @@ namespace Roslynator.CSharp.Refactorings
 
                     SyntaxKind kind = node.Kind();
 
-                    if (kind.IsNestedMethod())
+                    if (IsNestedMethod(kind))
                         break;
 
-                    if (kind.IsLoop())
+                    if (IsLoopStatement(kind))
                         return true;
                 }
 

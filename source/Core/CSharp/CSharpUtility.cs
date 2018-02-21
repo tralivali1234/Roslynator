@@ -5,7 +5,6 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Helpers;
 
 namespace Roslynator.CSharp
 {
@@ -192,10 +191,14 @@ namespace Roslynator.CSharp
                     }
                     else if (name.IsParentKind(SyntaxKind.NamespaceDeclaration))
                     {
-                        foreach (INamespaceSymbol containingNamespace in symbol.ContainingNamespaces())
+                        INamespaceSymbol containingNamespace = symbol.ContainingNamespace;
+
+                        while (containingNamespace != null)
                         {
                             if (string.Equals(namespaceText, containingNamespace.ToString(), StringComparison.Ordinal))
                                 return true;
+
+                            containingNamespace = containingNamespace.ContainingNamespace;
                         }
                     }
                 }
@@ -352,7 +355,7 @@ namespace Roslynator.CSharp
         {
             ExpressionSyntax expression = invocationExpression.Expression;
 
-            if (expression?.IsKind(SyntaxKind.IdentifierName) == true)
+            if (expression?.Kind() == SyntaxKind.IdentifierName)
             {
                 var identifierName = (IdentifierNameSyntax)expression;
 
@@ -364,162 +367,6 @@ namespace Roslynator.CSharp
             }
 
             return false;
-        }
-
-        public static bool IsImplicitNumericConversion(ITypeSymbol from, ITypeSymbol to)
-        {
-            if (from == null)
-                throw new ArgumentNullException(nameof(from));
-
-            if (to == null)
-                throw new ArgumentNullException(nameof(to));
-
-            return IsImplicitNumericConversion(from.SpecialType, to.SpecialType);
-        }
-
-        // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/implicit-numeric-conversions-table
-        public static bool IsImplicitNumericConversion(SpecialType from, SpecialType to)
-        {
-            switch (from)
-            {
-                case SpecialType.System_Char:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_UInt16:
-                            case SpecialType.System_Int32:
-                            case SpecialType.System_UInt32:
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_UInt64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_SByte:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int16:
-                            case SpecialType.System_Int32:
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_Byte:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int16:
-                            case SpecialType.System_UInt16:
-                            case SpecialType.System_Int32:
-                            case SpecialType.System_UInt32:
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_UInt64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_Int16:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int32:
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_UInt16:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int32:
-                            case SpecialType.System_UInt32:
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_UInt64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_Int32:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_UInt32:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Int64:
-                            case SpecialType.System_UInt64:
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_Int64:
-                case SpecialType.System_UInt64:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Single:
-                            case SpecialType.System_Double:
-                            case SpecialType.System_Decimal:
-                                return true;
-                        }
-
-                        break;
-                    }
-                case SpecialType.System_Single:
-                    {
-                        switch (to)
-                        {
-                            case SpecialType.System_Double:
-                                return true;
-                        }
-
-                        break;
-                    }
-            }
-
-            return false;
-        }
-
-        public static bool IsAllowedAccessibility(SyntaxNode node, Accessibility accessibility, bool allowOverride = false)
-        {
-            return AllowedAccessibilityHelper.IsAllowedAccessibility(node, accessibility, allowOverride: allowOverride);
         }
     }
 }

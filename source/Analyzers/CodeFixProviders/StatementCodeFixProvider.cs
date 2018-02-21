@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using Roslynator.CSharp.Refactorings.RemoveRedundantStatement;
 using Roslynator.CSharp.Refactorings.UseMethodChaining;
@@ -110,7 +111,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case DiagnosticIdentifiers.RemoveRedundantStatement:
                         {
                             CodeAction codeAction = CodeAction.Create(
-                                $"Remove redundant {statement.GetTitle()}",
+                                $"Remove redundant {CSharpFacts.GetTitle(statement)}",
                                 cancellationToken => RemoveRedundantStatementRefactoring.RefactorAsync(context.Document, statement, cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 

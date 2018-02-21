@@ -17,53 +17,79 @@ namespace Roslynator.CSharp.Refactorings
         {
             var invocationExpression = (InvocationExpressionSyntax)context.Node;
 
-            if (!invocationExpression.ContainsDiagnostics
-                && !invocationExpression.SpanContainsDirectives())
-            {
-                MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
-                if (invocationInfo.Success
-                    && invocationInfo.NameText == "Any")
-                {
-                    ArgumentSyntax argument1 = invocationInfo.Arguments.SingleOrDefault(shouldthrow: false);
+            if (invocationExpression.ContainsDiagnostics)
+                return;
 
-                    if (argument1 != null)
-                    {
-                        MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
-                        if (invocationInfo2.Success
-                            && invocationInfo2.NameText == "Where")
-                        {
-                            ArgumentSyntax argument2 = invocationInfo2.Arguments.SingleOrDefault(shouldthrow: false);
+            if (invocationExpression.SpanContainsDirectives())
+                return;
 
-                            if (argument2 != null)
-                            {
-                                SemanticModel semanticModel = context.SemanticModel;
-                                CancellationToken cancellationToken = context.CancellationToken;
+            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
 
-                                if (semanticModel.TryGetExtensionMethodInfo(invocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.None, cancellationToken)
-                                    && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate("Any")
-                                    && semanticModel.TryGetExtensionMethodInfo(invocationInfo2.InvocationExpression, out MethodInfo methodInfo2, ExtensionMethodKind.None, cancellationToken)
-                                    && methodInfo2.IsLinqWhere(allowImmutableArrayExtension: true))
-                                {
-                                    SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);
-                                    if (lambda.Success
-                                        && lambda.Body is ExpressionSyntax)
-                                    {
-                                        SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument2.Expression);
-                                        if (lambda2.Success
-                                            && lambda2.Body is ExpressionSyntax
-                                            && lambda.ParameterName.Equals(lambda2.ParameterName, StringComparison.Ordinal))
-                                        {
-                                            context.ReportDiagnostic(
-                                                DiagnosticDescriptors.SimplifyLinqMethodChain,
-                                                Location.Create(context.SyntaxTree(), TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            if (!invocationInfo.Success)
+                return;
+
+            if (invocationInfo.NameText != "Any")
+                return;
+
+            ArgumentSyntax argument1 = invocationInfo.Arguments.SingleOrDefault(shouldthrow: false);
+
+            if (argument1 == null)
+                return;
+
+            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
+
+            if (!invocationInfo2.Success)
+                return;
+
+            if (invocationInfo2.NameText != "Where")
+                return;
+
+            ArgumentSyntax argument2 = invocationInfo2.Arguments.SingleOrDefault(shouldthrow: false);
+
+            if (argument2 == null)
+                return;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
+                return;
+
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, "Any"))
+                return;
+
+            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocationInfo2.InvocationExpression, cancellationToken);
+
+            if (methodInfo2.Symbol == null)
+                return;
+
+            if (!methodInfo2.IsLinqWhere(semanticModel, allowImmutableArrayExtension: true))
+                return;
+
+            SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);
+
+            if (!lambda.Success)
+                return;
+
+            if (!(lambda.Body is ExpressionSyntax))
+                return;
+
+            SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument2.Expression);
+
+            if (!lambda2.Success)
+                return;
+
+            if (!(lambda2.Body is ExpressionSyntax))
+                return;
+
+            if (!lambda.Parameter.Identifier.ValueText.Equals(lambda2.Parameter.Identifier.ValueText, StringComparison.Ordinal))
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.SimplifyLinqMethodChain,
+                Location.Create(context.SyntaxTree(), TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
         }
 
         public static Task<Document> RefactorAsync(

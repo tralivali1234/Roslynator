@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Analyzers.UnusedParameter
 {
@@ -283,7 +282,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             if (node is ParameterSyntax parameter)
             {
-                if (parameter.IsThis())
+                if (parameter.Modifiers.Contains(SyntaxKind.ThisKeyword))
                 {
                     context.ReportDiagnostic(DiagnosticDescriptors.UnusedThisParameter, parameter, parameter.Identifier.ValueText);
                 }
@@ -302,7 +301,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             }
         }
 
-        //TODO: UnusedMemberWalker
+        //XTODO: UnusedMemberWalker
         private static bool IsReferencedAsMethodGroup(SyntaxNodeAnalysisContext context, MethodDeclarationSyntax methodDeclaration)
         {
             ISymbol methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodDeclaration, context.CancellationToken);
@@ -387,11 +386,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             StatementSyntax statement = body?.Statements.SingleOrDefault(shouldThrow: false);
 
-            if (statement?.IsKind(SyntaxKind.ThrowStatement) == true)
+            if (statement?.Kind() == SyntaxKind.ThrowStatement)
             {
                 var throwStatement = (ThrowStatementSyntax)statement;
 
-                return throwStatement.Expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true;
+                return throwStatement.Expression?.Kind() == SyntaxKind.ObjectCreationExpression;
             }
 
             return false;
@@ -401,11 +400,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         {
             ExpressionSyntax expression = expressionBody?.Expression;
 
-            if (expression?.IsKind(SyntaxKind.ThrowExpression) == true)
+            if (expression?.Kind() == SyntaxKind.ThrowExpression)
             {
                 var throwExpression = (ThrowExpressionSyntax)expression;
 
-                return throwExpression.Expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true;
+                return throwExpression.Expression?.Kind() == SyntaxKind.ObjectCreationExpression;
             }
 
             return false;
@@ -423,7 +422,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             if (typeParameterList.Parameters.Count == 1)
                 node = typeParameterList;
 
-            SyntaxRemoveOptions options = RemoveHelper.DefaultRemoveOptions;
+            SyntaxRemoveOptions options = SyntaxRemover.DefaultOptions;
 
             if (node.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
                 options &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

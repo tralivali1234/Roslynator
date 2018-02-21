@@ -6,7 +6,6 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -134,7 +133,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            string displayName = SymbolDisplay.GetMinimalString(interfaceSymbol.OriginalDefinition, semanticModel, type.SpanStart);
+            string displayName = SymbolDisplay.ToMinimalDisplayString(interfaceSymbol.OriginalDefinition, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             Document document = context.Document;
             string title = $"Add to interface '{displayName}'";
@@ -213,7 +212,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationSyntax interfaceMember = CreateInterfaceMemberDeclaration(memberDeclaration).WithFormatterAnnotation();
 
-            return interfaceDeclaration.InsertMember(interfaceMember, MemberDeclarationComparer.ByKind);
+            return interfaceDeclaration.InsertMember(interfaceMember);
         }
 
         private static MemberDeclarationSyntax CreateInterfaceMemberDeclaration(MemberDeclarationSyntax memberDeclaration)

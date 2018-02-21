@@ -9,7 +9,7 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
     {
         protected override bool IsFixable(StatementSyntax statement, BlockSyntax block, SyntaxKind parentKind)
         {
-            return parentKind.CanContainContinueStatement();
+            return CSharpFacts.CanContainContinueStatement(parentKind);
         }
     }
 }

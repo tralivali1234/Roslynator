@@ -8,6 +8,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -40,9 +42,9 @@ namespace Roslynator.CSharp.CodeFixes
             {
                 if (parent is MemberDeclarationSyntax memberDeclaration)
                 {
-                    Debug.Assert(memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword), memberDeclaration.ToString());
+                    Debug.Assert(SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic, memberDeclaration.ToString());
 
-                    if (memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword))
+                    if (SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
                     {
                         if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeMemberNonStatic))
                         {
@@ -51,7 +53,7 @@ namespace Roslynator.CSharp.CodeFixes
                             diagnostic,
                             memberDeclaration,
                             SyntaxKind.StaticKeyword,
-                            title: $"Make containing {memberDeclaration.GetTitle()} non-static",
+                            title: $"Make containing {CSharpFacts.GetTitle(memberDeclaration)} non-static",
                             additionalKey: CodeFixIdentifiers.MakeMemberNonStatic);
                         }
 
@@ -79,7 +81,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private void AddStaticModifier(
+        private static void AddStaticModifier(
             CodeFixContext context,
             Diagnostic diagnostic,
             SyntaxNode node,
@@ -103,7 +105,7 @@ namespace Roslynator.CSharp.CodeFixes
             if (!(syntax is MemberDeclarationSyntax memberDeclaration))
                 return;
 
-            if (memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword))
+            if (SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
                 return;
 
             Document document = context.Document;

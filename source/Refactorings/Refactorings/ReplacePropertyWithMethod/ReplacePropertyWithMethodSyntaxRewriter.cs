@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings.ReplacePropertyWithMethod
         {
             ExpressionSyntax whenNotNull = node.WhenNotNull;
 
-            if (whenNotNull?.IsKind(SyntaxKind.MemberBindingExpression) == true)
+            if (whenNotNull?.Kind() == SyntaxKind.MemberBindingExpression)
             {
                 var memberBinding = (MemberBindingExpressionSyntax)whenNotNull;
 

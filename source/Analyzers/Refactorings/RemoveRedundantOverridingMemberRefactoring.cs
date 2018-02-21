@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 methodDeclaration,
-                methodDeclaration.GetTitle());
+                CSharpFacts.GetTitle(methodDeclaration));
         }
 
         private static bool CheckParameters(
@@ -121,7 +121,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 ISymbol associatedSymbol = methodSymbol.AssociatedSymbol;
 
-                if (associatedSymbol?.IsKind(SymbolKind.Property) == true)
+                if (associatedSymbol?.Kind == SymbolKind.Property)
                 {
                     var propertySymbol = (IPropertySymbol)associatedSymbol;
 
@@ -233,7 +233,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 propertyDeclaration,
-                propertyDeclaration.GetTitle());
+                CSharpFacts.GetTitle(propertyDeclaration));
         }
 
         internal static bool IsFixable(
@@ -367,7 +367,7 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 indexerDeclaration,
-                indexerDeclaration.GetTitle());
+                CSharpFacts.GetTitle(indexerDeclaration));
         }
 
         internal static bool IsFixable(
@@ -471,7 +471,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                if (statement?.IsKind(SyntaxKind.ReturnStatement) == true)
+                if (statement?.Kind() == SyntaxKind.ReturnStatement)
                     return ((ReturnStatementSyntax)statement).Expression;
             }
             else
@@ -490,7 +490,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                if (statement?.IsKind(SyntaxKind.ExpressionStatement) == true)
+                if (statement?.Kind() == SyntaxKind.ExpressionStatement)
                     return ((ExpressionStatementSyntax)statement).Expression;
             }
             else

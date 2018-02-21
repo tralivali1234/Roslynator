@@ -7,7 +7,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CodeFixes;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -57,7 +58,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case CompilerDiagnosticIdentifiers.MemberHidesInheritedMemberToMakeCurrentMethodOverrideThatImplementationAddOverrideKeyword:
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddOverrideModifier)
-                                && !memberDeclaration.GetModifiers().Contains(SyntaxKind.StaticKeyword))
+                                && !SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
                             {
                                 ModifiersCodeFixRegistrator.AddModifier(context, diagnostic, memberDeclaration, SyntaxKind.OverrideKeyword, additionalKey: nameof(SyntaxKind.OverrideKeyword));
                             }

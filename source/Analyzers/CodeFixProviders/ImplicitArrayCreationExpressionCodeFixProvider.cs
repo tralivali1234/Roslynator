@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -32,7 +34,7 @@ namespace Roslynator.CSharp.CodeFixes
             var typeSymbol = semanticModel.GetTypeSymbol(expression, context.CancellationToken) as IArrayTypeSymbol;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Declare explicit type '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, expression.Span.Start)}'",
+                $"Declare explicit type '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, expression.Span.Start, SymbolDisplayFormats.Default)}'",
                 cancellationToken => AvoidImplicitlyTypedArrayRefactoring.RefactorAsync(context.Document, expression, cancellationToken),
                 GetEquivalenceKey(DiagnosticIdentifiers.AvoidImplicitlyTypedArray));
 

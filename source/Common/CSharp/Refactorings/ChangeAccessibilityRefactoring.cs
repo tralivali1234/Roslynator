@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ChangeAccessibilityRefactoring
     {
-        public static ImmutableArray<Accessibility> Accessibilities { get; } = ImmutableArray.Create(
+        public static ImmutableArray<Accessibility> AvailableAccessibilities { get; } = ImmutableArray.Create(
             Accessibility.Public,
             Accessibility.Internal,
             Accessibility.Protected,
@@ -25,34 +25,34 @@ namespace Roslynator.CSharp.Refactorings
 
         public static string GetTitle(Accessibility accessibility)
         {
-            return $"Change accessibility to '{accessibility.GetName()}'";
+            return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static AccessibilityFlags GetAllowedAccessibilityFlags(MemberDeclarationSelection selectedMembers, bool allowOverride = false)
+        public static Accessibilities GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
-                return AccessibilityFlags.None;
+                return Accessibilities.None;
 
-            var allFlags = AccessibilityFlags.None;
+            var all = Accessibilities.None;
 
-            AccessibilityFlags allowedFlags = AccessibilityFlags.Public
-                | AccessibilityFlags.Internal
-                | AccessibilityFlags.Protected
-                | AccessibilityFlags.Private;
+            Accessibilities valid = Accessibilities.Public
+                | Accessibilities.Internal
+                | Accessibilities.Protected
+                | Accessibilities.Private;
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                Accessibility accessibility = SyntaxInfo.AccessibilityInfo(member).Accessibility;
+                Accessibility accessibility = CSharpAccessibility.GetExplicitAccessibility(member);
 
                 if (accessibility == Accessibility.NotApplicable)
                 {
-                    accessibility = member.GetDefaultExplicitAccessibility();
+                    accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(member);
 
                     if (accessibility == Accessibility.NotApplicable)
-                        return AccessibilityFlags.None;
+                        return Accessibilities.None;
                 }
 
-                AccessibilityFlags flag = accessibility.GetAccessibilityFlag();
+                Accessibilities accessibilities = accessibility.GetAccessibilities();
 
                 switch (accessibility)
                 {
@@ -63,39 +63,39 @@ namespace Roslynator.CSharp.Refactorings
                     case Accessibility.Internal:
                     case Accessibility.Public:
                         {
-                            allFlags |= flag;
+                            all |= accessibilities;
                             break;
                         }
                     default:
                         {
                             Debug.Fail(accessibility.ToString());
-                            return AccessibilityFlags.None;
+                            return Accessibilities.None;
                         }
                 }
 
-                foreach (Accessibility accessibility2 in Accessibilities)
+                foreach (Accessibility accessibility2 in AvailableAccessibilities)
                 {
                     if (accessibility != accessibility2
-                        && !CSharpUtility.IsAllowedAccessibility(member, accessibility2, allowOverride: allowOverride))
+                        && !CSharpAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
-                        allowedFlags &= ~accessibility2.GetAccessibilityFlag();
+                        valid &= ~accessibility2.GetAccessibilities();
                     }
                 }
             }
 
-            switch (allFlags)
+            switch (all)
             {
-                case AccessibilityFlags.Private:
-                case AccessibilityFlags.Protected:
-                case AccessibilityFlags.Internal:
-                case AccessibilityFlags.Public:
+                case Accessibilities.Private:
+                case Accessibilities.Protected:
+                case Accessibilities.Internal:
+                case Accessibilities.Public:
                     {
-                        allowedFlags &= ~allFlags;
+                        valid &= ~all;
                         break;
                     }
             }
 
-            return allowedFlags;
+            return valid;
         }
 
         public static ISymbol GetBaseSymbolOrDefault(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
@@ -146,28 +146,26 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            var members = (SyntaxList<MemberDeclarationSyntax>)selectedMembers.Items;
+            SyntaxList<MemberDeclarationSyntax> members = selectedMembers.UnderlyingList;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members
-                .Take(selectedMembers.StartIndex)
-                .Concat(selectedMembers.Select(f => f.WithAccessibility(newAccessibility)))
-                .Concat(members.Skip(selectedMembers.EndIndex + 1))
+                .Take(selectedMembers.FirstIndex)
+                .Concat(selectedMembers.Select(f => CSharpAccessibility.WithExplicitAccessibility(f, newAccessibility)))
+                .Concat(members.Skip(selectedMembers.LastIndex + 1))
                 .ToSyntaxList();
 
-            MemberDeclarationSyntax containingMember = selectedMembers.ContainingMember;
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
-            MemberDeclarationSyntax newNode = containingMember.WithMembers(newMembers);
-
-            return document.ReplaceNodeAsync(containingMember, newNode, cancellationToken);
+            return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         public static async Task<Solution> RefactorAsync(
             Solution solution,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             Accessibility newAccessibility,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -176,16 +174,16 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                SyntaxTokenList modifiers = member.GetModifiers();
+                ModifierKind kind = SyntaxInfo.ModifiersInfo(member).GetKind();
 
-                if (modifiers.Contains(SyntaxKind.PartialKeyword))
+                if (kind.Any(ModifierKind.Partial))
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 
                     foreach (SyntaxReference reference in symbol.DeclaringSyntaxReferences)
                         members.Add((MemberDeclarationSyntax)reference.GetSyntax(cancellationToken));
                 }
-                else if (modifiers.ContainsAny(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword, SyntaxKind.OverrideKeyword))
+                else if (kind.Any(ModifierKind.AbstractVirtualOverride))
                 {
                     ISymbol symbol = GetBaseSymbolOrDefault(member, semanticModel, cancellationToken);
 
@@ -210,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return await solution.ReplaceNodesAsync(
                 members,
-                (node, _) => node.WithAccessibility(newAccessibility),
+                (node, _) => CSharpAccessibility.WithExplicitAccessibility(node, newAccessibility),
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -220,7 +218,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            SyntaxNode newNode = node.WithAccessibility(newAccessibility, ModifierComparer.Instance);
+            SyntaxNode newNode = CSharpAccessibility.WithExplicitAccessibility(node, newAccessibility);
 
             return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }
@@ -295,10 +293,10 @@ namespace Roslynator.CSharp.Refactorings
         {
             AccessibilityInfo info = SyntaxInfo.AccessibilityInfo(node);
 
-            if (info.Accessibility == Accessibility.NotApplicable)
+            if (info.ExplicitAccessibility == Accessibility.NotApplicable)
                 return node;
 
-            AccessibilityInfo newInfo = info.WithAccessibility(newAccessibility, ModifierComparer.Instance);
+            AccessibilityInfo newInfo = info.WithExplicitAccessibility(newAccessibility, ModifierComparer.Instance);
 
             return newInfo.Node;
         }

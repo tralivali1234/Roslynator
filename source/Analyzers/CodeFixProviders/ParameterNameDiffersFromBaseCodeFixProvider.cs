@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -54,7 +55,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     {
                                         var methodSymbol = (IMethodSymbol)containingSymbol;
 
-                                        IMethodSymbol baseSymbol = methodSymbol.OverriddenMethod ?? methodSymbol.FindImplementedInterfaceMember<IMethodSymbol>();
+                                        IMethodSymbol baseSymbol = methodSymbol.OverriddenMethod ?? methodSymbol.FindFirstImplementedInterfaceMember<IMethodSymbol>();
 
                                         baseParameterSymbol = baseSymbol.Parameters[parameterSymbol.Ordinal];
                                         break;
@@ -63,7 +64,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     {
                                         var propertySymbol = (IPropertySymbol)containingSymbol;
 
-                                        IPropertySymbol baseSymbol = propertySymbol.OverriddenProperty ?? propertySymbol.FindImplementedInterfaceMember<IPropertySymbol>();
+                                        IPropertySymbol baseSymbol = propertySymbol.OverriddenProperty ?? propertySymbol.FindFirstImplementedInterfaceMember<IPropertySymbol>();
 
                                         baseParameterSymbol = baseSymbol.Parameters[parameterSymbol.Ordinal];
                                         break;

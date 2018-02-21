@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod;
 using static Roslynator.CSharp.CSharpFactory;
@@ -152,16 +153,16 @@ namespace Roslynator.CSharp.CodeFixes
 
                             string title = null;
 
-                            if (typeSymbol.IsPredefinedValueType()
-                                || typeSymbol.ExistsMethod(WellKnownMemberNames.EqualityOperatorName))
+                            if (CSharpFacts.IsSimpleType(typeSymbol.SpecialType)
+                                || typeSymbol.ContainsMember<IMethodSymbol>(WellKnownMemberNames.EqualityOperatorName))
                             {
-                                ExpressionSyntax expression = typeSymbol.ToDefaultValueSyntax(semanticModel, binaryExpression.Right.SpanStart);
+                                ExpressionSyntax expression = typeSymbol.GetDefaultValueSyntax(semanticModel, binaryExpression.Right.SpanStart);
 
                                 title = $"Replace 'null' with '{expression}'";
                             }
                             else
                             {
-                                title = $"Use EqualityComparer<{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, binaryExpression.Right.SpanStart)}>.Default";
+                                title = $"Use EqualityComparer<{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, binaryExpression.Right.SpanStart, SymbolDisplayFormats.Default)}>.Default";
                             }
 
                             CodeAction codeAction = CodeAction.Create(

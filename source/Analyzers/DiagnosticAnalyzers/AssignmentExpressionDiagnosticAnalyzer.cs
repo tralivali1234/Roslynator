@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAssignmentExpression, SyntaxKind.SubtractAssignmentExpression);
         }
 
-        private void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context)
         {
             var assignment = (AssignmentExpressionSyntax)context.Node;
 

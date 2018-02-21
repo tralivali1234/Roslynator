@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -10,15 +11,17 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.Utilities;
+using Roslynator.Text;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct StringConcatenationExpressionInfo
+    internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>, IReadOnlyList<ExpressionSyntax>
     {
-        private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
-
-        private StringConcatenationExpressionInfo(BinaryExpressionSyntax addExpression, IEnumerable<ExpressionSyntax> expressions, TextSpan? span = null)
+        private StringConcatenationExpressionInfo(
+            BinaryExpressionSyntax addExpression,
+            ImmutableArray<ExpressionSyntax> expressions,
+            TextSpan? span = null)
         {
             ContainsNonSpecificExpression = false;
             ContainsRegularLiteralExpression = false;
@@ -27,7 +30,7 @@ namespace Roslynator.CSharp.Syntax
             ContainsVerbatimInterpolatedStringExpression = false;
 
             OriginalExpression = addExpression;
-            Expressions = ImmutableArray.CreateRange(expressions);
+            Expressions = expressions;
             Span = span;
 
             foreach (ExpressionSyntax expression in expressions)
@@ -63,11 +66,38 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
+        private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
+
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
         public BinaryExpressionSyntax OriginalExpression { get; }
 
         public TextSpan? Span { get; }
+
+        public int Count
+        {
+            get { return Expressions.Length; }
+        }
+
+        public ExpressionSyntax this[int index]
+        {
+            get { return Expressions[index]; }
+        }
+
+        IEnumerator<ExpressionSyntax> IEnumerable<ExpressionSyntax>.GetEnumerator()
+        {
+            return ((IEnumerable<ExpressionSyntax>)Expressions).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)Expressions).GetEnumerator();
+        }
+
+        public ImmutableArray<ExpressionSyntax>.Enumerator GetEnumerator()
+        {
+            return Expressions.GetEnumerator();
+        }
 
         public bool ContainsNonSpecificExpression { get; }
 
@@ -120,12 +150,10 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
 
-            if (expressions == null)
+            if (expressions.IsDefault)
                 return Default;
-
-            expressions.Reverse();
 
             return new StringConcatenationExpressionInfo(binaryExpression, expressions);
         }
@@ -159,34 +187,35 @@ namespace Roslynator.CSharp.Syntax
             if (expression == null)
                 return false;
 
-            SyntaxKind kind = expression.Kind();
-
-            if (kind == SyntaxKind.StringLiteralExpression)
+            if (expression.Kind().Is(
+                SyntaxKind.StringLiteralExpression,
+                SyntaxKind.InterpolatedStringExpression))
+            {
                 return true;
-
-            if (kind == SyntaxKind.InterpolatedStringExpression)
-                return true;
+            }
 
             return semanticModel.GetTypeInfo(expression, cancellationToken)
                 .ConvertedType?
                 .IsString() == true;
         }
 
-        private static List<ExpressionSyntax> GetExpressions(
+        private static ImmutableArray<ExpressionSyntax> GetExpressions(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            List<ExpressionSyntax> expressions = null;
+            ImmutableArray<ExpressionSyntax>.Builder builder = null;
 
             while (true)
             {
-                if (semanticModel.TryGetMethodInfo(binaryExpression, out MethodInfo methodInfo, cancellationToken)
+                MethodInfo methodInfo = semanticModel.GetMethodInfo(binaryExpression, cancellationToken);
+
+                if (methodInfo.Symbol != null
                     && methodInfo.MethodKind == MethodKind.BuiltinOperator
                     && methodInfo.Name == WellKnownMemberNames.AdditionOperatorName
                     && methodInfo.IsContainingType(SpecialType.System_String))
                 {
-                    (expressions ?? (expressions = new List<ExpressionSyntax>())).Add(binaryExpression.Right);
+                    (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(binaryExpression.Right);
 
                     ExpressionSyntax left = binaryExpression.Left;
 
@@ -196,20 +225,23 @@ namespace Roslynator.CSharp.Syntax
                     }
                     else
                     {
-                        expressions.Add(left);
-                        return expressions;
+                        builder.Add(left);
+                        builder.Reverse();
+                        return builder.ToImmutable();
                     }
                 }
                 else
                 {
-                    return null;
+                    return default(ImmutableArray<ExpressionSyntax>);
                 }
             }
         }
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
         {
-            var sb = new StringBuilder();
+            ThrowInvalidOperationIfNotInitialized();
+
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('$');
 
@@ -295,15 +327,17 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append("\"");
 
-            return (InterpolatedStringExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (InterpolatedStringExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public LiteralExpressionSyntax ToStringLiteral()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             if (!ContainsRegular)
                 sb.Append('@');
@@ -335,15 +369,17 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            return (LiteralExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (LiteralExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public LiteralExpressionSyntax ToMultilineStringLiteral()
         {
+            ThrowInvalidOperationIfNotInitialized();
+
             if (ContainsNonLiteralExpression)
                 throw new InvalidOperationException();
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('@');
             sb.Append('"');
@@ -388,23 +424,14 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            return (LiteralExpressionSyntax)SyntaxFactory.ParseExpression(sb.ToString());
+            return (LiteralExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         public override string ToString()
         {
-            if (Span != null)
-            {
-                TextSpan span = Span.Value;
-
-                return OriginalExpression
-                    .ToString()
-                    .Substring(span.Start - OriginalExpression.SpanStart, span.Length);
-            }
-            else
-            {
-                return OriginalExpression.ToString();
-            }
+            return (Span != null)
+                ? OriginalExpression.ToString(Span.Value)
+                : OriginalExpression.ToString();
         }
 
         private static string GetInnerText(string s)
@@ -412,6 +439,38 @@ namespace Roslynator.CSharp.Syntax
             return (s[0] == '@')
                 ? s.Substring(2, s.Length - 3)
                 : s.Substring(1, s.Length - 2);
+        }
+
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (OriginalExpression == null)
+                throw new InvalidOperationException($"{nameof(StringConcatenationExpressionInfo)} is not initalized.");
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is StringConcatenationExpressionInfo other && Equals(other);
+        }
+
+        public bool Equals(StringConcatenationExpressionInfo other)
+        {
+            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(OriginalExpression, other.OriginalExpression)
+                && EqualityComparer<TextSpan?>.Default.Equals(Span, other.Span);
+        }
+
+        public override int GetHashCode()
+        {
+            return Hash.Combine(Span.GetHashCode(), Hash.Create(OriginalExpression));
+        }
+
+        public static bool operator ==(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

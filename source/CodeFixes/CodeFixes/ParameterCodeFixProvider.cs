@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -79,7 +80,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 cancellationToken =>
                                 {
                                     ParameterSyntax newParameter = parameter
-                                        .RemoveNode(defaultValue, RemoveHelper.GetRemoveOptions(defaultValue))
+                                        .RemoveNode(defaultValue)
                                         .WithFormatterAnnotation();
 
                                     return context.Document.ReplaceNodeAsync(parameter, newParameter, cancellationToken);

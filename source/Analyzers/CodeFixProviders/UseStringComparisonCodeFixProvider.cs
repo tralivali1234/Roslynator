@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using Roslynator.CSharp.Syntax;
 
@@ -107,7 +108,7 @@ namespace Roslynator.CSharp.CodeFixes
             INamedTypeSymbol comparisonSymbol,
             string comparisonName)
         {
-            if (!comparisonSymbol.ExistsField(comparisonName))
+            if (!comparisonSymbol.ContainsMember<IFieldSymbol>(comparisonName))
                 return false;
 
             CodeAction codeAction = CodeAction.Create(
@@ -126,7 +127,7 @@ namespace Roslynator.CSharp.CodeFixes
             INamedTypeSymbol comparisonSymbol,
             string comparisonName)
         {
-            if (!comparisonSymbol.ExistsField(comparisonName))
+            if (!comparisonSymbol.ContainsMember<IFieldSymbol>(comparisonName))
                 return false;
 
             CodeAction codeAction = CodeAction.Create(

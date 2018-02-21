@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -86,7 +86,6 @@ namespace Roslynator.CSharp.CodeFixes
                                         GetEquivalenceKey(diagnostic, CodeFixIdentifiers.WrapInUnsafeStatement));
 
                                     context.RegisterCodeFix(codeAction, diagnostic);
-                                    continue;
                                 }
                                 else if (!fMemberDeclaration
                                     && ancestor is MemberDeclarationSyntax)
@@ -96,7 +95,7 @@ namespace Roslynator.CSharp.CodeFixes
                                     if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeContainingDeclarationUnsafe))
                                         continue;
 
-                                    if (!ancestor.Kind().SupportsModifiers())
+                                    if (!CSharpFacts.CanHaveModifiers(ancestor.Kind()))
                                         continue;
 
                                     ModifiersCodeFixRegistrator.AddModifier(

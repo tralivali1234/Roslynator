@@ -20,11 +20,9 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
             StatementsSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = selectedStatements.Info;
-
             StatementSyntax[] statements = selectedStatements.ToArray();
 
-            int index = selectedStatements.StartIndex;
+            int index = selectedStatements.FirstIndex;
 
             SyntaxTriviaList leadingTrivia = statements[0].GetLeadingTrivia();
             SyntaxTriviaList trailingTrivia = statements[statements.Length - 1].GetTrailingTrivia();
@@ -32,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
             statements[0] = statements[0].WithLeadingTrivia();
             statements[statements.Length - 1] = statements[statements.Length - 1].WithTrailingTrivia();
 
-            SyntaxList<StatementSyntax> newStatements = statementsInfo.Statements;
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList;
 
             int cnt = statements.Length;
 
@@ -51,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
 
             newStatements = newStatements.Insert(index, statement);
 
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
 
         public Task<Document> RefactorAsync(

@@ -74,8 +74,8 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             if (parameterList?.IsMissing == false)
             {
                 identifier = identifier.AppendToTrailingTrivia(
-                    parameterList.OpenParenToken.GetLeadingAndTrailingTrivia().Concat(
-                        parameterList.CloseParenToken.GetLeadingAndTrailingTrivia()));
+                    parameterList.OpenParenToken.GetAllTrivia().Concat(
+                        parameterList.CloseParenToken.GetAllTrivia()));
             }
 
             if (methodDeclaration.ExpressionBody != null)
@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             AccessorListSyntax accessorList = AccessorList(GetAccessorDeclaration(block));
 
             if (singleline)
-                accessorList = accessorList.RemoveWhitespaceOrEndOfLineTrivia();
+                accessorList = accessorList.RemoveWhitespace();
 
             return accessorList;
         }

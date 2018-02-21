@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
                 NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, semanticModel: context.SemanticModel, cancellationToken: context.CancellationToken);
                 if (nullCheck.Success)
                 {
-                    SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+                    SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
                     if (assignmentInfo.Success
                         && SyntaxComparer.AreEquivalent(assignmentInfo.Left, nullCheck.Expression)
                         && assignmentInfo.Right.IsSingleLine()
@@ -125,7 +125,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression2 = expressionStatement.Expression;
 
-            if (expression2?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+            if (expression2?.Kind() == SyntaxKind.SimpleAssignmentExpression)
             {
                 var assignment = (AssignmentExpressionSyntax)expression2;
 
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = invocationInfo.Expression;
 
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo((ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo((ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault());
 
             BinaryExpressionSyntax coalesceExpression = CSharpFactory.CoalesceExpression(expression.WithoutTrivia(), ParenthesizedExpression(assignmentInfo.AssignmentExpression));
 
@@ -201,14 +201,14 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         var ifStatement = (IfStatementSyntax)statement;
 
-                        var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+                        var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
                         var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
                         ExpressionSyntax left = assignment.Left;
                         ExpressionSyntax right = assignment.Right;
 
-                        BinaryExpressionSyntax coalesceExpression = RefactoringHelper.CreateCoalesceExpression(
+                        BinaryExpressionSyntax coalesceExpression = RefactoringUtility.CreateCoalesceExpression(
                             semanticModel.GetTypeSymbol(left, cancellationToken),
                             left.WithoutLeadingTrivia().WithTrailingTrivia(Space),
                             right.WithLeadingTrivia(Space),
@@ -274,11 +274,11 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
-            BinaryExpressionSyntax newNode = RefactoringHelper.CreateCoalesceExpression(
+            BinaryExpressionSyntax newNode = RefactoringUtility.CreateCoalesceExpression(
                 semanticModel.GetTypeSymbol(assignment.Left, cancellationToken),
                 expression.WithoutTrailingTrivia(),
                 assignment.Right.WithTrailingTrivia(expression.GetTrailingTrivia()),

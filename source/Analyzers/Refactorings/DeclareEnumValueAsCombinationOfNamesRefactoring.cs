@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -119,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceNodeAsync(value, newValue, cancellationToken).ConfigureAwait(false);
         }
 
-        private struct EnumFieldInfo
+        private readonly struct EnumFieldInfo
         {
             public EnumFieldInfo(IFieldSymbol symbol)
             {

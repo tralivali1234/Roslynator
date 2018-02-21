@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -19,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = interpolation.Expression;
 
-            if (expression?.IsKind(SyntaxKind.StringLiteralExpression) == true
+            if (expression?.Kind() == SyntaxKind.StringLiteralExpression
                 && (interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
             {
                 var literalExpression = (LiteralExpressionSyntax)expression;

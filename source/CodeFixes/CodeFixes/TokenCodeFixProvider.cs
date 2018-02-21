@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CodeFixes;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -209,7 +210,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Return default value",
                                 cancellationToken =>
                                 {
-                                    ExpressionSyntax expression = typeSymbol.ToDefaultValueSyntax(semanticModel, returnStatement.SpanStart);
+                                    ExpressionSyntax expression = typeSymbol.GetDefaultValueSyntax(semanticModel, returnStatement.SpanStart);
 
                                     ReturnStatementSyntax newNode = returnStatement.WithExpression(expression);
 
@@ -247,7 +248,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 break;
 
                             CodeAction codeAction = CodeAction.Create(
-                                $"Add type '{SymbolDisplay.GetMinimalString(convertedType, semanticModel, defaultExpression.SpanStart)}'",
+                                $"Add type '{SymbolDisplay.ToMinimalDisplayString(convertedType, semanticModel, defaultExpression.SpanStart, SymbolDisplayFormats.Default)}'",
                                 cancellationToken =>
                                 {
                                     TypeSyntax newNode = convertedType.ToMinimalTypeSyntax(semanticModel, defaultExpression.SpanStart);

@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -17,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             StatementSyntax statement = doStatement.Statement;
 
-            if (statement?.IsKind(SyntaxKind.Block) == true)
+            if (statement?.Kind() == SyntaxKind.Block)
             {
                 var block = (BlockSyntax)statement;
 

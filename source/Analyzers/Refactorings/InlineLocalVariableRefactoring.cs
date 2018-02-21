@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
                                             if (!returnStatement.SpanOrLeadingTriviaContainsDirectives())
                                             {
                                                 ExpressionSyntax expression = returnStatement.Expression;
-                                                if (expression?.IsKind(SyntaxKind.IdentifierName) == true)
+                                                if (expression?.Kind() == SyntaxKind.IdentifierName)
                                                 {
                                                     var identifierName = (IdentifierNameSyntax)expression;
 
@@ -108,7 +108,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression = expressionStatement.Expression;
 
-            if (expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+            if (expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
             {
                 var assignment = (AssignmentExpressionSyntax)expression;
 
@@ -116,7 +116,7 @@ namespace Roslynator.CSharp.Refactorings
                 ExpressionSyntax right = assignment.Right;
 
                 if (left?.IsMissing == false
-                    && right?.IsKind(SyntaxKind.IdentifierName) == true)
+                    && right?.Kind() == SyntaxKind.IdentifierName)
                 {
                     var identifierName = (IdentifierNameSyntax)right;
 
@@ -165,7 +165,7 @@ namespace Roslynator.CSharp.Refactorings
                 .Initializer?
                 .Value;
 
-            if (value2?.IsKind(SyntaxKind.IdentifierName) == true)
+            if (value2?.Kind() == SyntaxKind.IdentifierName)
             {
                 var identifierName = (IdentifierNameSyntax)value2;
 
@@ -197,7 +197,7 @@ namespace Roslynator.CSharp.Refactorings
             SingleLocalDeclarationStatementInfo localDeclarationInfo,
             ExpressionSyntax expression)
         {
-            if (expression?.IsKind(SyntaxKind.IdentifierName) == true)
+            if (expression?.Kind() == SyntaxKind.IdentifierName)
             {
                 var identifierName = (IdentifierNameSyntax)expression;
 

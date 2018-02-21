@@ -1,80 +1,89 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.Text
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TextLineCollectionSelection : Selection<TextLine>
     {
-        public TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int startIndex, int endIndex)
-            : base(lines, span, startIndex, endIndex)
+        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, SelectionResult result)
+            : this(lines, span, result.FirstIndex, result.LastIndex)
         {
         }
 
-        private static (int startIndex, int endIndex) GetIndexes(TextLineCollection lines, TextSpan span)
+        private TextLineCollectionSelection(TextLineCollection lines, TextSpan span, int firstIndex, int lastIndex)
+            : base(span, firstIndex, lastIndex)
         {
-            using (TextLineCollection.Enumerator en = lines.GetEnumerator())
-            {
-                if (en.MoveNext())
-                {
-                    int i = 0;
-
-                    while (span.Start >= en.Current.EndIncludingLineBreak
-                        && en.MoveNext())
-                    {
-                        i++;
-                    }
-
-                    if (span.Start == en.Current.Start)
-                    {
-                        int j = i;
-
-                        while (span.End > en.Current.EndIncludingLineBreak
-                            && en.MoveNext())
-                        {
-                            j++;
-                        }
-
-                        if (span.End == en.Current.End
-                            || span.End == en.Current.EndIncludingLineBreak)
-                        {
-                            return (i, j);
-                        }
-                    }
-                }
-            }
-
-            return (-1, -1);
+            UnderlyingLines = lines;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public TextLineCollection UnderlyingLines { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override IReadOnlyList<TextLine> Items => UnderlyingLines;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static TextLineCollectionSelection Create(TextLineCollection lines, TextSpan span)
         {
             if (lines == null)
                 throw new ArgumentNullException(nameof(lines));
 
-            (int startIndex, int endIndex) = GetIndexes(lines, span);
+            SelectionResult result = SelectionResult.Create(lines, span);
 
-            return new TextLineCollectionSelection(lines, span, startIndex, endIndex);
+            return new TextLineCollectionSelection(lines, span, result);
         }
 
-        public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selection)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedLines"></param>
+        /// <returns></returns>
+        public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selectedLines)
         {
-            selection = null;
+            selectedLines = Create(lines, span, 1, int.MaxValue);
+            return selectedLines != null;
+        }
 
-            if (lines.Count == 0)
-                return false;
+        internal static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, out TextLineCollectionSelection selectedLines)
+        {
+            selectedLines = Create(lines, span, minCount, int.MaxValue);
+            return selectedLines != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        internal static bool TryCreate(TextLineCollection lines, TextSpan span, int minCount, int maxCount, out TextLineCollectionSelection selectedLines)
+        {
+            selectedLines = Create(lines, span, minCount, maxCount);
+            return selectedLines != null;
+        }
 
-            (int startIndex, int endIndex) = GetIndexes(lines, span);
+        private static TextLineCollectionSelection Create(TextLineCollection lines, TextSpan span, int minCount, int maxCount)
+        {
+            if (lines == null)
+                return null;
 
-            if (startIndex == -1)
-                return false;
+            SelectionResult result = SelectionResult.Create(lines, span, minCount, maxCount);
 
-            selection = new TextLineCollectionSelection(lines, span, startIndex, endIndex);
-            return true;
+            if (!result.Success)
+                return null;
+
+            return new TextLineCollectionSelection(lines, span, result);
         }
     }
 }

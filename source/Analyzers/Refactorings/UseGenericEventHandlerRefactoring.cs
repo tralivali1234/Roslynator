@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -23,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!eventSymbol.IsOverride
                 && eventSymbol.ExplicitInterfaceImplementations.IsDefaultOrEmpty
-                && eventSymbol.FindImplementedInterfaceMember<IEventSymbol>(allInterfaces: true) == null)
+                && eventSymbol.FindFirstImplementedInterfaceMember<IEventSymbol>(allInterfaces: true) == null)
             {
                 var namedType = eventSymbol.Type as INamedTypeSymbol;
 
@@ -70,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         SyntaxNode parent = declarator.Parent;
 
-                        if (parent?.IsKind(SyntaxKind.VariableDeclaration) == true)
+                        if (parent?.Kind() == SyntaxKind.VariableDeclaration)
                         {
                             var declaration = (VariableDeclarationSyntax)parent;
 
@@ -108,7 +107,7 @@ namespace Roslynator.CSharp.Refactorings
             INamedTypeSymbol eventHandlerSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_EventHandler);
 
             return GenericName(
-                Identifier(SymbolDisplay.GetMinimalString(eventHandlerSymbol, semanticModel, type.SpanStart)),
+                Identifier(SymbolDisplay.ToMinimalDisplayString(eventHandlerSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default)),
                 typeSymbol.ToMinimalTypeSyntax(semanticModel, type.SpanStart));
         }
     }

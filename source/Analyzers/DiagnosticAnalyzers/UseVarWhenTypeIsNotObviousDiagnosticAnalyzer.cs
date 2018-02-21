@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -34,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            if (IsFixable(CSharpAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken)))
+            if (IsFixable(TypeAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken)))
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, variableDeclaration.Type);
         }
 
@@ -42,7 +41,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            if (IsFixable(CSharpAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken)))
+            if (IsFixable(TypeAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken)))
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, declarationExpression.Type);
         }
 

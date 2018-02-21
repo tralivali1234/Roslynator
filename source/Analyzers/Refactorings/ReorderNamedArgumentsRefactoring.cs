@@ -62,9 +62,12 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (symbol != null)
                 {
-                    ImmutableArray<IParameterSymbol> parameters = symbol.GetParameters();
+                    ImmutableArray<IParameterSymbol> parameters = symbol.ParametersOrDefault();
 
-                    if (parameters.Length == arguments.Count)
+                    Debug.Assert(!parameters.IsDefault, symbol.Kind.ToString());
+
+                    if (!parameters.IsDefault
+                        && parameters.Length == arguments.Count)
                     {
                         for (int i = firstIndex; i < arguments.Count; i++)
                         {
@@ -111,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ImmutableArray<IParameterSymbol> parameters = semanticModel
                 .GetSymbol(argumentList.Parent, cancellationToken)
-                .GetParameters();
+                .ParametersOrDefault();
 
             SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
 

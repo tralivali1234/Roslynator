@@ -5,16 +5,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.InlineDefinition
 {
-    internal struct ParameterInfo
+    internal readonly struct ParameterInfo
     {
-        public ParameterInfo(IParameterSymbol parameterSymbol, ExpressionSyntax expression)
+        public ParameterInfo(IParameterSymbol parameterSymbol, ExpressionSyntax expression, bool isThis = false)
         {
-            Expression = expression;
             ParameterSymbol = parameterSymbol;
+            Expression = expression;
+            IsThis = isThis;
         }
 
         public ExpressionSyntax Expression { get; }
 
         public IParameterSymbol ParameterSymbol { get; }
+
+        public bool IsThis { get; }
     }
 }

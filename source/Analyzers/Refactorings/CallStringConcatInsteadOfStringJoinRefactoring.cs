@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -21,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax expression = invocation.Expression;
 
-            if (expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+            if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
             {
                 var memberAccess = (MemberAccessExpressionSyntax)expression;
 
@@ -40,16 +39,18 @@ namespace Roslynator.CSharp.Refactorings
                             SemanticModel semanticModel = context.SemanticModel;
                             CancellationToken cancellationToken = context.CancellationToken;
 
-                            if (semanticModel.TryGetMethodInfo(invocation, out MethodInfo info, cancellationToken)
-                                && info.IsName("Join")
-                                && info.IsContainingType(SpecialType.System_String)
-                                && info.IsPublic
-                                && info.IsStatic
-                                && info.IsReturnType(SpecialType.System_String)
-                                && !info.IsGenericMethod
-                                && !info.IsExtensionMethod)
+                            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocation, cancellationToken);
+
+                            if (methodInfo.Symbol != null
+                                && methodInfo.IsName("Join")
+                                && methodInfo.IsContainingType(SpecialType.System_String)
+                                && methodInfo.IsPublic
+                                && methodInfo.IsStatic
+                                && methodInfo.IsReturnType(SpecialType.System_String)
+                                && !methodInfo.IsGenericMethod
+                                && !methodInfo.IsExtensionMethod)
                             {
-                                ImmutableArray<IParameterSymbol> parameters = info.Parameters;
+                                ImmutableArray<IParameterSymbol> parameters = methodInfo.Parameters;
 
                                 if (parameters.Length == 2
                                     && parameters[0].Type.IsString())

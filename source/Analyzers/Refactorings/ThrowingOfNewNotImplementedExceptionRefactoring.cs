@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
         {
-            if (expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true)
+            if (expression?.Kind() == SyntaxKind.ObjectCreationExpression)
             {
                 var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
 

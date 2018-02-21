@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -9,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Helpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -82,7 +84,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     ArgumentSyntax newArgument = argument
                                         .WithRefOrOutKeyword(default(SyntaxToken))
-                                        .PrependToLeadingTrivia(argument.RefOrOutKeyword.GetLeadingAndTrailingTrivia())
+                                        .PrependToLeadingTrivia(argument.RefOrOutKeyword.GetAllTrivia())
                                         .WithFormatterAnnotation();
 
                                     return context.Document.ReplaceNodeAsync(argument, newArgument, cancellationToken);
@@ -219,9 +221,12 @@ namespace Roslynator.CSharp.CodeFixes
 
             foreach (ISymbol symbol in candidateSymbols)
             {
-                ImmutableArray<IParameterSymbol> parameters2 = symbol.GetParameters();
+                ImmutableArray<IParameterSymbol> parameters2 = symbol.ParametersOrDefault();
 
-                if (parameters2.Length == argumentCount)
+                Debug.Assert(!parameters2.IsDefault, symbol.Kind.ToString());
+
+                if (!parameters2.IsDefault
+                    && parameters2.Length == argumentCount)
                 {
                     if (!parameters.IsDefault)
                         return default(ImmutableArray<IParameterSymbol>);

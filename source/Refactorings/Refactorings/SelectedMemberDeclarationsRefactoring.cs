@@ -10,7 +10,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, NamespaceDeclarationSyntax namespaceDeclaration)
         {
-            if (!MemberDeclarationSelection.TryCreate(namespaceDeclaration, context.Span, out MemberDeclarationSelection selectedMembers))
+            if (!MemberDeclarationsSelection.TryCreate(namespaceDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
                 return;
 
             ComputeRefactoring(context, selectedMembers);
@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static void ComputeRefactoring(RefactoringContext context, ClassDeclarationSyntax classDeclaration)
         {
-            if (!MemberDeclarationSelection.TryCreate(classDeclaration, context.Span, out MemberDeclarationSelection selectedMembers))
+            if (!MemberDeclarationsSelection.TryCreate(classDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
                 return;
 
             ComputeRefactoring(context, selectedMembers);
@@ -26,35 +26,35 @@ namespace Roslynator.CSharp.Refactorings
 
         public static void ComputeRefactoring(RefactoringContext context, StructDeclarationSyntax structDeclaration)
         {
-            if (!MemberDeclarationSelection.TryCreate(structDeclaration, context.Span, out MemberDeclarationSelection selectedMembers))
+            if (!MemberDeclarationsSelection.TryCreate(structDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
                 return;
 
             ComputeRefactoring(context, selectedMembers);
         }
 
-        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSelection selectedMembers)
+        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationsSelection selectedMembers)
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeAccessibility))
             {
-                AccessibilityFlags accessibilityFlags = ChangeAccessibilityRefactoring.GetAllowedAccessibilityFlags(selectedMembers, allowOverride: true);
+                Accessibilities validAccessibilities = ChangeAccessibilityRefactoring.GetValidAccessibilities(selectedMembers, allowOverride: true);
 
-                if (accessibilityFlags != AccessibilityFlags.None)
+                if (validAccessibilities != Accessibilities.None)
                 {
                     bool canHaveMultipleDeclarations = CanHaveMultipleDeclarations();
 
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Public, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Internal, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Protected, canHaveMultipleDeclarations);
-                    TryRegisterRefactoring(accessibilityFlags, Accessibility.Private, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Public, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Internal, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Protected, canHaveMultipleDeclarations);
+                    TryRegisterRefactoring(validAccessibilities, Accessibility.Private, canHaveMultipleDeclarations);
                 }
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.InitializeFieldFromConstructor))
                 InitializeFieldFromConstructorRefactoring.ComputeRefactoring(context, selectedMembers);
 
-            void TryRegisterRefactoring(AccessibilityFlags accessibilityFlags, Accessibility accessibility, bool canHaveMultipleDeclarations)
+            void TryRegisterRefactoring(Accessibilities accessibilities, Accessibility accessibility, bool canHaveMultipleDeclarations)
             {
-                if ((accessibilityFlags & accessibility.GetAccessibilityFlag()) != 0)
+                if ((accessibilities & accessibility.GetAccessibilities()) != 0)
                 {
                     if (canHaveMultipleDeclarations)
                     {

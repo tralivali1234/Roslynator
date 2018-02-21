@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
                         title,
                         cancellationToken =>
                         {
-                            return context.Document.RemoveDirectivesAsync(
+                            return context.Document.RemovePreprocessorDirectivesAsync(
                                 directives.ToImmutableArray(),
                                 cancellationToken);
                         });

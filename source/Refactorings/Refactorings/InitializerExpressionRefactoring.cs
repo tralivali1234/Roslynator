@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                             "Format initializer on multiple lines",
-                            cancellationToken => DocumentFormatter.ToMultiLineAsync(
+                            cancellationToken => SyntaxFormatter.ToMultiLineAsync(
                                 context.Document,
                                 initializer,
                                 cancellationToken));
@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                             "Format initializer on a single line",
-                            cancellationToken => DocumentFormatter.ToSingleLineAsync(
+                            cancellationToken => SyntaxFormatter.ToSingleLineAsync(
                                 context.Document,
                                 initializer,
                                 cancellationToken));

@@ -3,26 +3,58 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 using Roslynator.Helpers;
-using Roslynator.Utilities;
 
 namespace Roslynator
 {
+    //XTODO: rename
+    /// <summary>
+    /// Provides methods to obtain an unique identifier.
+    /// </summary>
     public abstract class NameGenerator
     {
         internal static StringComparer OrdinalComparer { get; } = StringComparer.Ordinal;
+
         internal static StringComparer OrdinalIgnoreCaseComparer { get; } = StringComparer.OrdinalIgnoreCase;
 
-        public abstract string EnsureUniqueName(string baseName, HashSet<string> reservedNames);
-        public abstract string EnsureUniqueName(string baseName, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true);
-
+        /// <summary>
+        /// Default implementation of <see cref="NameGenerator"/> that adds number suffix to ensure uniqueness.
+        /// </summary>
         public static NameGenerator Default
         {
             get { return NameGenerators.NumberSuffix; }
         }
 
+        /// <summary>
+        /// Returns an unique name using the specified list of reserved names.
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="reservedNames"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
+        public abstract string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true);
+
+        /// <summary>
+        /// Returns an unique name using the specified list of symbols.
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="symbols"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
+        public abstract string EnsureUniqueName(string baseName, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true);
+
+        /// <summary>
+        /// Returns a member name that will be unique at the specified position.
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
             SemanticModel semanticModel,
@@ -45,17 +77,33 @@ namespace Roslynator
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="typeSymbol"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
-            INamedTypeSymbol containingType,
+            INamedTypeSymbol typeSymbol,
             bool isCaseSensitive = true)
         {
-            if (containingType == null)
-                throw new ArgumentNullException(nameof(containingType));
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
 
-            return EnsureUniqueName(baseName, containingType.GetMembers(), isCaseSensitive);
+            return EnsureUniqueName(baseName, typeSymbol.GetMembers(), isCaseSensitive);
         }
 
+        /// <summary>
+        /// Return a local name that will be unique at the specified position.
+        /// </summary>
+        /// <param name="baseName"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="position"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public string EnsureUniqueLocalName(
             string baseName,
             SemanticModel semanticModel,
@@ -102,17 +150,6 @@ namespace Roslynator
             return EnsureUniqueName(baseName, symbols, isCaseSensitive);
         }
 
-        public string EnsureUniqueEnumMemberName(
-            string baseName,
-            INamedTypeSymbol enumSymbol,
-            bool isCaseSensitive = true)
-        {
-            if (enumSymbol == null)
-                throw new ArgumentNullException(nameof(enumSymbol));
-
-            return EnsureUniqueName(baseName, enumSymbol.GetMembers(), isCaseSensitive);
-        }
-
         internal static bool IsUniqueMemberName(
             string name,
             SemanticModel semanticModel,
@@ -125,21 +162,22 @@ namespace Roslynator
 
             INamedTypeSymbol containingType = semanticModel.GetEnclosingNamedType(position, cancellationToken);
 
-            return IsUniqueMemberName(name, containingType, isCaseSensitive);
-        }
+            Debug.Assert(containingType != null);
 
-        public static bool IsUniqueMemberName(
-            string name,
-            INamedTypeSymbol containingType,
-            bool isCaseSensitive = true)
-        {
             if (containingType == null)
-                throw new ArgumentNullException(nameof(containingType));
+                return true;
 
             return IsUniqueName(name, containingType.GetMembers(), isCaseSensitive);
         }
 
-        internal static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
+        /// <summary>
+        /// Returns true if the name is not contained in the specified list. <see cref="ISymbol.Name"/> is used to compare names.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="symbols"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
+        public static bool IsUniqueName(string name, ImmutableArray<ISymbol> symbols, bool isCaseSensitive = true)
         {
             StringComparison comparison = GetStringComparison(isCaseSensitive);
 
@@ -152,11 +190,33 @@ namespace Roslynator
             return true;
         }
 
-        internal static bool IsUniqueName(string name, HashSet<string> reservedNames)
+        /// <summary>
+        /// Returns true if the name is not contained in the specified list.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="reservedNames"></param>
+        /// <param name="isCaseSensitive"></param>
+        /// <returns></returns>
+        public static bool IsUniqueName(string name, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
-            return !reservedNames.Contains(name);
+            StringComparison comparison = GetStringComparison(isCaseSensitive);
+
+            foreach (string reservedName in reservedNames)
+            {
+                if (string.Equals(name, reservedName, comparison))
+                    return false;
+            }
+
+            return true;
         }
 
+        //XTODO: 
+        /// <summary>
+        /// Creates a syntax identifier from the specified type symbol.
+        /// </summary>
+        /// <param name="typeSymbol"></param>
+        /// <param name="firstCharToLower"></param>
+        /// <returns></returns>
         public static string CreateName(ITypeSymbol typeSymbol, bool firstCharToLower = false)
         {
             string name = CreateNameFromTypeSymbolHelper.CreateName(typeSymbol);
@@ -164,7 +224,7 @@ namespace Roslynator
             if (name != null
                 && firstCharToLower)
             {
-                name = StringUtility.FirstCharToLower(name);
+                return StringUtility.FirstCharToLower(name);
             }
 
             return name;
@@ -238,19 +298,19 @@ namespace Roslynator
                 && AreDigits(oldName, newName.Length, oldName.Length - newName.Length)
                 && uniqueName.Length > newName.Length
                 && AreDigits(uniqueName, newName.Length, uniqueName.Length - newName.Length);
-        }
 
-        private static bool AreDigits(string value, int start, int count)
-        {
-            int max = start + count;
-
-            for (int i = start; i < max; i++)
+            bool AreDigits(string value, int start, int count)
             {
-                if (!char.IsDigit(value, i))
-                    return false;
-            }
+                int max = start + count;
 
-            return true;
+                for (int i = start; i < max; i++)
+                {
+                    if (!char.IsDigit(value, i))
+                        return false;
+                }
+
+                return true;
+            }
         }
 
         private static StringComparison GetStringComparison(bool isCaseSensitive)

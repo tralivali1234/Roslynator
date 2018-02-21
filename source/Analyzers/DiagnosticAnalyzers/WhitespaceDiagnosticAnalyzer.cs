@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
@@ -32,7 +31,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxTreeAction(AnalyzeTrailingTrivia);
         }
 
-        private void AnalyzeTrailingTrivia(SyntaxTreeAnalysisContext context)
+        private static void AnalyzeTrailingTrivia(SyntaxTreeAnalysisContext context)
         {
             if (!context.Tree.TryGetText(out SourceText sourceText))
                 return;

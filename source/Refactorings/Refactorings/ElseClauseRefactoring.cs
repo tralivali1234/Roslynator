@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -17,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBraces)
-                && elseClause.Statement?.IsKind(SyntaxKind.IfStatement) == true)
+                && elseClause.Statement?.Kind() == SyntaxKind.IfStatement)
             {
                 var ifStatement = (IfStatementSyntax)elseClause.Statement;
 

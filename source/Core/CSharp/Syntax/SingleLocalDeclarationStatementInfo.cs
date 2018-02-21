@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,10 +9,11 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct SingleLocalDeclarationStatementInfo
+    /// <summary>
+    /// Provides information about a local declaration statement with a single variable.
+    /// </summary>
+    public readonly struct SingleLocalDeclarationStatementInfo : IEquatable<SingleLocalDeclarationStatementInfo>
     {
-        private static SingleLocalDeclarationStatementInfo Default { get; } = new SingleLocalDeclarationStatementInfo();
-
         private SingleLocalDeclarationStatementInfo(
             LocalDeclarationStatementSyntax statement,
             VariableDeclarationSyntax declaration,
@@ -21,47 +24,82 @@ namespace Roslynator.CSharp.Syntax
             Declarator = declarator;
         }
 
+        private static SingleLocalDeclarationStatementInfo Default { get; } = new SingleLocalDeclarationStatementInfo();
+
+        /// <summary>
+        /// The local declaration statement.
+        /// </summary>
         public LocalDeclarationStatementSyntax Statement { get; }
 
+        /// <summary>
+        /// The variable declaration.
+        /// </summary>
         public VariableDeclarationSyntax Declaration { get; }
 
+        /// <summary>
+        /// The variable declarator.
+        /// </summary>
         public VariableDeclaratorSyntax Declarator { get; }
 
+        /// <summary>
+        /// The variable initializer, if any.
+        /// </summary>
         public EqualsValueClauseSyntax Initializer
         {
             get { return Declarator?.Initializer; }
         }
 
+        /// <summary>
+        /// The modifier list.
+        /// </summary>
         public SyntaxTokenList Modifiers
         {
             get { return Statement?.Modifiers ?? default(SyntaxTokenList); }
         }
 
+        /// <summary>
+        /// The type of a declaration.
+        /// </summary>
         public TypeSyntax Type
         {
             get { return Declaration?.Type; }
         }
 
+        /// <summary>
+        /// Variable identifier.
+        /// </summary>
         public SyntaxToken Identifier
         {
             get { return Declarator?.Identifier ?? default(SyntaxToken); }
         }
 
+        /// <summary>
+        /// Variable name.
+        /// </summary>
         public string IdentifierText
         {
-            get { return Declarator?.Identifier.ValueText; }
+            get { return Identifier.ValueText; }
         }
 
+        /// <summary>
+        /// The equals token.
+        /// </summary>
         public SyntaxToken EqualsToken
         {
             get { return Initializer?.EqualsToken ?? default(SyntaxToken); }
         }
 
+        /// <summary>
+        /// The semicolon.
+        /// </summary>
         public SyntaxToken SemicolonToken
         {
             get { return Statement?.SemicolonToken ?? default(SyntaxToken); }
         }
 
+        /// <summary>
+        /// Determines whether this struct was initialized with an actual syntax.
+        /// </summary>
         public bool Success
         {
             get { return Declaration != null; }
@@ -124,9 +162,64 @@ namespace Roslynator.CSharp.Syntax
             return new SingleLocalDeclarationStatementInfo(localDeclarationStatement, declaration, declarator);
         }
 
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return Statement?.ToString() ?? base.ToString();
+            return Statement?.ToString() ?? "";
+        }
+
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is SingleLocalDeclarationStatementInfo other && Equals(other);
+        }
+
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        public bool Equals(SingleLocalDeclarationStatementInfo other)
+        {
+            return EqualityComparer<LocalDeclarationStatementSyntax>.Default.Equals(Statement, other.Statement);
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        public override int GetHashCode()
+        {
+            return EqualityComparer<LocalDeclarationStatementSyntax>.Default.GetHashCode(Statement);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
+        public static bool operator ==(SingleLocalDeclarationStatementInfo info1, SingleLocalDeclarationStatementInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
+        public static bool operator !=(SingleLocalDeclarationStatementInfo info1, SingleLocalDeclarationStatementInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

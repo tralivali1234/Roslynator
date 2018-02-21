@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -34,11 +33,11 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeDeclarationExpression, SyntaxKind.DeclarationExpression);
         }
 
-        private void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            TypeAnalysisFlags flags = CSharpAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
+            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
 
             if (flags.IsExplicit())
             {

@@ -89,11 +89,11 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var expressionStatement = (ExpressionStatementSyntax)statement;
 
-                if (expressionStatement.Expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+                if (expressionStatement.Expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
                 {
                     var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
-                    if (assignment.Left?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                    if (assignment.Left?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                     {
                         var memberAccess = (MemberAccessExpressionSyntax)assignment.Left;
 
@@ -120,8 +120,6 @@ namespace Roslynator.CSharp.Refactorings
             StatementsSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = selectedStatements.Info;
-
             ExpressionStatementSyntax[] expressionStatements = selectedStatements
                 .Skip(1)
                 .Cast<ExpressionStatementSyntax>()
@@ -129,14 +127,14 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax firstStatement = selectedStatements.First();
 
-            SyntaxList<StatementSyntax> newStatements = statementsInfo.Statements.Replace(
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList.Replace(
                 firstStatement,
                 firstStatement.ReplaceNode(
                     objectCreation,
                     objectCreation.WithInitializer(CreateInitializer(objectCreation, expressionStatements))));
 
             int count = expressionStatements.Length;
-            int index = selectedStatements.StartIndex + 1;
+            int index = selectedStatements.FirstIndex + 1;
 
             while (count > 0)
             {
@@ -144,7 +142,7 @@ namespace Roslynator.CSharp.Refactorings
                 count--;
             }
 
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
 
         private static InitializerExpressionSyntax CreateInitializer(ObjectCreationExpressionSyntax objectCreation, ExpressionStatementSyntax[] expressionStatements)

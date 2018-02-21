@@ -2,12 +2,14 @@
 
 using System.Collections.Immutable;
 using System.Composition;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -29,7 +31,12 @@ namespace Roslynator.CSharp.CodeFixes
 
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token, kind: SyntaxKind.IdentifierToken))
+            if (!TryFindToken(root, context.Span.Start, out SyntaxToken token))
+                return;
+
+            Debug.Assert(token.Kind() == SyntaxKind.IdentifierToken, token.Kind().ToString());
+
+            if (token.Kind() != SyntaxKind.IdentifierToken)
                 return;
 
             SyntaxNode parent = token.Parent;
@@ -47,9 +54,9 @@ namespace Roslynator.CSharp.CodeFixes
                             cancellationToken =>
                             {
                                 PropertyDeclarationSyntax newNode = propertyDeclaration
-                                    .RemoveNode(initializer, RemoveHelper.GetRemoveOptions(initializer))
+                                    .RemoveNode(initializer)
                                     .WithSemicolonToken(default(SyntaxToken))
-                                    .AppendToTrailingTrivia(propertyDeclaration.SemicolonToken.GetLeadingAndTrailingTrivia())
+                                    .AppendToTrailingTrivia(propertyDeclaration.SemicolonToken.GetAllTrivia())
                                     .WithFormatterAnnotation();
 
                                 return context.Document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken);
@@ -69,7 +76,7 @@ namespace Roslynator.CSharp.CodeFixes
                             cancellationToken =>
                             {
                                 VariableDeclaratorSyntax newNode = variableDeclarator
-                                    .RemoveNode(initializer, RemoveHelper.GetRemoveOptions(initializer))
+                                    .RemoveNode(initializer)
                                     .WithFormatterAnnotation();
 
                                 return context.Document.ReplaceNodeAsync(variableDeclarator, newNode, cancellationToken);

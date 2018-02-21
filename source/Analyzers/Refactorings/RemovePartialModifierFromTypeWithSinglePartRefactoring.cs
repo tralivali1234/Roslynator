@@ -2,12 +2,12 @@
 
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -15,15 +15,14 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
         {
-            if (symbol.IsTypeKind(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
+            if (symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
             {
                 ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
 
                 if (syntaxReferences.Length == 1
                     && (syntaxReferences[0].GetSyntax(context.CancellationToken) is MemberDeclarationSyntax memberDeclaration))
                 {
-                    SyntaxToken partialKeyword = memberDeclaration.GetModifiers()
-                        .FirstOrDefault(f => f.IsKind(SyntaxKind.PartialKeyword));
+                    SyntaxToken partialKeyword = SyntaxInfo.ModifiersInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
 
                     if (partialKeyword.IsKind(SyntaxKind.PartialKeyword)
                         && !ContainsPartialMethod(memberDeclaration))

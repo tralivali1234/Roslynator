@@ -35,19 +35,23 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (invocationInfo.Expression.IsKind(SyntaxKind.BaseExpression))
+                return false;
+
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            if (!invocationInfo.Expression.IsKind(SyntaxKind.BaseExpression)
-                && semanticModel.TryGetMethodInfo(invocationExpression, out MethodInfo info, cancellationToken)
-                && info.IsName("ToString")
-                && info.IsPublic
-                && !info.IsStatic
-                && info.IsReturnType(SpecialType.System_String)
-                && !info.IsGenericMethod
-                && !info.IsExtensionMethod
-                && !info.Parameters.Any())
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol != null
+                && methodInfo.IsName("ToString")
+                && methodInfo.IsPublic
+                && !methodInfo.IsStatic
+                && methodInfo.IsReturnType(SpecialType.System_String)
+                && !methodInfo.IsGenericMethod
+                && !methodInfo.IsExtensionMethod
+                && !methodInfo.Parameters.Any())
             {
-                INamedTypeSymbol containingType = info.ContainingType;
+                INamedTypeSymbol containingType = methodInfo.ContainingType;
 
                 if (containingType?.IsReferenceType == true
                     && containingType.SpecialType != SpecialType.System_Enum)
@@ -56,15 +60,15 @@ namespace Roslynator.CSharp.Refactorings
                         return true;
 
                     if (invocationExpression.IsParentKind(SyntaxKind.Interpolation))
-                        return IsNotHidden(info.Symbol, containingType);
+                        return IsNotHidden(methodInfo.Symbol, containingType);
 
                     ExpressionSyntax expression = invocationExpression.WalkUpParentheses();
 
                     SyntaxNode parent = expression.Parent;
 
-                    if (parent?.IsKind(SyntaxKind.AddExpression) == true
+                    if (parent?.Kind() == SyntaxKind.AddExpression
                         && !parent.ContainsDiagnostics
-                        && IsNotHidden(info.Symbol, containingType))
+                        && IsNotHidden(methodInfo.Symbol, containingType))
                     {
                         var addExpression = (BinaryExpressionSyntax)expression.Parent;
 

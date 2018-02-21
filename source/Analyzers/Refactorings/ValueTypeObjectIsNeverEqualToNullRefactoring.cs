@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax right = binaryExpression.Right;
 
-                if (right?.IsKind(SyntaxKind.NullLiteralExpression) == true
+                if (right?.Kind() == SyntaxKind.NullLiteralExpression
                     && IsStructButNotNullableOfT(context.SemanticModel.GetTypeSymbol(left, context.CancellationToken))
                     && !binaryExpression.SpanContainsDirectives())
                 {
@@ -68,10 +68,10 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax newNode = null;
 
-            if (typeSymbol.IsPredefinedValueType()
-                || typeSymbol.ExistsMethod(WellKnownMemberNames.EqualityOperatorName))
+            if (CSharpFacts.IsSimpleType(typeSymbol.SpecialType)
+                || typeSymbol.ContainsMember<IMethodSymbol>(WellKnownMemberNames.EqualityOperatorName))
             {
-                newNode = typeSymbol.ToDefaultValueSyntax(semanticModel, right.SpanStart)
+                newNode = typeSymbol.GetDefaultValueSyntax(semanticModel, right.SpanStart)
                     .WithTriviaFrom(right)
                     .WithFormatterAnnotation();
 

@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -116,7 +117,7 @@ namespace Roslynator.CSharp.CodeFixes
         {
             ExpressionStatementSyntax expressionStatement = SimpleAssignmentStatement(
                 IdentifierName(parameter.Name),
-                parameter.Type.ToDefaultValueSyntax(semanticModel, bodyOrExpressionBody.Span.End));
+                parameter.Type.GetDefaultValueSyntax(semanticModel, bodyOrExpressionBody.Span.End));
 
             expressionStatement = expressionStatement.WithFormatterAnnotation();
 

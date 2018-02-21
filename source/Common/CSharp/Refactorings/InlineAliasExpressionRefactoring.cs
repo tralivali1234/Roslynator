@@ -100,14 +100,14 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
                         var compilationUnit = (CompilationUnitSyntax)node;
 
                         UsingDirectiveSyntax usingDirective = compilationUnit.Usings[index];
-                        return compilationUnit.RemoveNode(usingDirective, RemoveHelper.GetRemoveOptions(usingDirective));
+                        return compilationUnit.RemoveNode(usingDirective);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var namespaceDeclaration = (NamespaceDeclarationSyntax)node;
 
                         UsingDirectiveSyntax usingDirective = namespaceDeclaration.Usings[index];
-                        return namespaceDeclaration.RemoveNode(usingDirective, RemoveHelper.GetRemoveOptions(usingDirective));
+                        return namespaceDeclaration.RemoveNode(usingDirective);
                     }
             }
 

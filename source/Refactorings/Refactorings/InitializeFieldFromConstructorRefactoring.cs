@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.Utilities;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -32,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
                 cancellationToken => RefactorAsync(context.Document, fieldDeclaration, cancellationToken));
         }
 
-        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSelection selectedMembers)
+        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationsSelection selectedMembers)
         {
             int count = 0;
 
@@ -118,7 +117,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationSelection selectedMembers,
+            MemberDeclarationsSelection selectedMembers,
             CancellationToken cancellationToken)
         {
             ImmutableArray<FieldInfo> fieldInfo = selectedMembers
@@ -126,7 +125,7 @@ namespace Roslynator.CSharp.Refactorings
                 .SelectMany(declaration => declaration.Variables.Select(declarator => FieldInfo.Create(declaration.Type, declarator)))
                 .ToImmutableArray();
 
-            return RefactorAsync(document, fieldInfo, (TypeDeclarationSyntax)selectedMembers.ContainingMember, cancellationToken);
+            return RefactorAsync(document, fieldInfo, (TypeDeclarationSyntax)selectedMembers.Declaration, cancellationToken);
         }
 
         private static Task<Document> RefactorAsync(
@@ -245,7 +244,7 @@ namespace Roslynator.CSharp.Refactorings
             return NameGenerator.Default.EnsureUniqueName(name, reservedNames);
         }
 
-        private struct FieldInfo
+        private readonly struct FieldInfo
         {
             private FieldInfo(TypeSyntax type, string name, string nameCamelCase)
             {

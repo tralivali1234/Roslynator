@@ -9,55 +9,178 @@ using Roslynator.CSharp.Helpers;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// A set of extension methods for a <see cref="SemanticModel"/>.
+    /// </summary>
     public static class CSharpExtensions
     {
+        /// <summary>
+        /// Returns what symbol, if any, the specified attribute syntax bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="attribute"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static ISymbol GetSymbol(
+            this SemanticModel semanticModel,
+            AttributeSyntax attribute,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, attribute, cancellationToken)
+                .Symbol;
+        }
+
+        /// <summary>
+        /// Returns what symbol, if any, the specified constructor initializer syntax bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="constructorInitializer"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static ISymbol GetSymbol(
+            this SemanticModel semanticModel,
+            ConstructorInitializerSyntax constructorInitializer,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, constructorInitializer, cancellationToken)
+                .Symbol;
+        }
+
+        /// <summary>
+        /// Returns what symbol, if any, the specified cref syntax bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="cref"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static ISymbol GetSymbol(
+            this SemanticModel semanticModel,
+            CrefSyntax cref,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, cref, cancellationToken)
+                .Symbol;
+        }
+
+        /// <summary>
+        /// Returns what symbol, if any, the specified expression syntax bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="expression"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ISymbol GetSymbol(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return semanticModel
-                .GetSymbolInfo(expression, cancellationToken)
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, expression, cancellationToken)
                 .Symbol;
         }
 
+        /// <summary>
+        /// Returns what symbol, if any, the specified ordering syntax bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="ordering"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static ISymbol GetSymbol(
+            this SemanticModel semanticModel,
+            OrderingSyntax ordering,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, ordering, cancellationToken)
+                .Symbol;
+        }
+
+        /// <summary>
+        /// Returns what symbol, if any, the specified select or group clause bound to.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="selectOrGroupClause"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static ISymbol GetSymbol(
+            this SemanticModel semanticModel,
+            SelectOrGroupClauseSyntax selectOrGroupClause,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetSymbolInfo(semanticModel, selectOrGroupClause, cancellationToken)
+                .Symbol;
+        }
+
+        /// <summary>
+        /// Returns type information about an attribute syntax.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="attribute"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ITypeSymbol GetTypeSymbol(
             this SemanticModel semanticModel,
             AttributeSyntax attribute,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return semanticModel
-                .GetTypeInfo(attribute, cancellationToken)
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetTypeInfo(semanticModel, attribute, cancellationToken)
                 .Type;
         }
 
+        /// <summary>
+        /// Returns type information about a constructor initializer syntax.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="constructorInitializer"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ITypeSymbol GetTypeSymbol(
             this SemanticModel semanticModel,
             ConstructorInitializerSyntax constructorInitializer,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return semanticModel
-                .GetTypeInfo(constructorInitializer, cancellationToken)
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetTypeInfo(semanticModel, constructorInitializer, cancellationToken)
                 .Type;
         }
 
+        /// <summary>
+        /// Returns type information about an expression syntax.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="expression"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ITypeSymbol GetTypeSymbol(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return semanticModel
-                .GetTypeInfo(expression, cancellationToken)
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetTypeInfo(semanticModel, expression, cancellationToken)
                 .Type;
         }
 
+        /// <summary>
+        /// Returns type information about a select or group clause.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="selectOrGroupClause"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static ITypeSymbol GetTypeSymbol(
             this SemanticModel semanticModel,
             SelectOrGroupClauseSyntax selectOrGroupClause,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return semanticModel
-                .GetTypeInfo(selectOrGroupClause, cancellationToken)
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions
+                .GetTypeInfo(semanticModel, selectOrGroupClause, cancellationToken)
                 .Type;
         }
 
@@ -76,18 +199,18 @@ namespace Roslynator.CSharp
             if (destinationType == null)
                 throw new ArgumentNullException(nameof(destinationType));
 
-            if (!destinationType.IsErrorType()
-                && !destinationType.IsVoid())
-            {
-                Conversion conversion = semanticModel.ClassifyConversion(
-                    expression,
-                    destinationType,
-                    isExplicitInSource);
+            if (destinationType.Kind == SymbolKind.ErrorType)
+                return false;
 
-                return conversion.IsExplicit;
-            }
+            if (destinationType.SpecialType == SpecialType.System_Void)
+                return false;
 
-            return false;
+            Conversion conversion = semanticModel.ClassifyConversion(
+                expression,
+                destinationType,
+                isExplicitInSource);
+
+            return conversion.IsExplicit;
         }
 
         internal static bool IsImplicitConversion(
@@ -96,20 +219,39 @@ namespace Roslynator.CSharp
             ITypeSymbol destinationType,
             bool isExplicitInSource = false)
         {
-            if (!destinationType.IsErrorType()
-                && !destinationType.IsVoid())
-            {
-                Conversion conversion = semanticModel.ClassifyConversion(
-                    expression,
-                    destinationType,
-                    isExplicitInSource);
+            if (semanticModel == null)
+                throw new ArgumentNullException(nameof(semanticModel));
 
-                return conversion.IsImplicit;
-            }
+            if (expression == null)
+                throw new ArgumentNullException(nameof(expression));
 
-            return false;
+            if (destinationType == null)
+                throw new ArgumentNullException(nameof(destinationType));
+
+            if (destinationType.Kind == SymbolKind.ErrorType)
+                return false;
+
+            if (destinationType.SpecialType == SpecialType.System_Void)
+                return false;
+
+            Conversion conversion = semanticModel.ClassifyConversion(
+                expression,
+                destinationType,
+                isExplicitInSource);
+
+            return conversion.IsImplicit;
         }
 
+        /// <summary>
+        /// Determines a parameter symbol that matches to the specified argument.
+        /// Returns null if no matching parameter is found.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="argument"></param>
+        /// <param name="allowParams"></param>
+        /// <param name="allowCandidate"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static IParameterSymbol DetermineParameter(
             this SemanticModel semanticModel,
             ArgumentSyntax argument,
@@ -117,9 +259,25 @@ namespace Roslynator.CSharp
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (semanticModel == null)
+                throw new ArgumentNullException(nameof(semanticModel));
+
+            if (argument == null)
+                throw new ArgumentNullException(nameof(argument));
+
             return DetermineParameterHelper.DetermineParameter(argument, semanticModel, allowParams, allowCandidate, cancellationToken);
         }
 
+        /// <summary>
+        /// Determines a parameter symbol that matches to the specified attribute argument.
+        /// Returns null if not matching parameter is found.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="attributeArgument"></param>
+        /// <param name="allowParams"></param>
+        /// <param name="allowCandidate"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static IParameterSymbol DetermineParameter(
             this SemanticModel semanticModel,
             AttributeArgumentSyntax attributeArgument,
@@ -127,9 +285,23 @@ namespace Roslynator.CSharp
             bool allowCandidate = false,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (attributeArgument == null)
+                throw new ArgumentNullException(nameof(attributeArgument));
+
+            if (semanticModel == null)
+                throw new ArgumentNullException(nameof(semanticModel));
+
             return DetermineParameterHelper.DetermineParameter(attributeArgument, semanticModel, allowParams, allowCandidate, cancellationToken);
         }
 
+        /// <summary>
+        /// Returns true if the specified expression represents default value of the specified type.
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="typeSymbol"></param>
+        /// <param name="expression"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static bool IsDefaultValue(
             this SemanticModel semanticModel,
             ITypeSymbol typeSymbol,
@@ -145,7 +317,7 @@ namespace Roslynator.CSharp
             if (expression == null)
                 throw new ArgumentNullException(nameof(expression));
 
-            if (typeSymbol.IsErrorType())
+            if (typeSymbol.Kind == SymbolKind.ErrorType)
                 return false;
 
             SyntaxKind kind = expression.Kind();
@@ -153,27 +325,124 @@ namespace Roslynator.CSharp
             switch (typeSymbol.SpecialType)
             {
                 case SpecialType.System_Void:
-                    return false;
+                    {
+                        return false;
+                    }
                 case SpecialType.System_Boolean:
-                    return semanticModel.IsConstantValue(expression, false, cancellationToken);
+                    {
+                        return semanticModel.IsConstantValue(expression, false, cancellationToken);
+                    }
                 case SpecialType.System_Char:
-                    return semanticModel.IsConstantValue(expression, '\0', cancellationToken);
+                    {
+                        return semanticModel.IsConstantValue(expression, '\0', cancellationToken);
+                    }
                 case SpecialType.System_SByte:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is sbyte value
+                            && value == 0;
+                    }
                 case SpecialType.System_Byte:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is byte value
+                            && value == 0;
+                    }
                 case SpecialType.System_Int16:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is short value
+                            && value == 0;
+                    }
                 case SpecialType.System_UInt16:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is ushort value
+                            && value == 0;
+                    }
                 case SpecialType.System_Int32:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is int value
+                            && value == 0;
+                    }
                 case SpecialType.System_UInt32:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is uint value
+                            && value == 0;
+                    }
                 case SpecialType.System_Int64:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is long value
+                            && value == 0;
+                    }
                 case SpecialType.System_UInt64:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is ulong value
+                            && value == 0;
+                    }
                 case SpecialType.System_Decimal:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is decimal value
+                            && value == 0;
+                    }
                 case SpecialType.System_Single:
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is float value
+                            && value == 0;
+                    }
                 case SpecialType.System_Double:
-                    return semanticModel.IsZeroConstantValue(expression, cancellationToken);
+                    {
+                        return semanticModel.GetConstantValue(expression, cancellationToken).Value is double value
+                            && value == 0;
+                    }
             }
 
-            if (typeSymbol.IsEnum())
-                return semanticModel.IsZeroConstantValue(expression, cancellationToken);
+            if (typeSymbol.TypeKind == TypeKind.Enum)
+            {
+                var enumSymbol = (INamedTypeSymbol)typeSymbol;
+
+                switch (enumSymbol.EnumUnderlyingType.SpecialType)
+                {
+                    case SpecialType.System_SByte:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is sbyte value
+                                && value == 0;
+                        }
+                    case SpecialType.System_Byte:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is byte value
+                                && value == 0;
+                        }
+                    case SpecialType.System_Int16:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is short value
+                                && value == 0;
+                        }
+                    case SpecialType.System_UInt16:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is ushort value
+                                && value == 0;
+                        }
+                    case SpecialType.System_Int32:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is int value
+                                && value == 0;
+                        }
+                    case SpecialType.System_UInt32:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is uint value
+                                && value == 0;
+                        }
+                    case SpecialType.System_Int64:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is long value
+                                && value == 0;
+                        }
+                    case SpecialType.System_UInt64:
+                        {
+                            return semanticModel.GetConstantValue(expression, cancellationToken).Value is ulong value
+                                && value == 0;
+                        }
+                }
+
+                return false;
+            }
 
             if (typeSymbol.IsReferenceType)
             {
@@ -209,137 +478,90 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        private static bool IsZeroConstantValue(this SemanticModel semanticModel, ExpressionSyntax expression, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            Optional<object> optional = semanticModel.GetConstantValue(expression, cancellationToken);
-
-            if (optional.HasValue)
-            {
-                object value = optional.Value;
-
-                if (value is int)
-                {
-                    return (int)value == 0;
-                }
-                else if (value is uint)
-                {
-                    return (uint)value == 0;
-                }
-                else if (value is sbyte)
-                {
-                    return (sbyte)value == 0;
-                }
-                else if (value is byte)
-                {
-                    return (byte)value == 0;
-                }
-                else if (value is short)
-                {
-                    return (short)value == 0;
-                }
-                else if (value is ushort)
-                {
-                    return (ushort)value == 0;
-                }
-                else if (value is long)
-                {
-                    return (long)value == 0;
-                }
-                else if (value is ulong)
-                {
-                    return (ulong)value == 0;
-                }
-                else if (value is float)
-                {
-                    return (float)value == 0;
-                }
-                else if (value is double)
-                {
-                    return (double)value == 0;
-                }
-                else if (value is decimal)
-                {
-                    return (decimal)value == 0;
-                }
-            }
-
-            return false;
-        }
-
         private static bool IsConstantValue(this SemanticModel semanticModel, ExpressionSyntax expression, bool value, CancellationToken cancellationToken = default(CancellationToken))
         {
             Optional<object> optional = semanticModel.GetConstantValue(expression, cancellationToken);
 
-            if (optional.HasValue)
-            {
-                object constantValue = optional.Value;
-
-                if (constantValue is bool)
-                    return (bool)constantValue == value;
-            }
-
-            return false;
+            return optional.HasValue
+                && optional.Value is bool value2
+                && value == value2;
         }
 
         private static bool IsConstantValue(this SemanticModel semanticModel, ExpressionSyntax expression, char value, CancellationToken cancellationToken = default(CancellationToken))
         {
             Optional<object> optional = semanticModel.GetConstantValue(expression, cancellationToken);
 
-            if (optional.HasValue)
-            {
-                object constantValue = optional.Value;
-
-                if (constantValue is char)
-                    return (char)constantValue == value;
-            }
-
-            return false;
+            return optional.HasValue
+                && optional.Value is char value2
+                && value == value2;
         }
 
-        public static bool TryGetExtensionMethodInfo(
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="expression"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static MethodInfo GetExtensionMethodInfo(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
-            out MethodInfo methodInfo,
-            ExtensionMethodKind kind = ExtensionMethodKind.None,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-            if (symbol?.IsMethod() == true
-                && ExtensionMethodInfo.TryCreate((IMethodSymbol)symbol, semanticModel, out ExtensionMethodInfo extensionMethodInfo, kind))
-            {
-                methodInfo = extensionMethodInfo.MethodInfo;
-                return true;
-            }
-
-            methodInfo = default(MethodInfo);
-            return false;
+            return GetExtensionMethodInfo(semanticModel, expression, ExtensionMethodKind.Any, cancellationToken);
         }
 
-        public static bool TryGetMethodInfo(
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="expression"></param>
+        /// <param name="extensionMethodKind"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static MethodInfo GetExtensionMethodInfo(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
-            out MethodInfo methodInfo,
+            ExtensionMethodKind extensionMethodKind,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ISymbol symbol = GetSymbol(semanticModel, expression, cancellationToken);
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
+            {
+                ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, extensionMethodKind);
 
-            if (symbol?.IsMethod() == true)
-            {
-                methodInfo = new MethodInfo((IMethodSymbol)symbol, semanticModel);
-                return true;
+                if (extensionMethodInfo.Symbol != null)
+                {
+                    return extensionMethodInfo.MethodInfo;
+                }
             }
-            else
+
+            return default(MethodInfo);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="semanticModel"></param>
+        /// <param name="expression"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static MethodInfo GetMethodInfo(
+            this SemanticModel semanticModel,
+            ExpressionSyntax expression,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
             {
-                methodInfo = default(MethodInfo);
-                return false;
+                return new MethodInfo(methodSymbol);
             }
+
+            return default(MethodInfo);
         }
 
         internal static MethodDeclarationSyntax GetOtherPart(
             this SemanticModel semanticModel,
             MethodDeclarationSyntax methodDeclaration,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, cancellationToken);
 

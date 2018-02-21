@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -65,7 +66,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                                 return context.Document.ReplaceNodeAsync(type, newNode, cancellationToken);
                                             },
-                                            GetEquivalenceKey(diagnostic, SymbolDisplay.GetString(namedTypeSymbol)));
+                                            GetEquivalenceKey(diagnostic, SymbolDisplay.ToDisplayString(namedTypeSymbol, SymbolDisplayFormats.Default)));
 
                                         context.RegisterCodeFix(codeAction, diagnostic);
                                     }

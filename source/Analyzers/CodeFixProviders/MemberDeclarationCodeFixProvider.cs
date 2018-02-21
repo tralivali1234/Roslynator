@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using Roslynator.CSharp.Refactorings.MakeMemberReadOnly;
 
@@ -61,7 +62,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case DiagnosticIdentifiers.RemoveRedundantOverridingMember:
                         {
                             CodeAction codeAction = CodeAction.Create(
-                                $"Remove {memberDeclaration.GetTitle()}",
+                                $"Remove {CSharpFacts.GetTitle(memberDeclaration)}",
                                 cancellationToken => context.Document.RemoveMemberAsync(memberDeclaration, cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 
@@ -72,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var accessibility = (Accessibility)Enum.Parse(
                                 typeof(Accessibility),
-                                context.Diagnostics[0].Properties[nameof(Accessibility)]);
+                                diagnostic.Properties[nameof(Accessibility)]);
 
                             CodeAction codeAction = CodeAction.Create(
                                 "Add default access modifier",

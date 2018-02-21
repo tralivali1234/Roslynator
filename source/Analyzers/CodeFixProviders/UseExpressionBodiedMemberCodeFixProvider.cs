@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -35,7 +36,7 @@ namespace Roslynator.CSharp.CodeFixes
             context.RegisterCodeFix(codeAction, context.Diagnostics);
         }
 
-        private bool Predicate(SyntaxNode node)
+        private static bool Predicate(SyntaxNode node)
         {
             switch (node.Kind())
             {

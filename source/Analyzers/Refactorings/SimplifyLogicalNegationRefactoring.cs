@@ -64,10 +64,12 @@ namespace Roslynator.CSharp.Refactorings
             if (expression?.IsKind(SyntaxKind.LogicalNotExpression) != true)
                 return;
 
-            if (!context.SemanticModel.TryGetExtensionMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.Reduced, context.CancellationToken))
+            MethodInfo methodInfo = context.SemanticModel.GetExtensionMethodInfo(invocationInfo.InvocationExpression, ExtensionMethodKind.Reduced, context.CancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate())
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(context.SemanticModel))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, parent);
@@ -142,7 +144,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         InvocationExpressionSyntax newNode = invocationExpression.ReplaceNode(logicalNot2, logicalNot2.Operand.WithTriviaFrom(logicalNot2));
 
-                        return RefactoringHelper.ChangeInvokedMethodName(newNode, (memberAccessExpression.Name.Identifier.ValueText == "All") ? "Any" : "All");
+                        return RefactoringUtility.ChangeInvokedMethodName(newNode, (memberAccessExpression.Name.Identifier.ValueText == "All") ? "Any" : "All");
                     }
             }
 

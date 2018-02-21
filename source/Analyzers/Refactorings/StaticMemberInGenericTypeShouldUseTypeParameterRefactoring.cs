@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            if (namedType.IsTypeKind(TypeKind.Class, TypeKind.Struct)
+            if (namedType.TypeKind.Is(TypeKind.Class, TypeKind.Struct)
                 && namedType.Arity > 0
                 && !namedType.IsStatic
                 && !namedType.IsImplicitClass
@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     if (!member.IsImplicitlyDeclared
                         && member.IsStatic
-                        && member.IsDeclaredAccessibility(Accessibility.Public, Accessibility.Internal, Accessibility.ProtectedOrInternal))
+                        && member.DeclaredAccessibility.Is(Accessibility.Public, Accessibility.Internal, Accessibility.ProtectedOrInternal))
                     {
                         switch (member.Kind)
                         {

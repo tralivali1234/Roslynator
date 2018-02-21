@@ -99,13 +99,22 @@ namespace Roslynator.CSharp.Refactorings
             if (!CheckSymbol(invocationInfo, semanticModel, cancellationToken))
                 return;
 
-            if (!(semanticModel.TryGetMethodInfo(invocationInfo2.InvocationExpression, out MethodInfo info, cancellationToken)
-                && info.IsPublicInstanceStringMethod(name2)
-                && info.ReturnType.SpecialType == ((name2.EndsWith("IndexOf", StringComparison.Ordinal)) ? SpecialType.System_Int32 : SpecialType.System_Boolean)
-                && info.HasParameter(SpecialType.System_String)))
-            {
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo2.InvocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return;
-            }
+
+            if (!methodInfo.IsPublicInstanceNonGeneric(name2))
+                return;
+
+            if (!methodInfo.IsContainingType(SpecialType.System_String))
+                return;
+
+            if (!methodInfo.IsReturnType((name2.EndsWith("IndexOf", StringComparison.Ordinal)) ? SpecialType.System_Int32 : SpecialType.System_Boolean))
+                return;
+
+            if (!methodInfo.HasParameter(SpecialType.System_String))
+                return;
 
             if (!isStringLiteral
                 && !CheckSymbol(invocationInfo3, semanticModel, cancellationToken))
@@ -140,13 +149,22 @@ namespace Roslynator.CSharp.Refactorings
             if (!IsFixable(context, invocationInfo, argument, arguments))
                 return;
 
-            if (!context.SemanticModel.TryGetMethodInfo(equalsInvocation.InvocationExpression, out MethodInfo info, context.CancellationToken)
-                || !info.IsPublicStaticStringMethod("Equals")
-                || !info.ReturnsBoolean
-                || !info.HasParameters(SpecialType.System_String, SpecialType.System_String))
-            {
+            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(equalsInvocation.InvocationExpression, context.CancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return;
-            }
+
+            if (!methodInfo.IsPublicStaticNonGeneric("Equals"))
+                return;
+
+            if (!methodInfo.IsContainingType(SpecialType.System_String))
+                return;
+
+            if (!methodInfo.ReturnsBoolean)
+                return;
+
+            if (!methodInfo.HasParameters(SpecialType.System_String, SpecialType.System_String))
+                return;
 
             ReportDiagnostic(context, equalsInvocation);
         }
@@ -251,10 +269,13 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            return semanticModel.TryGetMethodInfo(invocationInfo.InvocationExpression, out MethodInfo info, cancellationToken)
-                && info.IsPublicInstanceStringMethod()
-                && info.ReturnsString
-                && !info.Parameters.Any();
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+
+            return methodInfo.Symbol != null
+                && methodInfo.IsPublicInstanceNonGeneric()
+                && methodInfo.IsContainingType(SpecialType.System_String)
+                && methodInfo.ReturnsString
+                && !methodInfo.Parameters.Any();
         }
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)

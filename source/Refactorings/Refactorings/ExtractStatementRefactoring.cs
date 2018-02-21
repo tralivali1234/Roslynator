@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     SyntaxNode parent = statement.Parent;
 
-                    if (parent?.IsKind(SyntaxKind.Block) == true)
+                    if (parent?.Kind() == SyntaxKind.Block)
                     {
                         statement = (BlockSyntax)parent;
                         parent = statement.Parent;
@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (parent != null
                         && (CheckContainingNode(parent)
-                        && GetContainingBlock(parent)?.IsKind(SyntaxKind.Block) == true))
+                        && GetContainingBlock(parent)?.Kind() == SyntaxKind.Block))
                     {
                         context.RegisterRefactoring(
                             (parent.IsKind(SyntaxKind.ElseClause))
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.IfStatement:
                     return ((IfStatementSyntax)node).IsTopmostIf();
                 case SyntaxKind.ElseClause:
-                    return !((ElseClauseSyntax)node).ContinuesWithIf();
+                    return !((ElseClauseSyntax)node).IsElseIf();
             }
 
             return false;

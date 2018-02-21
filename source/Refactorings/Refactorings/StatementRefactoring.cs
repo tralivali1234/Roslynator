@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -189,7 +188,7 @@ namespace Roslynator.CSharp.Refactorings
                 int index = statementsInfo.Statements.IndexOf(statement);
 
                 if (index == 0
-                    && statementsInfo.IsInBlock
+                    && statementsInfo.IsBlock
                     && statementsInfo.Block.OpenBraceToken.GetFullSpanEndLine() == statement.GetFullSpanStartLine())
                 {
                     statement = statement.PrependToLeadingTrivia(CSharpFactory.NewLine());

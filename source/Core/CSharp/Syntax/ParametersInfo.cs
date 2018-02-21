@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct ParametersInfo
+    internal readonly struct ParametersInfo : IEquatable<ParametersInfo>
     {
         public ParametersInfo(TypeParameterListSyntax typeParameterList, ParameterSyntax parameter, CSharpSyntaxNode body)
         {
@@ -55,7 +57,7 @@ namespace Roslynator.CSharp.Syntax
             get { return Node != null; }
         }
 
-        public static ParametersInfo Create(ConstructorDeclarationSyntax constructorDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(ConstructorDeclarationSyntax constructorDeclaration, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = constructorDeclaration.ParameterList;
 
@@ -70,7 +72,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
         }
 
-        public static ParametersInfo Create(MethodDeclarationSyntax methodDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(MethodDeclarationSyntax methodDeclaration, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = methodDeclaration.ParameterList;
 
@@ -102,7 +104,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(typeParameterList, parameterList, body);
         }
 
-        public static ParametersInfo Create(OperatorDeclarationSyntax operatorDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(OperatorDeclarationSyntax operatorDeclaration, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = operatorDeclaration.ParameterList;
 
@@ -117,7 +119,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
         }
 
-        public static ParametersInfo Create(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = conversionOperatorDeclaration.ParameterList;
 
@@ -132,7 +134,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
         }
 
-        public static ParametersInfo Create(DelegateDeclarationSyntax delegateDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(DelegateDeclarationSyntax delegateDeclaration, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = delegateDeclaration.ParameterList;
 
@@ -159,7 +161,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(typeParameterList, parameterList, default(CSharpSyntaxNode));
         }
 
-        public static ParametersInfo Create(LocalFunctionStatementSyntax localFunction, bool allowMissing = false)
+        internal static ParametersInfo Create(LocalFunctionStatementSyntax localFunction, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = localFunction.ParameterList;
 
@@ -191,7 +193,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(typeParameterList, parameterList, body);
         }
 
-        public static ParametersInfo Create(IndexerDeclarationSyntax indexerDeclaration, bool allowMissing = false)
+        internal static ParametersInfo Create(IndexerDeclarationSyntax indexerDeclaration, bool allowMissing = false)
         {
             BaseParameterListSyntax parameterList = indexerDeclaration.ParameterList;
 
@@ -206,7 +208,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
         }
 
-        public static ParametersInfo Create(SimpleLambdaExpressionSyntax simpleLambda, bool allowMissing = false)
+        internal static ParametersInfo Create(SimpleLambdaExpressionSyntax simpleLambda, bool allowMissing = false)
         {
             ParameterSyntax parameter = simpleLambda.Parameter;
 
@@ -221,7 +223,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameter, body);
         }
 
-        public static ParametersInfo Create(ParenthesizedLambdaExpressionSyntax parenthesizedLambda, bool allowMissing = false)
+        internal static ParametersInfo Create(ParenthesizedLambdaExpressionSyntax parenthesizedLambda, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = parenthesizedLambda.ParameterList;
 
@@ -236,7 +238,7 @@ namespace Roslynator.CSharp.Syntax
             return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
         }
 
-        public static ParametersInfo Create(AnonymousMethodExpressionSyntax anonymousMethod, bool allowMissing = false)
+        internal static ParametersInfo Create(AnonymousMethodExpressionSyntax anonymousMethod, bool allowMissing = false)
         {
             ParameterListSyntax parameterList = anonymousMethod.ParameterList;
 
@@ -294,7 +296,32 @@ namespace Roslynator.CSharp.Syntax
 
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ParametersInfo other && Equals(other);
+        }
+
+        public bool Equals(ParametersInfo other)
+        {
+            return EqualityComparer<SyntaxNode>.Default.Equals(Node, other.Node);
+        }
+
+        public override int GetHashCode()
+        {
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
+        }
+
+        public static bool operator ==(ParametersInfo info1, ParametersInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        public static bool operator !=(ParametersInfo info1, ParametersInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

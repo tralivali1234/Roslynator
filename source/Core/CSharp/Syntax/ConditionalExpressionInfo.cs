@@ -1,15 +1,18 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    public struct ConditionalExpressionInfo
+    /// <summary>
+    /// Provides information about conditional expression.
+    /// </summary>
+    public readonly struct ConditionalExpressionInfo : IEquatable<ConditionalExpressionInfo>
     {
-        private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
-
         private ConditionalExpressionInfo(
             ExpressionSyntax condition,
             ExpressionSyntax whenTrue,
@@ -20,17 +23,34 @@ namespace Roslynator.CSharp.Syntax
             WhenFalse = whenFalse;
         }
 
+        private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
+
+        /// <summary>
+        /// The conditional expression.
+        /// </summary>
         public ConditionalExpressionSyntax ConditionalExpression
         {
             get { return Condition?.FirstAncestor<ConditionalExpressionSyntax>(); }
         }
 
+        /// <summary>
+        /// The condition expression.
+        /// </summary>
         public ExpressionSyntax Condition { get; }
 
+        /// <summary>
+        /// The expression to be executed when the expression is true.
+        /// </summary>
         public ExpressionSyntax WhenTrue { get; }
 
+        /// <summary>
+        /// The expression to be executed when the expression is false.
+        /// </summary>
         public ExpressionSyntax WhenFalse { get; }
 
+        /// <summary>
+        /// Determines whether this struct was initialized with an actual syntax.
+        /// </summary>
         public bool Success
         {
             get { return Condition != null; }
@@ -81,9 +101,64 @@ namespace Roslynator.CSharp.Syntax
             return new ConditionalExpressionInfo(condition, whenTrue, whenFalse);
         }
 
+        /// <summary>
+        /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return ConditionalExpression?.ToString() ?? base.ToString();
+            return ConditionalExpression?.ToString() ?? "";
+        }
+
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
+        public override bool Equals(object obj)
+        {
+            return obj is ConditionalExpressionInfo other && Equals(other);
+        }
+
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        public bool Equals(ConditionalExpressionInfo other)
+        {
+            return EqualityComparer<ConditionalExpressionSyntax>.Default.Equals(ConditionalExpression, other.ConditionalExpression);
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
+        public override int GetHashCode()
+        {
+            return EqualityComparer<ConditionalExpressionSyntax>.Default.GetHashCode(ConditionalExpression);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
+        public static bool operator ==(ConditionalExpressionInfo info1, ConditionalExpressionInfo info2)
+        {
+            return info1.Equals(info2);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info1"></param>
+        /// <param name="info2"></param>
+        /// <returns></returns>
+        public static bool operator !=(ConditionalExpressionInfo info1, ConditionalExpressionInfo info2)
+        {
+            return !(info1 == info2);
         }
     }
 }

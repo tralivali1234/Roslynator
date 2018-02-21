@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -105,8 +104,8 @@ namespace Roslynator.CSharp.Refactorings
                         context.ReportDiagnostic(
                             DiagnosticDescriptors.RemoveRedundantBaseInterface,
                             baseType,
-                            SymbolDisplay.GetMinimalString(interfaceInfo.Symbol, context.SemanticModel, baseType.SpanStart),
-                            SymbolDisplay.GetMinimalString(interfaceInfo2.Symbol, context.SemanticModel, baseType.SpanStart));
+                            SymbolDisplay.ToMinimalDisplayString(interfaceInfo.Symbol, context.SemanticModel, baseType.SpanStart, SymbolDisplayFormats.Default),
+                            SymbolDisplay.ToMinimalDisplayString(interfaceInfo2.Symbol, context.SemanticModel, baseType.SpanStart, SymbolDisplayFormats.Default));
 
                         return;
                     }
@@ -119,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             BaseTypeSyntax baseType,
             CancellationToken cancellationToken)
         {
-            SyntaxRemoveOptions removeOptions = RemoveHelper.DefaultRemoveOptions;
+            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultOptions;
 
             if (baseType.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
@@ -138,7 +137,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.RemoveNodeAsync(baseType, removeOptions, cancellationToken);
         }
 
-        private struct SymbolInterfaceInfo
+        private readonly struct SymbolInterfaceInfo
         {
             public SymbolInterfaceInfo(BaseTypeSyntax baseType, INamedTypeSymbol symbol, ImmutableArray<INamedTypeSymbol> interfaces)
             {

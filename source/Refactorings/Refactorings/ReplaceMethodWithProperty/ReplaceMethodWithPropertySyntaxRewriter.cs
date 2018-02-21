@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
 
                     return AppendToTrailingTrivia(expression, node);
                 }
-                else if (expression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                else if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 {
                     var memberAccess = (MemberAccessExpressionSyntax)expression;
 
@@ -63,8 +63,8 @@ namespace Roslynator.CSharp.Refactorings.ReplaceMethodWithProperty
             if (argumentList != null)
             {
                 node = node.AppendToTrailingTrivia(
-                    argumentList.OpenParenToken.GetLeadingAndTrailingTrivia()
-                        .Concat(argumentList.CloseParenToken.GetLeadingAndTrailingTrivia()));
+                    argumentList.OpenParenToken.GetAllTrivia()
+                        .Concat(argumentList.CloseParenToken.GetAllTrivia()));
             }
 
             return node;

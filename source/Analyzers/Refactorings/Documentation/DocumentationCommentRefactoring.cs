@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
                             }
                         default:
                             {
-                                if (info.IsXmlElement
+                                if (!info.IsEmptyElement
                                     && info.IsLocalName(elementName1, elementName2))
                                 {
                                     string value = GetAttributeValue((XmlElementSyntax)info.Element, attributeName);

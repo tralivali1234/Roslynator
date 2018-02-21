@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             ConditionalExpressionSyntax conditionalExpression = ConditionalExpression(
-                condition.ParenthesizeIf(!condition.Kind().IsSingleTokenExpression(), simplifiable: false),
+                condition.ParenthesizeIf(!CSharpFacts.IsSingleTokenExpression(condition.Kind()), simplifiable: false),
                 whenTrue.Parenthesize(),
                 right.Parenthesize());
 

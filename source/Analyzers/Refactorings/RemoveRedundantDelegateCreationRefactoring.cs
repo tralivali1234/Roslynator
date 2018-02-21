@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -18,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax right = assignment.Right;
 
-            if (right?.IsKind(SyntaxKind.ObjectCreationExpression) == true)
+            if (right?.Kind() == SyntaxKind.ObjectCreationExpression)
             {
                 var objectCreation = (ObjectCreationExpressionSyntax)right;
 

@@ -8,93 +8,144 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// Represents selected statement(s) in a <see cref="SyntaxList{TNode}"/>.
+    /// </summary>
     public class StatementsSelection : SyntaxListSelection<StatementSyntax>
     {
-        private StatementsSelection(StatementsInfo info, TextSpan span, int startIndex, int endIndex)
-             : base(info.Statements, span, startIndex, endIndex)
+        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, SelectionResult result)
+             : this(statements, span, result.FirstIndex, result.LastIndex)
         {
-            Info = info;
         }
 
-        public StatementsInfo Info { get; }
-
-        public SyntaxList<StatementSyntax> Statements
+        private StatementsSelection(SyntaxList<StatementSyntax> statements, TextSpan span, int firstIndex, int lastIndex)
+             : base(statements, span, firstIndex, lastIndex)
         {
-            get { return Info.Statements; }
         }
 
+        /// <summary>
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified block and span.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static StatementsSelection Create(BlockSyntax block, TextSpan span)
         {
             if (block == null)
                 throw new ArgumentNullException(nameof(block));
 
-            var info = new StatementsInfo(block);
-
-            return Create(info, span);
+            return CreateImpl(block.Statements, span);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified switch section and span.
+        /// </summary>
+        /// <param name="switchSection"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
         public static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span)
         {
             if (switchSection == null)
                 throw new ArgumentNullException(nameof(switchSection));
 
-            var info = new StatementsInfo(switchSection);
-
-            return Create(info, span);
+            return CreateImpl(switchSection.Statements, span);
         }
 
-        public static StatementsSelection Create(StatementsInfo info, TextSpan span)
+        /// <summary>
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified <see cref="StatementsInfo"/> and span.
+        /// </summary>
+        /// <param name="statementsInfo"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
+        public static StatementsSelection Create(StatementsInfo statementsInfo, TextSpan span)
         {
-            (int startIndex, int endIndex) = GetIndexes(info.Statements, span);
-
-            return new StatementsSelection(info, span, startIndex, endIndex);
+            return CreateImpl(statementsInfo.Statements, span);
         }
 
+        private static StatementsSelection CreateImpl(SyntaxList<StatementSyntax> statements, TextSpan span)
+        {
+            SelectionResult result = SelectionResult.Create(statements, span);
+
+            if (!result.Success)
+                throw new InvalidOperationException("No selected statement(s) found.");
+
+            return new StatementsSelection(statements, span, result);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified block and span.
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedStatements"></param>
+        /// <returns>True if the specified span contains at least one statement; otherwise, false.</returns>
         public static bool TryCreate(BlockSyntax block, TextSpan span, out StatementsSelection selectedStatements)
         {
-            StatementsInfo info = SyntaxInfo.StatementsInfo(block);
-
-            if (!info.Success)
-            {
-                selectedStatements = null;
-                return false;
-            }
-
-            return TryCreate(info, span, out selectedStatements);
+            selectedStatements = Create(block, span, 1, int.MaxValue);
+            return selectedStatements != null;
         }
 
+        internal static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(block, span, minCount, int.MaxValue);
+            return selectedStatements != null;
+        }
+
+        internal static bool TryCreate(BlockSyntax block, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(block, span, minCount, maxCount);
+            return selectedStatements != null;
+        }
+
+        private static StatementsSelection Create(BlockSyntax block, TextSpan span, int minCount, int maxCount)
+        {
+            if (block == null)
+                return null;
+
+            return Create(block.Statements, span, minCount, maxCount);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="StatementsSelection"/> based on the specified switch section and span.
+        /// </summary>
+        /// <param name="switchSection"></param>
+        /// <param name="span"></param>
+        /// <param name="selectedStatements"></param>
+        /// <returns>True if the specified span contains at least one statement; otherwise, false.</returns>
         public static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, out StatementsSelection selectedStatements)
         {
-            StatementsInfo info = SyntaxInfo.StatementsInfo(switchSection);
-
-            if (!info.Success)
-            {
-                selectedStatements = null;
-                return false;
-            }
-
-            return TryCreate(info, span, out selectedStatements);
+            selectedStatements = Create(switchSection, span, 1, int.MaxValue);
+            return selectedStatements != null;
         }
 
-        public static bool TryCreate(StatementsInfo statementsInfo, TextSpan span, out StatementsSelection selectedStatements)
+        internal static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, out StatementsSelection selectedStatements)
         {
-            selectedStatements = null;
+            selectedStatements = Create(switchSection, span, minCount, int.MaxValue);
+            return selectedStatements != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        internal static bool TryCreate(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount, out StatementsSelection selectedStatements)
+        {
+            selectedStatements = Create(switchSection, span, minCount, maxCount);
+            return selectedStatements != null;
+        }
 
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
+        private static StatementsSelection Create(SwitchSectionSyntax switchSection, TextSpan span, int minCount, int maxCount)
+        {
+            if (switchSection == null)
+                return null;
 
-            if (!statements.Any())
-                return false;
+            return Create(switchSection.Statements, span, minCount, maxCount);
+        }
 
-            (int startIndex, int endIndex) = GetIndexes(statements, span);
+        private static StatementsSelection Create(SyntaxList<StatementSyntax> statements, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(statements, span, minCount, maxCount);
 
-            if (startIndex == -1)
-                return false;
+            if (!result.Success)
+                return null;
 
-            selectedStatements = new StatementsSelection(statementsInfo, span, startIndex, endIndex);
-            return true;
+            return new StatementsSelection(statements, span, result);
         }
     }
 }

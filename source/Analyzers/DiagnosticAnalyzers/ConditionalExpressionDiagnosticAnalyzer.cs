@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(SimplifyNullCheckRefactoring.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
         }
 
-        private void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
         {
             var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
 

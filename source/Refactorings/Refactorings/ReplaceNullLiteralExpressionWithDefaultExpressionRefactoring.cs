@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ExpressionSyntax expression)
         {
-            if (expression?.IsKind(SyntaxKind.NullLiteralExpression) == true
+            if (expression?.Kind() == SyntaxKind.NullLiteralExpression
                 && context.Span.IsContainedInSpanOrBetweenSpans(expression))
             {
                 TextSpan span = context.Span;
@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
                     if (typeSymbol?.SupportsExplicitDeclaration() == true)
                     {
                         context.RegisterRefactoring(
-                            $"Replace 'null' with 'default({SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, expression.Span.Start)})'",
+                            $"Replace 'null' with 'default({SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, expression.Span.Start, SymbolDisplayFormats.Default)})'",
                             cancellationToken =>
                             {
                                 return RefactorAsync(

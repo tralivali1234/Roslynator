@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -60,7 +61,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                 ISymbol containingSymbol = semanticModel.GetEnclosingSymbol(returnStatement.SpanStart, context.CancellationToken);
 
-                                if (containingSymbol?.IsKind(SymbolKind.Method) == true)
+                                if (containingSymbol?.Kind == SymbolKind.Method)
                                 {
                                     var methodSymbol = (IMethodSymbol)containingSymbol;
 

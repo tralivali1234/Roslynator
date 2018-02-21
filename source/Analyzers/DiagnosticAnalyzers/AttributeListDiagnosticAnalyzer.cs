@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAttributeList, SyntaxKind.AttributeList);
         }
 
-        private void AnalyzeAttributeList(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAttributeList(SyntaxNodeAnalysisContext context)
         {
             var attributeList = (AttributeListSyntax)context.Node;
 

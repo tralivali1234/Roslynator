@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -27,9 +26,11 @@ namespace Roslynator.CSharp.Refactorings
                 case "Replace":
                 case "Split":
                     {
-                        if (context.SemanticModel.TryGetMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, context.CancellationToken)
-                            && methodInfo.IsPublicStaticRegexMethod()
-                            && methodInfo.ContainingType != null)
+                        MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationInfo.InvocationExpression, context.CancellationToken);
+
+                        if (methodInfo.Symbol != null
+                            && methodInfo.IsPublicStaticNonGeneric()
+                            && methodInfo.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
                         {
                             context.ReportDiagnostic(
                                 DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod,
@@ -54,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (memberDeclaration != null)
             {
-                BaseTypeDeclarationSyntax typeDeclaration = memberDeclaration.FirstAncestor<BaseTypeDeclarationSyntax>();
+                TypeDeclarationSyntax typeDeclaration = memberDeclaration.FirstAncestor<TypeDeclarationSyntax>();
 
                 Debug.Assert(typeDeclaration != null, "");
 
@@ -72,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
                         .WithExpression(newMemberAccess)
                         .WithArgumentList(pair.ArgumentList1);
 
-                    MemberDeclarationSyntax newTypeDeclaration = typeDeclaration.ReplaceNode(invocationExpression, newInvocationExpression);
+                    TypeDeclarationSyntax newTypeDeclaration = typeDeclaration.ReplaceNode(invocationExpression, newInvocationExpression);
 
                     TypeSyntax regexType = semanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex).ToMinimalTypeSyntax(semanticModel, typeDeclaration.SpanStart);
 
@@ -86,8 +87,8 @@ namespace Roslynator.CSharp.Refactorings
                             ObjectCreationExpression(regexType, pair.ArgumentList2)));
 
                     SyntaxList<MemberDeclarationSyntax> newMembers = newTypeDeclaration
-                        .GetMembers()
-                        .InsertMember(fieldDeclaration, MemberDeclarationComparer.ByKind);
+                        .Members
+                        .Insert(fieldDeclaration);
 
                     newTypeDeclaration = newTypeDeclaration.WithMembers(newMembers);
 
@@ -171,7 +172,7 @@ namespace Roslynator.CSharp.Refactorings
             return new ArgumentListPair(argumentList, ArgumentList(arguments2.ToArray()));
         }
 
-        private struct ArgumentListPair
+        private readonly struct ArgumentListPair
         {
             public ArgumentListPair(ArgumentListSyntax argumentList1, ArgumentListSyntax argumentList2)
             {

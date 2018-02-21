@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -90,7 +91,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (typeSymbol?.IsErrorType() == false)
                             {
                                 CodeAction codeAction = CodeAction.Create(
-                                    $"Change return type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, memberDeclaration.SpanStart)}'",
+                                    $"Change return type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, memberDeclaration.SpanStart, SymbolDisplayFormats.Default)}'",
                                     cancellationToken => MemberTypeMustMatchOverriddenMemberTypeRefactoring.RefactorAsync(context.Document, memberDeclaration, typeSymbol, semanticModel, cancellationToken),
                                     GetEquivalenceKey(diagnostic));
 
@@ -166,7 +167,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                             if (typeSymbol?.IsErrorType() == false)
                             {
-                                string title = $"Change type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, memberDeclaration.SpanStart)}'";
+                                string title = $"Change type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, memberDeclaration.SpanStart, SymbolDisplayFormats.Default)}'";
 
                                 CodeAction codeAction = CodeAction.Create(
                                     title,

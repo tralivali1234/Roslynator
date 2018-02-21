@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CodeFixes;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -90,7 +91,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         PropertyDeclarationSyntax newNode = propertyDeclaration
                             .WithExpressionBody(null)
-                            .WithoutSemicolonToken()
+                            .WithSemicolonToken(default(SyntaxToken))
                             .WithAccessorList(AccessorList(AutoGetAccessorDeclaration()).WithTriviaFrom(expressionBody))
                             .WithFormatterAnnotation();
 
@@ -103,7 +104,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         IndexerDeclarationSyntax newNode = indexerDeclaration
                             .WithExpressionBody(null)
-                            .WithoutSemicolonToken()
+                            .WithSemicolonToken(default(SyntaxToken))
                             .WithAccessorList(AccessorList(AutoGetAccessorDeclaration()).WithTriviaFrom(expressionBody))
                             .WithFormatterAnnotation();
 

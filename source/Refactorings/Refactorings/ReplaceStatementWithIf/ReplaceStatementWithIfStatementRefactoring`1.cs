@@ -22,7 +22,8 @@ namespace Roslynator.CSharp.Refactorings.ReplaceStatementWithIf
         {
             ExpressionSyntax expression = GetExpression(statement);
 
-            if (expression?.Kind().IsBooleanLiteralExpression() == false)
+            if (expression != null
+                && !CSharpFacts.IsBooleanLiteralExpression(expression.Kind()))
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 

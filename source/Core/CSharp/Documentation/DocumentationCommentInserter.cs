@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Documentation
 {
-    internal struct DocumentationCommentInserter
+    internal readonly struct DocumentationCommentInserter
     {
         private DocumentationCommentInserter(SyntaxTriviaList leadingTrivia, int index, string indent)
         {
@@ -20,7 +20,9 @@ namespace Roslynator.CSharp.Documentation
         public static DocumentationCommentInserter Default { get; } = new DocumentationCommentInserter(default(SyntaxTriviaList), 0, "");
 
         public SyntaxTriviaList LeadingTrivia { get; }
+
         public int Index { get; }
+
         public string Indent { get; }
 
         public static DocumentationCommentInserter Create(MemberDeclarationSyntax memberDeclaration)

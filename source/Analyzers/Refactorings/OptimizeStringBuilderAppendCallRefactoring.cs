@@ -26,7 +26,9 @@ namespace Roslynator.CSharp.Refactorings
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            if (!context.SemanticModel.TryGetMethodInfo(invocationExpression, out MethodInfo methodInfo, context.CancellationToken))
+            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationExpression, context.CancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return;
 
             if (methodInfo.IsExtensionMethod)
@@ -47,13 +49,17 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (invocationInfo2.Success
                         && invocationInfo2.NameText == "Append"
-                        && invocationInfo2.Arguments.Count == 1
-                        && context.SemanticModel.TryGetMethodInfo(invocationInfo2.InvocationExpression, out MethodInfo methodInfo2, context.CancellationToken)
-                        && !methodInfo2.IsStatic
-                        && methodInfo2.ContainingType?.Equals(stringBuilderSymbol) == true
-                        && methodInfo2.HasParameter(SpecialType.System_String))
+                        && invocationInfo2.Arguments.Count == 1)
                     {
-                        context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, invocationInfo.Name, methodInfo.Name);
+                        MethodInfo methodInfo2 = context.SemanticModel.GetMethodInfo(invocationInfo2.InvocationExpression, context.CancellationToken);
+
+                        if (methodInfo2.Symbol != null
+                            && !methodInfo2.IsStatic
+                            && methodInfo2.ContainingType?.Equals(stringBuilderSymbol) == true
+                            && methodInfo2.HasParameter(SpecialType.System_String))
+                        {
+                            context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, invocationInfo.Name, methodInfo.Name);
+                        }
                     }
                 }
             }
@@ -137,7 +143,9 @@ namespace Roslynator.CSharp.Refactorings
             if (!invocationInfo.Success)
                 return false;
 
-            if (!semanticModel.TryGetMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return false;
 
             if (!methodInfo.IsContainingType(SpecialType.System_String))

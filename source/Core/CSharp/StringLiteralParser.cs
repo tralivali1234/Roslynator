@@ -5,10 +5,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.Text;
 
 namespace Roslynator.CSharp
 {
-    internal static partial class StringLiteralParser
+    internal static class StringLiteralParser
     {
         private const string MissingEscapeSequenceMessage = "Missing escape sequence.";
         private const string UnrecognizedEscapeSequenceMessage = "Unrecognized escape sequence.";
@@ -20,7 +21,7 @@ namespace Roslynator.CSharp
 
         public static bool TryParse(string text, int start, int length, bool isVerbatim, bool isInterpolatedText, out string result)
         {
-            StringLiteralParseResult parseResult = (isVerbatim)
+            StringLiteralParserResult parseResult = (isVerbatim)
                 ? ParseVerbatim(text, start, length, isInterpolatedText)
                 : ParseRegular(text, start, length, isInterpolatedText);
 
@@ -46,7 +47,7 @@ namespace Roslynator.CSharp
                 : ParseRegular(text, start, length, throwOnError: true, isInterpolatedText: isInterpolatedText).Text;
         }
 
-        private static StringLiteralParseResult ParseRegular(
+        private static StringLiteralParserResult ParseRegular(
             string text,
             int start,
             int length,
@@ -232,13 +233,15 @@ namespace Roslynator.CSharp
                     }
                 }
 
-                (sb ?? (sb = new StringBuilder(text.Length))).Append(ch);
+                (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult(sb?.ToString() ?? text.Substring(start, length));
+            return new StringLiteralParserResult((sb != null)
+                ? StringBuilderCache.GetStringAndFree(sb)
+                : text.Substring(start, length));
         }
 
-        private static StringLiteralParseResult ParseVerbatim(
+        private static StringLiteralParserResult ParseVerbatim(
             string text,
             int start,
             int length,
@@ -282,10 +285,12 @@ namespace Roslynator.CSharp
                     }
                 }
 
-                (sb ?? (sb = new StringBuilder(text.Length))).Append(ch);
+                (sb ?? (sb = StringBuilderCache.GetInstance(text.Length))).Append(ch);
             }
 
-            return new StringLiteralParseResult(sb?.ToString() ?? text.Substring(start, length));
+            return new StringLiteralParserResult((sb != null)
+                ? StringBuilderCache.GetStringAndFree(sb)
+                : text.Substring(start, length));
         }
 
         internal static bool CanExtractSpan(string text, TextSpan span, bool isVerbatim, bool isInterpolatedText)
@@ -504,11 +509,30 @@ namespace Roslynator.CSharp
                 || (ch >= 'A' && ch <= 'F');
         }
 
-        private static StringLiteralParseResult Fail(bool throwOnError, string message)
+        private static StringLiteralParserResult Fail(bool throwOnError, string message)
         {
             return (throwOnError)
                 ? throw new ArgumentException(message)
-                : default(StringLiteralParseResult);
+                : default(StringLiteralParserResult);
+        }
+
+        private readonly struct StringLiteralParserResult
+        {
+            private StringLiteralParserResult(string text, bool success)
+            {
+                Text = text;
+                Success = success;
+            }
+
+            public StringLiteralParserResult(string text)
+            {
+                Text = text;
+                Success = true;
+            }
+
+            public string Text { get; }
+
+            public bool Success { get; }
         }
     }
 }

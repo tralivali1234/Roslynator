@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -92,7 +93,7 @@ namespace Roslynator.CSharp.CodeFixes
                             TypeSyntax newType = typeSymbol.ToMinimalTypeSyntax(semanticModel, simpleName.SpanStart);
 
                             CodeAction codeAction = CodeAction.Create(
-                                $"Change element type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, simpleName.SpanStart)}'",
+                                $"Change element type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, simpleName.SpanStart, SymbolDisplayFormats.Default)}'",
                                 cancellationToken => context.Document.ReplaceNodeAsync(simpleName, newType.WithTriviaFrom(simpleName), cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 

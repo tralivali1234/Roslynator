@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
-using Roslynator.Utilities;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -44,10 +43,11 @@ namespace Roslynator.CSharp.Refactorings
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
-            var parentMember = (MemberDeclarationSyntax)propertyDeclaration.Parent;
-            SyntaxList<MemberDeclarationSyntax> members = parentMember.GetMembers();
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(propertyDeclaration.Parent);
 
-            int propertyIndex = members.IndexOf(propertyDeclaration);
+            SyntaxList<MemberDeclarationSyntax> members = info.Members;
+
+            int propertyIndex = info.IndexOf(propertyDeclaration);
 
             if (IsReadOnlyAutoProperty(propertyDeclaration))
             {
@@ -57,16 +57,16 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                MemberDeclarationSyntax newParentMember = parentMember.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f));
+                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
 
-                members = newParentMember.GetMembers();
+                members = newInfo.Members;
             }
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceAt(propertyIndex, newPropertyDeclaration);
+            SyntaxList<MemberDeclarationSyntax> newMembers = members
+                .ReplaceAt(propertyIndex, newPropertyDeclaration)
+                .Insert(fieldDeclaration);
 
-            newMembers = newMembers.InsertMember(fieldDeclaration, MemberDeclarationComparer.ByKind);
-
-            return await document.ReplaceNodeAsync(parentMember, parentMember.WithMembers(newMembers), cancellationToken).ConfigureAwait(false);
+            return await document.ReplaceMembersAsync(info, newMembers, cancellationToken).ConfigureAwait(false);
         }
 
         private static bool IsReadOnlyAutoProperty(PropertyDeclarationSyntax propertyDeclaration)
@@ -85,12 +85,12 @@ namespace Roslynator.CSharp.Refactorings
             {
                 AccessorDeclarationSyntax newGetter = getter
                     .WithBody(Block(ReturnStatement(IdentifierName(name))))
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
 
                 propertyDeclaration = propertyDeclaration
                     .ReplaceNode(getter, newGetter)
                     .WithInitializer(null)
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
             }
 
             AccessorDeclarationSyntax setter = propertyDeclaration.Setter();
@@ -102,13 +102,13 @@ namespace Roslynator.CSharp.Refactorings
                         SimpleAssignmentStatement(
                                 IdentifierName(name),
                                 IdentifierName("value"))))
-                    .WithoutSemicolonToken();
+                    .WithSemicolonToken(default(SyntaxToken));
 
                 propertyDeclaration = propertyDeclaration.ReplaceNode(setter, newSetter);
             }
 
             AccessorListSyntax accessorList = propertyDeclaration.AccessorList
-                .RemoveWhitespaceOrEndOfLineTrivia()
+                .RemoveWhitespace()
                 .WithCloseBraceToken(propertyDeclaration.AccessorList.CloseBraceToken.WithLeadingTrivia(NewLine()));
 
             return propertyDeclaration
@@ -119,7 +119,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxTokenList modifiers = Modifiers.Private();
 
-            if (propertyDeclaration.IsStatic())
+            if (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
                 modifiers = modifiers.Add(StaticKeyword());
 
             return FieldDeclaration(

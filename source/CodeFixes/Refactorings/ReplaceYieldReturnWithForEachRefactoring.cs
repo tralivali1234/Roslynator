@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     return context.Document.ReplaceNodeAsync(yieldStatement, forEachStatement, cancellationToken);
                 },
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, CodeFixIdentifiers.ReplaceYieldReturnWithForEach));
+                EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.ReplaceYieldReturnWithForEach));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }

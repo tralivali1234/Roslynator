@@ -21,9 +21,9 @@ namespace Roslynator.CSharp.Refactorings.If
             Negate = negate;
         }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
-            get { return RefactoringKind.IfElseToAssignmentWithExpression; }
+            get { return IfRefactoringKind.IfElseToAssignmentWithExpression; }
         }
 
         public override string Title
@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.If
             {
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-                right = LogicalNegationHelper.LogicallyNegate(right, semanticModel, cancellationToken);
+                right = Negation.LogicallyNegate(right, semanticModel, cancellationToken);
             }
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(Left.WithoutTrivia(), right)

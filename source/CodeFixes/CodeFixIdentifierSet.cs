@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Roslynator.CSharp.CodeFixes
+namespace Roslynator.CodeFixes
 {
     public class CodeFixIdentifierSet : HashSet<string>
     {

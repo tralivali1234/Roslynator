@@ -24,10 +24,10 @@ namespace Roslynator.CSharp.Refactorings
             if (ifStatement.IsSimpleIf()
                 && !ifStatement.ContainsDiagnostics)
             {
-                NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedKinds: NullCheckKind.NotEqualsToNull);
+                NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
                 if (nullCheck.Success)
                 {
-                    MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(ifStatement.GetSingleStatementOrDefault());
+                    MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
                     if (invocationInfo.Success
                         && SyntaxComparer.AreEquivalent(nullCheck.Expression, invocationInfo.Expression)
                         && !ifStatement.IsInExpressionTree(expressionType, context.SemanticModel, context.CancellationToken)
@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!logicalAndExpression.ContainsDiagnostics)
             {
-                ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAndExpression.Left, allowedKinds: NullCheckKind.NotEqualsToNull).Expression;
+                ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAndExpression.Left, allowedStyles: NullCheckStyles.NotEqualsToNull).Expression;
 
                 if (expression != null
                     && context.SemanticModel
@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (right != null
                         && ValidateRightExpression(right, context.SemanticModel, context.CancellationToken)
-                        && !RefactoringHelper.ContainsOutArgumentWithLocal(right, context.SemanticModel, context.CancellationToken))
+                        && !RefactoringUtility.ContainsOutArgumentWithLocal(right, context.SemanticModel, context.CancellationToken))
                     {
                         ExpressionSyntax expression2 = FindExpressionThatCanBeConditionallyAccessed(expression, right);
 
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static ExpressionSyntax CreateExpressionWithConditionalAccess(BinaryExpressionSyntax logicalAnd)
         {
-            ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAnd.Left, allowedKinds: NullCheckKind.NotEqualsToNull).Expression;
+            ExpressionSyntax expression = SyntaxInfo.NullCheckExpressionInfo(logicalAnd.Left, allowedStyles: NullCheckStyles.NotEqualsToNull).Expression;
 
             ExpressionSyntax right = logicalAnd.Right?.WalkDownParentheses();
 
@@ -237,7 +237,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken)
         {
-            var statement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+            var statement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
             MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(statement);
 

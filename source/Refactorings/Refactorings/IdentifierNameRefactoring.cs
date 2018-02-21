@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
 using Roslynator.CSharp.Refactorings.InlineDefinition;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -55,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings
                             string newName = StringUtility.ToCamelCase(propertySymbol.Name, context.Settings.PrefixFieldIdentifierWithUnderscore);
 
                             if (!string.Equals(fieldSymbol.Name, newName, StringComparison.Ordinal)
-                                && await WorkspaceNameGenerator.IsUniqueMemberNameAsync(
+                                && await MemberNameGenerator.IsUniqueMemberNameAsync(
                                     newName,
                                     fieldSymbol,
                                     context.Solution,
@@ -82,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var memberAccess = (MemberAccessExpressionSyntax)identifierName.Parent;
 
-                return memberAccess.Expression?.IsKind(SyntaxKind.ThisExpression) == true;
+                return memberAccess.Expression?.Kind() == SyntaxKind.ThisExpression;
             }
 
             return false;

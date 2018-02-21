@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeLogicalOrExpression, SyntaxKind.LogicalOrExpression);
         }
 
-        private void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -70,7 +70,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeLogicalAndExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeLogicalAndExpression(SyntaxNodeAnalysisContext context)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -85,7 +85,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeLogicalOrExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeLogicalOrExpression(SyntaxNodeAnalysisContext context)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 

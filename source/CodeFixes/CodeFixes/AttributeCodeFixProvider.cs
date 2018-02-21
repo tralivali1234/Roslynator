@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -51,11 +52,11 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     if (attributes.Count == 1)
                                     {
-                                        return context.Document.RemoveNodeAsync(attributeList, RemoveHelper.GetRemoveOptions(attributeList), cancellationToken);
+                                        return context.Document.RemoveNodeAsync(attributeList, cancellationToken);
                                     }
                                     else
                                     {
-                                        return context.Document.RemoveNodeAsync(attribute, RemoveHelper.GetRemoveOptions(attributeList), cancellationToken);
+                                        return context.Document.RemoveNodeAsync(attribute, cancellationToken);
                                     }
                                 },
                                 GetEquivalenceKey(diagnostic));

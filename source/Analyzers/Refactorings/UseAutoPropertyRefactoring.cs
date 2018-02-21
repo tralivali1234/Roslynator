@@ -370,12 +370,12 @@ namespace Roslynator.CSharp.Refactorings
 
         private static SimpleNameSyntax GetIdentifierFromSetterExpression(ExpressionSyntax expression)
         {
-            if (expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) == true)
+            if (expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
             {
                 var assignment = (AssignmentExpressionSyntax)expression;
                 ExpressionSyntax right = assignment.Right;
 
-                if (right?.IsKind(SyntaxKind.IdentifierName) == true
+                if (right?.Kind() == SyntaxKind.IdentifierName
                     && ((IdentifierNameSyntax)right).Identifier.ValueText == "value")
                 {
                     return GetIdentifierFromExpression(assignment.Left);
@@ -397,7 +397,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         var memberAccess = (MemberAccessExpressionSyntax)expression;
 
-                        if (memberAccess.Expression?.IsKind(SyntaxKind.ThisExpression) == true)
+                        if (memberAccess.Expression?.Kind() == SyntaxKind.ThisExpression)
                             return memberAccess.Name;
 
                         break;
@@ -451,7 +451,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol fieldSymbol = GetFieldSymbol(propertyDeclaration, semanticModel, cancellationToken);
 
-            var variableDeclarator = (VariableDeclaratorSyntax)await fieldSymbol.DeclaringSyntaxReferences[0].GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
+            var variableDeclarator = (VariableDeclaratorSyntax)await fieldSymbol.GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
 
             var variableDeclaration = (VariableDeclarationSyntax)variableDeclarator.Parent;
 
@@ -570,7 +570,7 @@ namespace Roslynator.CSharp.Refactorings
                 .DescendantTrivia()
                 .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {
-                accessorList = accessorList.RemoveWhitespaceOrEndOfLineTrivia();
+                accessorList = accessorList.RemoveWhitespace();
             }
 
             PropertyDeclarationSyntax newProperty = propertyDeclaration
@@ -586,7 +586,7 @@ namespace Roslynator.CSharp.Refactorings
             }
             else
             {
-                newProperty = newProperty.WithoutSemicolonToken();
+                newProperty = newProperty.WithSemicolonToken(default(SyntaxToken));
             }
 
             return newProperty

@@ -819,8 +819,6 @@ namespace Roslynator.CSharp.Refactorings
                                 fStatementRefactoring = true;
                             }
                         }
-
-                        continue;
                     }
                 }
             }

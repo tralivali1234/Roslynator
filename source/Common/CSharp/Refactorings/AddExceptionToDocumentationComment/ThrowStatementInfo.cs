@@ -25,13 +25,13 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
                 if (parent.IsKind(SyntaxKind.Block))
                     parent = parent.Parent;
 
-                if (parent?.IsKind(SyntaxKind.IfStatement) == true)
+                if (parent?.Kind() == SyntaxKind.IfStatement)
                 {
                     var ifStatement = (IfStatementSyntax)parent;
 
                     ExpressionSyntax condition = ifStatement.Condition;
 
-                    if (condition?.IsKind(SyntaxKind.EqualsExpression) == true)
+                    if (condition?.Kind() == SyntaxKind.EqualsExpression)
                     {
                         var equalsExpression = (BinaryExpressionSyntax)condition;
 

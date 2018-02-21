@@ -64,42 +64,46 @@ namespace Roslynator.CSharp.Refactorings
 
             if (arguments.Count >= 1
                 && arguments.Count <= 3
-                && arguments[0].Expression?.Kind() == SyntaxKind.FalseLiteralExpression
-                && semanticModel.TryGetMethodInfo(invocation, out MethodInfo info, cancellationToken)
-                && info.ContainingType?.Equals(debugSymbol) == true
-                && info.IsName("Assert")
-                && info.IsStatic
-                && info.ReturnsVoid
-                && !info.IsGenericMethod)
+                && arguments[0].Expression?.Kind() == SyntaxKind.FalseLiteralExpression)
             {
-                ImmutableArray<IParameterSymbol> assertParameters = info.Parameters;
+                MethodInfo methodInfo = semanticModel.GetMethodInfo(invocation, cancellationToken);
 
-                int length = assertParameters.Length;
-
-                if (assertParameters[0].Type.IsBoolean())
+                if (methodInfo.Symbol != null
+                    && methodInfo.ContainingType?.Equals(debugSymbol) == true
+                    && methodInfo.IsName("Assert")
+                    && methodInfo.IsStatic
+                    && methodInfo.ReturnsVoid
+                    && !methodInfo.IsGenericMethod)
                 {
-                    for (int i = 1; i < length; i++)
-                    {
-                        if (!assertParameters[i].Type.IsString())
-                            return false;
-                    }
+                    ImmutableArray<IParameterSymbol> assertParameters = methodInfo.Parameters;
 
-                    int parameterCount = (length == 1) ? 1 : length - 1;
+                    int length = assertParameters.Length;
 
-                    foreach (ISymbol symbol in info.ContainingType.GetMembers("Fail"))
+                    if (assertParameters[0].Type.IsBoolean())
                     {
-                        if (symbol is IMethodSymbol methodSymbol
-                            && methodSymbol.IsPublic()
-                            && methodSymbol.IsStatic
-                            && methodSymbol.ReturnsVoid
-                            && !methodSymbol.IsGenericMethod)
+                        for (int i = 1; i < length; i++)
                         {
-                            ImmutableArray<IParameterSymbol> failParameters = methodSymbol.Parameters;
+                            if (!assertParameters[i].Type.IsString())
+                                return false;
+                        }
 
-                            if (failParameters.Length == parameterCount
-                                && failParameters.All(f => f.Type.IsString()))
+                        int parameterCount = (length == 1) ? 1 : length - 1;
+
+                        foreach (ISymbol symbol in methodInfo.ContainingType.GetMembers("Fail"))
+                        {
+                            if (symbol is IMethodSymbol methodSymbol
+                                && methodSymbol.IsPublic()
+                                && methodSymbol.IsStatic
+                                && methodSymbol.ReturnsVoid
+                                && !methodSymbol.IsGenericMethod)
                             {
-                                return true;
+                                ImmutableArray<IParameterSymbol> failParameters = methodSymbol.Parameters;
+
+                                if (failParameters.Length == parameterCount
+                                    && failParameters.All(f => f.Type.IsString()))
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -134,7 +138,7 @@ namespace Roslynator.CSharp.Refactorings
                 arguments = arguments.RemoveAt(0);
             }
 
-            return RefactoringHelper.ChangeInvokedMethodName(invocation, "Fail")
+            return RefactoringUtility.ChangeInvokedMethodName(invocation, "Fail")
                 .WithArgumentList(argumentList.WithArguments(arguments));
         }
     }

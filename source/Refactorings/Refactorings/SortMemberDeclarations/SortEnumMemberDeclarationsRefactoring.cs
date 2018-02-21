@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             EnumDeclarationSyntax enumDeclaration,
             SeparatedSyntaxListSelection<EnumMemberDeclarationSyntax> selection)
         {
-            ImmutableArray<EnumMemberDeclarationSyntax> selectedMembers = selection.SelectedItems;
+            ImmutableArray<EnumMemberDeclarationSyntax> selectedMembers = selection.ToImmutableArray();
 
             if (!EnumMemberDeclarationNameComparer.IsSorted(selectedMembers))
             {

@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(DoStatementSyntax doStatement)
         {
-            return doStatement.Condition?.IsKind(SyntaxKind.TrueLiteralExpression) == true;
+            return doStatement.Condition?.Kind() == SyntaxKind.TrueLiteralExpression;
         }
 
         public static async Task<Document> RefactorAsync(

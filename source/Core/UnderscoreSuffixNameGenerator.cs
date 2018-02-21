@@ -8,13 +8,13 @@ namespace Roslynator
 {
     internal class UnderscoreSuffixNameGenerator : NameGenerator
     {
-        public override string EnsureUniqueName(string baseName, HashSet<string> reservedNames)
+        public override string EnsureUniqueName(string baseName, IEnumerable<string> reservedNames, bool isCaseSensitive = true)
         {
             string suffix = "";
 
             string name = baseName;
 
-            while (!IsUniqueName(name, reservedNames))
+            while (!IsUniqueName(name, reservedNames, isCaseSensitive))
             {
                 suffix += "_";
                 name = baseName + suffix;

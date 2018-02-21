@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 
-namespace Roslynator.CSharp.CodeFixes
+namespace Roslynator.CodeFixes
 {
     public sealed class CodeFixSettings
     {

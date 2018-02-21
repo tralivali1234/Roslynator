@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
 {
@@ -32,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
                 string text = firstLine.ToString();
 
                 string indent = (Indent)
-                    ? StringUtility.GetLeadingWhiteSpaceExceptNewLine(text)
+                    ? StringUtility.GetLeadingWhitespaceExceptNewLine(text)
                     : "";
 
                 string newText = indent + GetFirstLineText() + Environment.NewLine + text + Environment.NewLine;

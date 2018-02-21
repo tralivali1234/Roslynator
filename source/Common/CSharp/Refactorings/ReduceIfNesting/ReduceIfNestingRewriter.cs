@@ -150,7 +150,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
                 int index = statements.IndexOf(ifStatement);
 
-                ExpressionSyntax newCondition = LogicalNegationHelper.LogicallyNegate(ifStatement.Condition, _semanticModel, _cancellationToken);
+                ExpressionSyntax newCondition = Negation.LogicallyNegate(ifStatement.Condition, _semanticModel, _cancellationToken);
 
                 if (_recursive)
                     ifStatement = (IfStatementSyntax)VisitIfStatement(ifStatement);
@@ -173,8 +173,8 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                     .WithStatement(newBlock)
                     .WithFormatterAnnotation();
 
-                if (statements.Last().Kind().IsJumpStatementOrYieldBreakStatement()
-                    && block.Statements.Last().Kind().IsJumpStatementOrYieldBreakStatement())
+                if (CSharpFacts.IsJumpStatementOrYieldBreakStatement(statements.Last().Kind())
+                    && CSharpFacts.IsJumpStatementOrYieldBreakStatement(block.Statements.Last().Kind()))
                 {
                     statements = statements.RemoveAt(statements.Count - 1);
                 }

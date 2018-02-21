@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -28,7 +27,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAttributeArgumentList, SyntaxKind.AttributeArgumentList);
         }
 
-        private void AnalyzeAttributeArgumentList(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeAttributeArgumentList(SyntaxNodeAnalysisContext context)
         {
             var attributeArgumentList = (AttributeArgumentListSyntax)context.Node;
 

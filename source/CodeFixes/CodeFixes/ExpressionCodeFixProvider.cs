@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -101,7 +102,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             "Use coalesce expression",
                                             cancellationToken =>
                                             {
-                                                ExpressionSyntax defaultValue = convertedType.ToDefaultValueSyntax(semanticModel, expression.SpanStart);
+                                                ExpressionSyntax defaultValue = convertedType.GetDefaultValueSyntax(semanticModel, expression.SpanStart);
 
                                                 ExpressionSyntax newNode = CoalesceExpression(expression.WithoutTrivia(), defaultValue)
                                                     .WithTriviaFrom(expression)
@@ -221,7 +222,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveConditionThatIsAlwaysEqualToTrueOrFalse))
                                 break;
 
-                            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(expression, allowedKinds: NullCheckKind.ComparisonToNull);
+                            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(expression, allowedStyles: NullCheckStyles.ComparisonToNull);
 
                             if (!nullCheck.Success)
                                 break;
@@ -232,7 +233,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     cancellationToken.ThrowIfCancellationRequested();
 
-                                    SyntaxNode newRoot = RemoveHelper.RemoveCondition(root, expression, nullCheck.Kind == NullCheckKind.NotEqualsToNull);
+                                    SyntaxNode newRoot = RemoveCondition(root, expression, nullCheck.Style == NullCheckStyles.NotEqualsToNull);
 
                                     cancellationToken.ThrowIfCancellationRequested();
 
@@ -404,7 +405,7 @@ namespace Roslynator.CSharp.CodeFixes
                             }
 
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.ReplaceStringLiteralWithCharacterLiteral)
-                                && expression?.IsKind(SyntaxKind.StringLiteralExpression) == true)
+                                && expression?.Kind() == SyntaxKind.StringLiteralExpression)
                             {
                                 var literalExpression = (LiteralExpressionSyntax)expression;
 
@@ -433,7 +434,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                 ISymbol containingSymbol = semanticModel.GetEnclosingSymbol(returnStatement.SpanStart, context.CancellationToken);
 
-                                if (containingSymbol?.IsKind(SymbolKind.Method) == true
+                                if (containingSymbol?.Kind == SymbolKind.Method
                                     && ((IMethodSymbol)containingSymbol).ReturnType?.IsIEnumerableOrConstructedFromIEnumerableOfT() == true)
                                 {
                                     CodeAction codeAction = CodeAction.Create(
@@ -448,6 +449,158 @@ namespace Roslynator.CSharp.CodeFixes
                             break;
                         }
                 }
+            }
+        }
+
+        private static TNode RemoveCondition<TNode>(
+            TNode node,
+            ExpressionSyntax expression,
+            bool isTrue) where TNode : SyntaxNode
+        {
+            expression = expression.WalkUpParentheses();
+
+            SyntaxNode parent = expression.Parent;
+
+            switch (parent?.Kind())
+            {
+                case SyntaxKind.IfStatement:
+                    {
+                        var ifStatement = (IfStatementSyntax)parent;
+
+                        if (ifStatement.Condition == expression)
+                        {
+                            if (isTrue)
+                            {
+                                return RemoveOrReplaceNode(node, ifStatement, ifStatement.Statement);
+                            }
+                            else
+                            {
+                                return RemoveOrReplaceNode(node, ifStatement, ifStatement.Else?.Statement);
+                            }
+                        }
+
+                        break;
+                    }
+                case SyntaxKind.DoStatement:
+                    {
+                        var doStatement = (DoStatementSyntax)parent;
+
+                        if (doStatement.Condition == expression
+                            && !isTrue)
+                        {
+                            return RemoveOrReplaceNode(node, doStatement, doStatement.Statement);
+                        }
+
+                        break;
+                    }
+                case SyntaxKind.WhileStatement:
+                    {
+                        var whileStatement = (WhileStatementSyntax)parent;
+
+                        if (whileStatement.Condition == expression
+                            && !isTrue)
+                        {
+                            return node.RemoveStatement(whileStatement);
+                        }
+
+                        break;
+                    }
+                case SyntaxKind.ForStatement:
+                    {
+                        var forStatement = (ForStatementSyntax)parent;
+
+                        if (forStatement.Condition == expression)
+                        {
+                            if (isTrue)
+                            {
+                                return node.RemoveNode(expression);
+                            }
+                            else
+                            {
+                                return node.RemoveStatement(forStatement);
+                            }
+                        }
+
+                        break;
+                    }
+                case SyntaxKind.ConditionalExpression:
+                    {
+                        var conditionalExpression = (ConditionalExpressionSyntax)parent;
+
+                        if (conditionalExpression.Condition == expression)
+                        {
+                            if (isTrue)
+                            {
+                                return RemoveOrReplaceNode(node, conditionalExpression, conditionalExpression.WhenTrue);
+                            }
+                            else
+                            {
+                                return RemoveOrReplaceNode(node, conditionalExpression, conditionalExpression.WhenFalse);
+                            }
+                        }
+
+                        break;
+                    }
+                case SyntaxKind.LogicalAndExpression:
+                    {
+                        var logicalAnd = (BinaryExpressionSyntax)parent;
+
+                        ExpressionSyntax left = logicalAnd.Left;
+                        ExpressionSyntax right = logicalAnd.Right;
+
+                        ExpressionSyntax other = (left == expression) ? right : left;
+
+                        if (isTrue)
+                        {
+                            return RemoveOrReplaceNode(node, logicalAnd, other);
+                        }
+                        else
+                        {
+                            return RemoveCondition(node, logicalAnd, isTrue);
+                        }
+                    }
+                case SyntaxKind.LogicalOrExpression:
+                    {
+                        var logicalOr = (BinaryExpressionSyntax)parent;
+
+                        ExpressionSyntax left = logicalOr.Left;
+                        ExpressionSyntax right = logicalOr.Right;
+
+                        ExpressionSyntax other = (left == expression) ? right : left;
+
+                        if (isTrue)
+                        {
+                            return RemoveCondition(node, logicalOr, isTrue);
+                        }
+                        else
+                        {
+                            return RemoveOrReplaceNode(node, logicalOr, other);
+                        }
+                    }
+            }
+
+            return node.ReplaceNode(expression, BooleanLiteralExpression(isTrue));
+
+            TRoot RemoveOrReplaceNode<TRoot>(
+                TRoot root,
+                SyntaxNode nodeToRemove,
+                SyntaxNode newNode) where TRoot : SyntaxNode
+            {
+                if (newNode == null)
+                {
+                    if (nodeToRemove == null)
+                        return root;
+
+                    if (nodeToRemove is StatementSyntax statement)
+                        root.RemoveStatement(statement);
+
+                    return root.RemoveNode(nodeToRemove);
+                }
+
+                if (newNode is BlockSyntax block)
+                    return root.ReplaceNode(nodeToRemove, block.Statements);
+
+                return root.ReplaceNode(nodeToRemove, newNode);
             }
         }
     }

@@ -17,8 +17,8 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax lastStatement = selectedStatements.Last();
 
             if (lastStatement.IsKind(SyntaxKind.ReturnStatement)
-                && selectedStatements.EndIndex == selectedStatements.Statements.IndexOf(lastStatement)
-                && selectedStatements.StartIndex > 0)
+                && selectedStatements.LastIndex == selectedStatements.UnderlyingList.IndexOf(lastStatement)
+                && selectedStatements.FirstIndex > 0)
             {
                 var returnStatement = (ReturnStatementSyntax)lastStatement;
 
@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (expression != null)
                 {
-                    StatementSyntax prevStatement = selectedStatements.Statements[selectedStatements.StartIndex - 1];
+                    StatementSyntax prevStatement = selectedStatements.UnderlyingList[selectedStatements.FirstIndex - 1];
 
                     if (prevStatement.IsKind(SyntaxKind.IfStatement))
                     {
@@ -34,16 +34,18 @@ namespace Roslynator.CSharp.Refactorings
 
                         IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
 
-                        if (ifStatementInfo.EndsWithIf
-                            && ifStatementInfo
-                                .Nodes
-                                .Where(f => f.IsIf)
-                                .All(f => IsLastStatementReturnStatement(f)))
+                        foreach (IfStatementOrElseClause ifOrElse in ifStatementInfo)
                         {
-                            context.RegisterRefactoring(
-                                "Wrap in else clause",
-                                cancellationToken => RefactorAsync(context.Document, ifStatement, selectedStatements, cancellationToken));
+                            if (ifOrElse.IsElse)
+                                return;
+
+                            if (!IsLastStatementReturnStatement(ifOrElse))
+                                return;
                         }
+
+                        context.RegisterRefactoring(
+                            "Wrap in else clause",
+                            cancellationToken => RefactorAsync(context.Document, ifStatementInfo, selectedStatements, cancellationToken));
                     }
                 }
             }
@@ -67,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsReturnStatementWithExpression(StatementSyntax statement)
         {
-            if (statement?.IsKind(SyntaxKind.ReturnStatement) == true)
+            if (statement?.Kind() == SyntaxKind.ReturnStatement)
             {
                 var returnStatement = (ReturnStatementSyntax)statement;
 
@@ -79,16 +81,15 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            IfStatementSyntax ifStatement,
+            IfStatementInfo ifStatementInfo,
             StatementsSelection selectedStatements,
             CancellationToken cancellationToken)
         {
-            IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
-
             StatementSyntax newStatement = null;
 
+            //TODO: 
             if (selectedStatements.Count == 1
-                && !ifStatementInfo.Nodes.Any(f => f.Statement?.IsKind(SyntaxKind.Block) == true))
+                && !ifStatementInfo.Any(f => f.Statement?.Kind() == SyntaxKind.Block))
             {
                 newStatement = selectedStatements.First();
             }
@@ -99,18 +100,20 @@ namespace Roslynator.CSharp.Refactorings
 
             ElseClauseSyntax elseClause = SyntaxFactory.ElseClause(newStatement).WithFormatterAnnotation();
 
-            IfStatementSyntax lastIfStatement = ifStatementInfo.Nodes.Last();
+            IfStatementSyntax lastIfStatement = ifStatementInfo.Last();
+
+            IfStatementSyntax ifStatement = ifStatementInfo.IfStatement;
 
             IfStatementSyntax newIfStatement = ifStatement.ReplaceNode(
                 lastIfStatement,
                 lastIfStatement.WithElse(elseClause));
 
-            SyntaxList<StatementSyntax> newStatements = selectedStatements.Statements.Replace(ifStatement, newIfStatement);
+            SyntaxList<StatementSyntax> newStatements = selectedStatements.UnderlyingList.Replace(ifStatement, newIfStatement);
 
-            for (int i = newStatements.Count - 1; i >= selectedStatements.StartIndex; i--)
+            for (int i = newStatements.Count - 1; i >= selectedStatements.FirstIndex; i--)
                 newStatements = newStatements.RemoveAt(i);
 
-            return document.ReplaceStatementsAsync(selectedStatements.Info, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.Utilities;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -23,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            if (namedType.IsEnumWithFlagsAttribute(context.Compilation))
+            if (namedType.IsEnumWithFlags(context.Compilation))
                 Analyze(context, namedType);
         }
 
@@ -218,29 +217,18 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void ReportDiagnostic(SymbolAnalysisContext context, IFieldSymbol field, string value)
         {
-            SyntaxReference syntaxReference = field.DeclaringSyntaxReferences.FirstOrDefault();
+            var enumMember = field.GetSyntaxOrDefault(context.CancellationToken) as EnumMemberDeclarationSyntax;
 
-            Debug.Assert(syntaxReference != null, "");
+            Debug.Assert(enumMember != null);
 
-            if (syntaxReference != null)
-            {
-                SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
+            if (enumMember == null)
+                return;
 
-                Debug.Assert(node.IsKind(SyntaxKind.EnumMemberDeclaration), node.Kind().ToString());
-
-                if (node.IsKind(SyntaxKind.EnumMemberDeclaration))
-                {
-                    var enumMember = (EnumMemberDeclarationSyntax)node;
-
-                    Diagnostic diagnostic = Diagnostic.Create(
-                        DiagnosticDescriptors.CompositeEnumValueContainsUndefinedFlag,
-                        enumMember.GetLocation(),
-                        ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Value", value) }),
-                        value);
-
-                    context.ReportDiagnostic(diagnostic);
-                }
-            }
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.CompositeEnumValueContainsUndefinedFlag,
+                enumMember.GetLocation(),
+                ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Value", value) }),
+                value);
         }
 
         public static async Task<Document> RefactorAsync(
@@ -253,7 +241,7 @@ namespace Roslynator.CSharp.Refactorings
 
             INamedTypeSymbol symbol = semanticModel.GetDeclaredSymbol(enumDeclaration, cancellationToken);
 
-            string name = NameGenerator.Default.EnsureUniqueEnumMemberName(DefaultNames.EnumMember, symbol);
+            string name = NameGenerator.Default.EnsureUniqueMemberName(DefaultNames.EnumMember, symbol);
 
             EnumMemberDeclarationSyntax enumMember = EnumMemberDeclaration(
                 Identifier(name).WithRenameAnnotation(),

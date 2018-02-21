@@ -16,6 +16,7 @@ namespace Roslynator.CSharp.Documentation
         }
 
         public SemanticModel SemanticModel { get; }
+
         public CancellationToken CancellationToken { get; }
 
         protected override MemberDeclarationSyntax AddDocumentationComment(MemberDeclarationSyntax memberDeclaration)

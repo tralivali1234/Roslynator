@@ -2,13 +2,13 @@
 
 namespace Roslynator.CSharp.Syntax
 {
-    public enum XmlElementKind
+    internal enum XmlElementKind
     {
-        None,
-        Include,
-        Exclude,
-        InheritDoc,
-        Summary,
-        Exception
+        None = 0,
+        Include = 1,
+        Exclude = 2,
+        InheritDoc = 3,
+        Summary = 4,
+        Exception = 5
     }
 }

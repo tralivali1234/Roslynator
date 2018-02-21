@@ -2,10 +2,22 @@
 
 namespace Roslynator
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum ExtensionMethodKind
     {
-        None = 0,
+        /// <summary>
+        /// Any extension method (non-reduced or reduced).
+        /// </summary>
+        Any = 0,
+        /// <summary>
+        /// Non-reduced extension method (with "this" parameter not removed).
+        /// </summary>
         NonReduced = 1,
+        /// <summary>
+        /// Reduced extension method (with "this" parameter removed).
+        /// </summary>
         Reduced = 2,
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 {
-    internal struct ReduceIfNestingAnalysis
+    internal readonly struct ReduceIfNestingAnalysis
     {
         public ReduceIfNestingAnalysis(SyntaxKind jumpKind, SyntaxNode topNode)
         {

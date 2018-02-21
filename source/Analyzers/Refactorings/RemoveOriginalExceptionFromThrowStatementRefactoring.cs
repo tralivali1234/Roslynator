@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
             if (symbol?.IsErrorType() != false)
                 return;
 
-            //TODO: SyntaxWalker
+            //XTODO: SyntaxWalker
             foreach (SyntaxNode node in block.DescendantNodes(descendIntoChildren: f => f.Kind() != SyntaxKind.CatchClause))
             {
                 if (node.Kind() != SyntaxKind.ThrowStatement)
@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression = throwStatement.Expression;
 
             ThrowStatementSyntax newThrowStatement = throwStatement
-                .RemoveNode(expression, RemoveHelper.GetRemoveOptions(expression))
+                .RemoveNode(expression)
                 .WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(throwStatement, newThrowStatement, cancellationToken);

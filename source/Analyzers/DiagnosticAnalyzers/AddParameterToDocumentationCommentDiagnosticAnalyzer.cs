@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeIndexerDeclaration, SyntaxKind.IndexerDeclaration);
         }
 
-        private void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
             var method = (MethodDeclarationSyntax)context.Node;
 
@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, method, parameterList.Parameters);
         }
 
-        private void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var constructor = (ConstructorDeclarationSyntax)context.Node;
 
@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, constructor, parameterList.Parameters);
         }
 
-        private void AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var operatorDeclaration = (OperatorDeclarationSyntax)context.Node;
 
@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, operatorDeclaration, parameterList.Parameters);
         }
 
-        private void AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var conversionOperatorDeclaration = (ConversionOperatorDeclarationSyntax)context.Node;
 
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, conversionOperatorDeclaration, parameterList.Parameters);
         }
 
-        private void AnalyzeDelegateDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeDelegateDeclaration(SyntaxNodeAnalysisContext context)
         {
             var delegateDeclaration = (DelegateDeclarationSyntax)context.Node;
 
@@ -84,7 +84,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 Analyze(context, delegateDeclaration, parameterList.Parameters);
         }
 
-        private void AnalyzeIndexerDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeIndexerDeclaration(SyntaxNodeAnalysisContext context)
         {
             var indexerDeclaration = (IndexerDeclarationSyntax)context.Node;
 

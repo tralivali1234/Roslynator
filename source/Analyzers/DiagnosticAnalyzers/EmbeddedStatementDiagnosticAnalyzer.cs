@@ -18,7 +18,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             get
             {
                 return ImmutableArray.Create(
-                    DiagnosticDescriptors.AddBracesWhenExpressionSpansOverMultipleLines,
                     DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine,
                     DiagnosticDescriptors.AddEmptyLineAfterEmbeddedStatement);
             }
@@ -43,75 +42,67 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeFixedStatement, SyntaxKind.FixedStatement);
         }
 
-        private void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, ifStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, ifStatement);
-            AddBracesRefactoring.Analyze(context, ifStatement);
         }
 
-        private void AnalyzeCommonForEachStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeCommonForEachStatement(SyntaxNodeAnalysisContext context)
         {
             var forEachStatement = (CommonForEachStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, forEachStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, forEachStatement);
-            AddBracesRefactoring.Analyze(context, forEachStatement);
         }
 
-        private void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
         {
             var forStatement = (ForStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, forStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, forStatement);
-            AddBracesRefactoring.Analyze(context, forStatement);
         }
 
-        private void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
         {
             var usingStatement = (UsingStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, usingStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, usingStatement);
-            AddBracesRefactoring.Analyze(context, usingStatement);
         }
 
-        private void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
         {
             var whileStatement = (WhileStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, whileStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, whileStatement);
-            AddBracesRefactoring.Analyze(context, whileStatement);
         }
 
-        private void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
         {
             var doStatement = (DoStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, doStatement);
-            AddBracesRefactoring.Analyze(context, doStatement);
         }
 
-        private void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
         {
             var lockStatement = (LockStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, lockStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, lockStatement);
-            AddBracesRefactoring.Analyze(context, lockStatement);
         }
 
-        private void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
         {
             var fixedStatement = (FixedStatementSyntax)context.Node;
 
             FormatEmbeddedStatementOnSeparateLineRefactoring.Analyze(context, fixedStatement);
             AddEmptyLineAfterEmbeddedStatementRefactoring.Analyze(context, fixedStatement);
-            AddBracesRefactoring.Analyze(context, fixedStatement);
         }
     }
 }

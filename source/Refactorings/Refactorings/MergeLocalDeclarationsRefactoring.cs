@@ -27,8 +27,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             return RefactorAsync(
                                 context.Document,
-                                selectedStatements.Info,
-                                selectedStatements.Cast<LocalDeclarationStatementSyntax>().ToArray(),
+                                selectedStatements,
                                 cancellationToken);
                         });
                 }
@@ -73,13 +72,16 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            StatementsInfo statementsInfo,
-            LocalDeclarationStatementSyntax[] localDeclarations,
+            StatementsSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            LocalDeclarationStatementSyntax[] localDeclarations = selectedStatements
+                .Cast<LocalDeclarationStatementSyntax>()
+                .ToArray();
+
             LocalDeclarationStatementSyntax localDeclaration = localDeclarations[0];
 
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
+            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
 
             int index = statements.IndexOf(localDeclaration);
 
@@ -101,7 +103,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = 1; i < localDeclarations.Length; i++)
                 newStatements = newStatements.RemoveAt(index + 1);
 
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
         }
     }
 }

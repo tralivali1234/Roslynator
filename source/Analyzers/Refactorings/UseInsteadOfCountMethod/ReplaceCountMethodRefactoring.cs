@@ -21,10 +21,12 @@ namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            if (!semanticModel.TryGetExtensionMethodInfo(invocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.Reduced, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, ExtensionMethodKind.Reduced, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Count"))
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("Count", semanticModel))
                 return;
 
             string propertyName = CSharpUtility.GetCountOrLengthPropertyName(invocationInfo.Expression, semanticModel, cancellationToken);

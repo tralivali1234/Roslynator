@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
 
                 IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, cancellationToken);
 
-                ExpressionSyntax expression = methodSymbol.ReturnType.ToDefaultValueSyntax(returnType);
+                ExpressionSyntax expression = methodSymbol.ReturnType.GetDefaultValueSyntax(returnType);
 
                 body = body.AddStatements(ReturnStatement(expression));
             }

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
-using Roslynator.CSharp.CodeFixes;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.Analyzers.UnusedMember
 {
@@ -24,34 +24,36 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
         {
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindNode(root, context.Span, out SyntaxNode node, predicate: f =>
-            {
-                switch (f.Kind())
-                {
-                    case SyntaxKind.DelegateDeclaration:
-                    case SyntaxKind.EventDeclaration:
-                    case SyntaxKind.EventFieldDeclaration:
-                    case SyntaxKind.FieldDeclaration:
-                    case SyntaxKind.MethodDeclaration:
-                    case SyntaxKind.PropertyDeclaration:
-                    case SyntaxKind.VariableDeclarator:
-                        return true;
-                    default:
-                        return false;
-                }
-            }))
+            if (!TryFindNode(root, context.Span, out SyntaxNode node, predicate: Predicate))
             {
                 return;
             }
 
-            SyntaxToken identifier = UnusedMemberRefactoring.GetIdentifier(node);
+            Diagnostic diagnostic = context.Diagnostics[0];
 
             CodeAction codeAction = CodeAction.Create(
-                $"Remove '{identifier.ValueText}'",
+                $"Remove '{UnusedMemberRefactoring.GetIdentifier(node).ValueText}'",
                 cancellationToken => UnusedMemberRefactoring.RefactorAsync(context.Document, node, cancellationToken),
-                GetEquivalenceKey(DiagnosticIdentifiers.RemoveUnusedMemberDeclaration));
+                GetEquivalenceKey(diagnostic));
 
-            context.RegisterCodeFix(codeAction, context.Diagnostics[0]);
+            context.RegisterCodeFix(codeAction, diagnostic);
+        }
+
+        private static bool Predicate(SyntaxNode node)
+        {
+            switch (node.Kind())
+            {
+                case SyntaxKind.DelegateDeclaration:
+                case SyntaxKind.EventDeclaration:
+                case SyntaxKind.EventFieldDeclaration:
+                case SyntaxKind.FieldDeclaration:
+                case SyntaxKind.MethodDeclaration:
+                case SyntaxKind.PropertyDeclaration:
+                case SyntaxKind.VariableDeclarator:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!simpleIf.Success)
                 return;
 
-            StatementSyntax statement = simpleIf.Statement.SingleNonBlockStatementOrDefault();
+            StatementSyntax statement = simpleIf.IfStatement.SingleNonBlockStatementOrDefault();
 
             if (statement == null)
                 return;
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(simpleIf.Condition, allowedKinds: NullCheckKind.IsNull, semanticModel: semanticModel, cancellationToken: cancellationToken);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(simpleIf.Condition, semanticModel: semanticModel, allowedStyles: NullCheckStyles.CheckingNull, cancellationToken: cancellationToken);
 
             if (!nullCheck.Success)
                 return;
@@ -191,7 +191,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var returnStatement = (ReturnStatementSyntax)statements[1];
 
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.GetSingleStatementOrDefault();
+            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 

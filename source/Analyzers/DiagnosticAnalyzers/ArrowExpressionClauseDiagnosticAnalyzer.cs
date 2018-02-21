@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeArrowExpressionClause, SyntaxKind.ArrowExpressionClause);
         }
 
-        private void AnalyzeArrowExpressionClause(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeArrowExpressionClause(SyntaxNodeAnalysisContext context)
         {
             var arrowExpressionClause = (ArrowExpressionClauseSyntax)context.Node;
 

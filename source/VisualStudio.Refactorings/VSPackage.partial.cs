@@ -7,8 +7,8 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Roslynator.CodeFixes;
 using Roslynator.Configuration;
-using Roslynator.CSharp.CodeFixes;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.VisualStudio

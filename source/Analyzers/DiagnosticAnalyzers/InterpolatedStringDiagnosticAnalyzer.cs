@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeInterpolatedStringExpression, SyntaxKind.InterpolatedStringExpression);
         }
 
-        private void AnalyzeInterpolatedStringExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeInterpolatedStringExpression(SyntaxNodeAnalysisContext context)
         {
             var interpolatedString = (InterpolatedStringExpressionSyntax)context.Node;
 

@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 VariableDesignationSyntax designation = declarationPattern.Designation;
 
-                if (designation?.IsKind(SyntaxKind.SingleVariableDesignation) == true)
+                if (designation?.Kind() == SyntaxKind.SingleVariableDesignation)
                 {
                     var singleVariableDesignation = (SingleVariableDesignationSyntax)designation;
 

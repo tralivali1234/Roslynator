@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -166,7 +167,7 @@ namespace Roslynator.CSharp.CodeFixes
         {
             CodeAction codeAction = CodeAction.Create(
                 $"Remove constraint '{constraint}'",
-                cancellationToken => context.Document.RemoveNodeAsync(constraint, RemoveHelper.GetRemoveOptions(constraint), cancellationToken),
+                cancellationToken => context.Document.RemoveNodeAsync(constraint, cancellationToken),
                 GetEquivalenceKey(diagnostic, constraint.Kind().ToString()));
 
             context.RegisterCodeFix(codeAction, diagnostic);

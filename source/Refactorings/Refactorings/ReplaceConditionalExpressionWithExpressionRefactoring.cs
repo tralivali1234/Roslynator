@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxNode parent = expression.Parent;
 
-            if (parent?.IsKind(SyntaxKind.ConditionalExpression) == true
+            if (parent?.Kind() == SyntaxKind.ConditionalExpression
                 && context.Span.IsBetweenSpans(expression))
             {
                 var conditionalExpression = (ConditionalExpressionSyntax)parent;

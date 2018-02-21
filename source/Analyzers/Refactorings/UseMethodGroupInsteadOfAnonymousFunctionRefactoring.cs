@@ -419,7 +419,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression = GetExpression(node)?.WalkDownParentheses();
 
-            if (expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+            if (expression?.Kind() == SyntaxKind.InvocationExpression)
                 return (InvocationExpressionSyntax)expression;
 
             return null;
@@ -427,7 +427,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static ExpressionSyntax GetExpression(SyntaxNode node)
         {
-            if (node?.IsKind(SyntaxKind.Block) == true)
+            if (node?.Kind() == SyntaxKind.Block)
             {
                 var block = (BlockSyntax)node;
 

@@ -218,7 +218,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool ContainsOtherAwaitOrReturnWithoutAwait(BlockSyntax body, HashSet<AwaitExpressionSyntax> awaitExpressions)
         {
-            foreach (SyntaxNode descendant in body.DescendantNodes(body.Span, f => !f.IsNestedMethod() && !f.IsKind(SyntaxKind.ReturnStatement)))
+            foreach (SyntaxNode descendant in body.DescendantNodes(body.Span, f => !CSharpFacts.IsNestedMethod(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
             {
                 switch (descendant.Kind())
                 {
@@ -226,7 +226,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             ExpressionSyntax expression = ((ReturnStatementSyntax)descendant).Expression;
 
-                            if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                            if (expression?.Kind() == SyntaxKind.AwaitExpression)
                             {
                                 if (!awaitExpressions.Contains((AwaitExpressionSyntax)expression))
                                     return true;
@@ -254,7 +254,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             HashSet<AwaitExpressionSyntax> awaitExpressions = null;
 
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetChain())
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 if (ifOrElse.IsElse
                     && !endsWithElse)
@@ -374,7 +374,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression = returnStatement.Expression;
 
-            if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+            if (expression?.Kind() == SyntaxKind.AwaitExpression)
             {
                 var awaitExpression = (AwaitExpressionSyntax)expression;
 
@@ -396,7 +396,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = expressionBody.Expression;
 
-                if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                if (expression?.Kind() == SyntaxKind.AwaitExpression)
                 {
                     var awaitExpression = (AwaitExpressionSyntax)expression;
 
@@ -448,8 +448,12 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var returnType = methodSymbol.ReturnType as INamedTypeSymbol;
 
-                if (returnType?.IsConstructedFromTaskOfT(semanticModel) == true)
+                if (returnType?
+                    .ConstructedFrom
+                    .EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)) == true)
+                {
                     return returnType.TypeArguments.Single();
+                }
             }
 
             return null;
@@ -521,7 +525,7 @@ namespace Roslynator.CSharp.Refactorings
         private static bool ContainsAwaitExpression(SyntaxNode node)
         {
             return node
-                .DescendantNodes(f => !f.IsNestedMethod())
+                .DescendantNodes(f => !CSharpFacts.IsNestedMethod(f.Kind()))
                 .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
         }
 
@@ -529,7 +533,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             HashSet<AwaitExpressionSyntax> awaitExpressions = null;
 
-            foreach (SyntaxNode node in body.DescendantNodes(span, f => !f.IsNestedMethod() && !f.IsKind(SyntaxKind.ReturnStatement)))
+            foreach (SyntaxNode node in body.DescendantNodes(span, f => !CSharpFacts.IsNestedMethod(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
             {
                 SyntaxKind kind = node.Kind();
 
@@ -537,7 +541,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     ExpressionSyntax expression = ((ReturnStatementSyntax)node).Expression;
 
-                    if (expression?.IsKind(SyntaxKind.AwaitExpression) == true)
+                    if (expression?.Kind() == SyntaxKind.AwaitExpression)
                     {
                         var awaitExpression = (AwaitExpressionSyntax)expression;
 

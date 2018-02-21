@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -32,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
                                 break;
                             }
 
-                            switch (CSharpAnalysis.AnalyzeBraces(section))
+                            switch (BracesAnalysis.AnalyzeBraces(section))
                             {
                                 case BracesAnalysisResult.AddBraces:
                                     {

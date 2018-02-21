@@ -76,10 +76,14 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
         {
             SyntaxReference syntaxReference = symbol.DeclaringSyntaxReferences.FirstOrDefault();
 
-            if (syntaxReference == null)
+            if (syntaxReference != null)
+            {
+                return (PropertyDeclarationSyntax)await syntaxReference.GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
                 return null;
-
-            return (PropertyDeclarationSyntax)await syntaxReference.GetSyntaxAsync(cancellationToken).ConfigureAwait(false);
+            }
         }
 
         protected override ImmutableArray<ParameterInfo> GetParameterInfos(IdentifierNameSyntax node, IPropertySymbol symbol)

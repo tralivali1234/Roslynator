@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel)
         {
             if (body?
-                .DescendantNodes(body.Span, f => !f.IsNestedMethod())
+                .DescendantNodes(body.Span, f => !CSharpFacts.IsNestedMethod(f.Kind()))
                 .Any(f => f.IsKind(SyntaxKind.YieldReturnStatement)) == true)
             {
                 var symbol = (IMethodSymbol)semanticModel.GetDeclaredSymbol(node, context.CancellationToken);
@@ -144,7 +144,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var ifStatement = (IfStatementSyntax)statement;
 
-                return ifStatement.GetSingleStatementOrDefault()?.IsKind(SyntaxKind.ThrowStatement) == true;
+                return ifStatement.SingleNonBlockStatementOrDefault()?.Kind() == SyntaxKind.ThrowStatement;
             }
 
             return false;

@@ -103,12 +103,12 @@ namespace Roslynator.CSharp.Refactorings
 
             newNode = newNode.WithType(newType);
 
-            string typeName = SymbolDisplay.GetMinimalString(newTypeSymbol, semanticModel, type.SpanStart);
+            string typeName = SymbolDisplay.ToMinimalDisplayString(newTypeSymbol, semanticModel, type.SpanStart, SymbolDisplayFormats.Default);
 
             CodeAction codeAction = CodeAction.Create(
                 $"Change type to '{typeName}' and add await",
                 cancellationToken => context.Document.ReplaceNodeAsync(variableDeclaration, newNode, cancellationToken),
-                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, CodeFixIdentifiers.ChangeTypeAccordingToInitializer + "AddAwait"));
+                EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.ChangeTypeAccordingToInitializer, "AddAwait"));
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }

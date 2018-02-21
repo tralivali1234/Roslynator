@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +21,9 @@ namespace Roslynator.CSharp.Refactorings
 
             var addExpression = (BinaryExpressionSyntax)context.Node;
 
-            if (context.SemanticModel.TryGetMethodInfo(addExpression, out MethodInfo methodInfo, context.CancellationToken)
+            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(addExpression, context.CancellationToken);
+
+            if (methodInfo.Symbol != null
                 && methodInfo.MethodKind == MethodKind.BuiltinOperator
                 && methodInfo.Name == WellKnownMemberNames.AdditionOperatorName
                 && methodInfo.IsContainingType(SpecialType.System_String))

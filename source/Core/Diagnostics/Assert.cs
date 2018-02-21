@@ -9,7 +9,7 @@ namespace Roslynator.Diagnostics
     internal static class Assert
     {
         [Conditional("DEBUG")]
-        public static void IsTrue(bool condition, string name, SyntaxKind kind = SyntaxKind.None)
+        public static void True(bool condition, string name, SyntaxKind kind = SyntaxKind.None)
         {
             Debug.Assert(condition, (kind == SyntaxKind.None) ? $"{name} is {kind}" : $"{name} is not {kind}");
         }

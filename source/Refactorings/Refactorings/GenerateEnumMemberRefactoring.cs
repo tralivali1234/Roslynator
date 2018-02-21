@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -18,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 
             INamedTypeSymbol enumSymbol = semanticModel.GetDeclaredSymbol(enumDeclaration, context.CancellationToken);
 
-            if (enumSymbol.IsEnumWithFlagsAttribute(semanticModel))
+            if (enumSymbol.IsEnumWithFlags(semanticModel))
             {
                 List<object> values = GetConstantValues(enumSymbol);
 
@@ -90,7 +89,7 @@ namespace Roslynator.CSharp.Refactorings
             if (value != null)
                 equalsValue = SyntaxFactory.EqualsValueClause(CSharpFactory.LiteralExpression(value));
 
-            name = NameGenerator.Default.EnsureUniqueEnumMemberName(name, enumSymbol);
+            name = NameGenerator.Default.EnsureUniqueMemberName(name, enumSymbol);
 
             SyntaxToken identifier = SyntaxFactory.Identifier(name).WithRenameAnnotation();
 

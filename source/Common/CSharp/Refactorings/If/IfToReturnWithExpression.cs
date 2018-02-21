@@ -28,16 +28,16 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public bool IsYield { get; }
 
-        public override RefactoringKind Kind
+        public override IfRefactoringKind Kind
         {
             get
             {
                 if (IsYield)
-                    return RefactoringKind.IfElseToYieldReturnWithExpression;
+                    return IfRefactoringKind.IfElseToYieldReturnWithExpression;
 
                 return (IfStatement.IsSimpleIf())
-                    ? RefactoringKind.IfReturnToReturnWithExpression
-                    : RefactoringKind.IfElseToReturnWithExpression;
+                    ? IfRefactoringKind.IfReturnToReturnWithExpression
+                    : IfRefactoringKind.IfElseToReturnWithExpression;
             }
         }
 
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings.If
             {
                 SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-                expression = LogicalNegationHelper.LogicallyNegate(expression, semanticModel, cancellationToken);
+                expression = Negation.LogicallyNegate(expression, semanticModel, cancellationToken);
             }
 
             StatementSyntax statement = CreateStatement(expression);

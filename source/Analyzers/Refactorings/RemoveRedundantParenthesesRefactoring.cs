@@ -152,7 +152,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(interpolation.Expression is ParenthesizedExpressionSyntax parenthesizedExpression))
                 return;
 
-            if (parenthesizedExpression.Expression?.IsKind(SyntaxKind.ConditionalExpression) == true)
+            if (parenthesizedExpression.Expression?.Kind() == SyntaxKind.ConditionalExpression)
                 return;
 
             AnalyzeParenthesizedExpression(context, parenthesizedExpression);

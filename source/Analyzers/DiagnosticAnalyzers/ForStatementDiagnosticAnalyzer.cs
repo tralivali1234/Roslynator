@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeForStatement, SyntaxKind.ForStatement);
         }
 
-        private void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
         {
             var forStatement = (ForStatementSyntax)context.Node;
 
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             ExpressionSyntax condition = forStatement.Condition;
 
-            if (condition?.IsKind(SyntaxKind.TrueLiteralExpression) == true)
+            if (condition?.Kind() == SyntaxKind.TrueLiteralExpression)
                 context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantBooleanLiteral, condition, condition.ToString());
         }
     }

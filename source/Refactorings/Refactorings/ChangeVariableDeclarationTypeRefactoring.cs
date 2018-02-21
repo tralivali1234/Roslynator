@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -28,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            TypeAnalysisFlags flags = CSharpAnalysis.AnalyzeType(variableDeclaration, semanticModel, context.CancellationToken);
+            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(variableDeclaration, semanticModel, context.CancellationToken);
 
             if (flags.IsExplicit())
             {
@@ -76,13 +75,13 @@ namespace Roslynator.CSharp.Refactorings
                     ITypeSymbol typeArgument = ((INamedTypeSymbol)typeSymbol).TypeArguments[0];
 
                     context.RegisterRefactoring(
-                        $"Change type to '{SymbolDisplay.GetMinimalString(typeArgument, semanticModel, type.SpanStart)}' and insert 'await'",
+                        $"Change type to '{SymbolDisplay.ToMinimalDisplayString(typeArgument, semanticModel, type.SpanStart, SymbolDisplayFormats.Default)}' and insert 'await'",
                         c => ChangeTypeAndAddAwaitAsync(context.Document, variableDeclaration, typeArgument, c));
                 }
             }
 
             context.RegisterRefactoring(
-                $"Change type to '{SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, type.Span.Start)}'",
+                $"Change type to '{SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, type.Span.Start, SymbolDisplayFormats.Default)}'",
                 c => ChangeTypeRefactoring.ChangeTypeAsync(context.Document, type, typeSymbol, c));
         }
 

@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
-using Roslynator.Utilities;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -50,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
                             }
                         case XmlElementKind.Summary:
                             {
-                                if (info.IsXmlEmptyElement || IsSummaryMissing((XmlElementSyntax)info.Element))
+                                if (info.IsEmptyElement || IsSummaryMissing((XmlElementSyntax)info.Element))
                                 {
                                     context.ReportDiagnostic(
                                         DiagnosticDescriptors.AddSummaryToDocumentationComment,
@@ -144,7 +143,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TextLine line = sourceText.Lines[documentationComment.GetFullSpanStartLine(cancellationToken)];
 
-            string indent = StringUtility.GetLeadingWhiteSpaceExceptNewLine(line.ToString());
+            string indent = StringUtility.GetLeadingWhitespaceExceptNewLine(line.ToString());
 
             TextChange textChange;
 

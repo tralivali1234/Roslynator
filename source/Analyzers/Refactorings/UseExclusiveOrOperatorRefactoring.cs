@@ -115,7 +115,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(logicalOr, newNode, cancellationToken);
         }
 
-        private struct ExpressionPair
+        private readonly struct ExpressionPair
         {
             public ExpressionPair(ExpressionSyntax expression, ExpressionSyntax negatedExpression)
             {

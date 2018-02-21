@@ -3,8 +3,8 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Roslynator.CodeFixes;
 using Roslynator.Configuration;
-using Roslynator.CSharp.CodeFixes;
 
 namespace Roslynator.VisualStudio
 {

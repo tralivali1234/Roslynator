@@ -29,7 +29,8 @@ namespace Roslynator.CSharp.Refactorings
             if (statement is BlockSyntax block)
                 statement = block.Statements.LastOrDefault();
 
-            return statement?.Kind().IsJumpStatement() == true;
+            return statement != null
+                && CSharpFacts.IsJumpStatement(statement.Kind());
         }
 
         public static Task<Document> RefactorAsync(

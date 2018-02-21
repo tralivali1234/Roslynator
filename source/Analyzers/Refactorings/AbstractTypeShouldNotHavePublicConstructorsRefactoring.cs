@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Comparers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -16,34 +15,29 @@ namespace Roslynator.CSharp.Refactorings
         {
             var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
-            Accessibility accessibility = constructorDeclaration.Modifiers.GetAccessibility();
-
-            if (accessibility == Accessibility.Public
-                || accessibility == Accessibility.ProtectedOrInternal)
+            if (CSharpAccessibility.GetExplicitAccessibility(constructorDeclaration).Is(Accessibility.Public, Accessibility.ProtectedOrInternal)
+                && constructorDeclaration.IsParentKind(SyntaxKind.ClassDeclaration))
             {
-                if (constructorDeclaration.IsParentKind(SyntaxKind.ClassDeclaration))
+                var classDeclaration = (ClassDeclarationSyntax)constructorDeclaration.Parent;
+
+                SyntaxTokenList modifiers = classDeclaration.Modifiers;
+
+                bool isAbstract = modifiers.Contains(SyntaxKind.AbstractKeyword);
+
+                if (!isAbstract
+                    && modifiers.Contains(SyntaxKind.PartialKeyword))
                 {
-                    var classDeclaration = (ClassDeclarationSyntax)constructorDeclaration.Parent;
+                    INamedTypeSymbol classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken);
 
-                    SyntaxTokenList modifiers = classDeclaration.Modifiers;
+                    if (classSymbol != null)
+                        isAbstract = classSymbol.IsAbstract;
+                }
 
-                    bool isAbstract = modifiers.Contains(SyntaxKind.AbstractKeyword);
-
-                    if (!isAbstract
-                        && modifiers.Contains(SyntaxKind.PartialKeyword))
-                    {
-                        INamedTypeSymbol classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken);
-
-                        if (classSymbol != null)
-                            isAbstract = classSymbol.IsAbstract;
-                    }
-
-                    if (isAbstract)
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.AbstractTypeShouldNotHavePublicConstructors,
-                            constructorDeclaration.Identifier);
-                    }
+                if (isAbstract)
+                {
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.AbstractTypeShouldNotHavePublicConstructors,
+                        constructorDeclaration.Identifier);
                 }
             }
         }
@@ -53,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
             ConstructorDeclarationSyntax constructorDeclaration,
             CancellationToken cancellationToken)
         {
-            ConstructorDeclarationSyntax newNode = constructorDeclaration.WithAccessibility(Accessibility.Protected, ModifierComparer.Instance);
+            ConstructorDeclarationSyntax newNode = CSharpAccessibility.WithExplicitAccessibility(constructorDeclaration, Accessibility.Protected);
 
             return document.ReplaceNodeAsync(constructorDeclaration, newNode, cancellationToken);
         }

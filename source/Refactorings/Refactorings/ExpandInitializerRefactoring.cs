@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode parent = initializer.Parent;
 
-                if (parent?.IsKind(SyntaxKind.ObjectCreationExpression) == true)
+                if (parent?.Kind() == SyntaxKind.ObjectCreationExpression)
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
                                     {
                                         parent = assignmentExpression.Parent;
 
-                                        if (parent?.IsKind(SyntaxKind.ExpressionStatement) == true)
+                                        if (parent?.Kind() == SyntaxKind.ExpressionStatement)
                                             RegisterRefactoring(context, (StatementSyntax)parent, initializer, left);
                                     }
 
@@ -58,15 +58,15 @@ namespace Roslynator.CSharp.Refactorings
 
                                     parent = equalsValueClause.Parent;
 
-                                    if (parent?.IsKind(SyntaxKind.VariableDeclarator) == true)
+                                    if (parent?.Kind() == SyntaxKind.VariableDeclarator)
                                     {
                                         parent = parent.Parent;
 
-                                        if (parent?.IsKind(SyntaxKind.VariableDeclaration) == true)
+                                        if (parent?.Kind() == SyntaxKind.VariableDeclaration)
                                         {
                                             parent = parent.Parent;
 
-                                            if (parent?.IsKind(SyntaxKind.LocalDeclarationStatement) == true)
+                                            if (parent?.Kind() == SyntaxKind.LocalDeclarationStatement)
                                             {
                                                 var variableDeclarator = (VariableDeclaratorSyntax)equalsValueClause.Parent;
 

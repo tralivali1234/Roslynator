@@ -20,10 +20,12 @@ namespace Roslynator.CSharp.Refactorings
             if (invocationInfo.Expression?.IsMissing != false)
                 return false;
 
-            if (!semanticModel.TryGetExtensionMethodInfo(invocationInfo.InvocationExpression, out MethodInfo methodInfo, ExtensionMethodKind.Reduced, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationInfo.InvocationExpression, ExtensionMethodKind.Reduced, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return false;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("First", allowImmutableArrayExtension: true))
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters("First", semanticModel, allowImmutableArrayExtension: true))
                 return false;
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);

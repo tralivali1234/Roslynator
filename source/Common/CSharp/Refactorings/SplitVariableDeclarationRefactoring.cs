@@ -35,22 +35,22 @@ namespace Roslynator.CSharp.Refactorings
             if (variableDeclaration == null)
                 throw new ArgumentNullException(nameof(variableDeclaration));
 
-            return $"Split {GetName(variableDeclaration)} declaration";
-        }
+            return $"Split {GetName()} declaration";
 
-        private static string GetName(VariableDeclarationSyntax variableDeclaration)
-        {
-            switch (variableDeclaration.Parent?.Kind())
+            string GetName()
             {
-                case SyntaxKind.LocalDeclarationStatement:
-                    return "local";
-                case SyntaxKind.FieldDeclaration:
-                    return "field";
-                case SyntaxKind.EventFieldDeclaration:
-                    return "event";
-            }
+                switch (variableDeclaration.Parent?.Kind())
+                {
+                    case SyntaxKind.LocalDeclarationStatement:
+                        return "local";
+                    case SyntaxKind.FieldDeclaration:
+                        return "field";
+                    case SyntaxKind.EventFieldDeclaration:
+                        return "event";
+                }
 
-            return "variable";
+                return "variable";
+            }
         }
 
         public static async Task<Document> RefactorAsync(
@@ -92,9 +92,9 @@ namespace Roslynator.CSharp.Refactorings
             FieldDeclarationSyntax declaration,
             CancellationToken cancellationToken)
         {
-            var containingMember = (MemberDeclarationSyntax)declaration.Parent;
+            var containingMember = (TypeDeclarationSyntax)declaration.Parent;
 
-            SyntaxList<MemberDeclarationSyntax> members = containingMember.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> members = containingMember.Members;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceRange(
                 declaration,
@@ -110,9 +110,9 @@ namespace Roslynator.CSharp.Refactorings
             EventFieldDeclarationSyntax declaration,
             CancellationToken cancellationToken)
         {
-            var containingMember = (MemberDeclarationSyntax)declaration.Parent;
+            var containingMember = (TypeDeclarationSyntax)declaration.Parent;
 
-            SyntaxList<MemberDeclarationSyntax> members = containingMember.GetMembers();
+            SyntaxList<MemberDeclarationSyntax> members = containingMember.Members;
 
             SyntaxList<MemberDeclarationSyntax> newMembers = members.ReplaceRange(
                 declaration,

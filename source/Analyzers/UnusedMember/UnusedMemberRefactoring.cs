@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (DelegateDeclarationSyntax)member;
 
-                            if (IsPrivate(declaration, declaration.Modifiers))
+                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -59,7 +59,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (EventDeclarationSyntax)member;
 
-                            if (IsPrivate(declaration, declaration.Modifiers))
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -73,7 +74,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (EventFieldDeclarationSyntax)member;
 
-                            if (IsPrivate(declaration, declaration.Modifiers))
+                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -88,7 +89,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                             var declaration = (FieldDeclarationSyntax)member;
                             SyntaxTokenList modifiers = declaration.Modifiers;
 
-                            if (IsPrivate(declaration, modifiers))
+                            if (CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -104,8 +105,9 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
                             SyntaxTokenList modifiers = declaration.Modifiers;
 
-                            if (!declaration.AttributeLists.Any()
-                                && IsPrivate(declaration, modifiers))
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && !declaration.AttributeLists.Any()
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 string methodName = declaration.Identifier.ValueText;
 
@@ -124,7 +126,8 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                         {
                             var declaration = (PropertyDeclarationSyntax)member;
 
-                            if (IsPrivate(declaration, declaration.Modifiers))
+                            if (declaration.ExplicitInterfaceSpecifier == null
+                                && CSharpAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
                                     walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
@@ -152,16 +155,16 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
                     if (variableDeclaration.Variables.Count == 1)
                     {
-                        ReportDiagnostic(context, variableDeclaration.Parent, variableDeclaration.Parent.GetTitle());
+                        ReportDiagnostic(context, variableDeclaration.Parent, CSharpFacts.GetTitle(variableDeclaration.Parent));
                     }
                     else
                     {
-                        ReportDiagnostic(context, variableDeclarator, variableDeclaration.Parent.GetTitle());
+                        ReportDiagnostic(context, variableDeclarator, CSharpFacts.GetTitle(variableDeclaration.Parent));
                     }
                 }
                 else
                 {
-                    ReportDiagnostic(context, node, node.GetTitle());
+                    ReportDiagnostic(context, node, CSharpFacts.GetTitle(node));
                 }
             }
         }
@@ -177,16 +180,6 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node, string declarationName)
         {
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnusedMemberDeclaration, GetIdentifier(node), declarationName);
-        }
-
-        private static bool IsPrivate(MemberDeclarationSyntax memberDeclaration, SyntaxTokenList modifiers)
-        {
-            Accessibility accessibility = modifiers.GetAccessibility();
-
-            if (accessibility == Accessibility.NotApplicable)
-                accessibility = memberDeclaration.GetDefaultExplicitAccessibility();
-
-            return accessibility == Accessibility.Private;
         }
 
         internal static SyntaxToken GetIdentifier(SyntaxNode node)
@@ -225,11 +218,11 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                 {
                     SyntaxNode parent = variableDeclaration.Parent;
 
-                    return document.RemoveNodeAsync(parent, RemoveHelper.GetRemoveOptions(parent), cancellationToken);
+                    return document.RemoveNodeAsync(parent, cancellationToken);
                 }
             }
 
-            return document.RemoveNodeAsync(node, RemoveHelper.GetRemoveOptions(node), cancellationToken);
+            return document.RemoveNodeAsync(node, cancellationToken);
         }
     }
 }

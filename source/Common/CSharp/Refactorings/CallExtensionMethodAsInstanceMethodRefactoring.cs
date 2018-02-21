@@ -51,7 +51,9 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            if (!semanticModel.TryGetMethodInfo(invocationExpression, out MethodInfo methodInfo, cancellationToken))
+            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
+
+            if (methodInfo.Symbol == null)
                 return Fail;
 
             if (!methodInfo.Symbol.IsNonReducedExtensionMethod())

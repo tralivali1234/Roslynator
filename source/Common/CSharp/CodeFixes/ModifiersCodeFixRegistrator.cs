@@ -8,7 +8,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -92,7 +95,7 @@ namespace Roslynator.CSharp.CodeFixes
                 case SyntaxKind.StaticKeyword:
                     {
                         if (node.Kind() == SyntaxKind.ConstructorDeclaration)
-                            node = Modifier.RemoveAccess(node);
+                            node = Modifier.RemoveAccessibility(node);
 
                         node = node.RemoveModifier(SyntaxKind.SealedKeyword);
 
@@ -239,7 +242,7 @@ namespace Roslynator.CSharp.CodeFixes
             Func<SyntaxToken, bool> predicate,
             string additionalKey = null)
         {
-            RemoveModifiers(context, diagnostic, node, node.GetModifiers(), predicate, additionalKey);
+            RemoveModifiers(context, diagnostic, node, SyntaxInfo.ModifiersInfo(node).Modifiers, predicate, additionalKey);
         }
 
         public static void RemoveModifiers(
@@ -290,11 +293,11 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             string additionalKey = null)
         {
-            SyntaxTokenList modifiers = node.GetModifiers();
+            SyntaxToken modifier = SyntaxInfo.ModifiersInfo(node).Modifiers.SingleOrDefault(shouldThrow: false);
 
-            if (modifiers.Count == 1)
+            if (modifier != default(SyntaxToken))
             {
-                RemoveModifier(context, diagnostic, node, modifiers[0], additionalKey);
+                RemoveModifier(context, diagnostic, node, modifier, additionalKey);
             }
             else
             {
@@ -318,15 +321,13 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             string additionalKey = null)
         {
-            SyntaxTokenList modifiers = node.GetModifiers();
-
             var accessModifier = default(SyntaxToken);
 
-            foreach (SyntaxToken modifier in modifiers)
+            foreach (SyntaxToken modifier in SyntaxInfo.ModifiersInfo(node).Modifiers)
             {
-                if (modifier.IsAccessModifier())
+                if (IsAccessibilityModifier(modifier.Kind()))
                 {
-                    if (accessModifier.IsAccessModifier())
+                    if (IsAccessibilityModifier(accessModifier.Kind()))
                     {
                         accessModifier = default(SyntaxToken);
                         break;
@@ -338,7 +339,7 @@ namespace Roslynator.CSharp.CodeFixes
                 }
             }
 
-            if (accessModifier.IsAccessModifier())
+            if (IsAccessibilityModifier(accessModifier.Kind()))
             {
                 RemoveModifier(context, diagnostic, node, accessModifier, additionalKey: additionalKey);
             }
@@ -348,7 +349,7 @@ namespace Roslynator.CSharp.CodeFixes
                     "Remove access modifiers",
                     cancellationToken =>
                     {
-                        SyntaxNode newNode = Modifier.RemoveAccess(node);
+                        SyntaxNode newNode = Modifier.RemoveAccessibility(node);
 
                         return context.Document.ReplaceNodeAsync(node, newNode, cancellationToken);
                     },
@@ -402,11 +403,11 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             Accessibility accessibility)
         {
-            if (!CSharpUtility.IsAllowedAccessibility(node, accessibility))
+            if (!CSharpAccessibility.IsValidAccessibility(node, accessibility))
                 return;
 
             CodeAction codeAction = CodeAction.Create(
-                $"Change accessibility to '{accessibility.GetName()}'",
+                $"Change accessibility to '{GetText(accessibility)}'",
                 cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Document, node, accessibility, cancellationToken),
                 GetEquivalenceKey(diagnostic, accessibility.ToString()));
 
@@ -415,12 +416,12 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey)
         {
-            return EquivalenceKeyProvider.GetEquivalenceKey(diagnostic, additionalKey);
+            return EquivalenceKey.Create(diagnostic, additionalKey);
         }
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Add modifier '{Modifier.GetName(modifierKind)}'";
+            return $"Add modifier '{GetText(modifierKind)}'";
         }
 
         private static string GetAddModifierTitle(SyntaxKind modifierKind, SyntaxNode node)
@@ -432,7 +433,7 @@ namespace Roslynator.CSharp.CodeFixes
                 case SyntaxKind.AbstractKeyword:
                 case SyntaxKind.ReadOnlyKeyword:
                 case SyntaxKind.AsyncKeyword:
-                    return $"Make {node.GetTitle()} {Modifier.GetTitle(modifierKind)}";
+                    return $"Make {CSharpFacts.GetTitle(node)} {CSharpFacts.GetTitle(modifierKind)}";
             }
 
             return GetAddModifierTitle(modifierKind);
@@ -440,7 +441,7 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static string GetRemoveModifierTitle(SyntaxKind modifierKind)
         {
-            return $"Remove modifier '{Modifier.GetName(modifierKind)}'";
+            return $"Remove modifier '{GetText(modifierKind)}'";
         }
     }
 }

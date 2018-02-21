@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.Refactorings
             CancellationToken cancellationToken)
         {
             if ((expression is LiteralExpressionSyntax)
-                || semanticModel.GetTypeSymbol(expression, cancellationToken)?.IsReferenceTypeOrNullableType() == false)
+                || semanticModel.GetTypeSymbol(expression, cancellationToken)?.IsReferenceOrNullableType() == false)
             {
                 return SimpleMemberInvocationExpression(
                     expression.Parenthesize(),

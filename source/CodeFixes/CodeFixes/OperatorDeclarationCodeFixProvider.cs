@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -59,7 +60,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     return context.Document.InsertNodeAfterAsync(operatorDeclaration, newNode, cancellationToken);
                                 },
-                                EquivalenceKeyProvider.GetEquivalenceKey(diagnostic));
+                                EquivalenceKey.Create(diagnostic));
 
                             context.RegisterCodeFix(codeAction, diagnostic);
                             break;

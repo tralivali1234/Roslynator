@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
@@ -27,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfStatement = ifStatement;
         }
 
-        public abstract RefactoringKind Kind { get; }
+        public abstract IfRefactoringKind Kind { get; }
 
         public abstract string Title { get; }
 
@@ -64,7 +65,7 @@ namespace Roslynator.CSharp.Refactorings.If
                 if (!options.CheckSpanDirectives(ifStatement))
                     return Empty;
 
-                StatementSyntax statement1 = ifStatement.GetSingleStatementOrDefault();
+                StatementSyntax statement1 = ifStatement.SingleNonBlockStatementOrDefault();
 
                 if (statement1 == null)
                     return Empty;
@@ -76,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     SyntaxKind.ReturnStatement,
                     SyntaxKind.YieldReturnStatement))
                 {
-                    StatementSyntax statement2 = elseClause.GetSingleStatementOrDefault();
+                    StatementSyntax statement2 = elseClause.SingleNonBlockStatementOrDefault();
 
                     if (statement2?.Kind() == kind1)
                     {
@@ -121,7 +122,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     }
                 }
             }
-            else if (ifStatement.NextStatementOrDefault() is ReturnStatementSyntax returnStatement)
+            else if (ifStatement.NextStatement() is ReturnStatementSyntax returnStatement)
             {
                 return Analyze(ifStatement, returnStatement, options, semanticModel, cancellationToken);
             }
@@ -151,16 +152,16 @@ namespace Roslynator.CSharp.Refactorings.If
                 SyntaxKind kind1 = expression1.Kind();
                 SyntaxKind kind2 = expression2.Kind();
 
-                if (kind1.IsBooleanLiteralExpression()
-                    && kind2.IsBooleanLiteralExpression()
+                if (IsBooleanLiteralExpression(kind1)
+                    && IsBooleanLiteralExpression(kind2)
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)
                     {
                         if (ifStatement.IsSimpleIf()
-                            && (ifStatement.PreviousStatementOrDefault() is IfStatementSyntax previousIf)
+                            && (ifStatement.PreviousStatement() is IfStatementSyntax previousIf)
                             && previousIf.IsSimpleIf()
-                            && (previousIf.GetSingleStatementOrDefault() is ReturnStatementSyntax returnStatement)
+                            && (previousIf.SingleNonBlockStatementOrDefault() is ReturnStatementSyntax returnStatement)
                             && returnStatement.Expression?.WalkDownParentheses().Kind() == kind1)
                         {
                             return Empty;
@@ -194,7 +195,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfToReturnWithBooleanExpression ifToReturnWithBooleanExpression = null;
 
             if (options.UseBooleanExpression
-                && (expression1.Kind().IsBooleanLiteralExpression() || expression2.Kind().IsBooleanLiteralExpression())
+                && (IsBooleanLiteralExpression(expression1.Kind()) || IsBooleanLiteralExpression(expression2.Kind()))
                 && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.IsBoolean() == true
                 && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.IsBoolean() == true)
             {
@@ -204,7 +205,7 @@ namespace Roslynator.CSharp.Refactorings.If
             IfToReturnWithConditionalExpression ifToReturnWithConditionalExpression = null;
 
             if (options.UseConditionalExpression
-                && (!expression1.Kind().IsBooleanLiteralExpression() || !expression2.Kind().IsBooleanLiteralExpression()))
+                && (!IsBooleanLiteralExpression(expression1.Kind()) || !IsBooleanLiteralExpression(expression2.Kind())))
             {
                 ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpression.Create(ifStatement, expression1, expression2, isYield);
             }
@@ -222,7 +223,7 @@ namespace Roslynator.CSharp.Refactorings.If
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if ((nullCheck.Kind & NullCheckKind.ComparisonToNull) != 0
+            if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
                 && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: false);
@@ -291,8 +292,8 @@ namespace Roslynator.CSharp.Refactorings.If
                 SyntaxKind kind1 = right1.Kind();
                 SyntaxKind kind2 = right2.Kind();
 
-                if (kind1.IsBooleanLiteralExpression()
-                    && kind2.IsBooleanLiteralExpression()
+                if (IsBooleanLiteralExpression(kind1)
+                    && IsBooleanLiteralExpression(kind2)
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)
@@ -336,7 +337,7 @@ namespace Roslynator.CSharp.Refactorings.If
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if ((nullCheck.Kind & NullCheckKind.ComparisonToNull) != 0
+            if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
                 && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: false);
@@ -448,12 +449,12 @@ namespace Roslynator.CSharp.Refactorings.If
             if (elseClause?.Statement?.IsKind(SyntaxKind.IfStatement) != false)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
 
             if (!assignment1.Success)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.SingleNonBlockStatementOrDefault());
 
             if (!assignment2.Success)
                 return Empty;
@@ -494,12 +495,12 @@ namespace Roslynator.CSharp.Refactorings.If
             if (elseClause?.Statement?.IsKind(SyntaxKind.IfStatement) != false)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment1 = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
 
             if (!assignment1.Success)
                 return Empty;
 
-            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.GetSingleStatementOrDefault());
+            SimpleAssignmentStatementInfo assignment2 = SyntaxInfo.SimpleAssignmentStatementInfo(elseClause.SingleNonBlockStatementOrDefault());
 
             if (!assignment2.Success)
                 return Empty;
@@ -525,7 +526,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (condition?.IsMissing != false)
                 return Empty;
 
-            StatementSyntax statement = ifStatement.GetSingleStatementOrDefault();
+            StatementSyntax statement = ifStatement.SingleNonBlockStatementOrDefault();
 
             if (statement?.IsKind(SyntaxKind.ReturnStatement) != true)
                 return Empty;

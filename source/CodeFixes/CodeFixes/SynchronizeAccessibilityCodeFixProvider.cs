@@ -9,7 +9,9 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -46,13 +48,13 @@ namespace Roslynator.CSharp.CodeFixes
                 f => (MemberDeclarationSyntax)f.GetSyntax(context.CancellationToken));
 
             foreach (Accessibility accessibility in memberDeclarations
-                .Select(f => f.GetModifiers().GetAccessibility())
+                .Select(f => CSharpAccessibility.GetExplicitAccessibility(f))
                 .Where(f => f != Accessibility.NotApplicable))
             {
-                if (CSharpUtility.IsAllowedAccessibility(memberDeclaration, accessibility))
+                if (CSharpAccessibility.IsValidAccessibility(memberDeclaration, accessibility))
                 {
                     CodeAction codeAction = CodeAction.Create(
-                        $"Change accessibility to '{accessibility.GetName()}'",
+                        $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'",
                         cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Solution(), memberDeclarations, accessibility, cancellationToken),
                         GetEquivalenceKey(CompilerDiagnosticIdentifiers.PartialDeclarationsHaveConfictingAccessibilityModifiers, accessibility.ToString()));
 

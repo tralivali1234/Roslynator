@@ -18,25 +18,25 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax statement = usingStatement.Statement;
 
-            if (statement?.IsKind(SyntaxKind.Block) == true)
+            if (statement?.Kind() == SyntaxKind.Block)
             {
                 var block = (BlockSyntax)statement;
 
                 StatementSyntax lastStatement = block.Statements.LastOrDefault();
 
-                if (lastStatement?.IsKind(SyntaxKind.ExpressionStatement) == true)
+                if (lastStatement?.Kind() == SyntaxKind.ExpressionStatement)
                 {
                     var expressionStatement = (ExpressionStatementSyntax)lastStatement;
 
                     ExpressionSyntax expression = expressionStatement.Expression;
 
-                    if (expression?.IsKind(SyntaxKind.InvocationExpression) == true)
+                    if (expression?.Kind() == SyntaxKind.InvocationExpression)
                     {
                         var invocation = (InvocationExpressionSyntax)expression;
 
                         ExpressionSyntax invocationExpression = invocation.Expression;
 
-                        if (invocationExpression?.IsKind(SyntaxKind.SimpleMemberAccessExpression) == true)
+                        if (invocationExpression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                         {
                             var memberAccess = (MemberAccessExpressionSyntax)invocationExpression;
 

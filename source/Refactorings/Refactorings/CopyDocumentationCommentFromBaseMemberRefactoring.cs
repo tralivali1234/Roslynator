@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(methodDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(methodDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, methodDeclaration, data);
@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(propertyDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(propertyDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, propertyDeclaration, data);
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(indexerDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(indexerDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, indexerDeclaration, data);
@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, eventDeclaration, data);
@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventFieldDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventFieldDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, eventFieldDeclaration, data);
@@ -82,29 +82,29 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                BaseDocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(constructorDeclaration, semanticModel, context.CancellationToken);
+                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(constructorDeclaration, semanticModel, context.CancellationToken);
 
                 if (data.Success)
                     RegisterRefactoring(context, constructorDeclaration, data);
             }
         }
 
-        private static void RegisterRefactoring(RefactoringContext context, MemberDeclarationSyntax memberDeclaration, BaseDocumentationCommentData data)
+        private static void RegisterRefactoring(RefactoringContext context, MemberDeclarationSyntax memberDeclaration, DocumentationCommentData data)
         {
             context.RegisterRefactoring(
                 GetTitle(memberDeclaration, data.Origin),
                 cancellationToken => RefactorAsync(context.Document, memberDeclaration, data.Comment, cancellationToken));
         }
 
-        private static string GetTitle(MemberDeclarationSyntax memberDeclaration, BaseDocumentationCommentOrigin origin)
+        private static string GetTitle(MemberDeclarationSyntax memberDeclaration, DocumentationCommentOrigin origin)
         {
             string s;
 
-            if (origin == BaseDocumentationCommentOrigin.BaseMember)
+            if (origin == DocumentationCommentOrigin.BaseMember)
             {
                 s = "base";
             }
-            else if (origin == BaseDocumentationCommentOrigin.InterfaceMember)
+            else if (origin == DocumentationCommentOrigin.InterfaceMember)
             {
                 s = "interface";
             }
@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
                 s = "base";
             }
 
-            return $"Add comment from {s} {memberDeclaration.GetTitle()}";
+            return $"Add comment from {s} {CSharpFacts.GetTitle(memberDeclaration)}";
         }
 
         public static Task<Document> RefactorAsync(

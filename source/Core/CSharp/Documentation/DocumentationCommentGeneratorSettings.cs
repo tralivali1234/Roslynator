@@ -5,62 +5,64 @@ using System.Collections.Immutable;
 
 namespace Roslynator.CSharp.Documentation
 {
-    public class DocumentationCommentGeneratorSettings
+    internal class DocumentationCommentGeneratorSettings
     {
         public DocumentationCommentGeneratorSettings(
-            IEnumerable<string> comments = null,
-            string indent = null,
+            IEnumerable<string> summary = null,
+            string indentation = null,
             bool singleLineSummary = false,
-            bool generateReturns = true
-            )
+            bool returns = true)
         {
-            Comments = (comments != null) ? ImmutableArray.CreateRange(comments) : ImmutableArray<string>.Empty;
-            Indent = indent ?? "";
+            Summary = (summary != null) ? ImmutableArray.CreateRange(summary) : ImmutableArray<string>.Empty;
+            Indentation = indentation ?? "";
             SingleLineSummary = singleLineSummary;
-            GenerateReturns = generateReturns;
+            Returns = returns;
         }
 
         public static DocumentationCommentGeneratorSettings Default { get; } = new DocumentationCommentGeneratorSettings();
 
-        public ImmutableArray<string> Comments { get; }
-        public string Indent { get; }
-        public bool SingleLineSummary { get; }
-        public bool GenerateReturns { get; }
+        public ImmutableArray<string> Summary { get; }
 
-        public DocumentationCommentGeneratorSettings WithComments(IEnumerable<string> comments)
+        public string Indentation { get; }
+
+        public bool SingleLineSummary { get; }
+
+        public bool Returns { get; }
+
+        public DocumentationCommentGeneratorSettings WithSummary(IEnumerable<string> summary)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: comments,
-                indent: Indent,
+                summary: summary,
+                indentation: Indentation,
                 singleLineSummary: SingleLineSummary,
-                generateReturns: GenerateReturns);
+                returns: Returns);
         }
 
-        public DocumentationCommentGeneratorSettings WithIndent(string indent)
+        public DocumentationCommentGeneratorSettings WithIndentation(string indentation)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
-                indent: indent,
+                summary: Summary,
+                indentation: indentation,
                 singleLineSummary: SingleLineSummary,
-                generateReturns: GenerateReturns);
+                returns: Returns);
         }
 
         public DocumentationCommentGeneratorSettings WithSingleLineSummary(bool singleLineSummary)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
-                indent: Indent,
+                summary: Summary,
+                indentation: Indentation,
                 singleLineSummary: singleLineSummary,
-                generateReturns: GenerateReturns);
+                returns: Returns);
         }
 
-        public DocumentationCommentGeneratorSettings WithGenerateReturns(bool generateReturns)
+        public DocumentationCommentGeneratorSettings WithReturns(bool returns)
         {
             return new DocumentationCommentGeneratorSettings(
-                comments: Comments,
-                indent: Indent,
+                summary: Summary,
+                indentation: Indentation,
                 singleLineSummary: SingleLineSummary,
-                generateReturns: generateReturns);
+                returns: returns);
         }
     }
 }

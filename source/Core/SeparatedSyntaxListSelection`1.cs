@@ -1,75 +1,95 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    /// <summary>
+    /// Represents selected node(s) in a <see cref="SeparatedSyntaxList{TNode}"/>.
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
-        protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int startIndex, int endIndex)
-            : base(list, span, startIndex, endIndex)
+        private SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, SelectionResult result)
+            : this(list, span, result.FirstIndex, result.LastIndex)
         {
         }
 
-        protected static (int startIndex, int endIndex) GetIndexes(SeparatedSyntaxList<TNode> list, TextSpan span)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SeparatedSyntaxListSelection{TNode}"/>.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="firstIndex"></param>
+        /// <param name="lastIndex"></param>
+        protected SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, int firstIndex, int lastIndex)
+            : base(span, firstIndex, lastIndex)
         {
-            SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
-
-            if (en.MoveNext())
-            {
-                int i = 0;
-
-                while (span.Start >= en.Current.FullSpan.End
-                    && en.MoveNext())
-                {
-                    i++;
-                }
-
-                if (span.Start >= en.Current.FullSpan.Start
-                    && span.Start <= en.Current.Span.Start)
-                {
-                    int j = i;
-
-                    while (span.End > GetEndIndex(list, en.Current, j)
-                        && en.MoveNext())
-                    {
-                        j++;
-                    }
-
-                    if (span.End >= en.Current.Span.End
-                        && span.End <= GetEndIndex(list, en.Current, j))
-                    {
-                        return (i, j);
-                    }
-                }
-            }
-
-            return (-1, -1);
+            UnderlyingList = list;
         }
 
-        private static int GetEndIndex(SeparatedSyntaxList<TNode> list, TNode node, int i)
+        /// <summary>
+        /// Gets an underlying list that contains selected nodes.
+        /// </summary>
+        public SeparatedSyntaxList<TNode> UnderlyingList { get; }
+
+        /// <summary>
+        /// Gets an underlying list that contains selected nodes.
+        /// </summary>
+        protected override IReadOnlyList<TNode> Items => UnderlyingList;
+
+        /// <summary>
+        /// Creates a new <see cref="SeparatedSyntaxListSelection{TNode}"/> based on the specified list and span.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
+        public static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span)
         {
-            return (i == list.Count - 1) ? node.FullSpan.End : list.GetSeparator(i).FullSpan.End;
+            SelectionResult result = SelectionResult.Create(list, span);
+
+            if (!result.Success)
+                throw new InvalidOperationException("No selected item(s) found.");
+
+            return new SeparatedSyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="SeparatedSyntaxListSelection{TNode}"/> based on the specified list and span.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="span"></param>
+        /// <param name="selection"></param>
+        /// <returns>True if the specified span contains at least one node; otherwise, false.</returns>
         public static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, out SeparatedSyntaxListSelection<TNode> selection)
         {
-            selection = null;
+            selection = Create(list, span, 1, int.MaxValue);
+            return selection != null;
+        }
 
-            if (!list.Any())
-                return false;
+        internal static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, out SeparatedSyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, int.MaxValue);
+            return selection != null;
+        }
 
-            if (span.IsEmpty)
-                return false;
+        internal static bool TryCreate(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, int maxCount, out SeparatedSyntaxListSelection<TNode> selection)
+        {
+            selection = Create(list, span, minCount, maxCount);
+            return selection != null;
+        }
 
-            (int startIndex, int endIndex) = GetIndexes(list, span);
+        private static SeparatedSyntaxListSelection<TNode> Create(SeparatedSyntaxList<TNode> list, TextSpan span, int minCount, int maxCount)
+        {
+            SelectionResult result = SelectionResult.Create(list, span, minCount, maxCount);
 
-            if (startIndex == -1)
-                return false;
+            if (!result.Success)
+                return null;
 
-            selection = new SeparatedSyntaxListSelection<TNode>(list, span, startIndex, endIndex);
-            return true;
+            return new SeparatedSyntaxListSelection<TNode>(list, span, result);
         }
     }
 }

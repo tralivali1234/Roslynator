@@ -27,7 +27,7 @@ namespace Roslynator.CodeGeneration.CSharp
                             {
                                 return FieldDeclaration(
                                    Modifiers.PublicConst(),
-                                   StringPredefinedType(),
+                                   PredefinedStringType(),
                                    f.Identifier,
                                    StringLiteralExpression(f.Id));
                             })

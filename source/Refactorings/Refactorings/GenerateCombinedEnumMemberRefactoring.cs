@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             INamedTypeSymbol enumSymbol = semanticModel.GetDeclaredSymbol(enumDeclaration, context.CancellationToken);
 
-            if (enumSymbol?.IsEnumWithFlagsAttribute(semanticModel) == true)
+            if (enumSymbol?.IsEnumWithFlags(semanticModel) == true)
             {
                 object[] constantValues = selection
                     .Select(f => semanticModel.GetDeclaredSymbol(f, context.CancellationToken))
@@ -36,13 +36,13 @@ namespace Roslynator.CSharp.Refactorings
                 if (combinedValue != null
                     && !IsValueDefined(enumSymbol, combinedValue))
                 {
-                    string name = NameGenerator.Default.EnsureUniqueEnumMemberName(
+                    string name = NameGenerator.Default.EnsureUniqueMemberName(
                         string.Concat(selection.Select(f => f.Identifier.ValueText)),
                         enumSymbol);
 
-                    EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.SelectedItems);
+                    EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.ToImmutableArray());
 
-                    int insertIndex = selection.EndIndex + 1;
+                    int insertIndex = selection.LastIndex + 1;
 
                     context.RegisterRefactoring(
                         $"Generate enum member '{name}'",

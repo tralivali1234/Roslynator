@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeAccessorDeclaration, SyntaxKind.SetAccessorDeclaration);
         }
 
-        private void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
             var method = (MethodDeclarationSyntax)context.Node;
 
@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var declaration = (OperatorDeclarationSyntax)context.Node;
 
@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeBody(context, declaration.Body);
         }
 
-        private void AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var declaration = (ConversionOperatorDeclarationSyntax)context.Node;
 
@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 AnalyzeBody(context, declaration.Body);
         }
 
-        private void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var declaration = (ConstructorDeclarationSyntax)context.Node;
 
@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeDestructorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeDestructorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var declaration = (DestructorDeclarationSyntax)context.Node;
 
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeLocalFunctionStatement(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeLocalFunctionStatement(SyntaxNodeAnalysisContext context)
         {
             var localFunctionStatement = (LocalFunctionStatementSyntax)context.Node;
 
@@ -119,7 +119,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzeAccessorDeclaration(SyntaxNodeAnalysisContext context)
+        private static void  AnalyzeAccessorDeclaration(SyntaxNodeAnalysisContext context)
         {
             var accessor = (AccessorDeclarationSyntax)context.Node;
 

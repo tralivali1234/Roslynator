@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -36,10 +35,12 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return;
 
-            if (!ExtensionMethodInfo.TryCreate(methodSymbol, semanticModel, out ExtensionMethodInfo extensionMethodInfo))
+            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol);
+
+            if (extensionMethodInfo.Symbol == null)
                 return;
 
-            if (!extensionMethodInfo.MethodInfo.IsLinqSelect(allowImmutableArrayExtension: true))
+            if (!extensionMethodInfo.MethodInfo.IsLinqSelect(semanticModel, allowImmutableArrayExtension: true))
                 return;
 
             ITypeSymbol typeArgument = extensionMethodInfo.ReducedSymbolOrSymbol.TypeArguments[0];
@@ -115,7 +116,7 @@ namespace Roslynator.CSharp.Refactorings
                 GetCastExpression(lambdaExpression.Body).Type);
 
             InvocationExpressionSyntax newInvocationExpression = invocationExpression
-                .RemoveNode(lastArgument, RemoveHelper.GetRemoveOptions(lastArgument))
+                .RemoveNode(lastArgument)
                 .WithExpression(memberAccessExpression.WithName(newName));
 
             return document.ReplaceNodeAsync(invocationExpression, newInvocationExpression, cancellationToken);

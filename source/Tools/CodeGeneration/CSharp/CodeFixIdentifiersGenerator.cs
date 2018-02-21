@@ -28,7 +28,7 @@ namespace Roslynator.CodeGeneration.CSharp
                             {
                                 return FieldDeclaration(
                                    Modifiers.PublicConst(),
-                                   StringPredefinedType(),
+                                   PredefinedStringType(),
                                    f.Identifier,
                                    AddExpression(IdentifierName("Prefix"), StringLiteralExpression(f.Id.Substring(CodeFixIdentifiers.Prefix.Length))));
                             })

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Diagnostics;
@@ -11,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Helpers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 if (typeSymbol.Kind == SymbolKind.TypeParameter)
                                     continue;
 
-                                string typeName = SymbolDisplay.GetMinimalString(typeSymbol, semanticModel, identifierName.SpanStart);
+                                string typeName = SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, identifierName.SpanStart, SymbolDisplayFormats.Default);
 
                                 CodeAction codeAction = CodeAction.Create(
                                     $"Add variable type '{typeName}'",
@@ -117,7 +117,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                 var variableDeclaration = (VariableDeclarationSyntax)variableDeclarator.Parent;
 
-                ExpressionSyntax value = localSymbol.Type.ToDefaultValueSyntax(variableDeclaration.Type.WithoutTrivia());
+                ExpressionSyntax value = localSymbol.Type.GetDefaultValueSyntax(variableDeclaration.Type.WithoutTrivia());
 
                 EqualsValueClauseSyntax newEqualsValue = EqualsValueClause(value)
                     .WithLeadingTrivia(TriviaList(Space))

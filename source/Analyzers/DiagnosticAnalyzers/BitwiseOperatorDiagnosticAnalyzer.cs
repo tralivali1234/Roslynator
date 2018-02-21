@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 SyntaxKind.BitwiseNotExpression);
         }
 
-        private void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
         }
 
-        private void AnalyzePrefixUnaryExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzePrefixUnaryExpression(SyntaxNodeAnalysisContext context)
         {
             var prefixUnaryExpression = (PrefixUnaryExpressionSyntax)context.Node;
 

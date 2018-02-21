@@ -620,3 +620,4 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         }
     }
 }
+

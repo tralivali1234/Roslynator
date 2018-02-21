@@ -19,7 +19,10 @@ namespace Roslynator.CSharp.Refactorings
             if (arrowExpressionClause == null)
                 throw new ArgumentNullException(nameof(arrowExpressionClause));
 
-            return arrowExpressionClause.Parent?.Kind().SupportsExpressionBody() == true;
+            SyntaxNode parent = arrowExpressionClause.Parent;
+
+            return parent != null
+                && CSharpFacts.CanHaveExpressionBody(parent.Kind());
         }
 
         public static async Task<Document> RefactorAsync(
@@ -220,7 +223,7 @@ namespace Roslynator.CSharp.Refactorings
             if (expression.IsSingleLine())
             {
                 accessorList = accessorList
-                    .RemoveWhitespaceOrEndOfLineTrivia()
+                    .RemoveWhitespace()
                     .WithCloseBraceToken(accessorList.CloseBraceToken.WithLeadingTrivia(NewLine()));
             }
 

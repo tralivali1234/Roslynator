@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 {
-    internal struct AssignedInfo
+    internal readonly struct AssignedInfo
     {
         public AssignedInfo(IdentifierNameSyntax name, bool isInInstanceConstructor = false, bool isInStaticConstructor = false)
         {

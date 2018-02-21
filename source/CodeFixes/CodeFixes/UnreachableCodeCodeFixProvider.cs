@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CodeFixes;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -71,7 +72,7 @@ namespace Roslynator.CSharp.CodeFixes
                                         }
                                         else
                                         {
-                                            SyntaxRemoveOptions removeOptions = RemoveHelper.DefaultRemoveOptions;
+                                            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultOptions;
 
                                             if (statement.GetLeadingTrivia().IsEmptyOrWhitespace())
                                                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
@@ -160,7 +161,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                         return CodeAction.Create(
                             Title,
-                            cancellationToken => document.RemoveNodeAsync(elseClause, RemoveHelper.GetRemoveOptions(elseClause), cancellationToken),
+                            cancellationToken => document.RemoveNodeAsync(elseClause, cancellationToken),
                             GetEquivalenceKey(diagnostic));
                     }
                 case SyntaxKind.Block:

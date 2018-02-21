@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
@@ -9,42 +8,37 @@ namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class TriviaRemover : CSharpSyntaxRewriter
     {
-        private static readonly TriviaRemover _defaultInstance = new TriviaRemover();
-
-        private readonly TextSpan? _span;
-
         private TriviaRemover(TextSpan? span = null)
         {
-            _span = span;
+            Span = span;
         }
 
-        public static TNode RemoveTrivia<TNode>(TNode node, TextSpan? span = null) where TNode : SyntaxNode
-        {
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
+        private static TriviaRemover Default { get; } = new TriviaRemover();
 
-            if (span == null)
+        public TextSpan? Span { get; }
+
+        public static SyntaxTrivia Replacement { get; } = CSharpFactory.EmptyWhitespace();
+
+        public static TriviaRemover GetInstance(TextSpan? span = null)
+        {
+            if (span != null)
             {
-                return (TNode)_defaultInstance.Visit(node);
+                return new TriviaRemover(span);
             }
             else
             {
-                var remover = new TriviaRemover(span);
-
-                return (TNode)remover.Visit(node);
+                return Default;
             }
         }
 
         public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
         {
-            if (_span == null || _span.Value.Contains(trivia.Span))
+            if (Span == null || Span.Value.Contains(trivia.Span))
             {
-                return CSharpFactory.EmptyWhitespace();
+                return Replacement;
             }
-            else
-            {
-                return base.VisitTrivia(trivia);
-            }
+
+            return base.VisitTrivia(trivia);
         }
     }
 }

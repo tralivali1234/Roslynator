@@ -208,15 +208,15 @@ namespace Roslynator.CSharp.Refactorings
 
                 var binaryExpression = ifStatement.Condition as BinaryExpressionSyntax;
 
-                if (binaryExpression?.Right?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                if (binaryExpression?.Right?.Kind() == SyntaxKind.NullLiteralExpression)
                 {
                     ExpressionSyntax left = binaryExpression.Left;
 
                     if (left.IsKind(SyntaxKind.IdentifierName))
                     {
-                        var throwStatement = ifStatement.GetSingleStatementOrDefault() as ThrowStatementSyntax;
+                        var throwStatement = ifStatement.SingleNonBlockStatementOrDefault() as ThrowStatementSyntax;
 
-                        if (throwStatement?.Expression?.IsKind(SyntaxKind.ObjectCreationExpression) == true)
+                        if (throwStatement?.Expression?.Kind() == SyntaxKind.ObjectCreationExpression)
                         {
                             var objectCreation = (ObjectCreationExpressionSyntax)throwStatement.Expression;
 
@@ -237,7 +237,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxNode parent = parameter.Parent;
 
-            if (parent?.IsKind(SyntaxKind.ParameterList) == true)
+            if (parent?.Kind() == SyntaxKind.ParameterList)
             {
                 parent = parent.Parent;
 

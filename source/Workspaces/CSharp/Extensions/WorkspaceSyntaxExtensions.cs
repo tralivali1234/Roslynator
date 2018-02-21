@@ -12,21 +12,33 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp
 {
+    /// <summary>
+    /// A set of extension methods for syntax. These methods depends on the workspace layer.
+    /// </summary>
     public static class WorkspaceSyntaxExtensions
     {
         private const string NavigationAnnotationKind = "CodeAction_Navigation";
 
-        public static SyntaxAnnotation NavigationAnnotation { get; } = new SyntaxAnnotation(NavigationAnnotationKind);
+        internal static SyntaxAnnotation NavigationAnnotation { get; } = new SyntaxAnnotation(NavigationAnnotationKind);
 
         private static readonly SyntaxAnnotation[] _formatterAnnotationArray = new SyntaxAnnotation[] { Formatter.Annotation };
 
         private static readonly SyntaxAnnotation[] _simplifierAnnotationArray = new SyntaxAnnotation[] { Simplifier.Annotation };
+
+        private static readonly SyntaxAnnotation[] _renameAnnotationArray = new SyntaxAnnotation[] { RenameAnnotation.Create() };
 
         private static readonly SyntaxAnnotation[] _navigationAnnotationArray = new SyntaxAnnotation[] { NavigationAnnotation };
 
         private static readonly SyntaxAnnotation[] _formatterAndSimplifierAnnotationArray = new SyntaxAnnotation[] { Formatter.Annotation, Simplifier.Annotation };
 
         #region ExpressionSyntax
+        /// <summary>
+        /// Creates parenthesized expression that is parenthesizing the specified expression.
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includeElasticTrivia">If true, add elastic trivia.</param>
+        /// <param name="simplifiable">If true, attach <see cref="Simplifier.Annotation"/> to the parenthesized expression.</param>
+        /// <returns></returns>
         public static ParenthesizedExpressionSyntax Parenthesize(
             this ExpressionSyntax expression,
             bool includeElasticTrivia = true,
@@ -62,13 +74,19 @@ namespace Roslynator.CSharp
         #endregion ExpressionSyntax
 
         #region SimpleNameSyntax
-        public static MemberAccessExpressionSyntax QualifyWithThis(this SimpleNameSyntax simpleName, bool simplifiable = true)
+        internal static MemberAccessExpressionSyntax QualifyWithThis(this SimpleNameSyntax simpleName, bool simplifiable = true)
         {
             return SimpleMemberAccessExpression(ThisExpression(), simpleName).WithSimplifierAnnotationIf(simplifiable);
         }
         #endregion SimpleNameSyntax
 
         #region SyntaxNode
+        /// <summary>
+        /// Creates a new node with the <see cref="Formatter.Annotation"/> attached.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static TNode WithFormatterAnnotation<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -77,6 +95,12 @@ namespace Roslynator.CSharp
             return node.WithAdditionalAnnotations(_formatterAnnotationArray);
         }
 
+        /// <summary>
+        /// Creates a new node with the <see cref="Simplifier.Annotation"/> attached.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="node"></param>
+        /// <returns></returns>
         public static TNode WithSimplifierAnnotation<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
@@ -103,7 +127,7 @@ namespace Roslynator.CSharp
             return (condition) ? node.WithAdditionalAnnotations(_simplifierAnnotationArray) : node;
         }
 
-        internal static TNode WithFormatterAndSimplifierAnnotations<TNode>(this TNode node) where TNode : SyntaxNode
+        internal static TNode WithFormatterAndSimplifierAnnotation<TNode>(this TNode node) where TNode : SyntaxNode
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -113,29 +137,46 @@ namespace Roslynator.CSharp
         #endregion SyntaxNode
 
         #region SyntaxToken
+        /// <summary>
+        /// Adds <see cref="Formatter.Annotation"/> to the specified token, creating a new token of the same type with the <see cref="Formatter.Annotation"/> on it.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken WithFormatterAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_formatterAnnotationArray);
         }
 
+        /// <summary>
+        /// Adds <see cref="Simplifier.Annotation"/> to the specified token, creating a new token of the same type with the <see cref="Simplifier.Annotation"/> on it.
+        /// "Rename" annotation is specified by <see cref="RenameAnnotation.Kind"/>.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken WithSimplifierAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_simplifierAnnotationArray);
         }
 
-        public static SyntaxToken WithNavigationAnnotation(this SyntaxToken token)
+        internal static SyntaxToken WithNavigationAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_navigationAnnotationArray);
         }
 
-        internal static SyntaxToken WithFormatterAndSimplifierAnnotations(this SyntaxToken token)
+        internal static SyntaxToken WithFormatterAndSimplifierAnnotation(this SyntaxToken token)
         {
             return token.WithAdditionalAnnotations(_formatterAndSimplifierAnnotationArray);
         }
 
+        /// <summary>
+        /// Adds "rename" annotation to the specified token, creating a new token of the same type with the "rename" annotation on it.
+        /// "Rename" annotation is specified by <see cref="RenameAnnotation.Kind"/>.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static SyntaxToken WithRenameAnnotation(this SyntaxToken token)
         {
-            return token.WithAdditionalAnnotations(RenameAnnotation.Create());
+            return token.WithAdditionalAnnotations(_renameAnnotationArray);
         }
         #endregion SyntaxToken
     }

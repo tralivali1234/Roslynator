@@ -25,30 +25,32 @@ namespace Roslynator.CSharp.Refactorings
             string fromMethodName,
             string toMethodName)
         {
-            if (semanticModel.TryGetExtensionMethodInfo(invocation, out MethodInfo methodInfo, ExtensionMethodKind.None, context.CancellationToken)
-                && methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(fromMethodName))
-            {
-                ExpressionSyntax expression = GetExpression(invocation);
+            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, context.CancellationToken);
 
-                if (expression != null)
+            if (methodInfo.Symbol == null)
+                return false;
+
+            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, fromMethodName))
+                return false;
+
+            ExpressionSyntax expression = GetExpression(invocation);
+
+            if (expression == null)
+                return false;
+
+            context.RegisterRefactoring(
+                $"Replace '{fromMethodName}' with '{toMethodName}'",
+                cancellationToken =>
                 {
-                    context.RegisterRefactoring(
-                        $"Replace '{fromMethodName}' with '{toMethodName}'",
-                        cancellationToken =>
-                        {
-                            return RefactorAsync(
-                                context.Document,
-                                invocation,
-                                toMethodName,
-                                expression,
-                                cancellationToken);
-                        });
+                    return RefactorAsync(
+                        context.Document,
+                        invocation,
+                        toMethodName,
+                        expression,
+                        cancellationToken);
+                });
 
-                    return true;
-                }
-            }
-
-            return false;
+            return true;
         }
 
         private static ExpressionSyntax GetExpression(InvocationExpressionSyntax invocation)
@@ -86,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             InvocationExpressionSyntax newNode = invocationExpression
-                .ReplaceNode(expression, LogicalNegationHelper.LogicallyNegate(expression, semanticModel, cancellationToken))
+                .ReplaceNode(expression, Negation.LogicallyNegate(expression, semanticModel, cancellationToken))
                 .WithExpression(newMemberAccessExpression);
 
             return await document.ReplaceNodeAsync(invocationExpression, newNode, cancellationToken).ConfigureAwait(false);

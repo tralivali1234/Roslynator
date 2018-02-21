@@ -17,7 +17,14 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ExpressionSyntax expression)
         {
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(expression.Parent.Parent);
+            expression = expression.WalkUpParentheses();
+
+            var assignmentExpression = expression.Parent as AssignmentExpressionSyntax;
+
+            if (expression != assignmentExpression?.Left)
+                return;
+
+            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(assignmentExpression);
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
@@ -36,9 +43,6 @@ namespace Roslynator.CSharp.Refactorings
             if (!assignmentInfo.Success)
                 return false;
 
-            if (assignmentInfo.Left != expression)
-                return false;
-
             if (assignmentInfo.Right.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression))
                 return false;
 
@@ -53,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            return typeSymbol.IsReferenceTypeOrNullableType();
+            return typeSymbol.IsReferenceOrNullableType();
         }
 
         internal static async Task ComputeRefactoringAsync(RefactoringContext context, VariableDeclarationSyntax variableDeclaration)
@@ -94,7 +98,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            return typeSymbol.IsReferenceTypeOrNullableType();
+            return typeSymbol.IsReferenceOrNullableType();
         }
 
         internal static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
@@ -192,7 +196,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(nextStatement is IfStatementSyntax ifStatement))
                 return false;
 
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, NullCheckKind.NotEqualsToNull);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
 
             if (!nullCheck.Success)
                 return false;
