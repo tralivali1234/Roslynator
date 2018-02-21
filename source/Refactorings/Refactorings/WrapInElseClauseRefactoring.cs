@@ -34,16 +34,18 @@ namespace Roslynator.CSharp.Refactorings
 
                         IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
 
-                        if (ifStatementInfo.EndsWithIf
-                            && ifStatementInfo
-                                .Nodes
-                                .Where(f => f.IsIf)
-                                .All(f => IsLastStatementReturnStatement(f)))
+                        foreach (IfStatementOrElseClause ifOrElse in ifStatementInfo)
                         {
-                            context.RegisterRefactoring(
-                                "Wrap in else clause",
-                                cancellationToken => RefactorAsync(context.Document, ifStatement, selectedStatements, cancellationToken));
+                            if (ifOrElse.IsElse)
+                                return;
+
+                            if (!IsLastStatementReturnStatement(ifOrElse))
+                                return;
                         }
+
+                        context.RegisterRefactoring(
+                            "Wrap in else clause",
+                            cancellationToken => RefactorAsync(context.Document, ifStatementInfo, selectedStatements, cancellationToken));
                     }
                 }
             }
@@ -79,16 +81,15 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            IfStatementSyntax ifStatement,
+            IfStatementInfo ifStatementInfo,
             StatementsSelection selectedStatements,
             CancellationToken cancellationToken)
         {
-            IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
-
             StatementSyntax newStatement = null;
 
+            //TODO: 
             if (selectedStatements.Count == 1
-                && !ifStatementInfo.Nodes.Any(f => f.Statement?.Kind() == SyntaxKind.Block))
+                && !ifStatementInfo.Any(f => f.Statement?.Kind() == SyntaxKind.Block))
             {
                 newStatement = selectedStatements.First();
             }
@@ -99,7 +100,9 @@ namespace Roslynator.CSharp.Refactorings
 
             ElseClauseSyntax elseClause = SyntaxFactory.ElseClause(newStatement).WithFormatterAnnotation();
 
-            IfStatementSyntax lastIfStatement = ifStatementInfo.Nodes.Last();
+            IfStatementSyntax lastIfStatement = ifStatementInfo.Last();
+
+            IfStatementSyntax ifStatement = ifStatementInfo.IfStatement;
 
             IfStatementSyntax newIfStatement = ifStatement.ReplaceNode(
                 lastIfStatement,

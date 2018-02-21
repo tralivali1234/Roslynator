@@ -105,7 +105,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -237,7 +237,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Constraint?.ToString() ?? base.ToString();
+            return Constraint?.ToString() ?? "";
         }
 
         /// <summary>
@@ -269,23 +269,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(TypeParameterConstraintInfo info1, TypeParameterConstraintInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(TypeParameterConstraintInfo info1, TypeParameterConstraintInfo info2)
         {
             return !(info1 == info2);

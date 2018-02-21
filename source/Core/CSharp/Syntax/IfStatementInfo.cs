@@ -1,120 +1,33 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// Provides information about <see cref="IfStatementSyntax"/>.
+    /// Provides information about if statement.
     /// </summary>
-    public readonly struct IfStatementInfo : IEquatable<IfStatementInfo>
+    public readonly struct IfStatementInfo : IEquatable<IfStatementInfo>, IEnumerable<IfStatementOrElseClause>
     {
-        private readonly ImmutableArray<IfStatementOrElseClause> _nodes;
-
         private IfStatementInfo(IfStatementSyntax ifStatement)
         {
-            _nodes = GetCascade(ifStatement);
-        }
-
-        private static ImmutableArray<IfStatementOrElseClause> GetCascade(IfStatementSyntax ifStatement)
-        {
-            ElseClauseSyntax elseClause = ifStatement.Else;
-
-            if (elseClause == null)
-                return ImmutableArray.Create<IfStatementOrElseClause>(ifStatement);
-
-            ImmutableArray<IfStatementOrElseClause>.Builder builder = ImmutableArray.CreateBuilder<IfStatementOrElseClause>();
-
-            builder.Add(ifStatement);
-
-            while (true)
-            {
-                StatementSyntax statement = elseClause.Statement;
-
-                if (statement?.Kind() == SyntaxKind.IfStatement)
-                {
-                    ifStatement = (IfStatementSyntax)statement;
-
-                    builder.Add(ifStatement);
-
-                    elseClause = ifStatement.Else;
-
-                    if (elseClause == null)
-                        return builder.ToImmutableArray();
-                }
-                else
-                {
-                    builder.Add(elseClause);
-                    return builder.ToImmutableArray();
-                }
-            }
+            IfStatement = ifStatement;
         }
 
         /// <summary>
-        /// 
+        /// The if statement.
         /// </summary>
-        public ImmutableArray<IfStatementOrElseClause> Nodes
-        {
-            get { return (!_nodes.IsDefault) ? _nodes : ImmutableArray<IfStatementOrElseClause>.Empty; }
-        }
+        public IfStatementSyntax IfStatement { get; }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
-            get { return Nodes.Any(); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IfStatementSyntax TopmostIf
-        {
-            get { return Nodes.FirstOrDefault().AsIf(); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool EndsWithIf
-        {
-            get { return Nodes.LastOrDefault().IsIf; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool EndsWithElse
-        {
-            get { return Nodes.LastOrDefault().IsElse; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsSimpleIf
-        {
-            get { return Nodes.Length == 1; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsSimpleIfElse
-        {
-            get
-            {
-                return Nodes.Length == 2
-                    && Nodes[0].IsIf
-                    && Nodes[1].IsElse;
-            }
+            get { return IfStatement != null; }
         }
 
         internal static IfStatementInfo Create(IfStatementSyntax ifStatement)
@@ -126,12 +39,37 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
+        /// Gets the enumerator for the if-else cascade.
+        /// </summary>
+        /// <returns></returns>
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(IfStatement);
+        }
+
+        IEnumerator<IfStatementOrElseClause> IEnumerable<IfStatementOrElseClause>.GetEnumerator()
+        {
+            if (IfStatement != null)
+                return new EnumeratorImpl(IfStatement);
+
+            return Empty.Enumerator<IfStatementOrElseClause>.Instance;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            if (IfStatement != null)
+                return new EnumeratorImpl(IfStatement);
+
+            return Empty.Enumerator<IfStatementOrElseClause>.Instance;
+        }
+
+        /// <summary>
         /// Returns the string representation of the underlying syntax, not including its leading and trailing trivia.
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return Nodes.FirstOrDefault().Node?.ToString() ?? base.ToString();
+            return IfStatement?.ToString() ?? "";
         }
 
         /// <summary>
@@ -151,7 +89,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(IfStatementInfo other)
         {
-            return EqualityComparer<IfStatementSyntax>.Default.Equals(TopmostIf, other.TopmostIf);
+            return EqualityComparer<IfStatementSyntax>.Default.Equals(IfStatement, other.IfStatement);
         }
 
         /// <summary>
@@ -160,29 +98,140 @@ namespace Roslynator.CSharp.Syntax
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
-            return EqualityComparer<IfStatementSyntax>.Default.GetHashCode(TopmostIf);
+            return EqualityComparer<IfStatementSyntax>.Default.GetHashCode(IfStatement);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(IfStatementInfo info1, IfStatementInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(IfStatementInfo info1, IfStatementInfo info2)
         {
             return !(info1 == info2);
+        }
+
+        public struct Enumerator
+        {
+            private IfStatementOrElseClause _ifOrElse;
+            private int _count;
+
+            internal Enumerator(IfStatementSyntax ifStatement)
+            {
+                _ifOrElse = ifStatement;
+                _count = -1;
+            }
+
+            public bool MoveNext()
+            {
+                if (_count == -1)
+                {
+                    if (_ifOrElse != default(IfStatementOrElseClause))
+                    {
+                        _count++;
+                        return true;
+                    }
+                }
+                else if (_ifOrElse.IsIf)
+                {
+                    ElseClauseSyntax elseClause = _ifOrElse.AsIf().Else;
+
+                    if (elseClause != null)
+                    {
+                        if (elseClause.Statement is IfStatementSyntax nextIf)
+                        {
+                            _ifOrElse = nextIf;
+                        }
+                        else
+                        {
+                            _ifOrElse = elseClause;
+                        }
+
+                        _count++;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            public IfStatementOrElseClause Current
+            {
+                get { return (_count >= 0) ? _ifOrElse : throw new InvalidOperationException(); }
+            }
+
+            public void Reset()
+            {
+                int count = _count;
+
+                if (count >= 0)
+                {
+                    IfStatementSyntax ifStatement = null;
+
+                    if (_ifOrElse.IsElse)
+                    {
+                        ifStatement = (IfStatementSyntax)_ifOrElse.Parent;
+                    }
+                    else
+                    {
+                        ifStatement = _ifOrElse.AsIf();
+                    }
+
+                    count--;
+
+                    while (count >= 0)
+                    {
+                        ifStatement = (IfStatementSyntax)ifStatement.Parent.Parent;
+                        count--;
+                    }
+
+                    _ifOrElse = ifStatement;
+                }
+            }
+
+            public override bool Equals(object obj)
+            {
+                throw new NotSupportedException();
+            }
+
+            public override int GetHashCode()
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        private class EnumeratorImpl : IEnumerator<IfStatementOrElseClause>
+        {
+            private Enumerator _e;
+
+            internal EnumeratorImpl(IfStatementSyntax ifStatement)
+            {
+                _e = new Enumerator(ifStatement);
+            }
+
+            public IfStatementOrElseClause Current
+            {
+                get { return _e.Current; }
+            }
+
+            object IEnumerator.Current
+            {
+                get { return _e.Current; }
+            }
+
+            public bool MoveNext()
+            {
+                return _e.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _e.Reset();
+            }
+
+            public void Dispose()
+            {
+            }
         }
     }
 }

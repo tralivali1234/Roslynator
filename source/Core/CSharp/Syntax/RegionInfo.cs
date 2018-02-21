@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Syntax
         public EndRegionDirectiveTriviaSyntax EndDirective { get; }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -164,7 +164,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Directive?.ToString() ?? base.ToString();
+            return Directive?.ToString() ?? "";
         }
 
         /// <summary>

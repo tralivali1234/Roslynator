@@ -108,20 +108,15 @@ namespace Roslynator.CSharp
         #endregion AccessorListSyntax
 
         #region BlockSyntax
-        internal static StatementSyntax SingleNonBlockStatementOrDefault(this BlockSyntax body, bool recursive = true)
+        internal static StatementSyntax SingleNonBlockStatementOrDefault(this BlockSyntax body, bool recursive = false)
         {
-            if (body == null)
-                throw new ArgumentNullException(nameof(body));
-
             if (recursive)
             {
                 StatementSyntax statement = null;
 
                 do
                 {
-                    SyntaxList<StatementSyntax> statements = body.Statements;
-
-                    statement = (statements.Count == 1) ? statements[0] : null;
+                    statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
                     body = statement as BlockSyntax;
                 }
@@ -131,14 +126,12 @@ namespace Roslynator.CSharp
             }
             else
             {
-                SyntaxList<StatementSyntax> statements = body.Statements;
+                StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                if (statements.Count == 1)
+                if (statement != null
+                    && statement.Kind() != SyntaxKind.Block)
                 {
-                    StatementSyntax statement = statements[0];
-
-                    if (statement.Kind() != SyntaxKind.Block)
-                        return statement;
+                    return statement;
                 }
 
                 return null;
@@ -215,7 +208,7 @@ namespace Roslynator.CSharp
 
         #region ClassDeclarationSyntax
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ClassDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="member"></param>
@@ -231,7 +224,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="ClassDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <param name="members"></param>
@@ -308,7 +301,7 @@ namespace Roslynator.CSharp
 
         #region CompilationUnitSyntax
         /// <summary>
-        /// 
+        /// Creates a new <see cref="CompilationUnitSyntax"/> with the members updated.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <param name="member"></param>
@@ -324,7 +317,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="CompilationUnitSyntax"/> with the members updated.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <param name="members"></param>
@@ -558,9 +551,9 @@ namespace Roslynator.CSharp
         #endregion DocumentationCommentTriviaSyntax
 
         #region ElseClauseSyntax
-        internal static StatementSyntax SingleStatementOrDefault(this ElseClauseSyntax elseClause)
+        internal static StatementSyntax SingleNonBlockStatementOrDefault(this ElseClauseSyntax elseClause)
         {
-            return SingleStatementOrDefault(elseClause.Statement);
+            return SingleNonBlockStatementOrDefault(elseClause.Statement);
         }
 
         /// <summary>
@@ -647,7 +640,7 @@ namespace Roslynator.CSharp
 
         #region EnumDeclarationSyntax
         /// <summary>
-        /// 
+        /// The absolute span of the braces, not including its leading and trailing trivia.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
@@ -676,7 +669,7 @@ namespace Roslynator.CSharp
 
         #region ExpressionSyntax
         /// <summary>
-        /// 
+        /// Returns topmost parenthesized expression or self if the expression if not parenthesized.
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
@@ -692,7 +685,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns lowest expression in parentheses or self if the expression is not parenthesized.
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
@@ -753,10 +746,9 @@ namespace Roslynator.CSharp
         #endregion ForStatementSyntax
 
         #region IfStatementSyntax
-        //TODO: SingleNonBlockStatementOrDefault(bool shouldThrow)
-        internal static StatementSyntax SingleStatementOrDefault(this IfStatementSyntax ifStatement)
+        internal static StatementSyntax SingleNonBlockStatementOrDefault(this IfStatementSyntax ifStatement)
         {
-            return SingleStatementOrDefault(ifStatement.Statement);
+            return SingleNonBlockStatementOrDefault(ifStatement.Statement);
         }
 
         /// <summary>
@@ -787,45 +779,6 @@ namespace Roslynator.CSharp
 
             return !ifStatement.IsParentKind(SyntaxKind.ElseClause)
                 && ifStatement.Else?.Statement?.IsKind(SyntaxKind.IfStatement) == false;
-        }
-
-        /// <summary>
-        /// Gets a list of if-else cascade elements beginning with this if statement.
-        /// If-else cascade contains one or more if statements and optional else clause at the end if the cascade does not end with if statement.
-        /// </summary>
-        /// <param name="ifStatement"></param>
-        /// <returns></returns>
-        public static IEnumerable<IfStatementOrElseClause> GetCascade(this IfStatementSyntax ifStatement)
-        {
-            if (ifStatement == null)
-                throw new ArgumentNullException(nameof(ifStatement));
-
-            yield return ifStatement;
-
-            while (true)
-            {
-                ElseClauseSyntax elseClause = ifStatement.Else;
-
-                if (elseClause != null)
-                {
-                    StatementSyntax statement = elseClause.Statement;
-
-                    if (statement?.Kind() == SyntaxKind.IfStatement)
-                    {
-                        ifStatement = (IfStatementSyntax)statement;
-                        yield return ifStatement;
-                    }
-                    else
-                    {
-                        yield return elseClause;
-                        yield break;
-                    }
-                }
-                else
-                {
-                    yield break;
-                }
-            }
         }
 
         /// <summary>
@@ -973,7 +926,7 @@ namespace Roslynator.CSharp
 
         #region InterfaceDeclarationSyntax
         /// <summary>
-        /// 
+        /// The absolute span of the braces, not including it leading and trailing trivia.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
@@ -1017,7 +970,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="InterfaceDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1033,7 +986,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="InterfaceDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <param name="members"></param>
@@ -1466,7 +1419,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="NamespaceDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="member"></param>
@@ -1482,7 +1435,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="NamespaceDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <param name="members"></param>
@@ -1498,7 +1451,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// The absolute span of the braces, not including leading and trailing trivia.
         /// </summary>
         /// <param name="namespaceDeclaration"></param>
         /// <returns></returns>
@@ -1757,18 +1710,6 @@ namespace Roslynator.CSharp
         #endregion SeparatedSyntaxList<T>
 
         #region StatementSyntax
-        private static StatementSyntax SingleStatementOrDefault(StatementSyntax statement)
-        {
-            if (statement?.Kind() == SyntaxKind.Block)
-            {
-                return ((BlockSyntax)statement).Statements.SingleOrDefault(shouldThrow: false);
-            }
-            else
-            {
-                return statement;
-            }
-        }
-
         /// <summary>
         /// Gets the previous statement of the specified statement.
         /// If the specified statement is not contained in the list, or if there is no previous statement, then this method returns null.
@@ -1845,11 +1786,8 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static StatementSyntax SingleNonBlockStatementOrDefault(this StatementSyntax statement, bool recursive = true)
+        private static StatementSyntax SingleNonBlockStatementOrDefault(this StatementSyntax statement, bool recursive = false)
         {
-            if (statement == null)
-                throw new ArgumentNullException(nameof(statement));
-
             return (statement.Kind() == SyntaxKind.Block)
                 ? SingleNonBlockStatementOrDefault((BlockSyntax)statement, recursive)
                 : statement;
@@ -1894,7 +1832,7 @@ namespace Roslynator.CSharp
 
         #region StructDeclarationSyntax
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StructDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="member"></param>
@@ -1910,7 +1848,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="StructDeclarationSyntax"/> with the members updated.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <param name="members"></param>
@@ -1926,7 +1864,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// The absolute span of the braces, not including its leading and trailing trivia.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
@@ -3727,15 +3665,26 @@ namespace Roslynator.CSharp
         }
         #endregion XmlNameSyntax
 
-        //TODO: 
+        #region YieldStatementSyntax
+        /// <summary>
+        /// Returns true if the specified statement is a yield break statement.
+        /// </summary>
+        /// <param name="yieldStatement"></param>
+        /// <returns></returns>
         public static bool IsYieldBreak(this YieldStatementSyntax yieldStatement)
         {
             return yieldStatement.IsKind(SyntaxKind.YieldBreakStatement);
         }
 
+        /// <summary>
+        /// Returns true if the specified statement is a yield return statement.
+        /// </summary>
+        /// <param name="yieldStatement"></param>
+        /// <returns></returns>
         public static bool IsYieldReturn(this YieldStatementSyntax yieldStatement)
         {
             return yieldStatement.IsKind(SyntaxKind.YieldReturnStatement);
         }
+        #endregion YieldStatementSyntax
     }
 }

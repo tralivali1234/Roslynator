@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -12,7 +13,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using System.Collections.Immutable;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -25,37 +25,50 @@ namespace Roslynator.CSharp.Refactorings
 
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (!ifStatement.IsSimpleIf())
+            if (ifStatement.IsSimpleIf())
+                return;
+
+            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
+            if (!statementsInfo.Success)
+                return;
+
+            int index = statementsInfo.IndexOf(ifStatement);
+
+            ReturnStatementSyntax returnStatement = FindReturnStatementBelow(statementsInfo.Statements, index);
+
+            if (returnStatement == null)
+                return;
+
+            if (returnStatement.ContainsDiagnostics)
+                return;
+
+            ExpressionSyntax expression = returnStatement.Expression;
+
+            if (expression == null)
+                return;
+
+            if (ifStatement.SpanOrTrailingTriviaContainsDirectives())
+                return;
+
+            if (returnStatement.SpanOrLeadingTriviaContainsDirectives())
+                return;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
+
+            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken))
+                return;
+
+            //XTODO: test
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
-                StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
-                if (statementsInfo.Success)
-                {
-                    int index = statementsInfo.Statements.IndexOf(ifStatement);
-
-                    ReturnStatementSyntax returnStatement = FindReturnStatementBelow(statementsInfo.Statements, index);
-                    if (returnStatement?.ContainsDiagnostics == false)
-                    {
-                        ExpressionSyntax expression = returnStatement.Expression;
-                        if (expression != null
-                            && !ifStatement.SpanOrTrailingTriviaContainsDirectives()
-                            && !returnStatement.SpanOrLeadingTriviaContainsDirectives())
-                        {
-                            SemanticModel semanticModel = context.SemanticModel;
-                            CancellationToken cancellationToken = context.CancellationToken;
-
-                            ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-                            if (IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken)
-                                && ifStatement
-                                    .GetCascade()
-                                    .All(ifOrElse => IsSymbolAssignedInLastStatement(ifOrElse, symbol, semanticModel, cancellationToken)))
-                            {
-                                context.ReportDiagnostic(DiagnosticDescriptors.UseReturnInsteadOfAssignment, ifStatement);
-                            }
-                        }
-                    }
-                }
+                if (!IsSymbolAssignedInLastStatement(ifOrElse, symbol, semanticModel, cancellationToken))
+                    return;
             }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseReturnInsteadOfAssignment, ifStatement);
         }
 
         public static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context)
@@ -66,33 +79,47 @@ namespace Roslynator.CSharp.Refactorings
             var switchStatement = (SwitchStatementSyntax)context.Node;
 
             StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(switchStatement);
-            if (statementsInfo.Success)
+
+            if (!statementsInfo.Success)
+                return;
+
+            int index = statementsInfo.IndexOf(switchStatement);
+
+            ReturnStatementSyntax returnStatement = FindReturnStatementBelow(statementsInfo.Statements, index);
+
+            if (returnStatement == null)
+                return;
+
+            ExpressionSyntax expression = returnStatement.Expression;
+
+            if (expression == null)
+                return;
+
+            if (expression.ContainsDiagnostics)
+                return;
+
+            if (switchStatement.SpanOrTrailingTriviaContainsDirectives())
+                return;
+
+            if (returnStatement.SpanOrLeadingTriviaContainsDirectives())
+                return;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
+
+            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken))
+                return;
+
+            if (!switchStatement
+                .Sections
+                .All(section => IsValueAssignedInLastStatement(section, symbol, semanticModel, cancellationToken)))
             {
-                int index = statementsInfo.Statements.IndexOf(switchStatement);
-
-                ReturnStatementSyntax returnStatement = FindReturnStatementBelow(statementsInfo.Statements, index);
-                if (returnStatement != null)
-                {
-                    ExpressionSyntax expression = returnStatement.Expression;
-                    if (expression?.ContainsDiagnostics == false
-                        && !switchStatement.SpanOrTrailingTriviaContainsDirectives()
-                        && !returnStatement.SpanOrLeadingTriviaContainsDirectives())
-                    {
-                        SemanticModel semanticModel = context.SemanticModel;
-                        CancellationToken cancellationToken = context.CancellationToken;
-
-                        ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-                        if (IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken)
-                            && switchStatement
-                                .Sections
-                                .All(section => IsValueAssignedInLastStatement(section, symbol, semanticModel, cancellationToken)))
-                        {
-                            context.ReportDiagnostic(DiagnosticDescriptors.UseReturnInsteadOfAssignment, switchStatement);
-                        }
-                    }
-                }
+                return;
             }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseReturnInsteadOfAssignment, switchStatement);
         }
 
         private static ReturnStatementSyntax FindReturnStatementBelow(SyntaxList<StatementSyntax> statements, int i)
@@ -244,7 +271,7 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
 
-            int index = statementsInfo.Statements.IndexOf(statement);
+            int index = statementsInfo.IndexOf(statement);
 
             switch (statement.Kind())
             {
@@ -255,7 +282,6 @@ namespace Roslynator.CSharp.Refactorings
                         IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
 
                         IEnumerable<ExpressionStatementSyntax> expressionStatements = ifStatementInfo
-                            .Nodes
                             .Select(ifOrElse => (ExpressionStatementSyntax)GetLastStatementOrDefault(ifOrElse.Statement));
 
                         IfStatementSyntax newIfStatement = ifStatement.ReplaceNodes(
@@ -267,14 +293,24 @@ namespace Roslynator.CSharp.Refactorings
                                 return ReturnStatement(assignment.Right).WithTriviaFrom(f);
                             });
 
+                        //TODO: 
+                        int count = 0;
+                        bool endsWithElse = false;
+
+                        foreach (IfStatementOrElseClause ifOrElse in ifStatementInfo)
+                        {
+                            count++;
+                            endsWithElse = ifOrElse.IsElse;
+                        }
+
                         StatementsInfo newStatementsInfo = await RefactorAsync(
                             document,
                             statementsInfo,
                             ifStatement,
                             newIfStatement,
                             index,
-                            ifStatementInfo.Nodes.Length,
-                            ifStatementInfo.EndsWithElse,
+                            count,
+                            endsWithElse,
                             semanticModel,
                             cancellationToken).ConfigureAwait(false);
 
@@ -390,7 +426,7 @@ namespace Roslynator.CSharp.Refactorings
                 statementsInfo = statementsInfo.ReplaceNode(returnStatement, returnStatement.WithExpression(newExpression.WithTriviaFrom(expression)));
             }
 
-            return statementsInfo.ReplaceNode(statementsInfo.Statements[index], newStatement);
+            return statementsInfo.ReplaceNode(statementsInfo[index], newStatement);
         }
 
         private static VariableDeclaratorSyntax FindVariableDeclarator(SemanticModel semanticModel, ISymbol symbol, SeparatedSyntaxList<VariableDeclaratorSyntax> declarators, CancellationToken cancellationToken)

@@ -23,4 +23,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2231:Overload operator equals on overriding value type Equals", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.Syntax.IfStatementInfo.Enumerator")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1063:Implement IDisposable Correctly", Justification = "<Pending>", Scope = "member", Target = "~M:Roslynator.Empty.Enumerator`1.Dispose")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Simplification", "RCS1020:Simplify Nullable<T> to T?.", Justification = "<Pending>", Scope = "type", Target = "~T:Roslynator.CSharp.NullCheckStyles")]
 

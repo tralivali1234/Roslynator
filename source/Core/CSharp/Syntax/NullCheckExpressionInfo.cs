@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public ExpressionSyntax ContainingExpression { get; }
 
-        //TODO: EvaluatedExpression
+        //XTODO: EvaluatedExpression
         /// <summary>
         /// The expression that is evaluated whether is (not) null. e.g. "x" in "x == null".
         /// </summary>
@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -323,7 +323,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return ContainingExpression?.ToString() ?? base.ToString();
+            return ContainingExpression?.ToString() ?? "";
         }
 
         /// <summary>

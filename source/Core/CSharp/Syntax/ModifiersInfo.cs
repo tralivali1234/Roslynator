@@ -40,8 +40,6 @@ namespace Roslynator.CSharp.Syntax
             get { return CSharpAccessibility.GetExplicitAccessibility(Modifiers); }
         }
 
-        //TODO: property Accessibility
-
         /// <summary>
         /// True if the modifier list contains "new" modifier.
         /// </summary>
@@ -128,7 +126,7 @@ namespace Roslynator.CSharp.Syntax
         public bool IsParams => Modifiers.Contains(SyntaxKind.ParamsKeyword);
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -632,7 +630,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
         }
 
         /// <summary>

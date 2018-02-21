@@ -296,7 +296,7 @@ namespace Roslynator.CSharp.Syntax
 
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
         }
 
         public override bool Equals(object obj)

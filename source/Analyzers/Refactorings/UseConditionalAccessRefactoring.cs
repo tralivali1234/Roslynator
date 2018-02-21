@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
                 NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
                 if (nullCheck.Success)
                 {
-                    MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(ifStatement.SingleStatementOrDefault());
+                    MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
                     if (invocationInfo.Success
                         && SyntaxComparer.AreEquivalent(nullCheck.Expression, invocationInfo.Expression)
                         && !ifStatement.IsInExpressionTree(expressionType, context.SemanticModel, context.CancellationToken)
@@ -237,7 +237,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken)
         {
-            var statement = (ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault();
+            var statement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
             MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(statement);
 

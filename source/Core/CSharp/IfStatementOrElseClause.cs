@@ -102,6 +102,14 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// The node that contains the underlying node in its <see cref="SyntaxNode.ChildNodes"/> collection.
+        /// </summary>
+        public SyntaxNode Parent
+        {
+            get { return _ifStatement?.Parent ?? _elseClause?.Parent; }
+        }
+
+        /// <summary>
         /// Returns the underlying if statement if this <see cref="IfStatementOrElseClause"/> is wrapping if statement.
         /// </summary>
         /// <returns></returns>
@@ -125,20 +133,34 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
         }
 
-        public bool Equals(IfStatementOrElseClause other)
-        {
-            return Node == other.Node;
-        }
-
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is IfStatementOrElseClause other
                 && Equals(other);
         }
 
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+        public bool Equals(IfStatementOrElseClause other)
+        {
+            return Node == other.Node;
+        }
+
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return Node?.GetHashCode() ?? 0;

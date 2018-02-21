@@ -23,6 +23,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
+        //XTODO: Parent
         /// <summary>
         /// The declaration that contains the members.
         /// </summary>
@@ -42,7 +43,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -485,7 +486,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Declaration?.ToString() ?? base.ToString();
+            return Declaration?.ToString() ?? "";
         }
 
         /// <summary>
@@ -517,23 +518,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<MemberDeclarationSyntax>.Default.GetHashCode(Declaration);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(MemberDeclarationsInfo info1, MemberDeclarationsInfo info2)
         {
             return !(info1 == info2);

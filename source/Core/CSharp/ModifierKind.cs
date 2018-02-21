@@ -36,7 +36,7 @@ namespace Roslynator.CSharp
         Protected = 8,
 
         /// <summary>
-        /// A "internal" modifier.
+        /// An "internal" modifier.
         /// </summary>
         Internal = 16,
 
@@ -66,15 +66,18 @@ namespace Roslynator.CSharp
         Sealed = 256,
 
         /// <summary>
-        /// A "override" modifier.
+        /// An "override" modifier.
         /// </summary>
         Override = 512,
 
         /// <summary>
-        /// A "abstract" modifier.
+        /// An "abstract" modifier.
         /// </summary>
         Abstract = 1024,
 
+        /// <summary>
+        /// "abstract", "virtual" or "override" modifier.
+        /// </summary>
         AbstractVirtualOverride = Abstract | Virtual | Override,
 
         /// <summary>
@@ -83,7 +86,7 @@ namespace Roslynator.CSharp
         ReadOnly = 2048,
 
         /// <summary>
-        /// A "extern" modifier.
+        /// An "extern" modifier.
         /// </summary>
         Extern = 4096,
 
@@ -98,7 +101,7 @@ namespace Roslynator.CSharp
         Volatile = 16384,
 
         /// <summary>
-        /// A "async" modifier.
+        /// An "async" modifier.
         /// </summary>
         Async = 32768,
 

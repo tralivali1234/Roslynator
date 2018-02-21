@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about binary expression.
     /// </summary>
     public readonly struct BinaryExpressionInfo : IEquatable<BinaryExpressionInfo>
     {
@@ -27,22 +27,22 @@ namespace Roslynator.CSharp.Syntax
         private static BinaryExpressionInfo Default { get; } = new BinaryExpressionInfo();
 
         /// <summary>
-        /// 
+        /// The binary expression.
         /// </summary>
         public BinaryExpressionSyntax BinaryExpression { get; }
 
         /// <summary>
-        /// 
+        /// The expression on the left of the binary operator.
         /// </summary>
         public ExpressionSyntax Left { get; }
 
         /// <summary>
-        /// 
+        /// The expression on the right of the binary operator.
         /// </summary>
         public ExpressionSyntax Right { get; }
 
         /// <summary>
-        /// 
+        /// The kind of the binary expression.
         /// </summary>
         public SyntaxKind Kind
         {
@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -103,7 +103,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return BinaryExpression?.ToString() ?? base.ToString();
+            return BinaryExpression?.ToString() ?? "";
         }
 
         /// <summary>
@@ -135,23 +135,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<BinaryExpressionSyntax>.Default.GetHashCode(BinaryExpression);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(BinaryExpressionInfo info1, BinaryExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(BinaryExpressionInfo info1, BinaryExpressionInfo info2)
         {
             return !(info1 == info2);

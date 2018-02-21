@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static SimpleAssignmentStatementInfo Default { get; } = new SimpleAssignmentStatementInfo();
 
-        //TODO: Expression
+        //XTODO: Expression
         /// <summary>
         /// The simple assignment expression.
         /// </summary>
@@ -48,7 +48,6 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public ExpressionSyntax Right { get; }
 
-        //TODO: EqualsEqualsToken
         /// <summary>
         /// The operator of the simple assignment expression.
         /// </summary>
@@ -57,7 +56,6 @@ namespace Roslynator.CSharp.Syntax
             get { return AssignmentExpression?.OperatorToken ?? default(SyntaxToken); }
         }
 
-        //TODO: cache
         /// <summary>
         /// The expression statement the simple assignment expression is contained in.
         /// </summary>
@@ -67,14 +65,13 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
             get { return AssignmentExpression != null; }
         }
 
-        //TODO: ?
         internal static SimpleAssignmentStatementInfo Create(
             StatementSyntax statement,
             bool walkDownParentheses = true,
@@ -115,8 +112,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            //TODO: ?? ""
-            return Statement?.ToString() ?? base.ToString();
+            return Statement?.ToString() ?? "";
         }
 
         /// <summary>

@@ -92,7 +92,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return IfStatement?.ToString() ?? base.ToString();
+            return IfStatement?.ToString() ?? "";
         }
 
         /// <summary>

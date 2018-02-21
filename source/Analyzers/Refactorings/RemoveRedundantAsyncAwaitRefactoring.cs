@@ -254,7 +254,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             HashSet<AwaitExpressionSyntax> awaitExpressions = null;
 
-            foreach (IfStatementOrElseClause ifOrElse in ifStatement.GetCascade())
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 if (ifOrElse.IsElse
                     && !endsWithElse)

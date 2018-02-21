@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about "as" expression.
     /// </summary>
     public readonly struct AsExpressionInfo : IEquatable<AsExpressionInfo>
     {
@@ -27,22 +27,30 @@ namespace Roslynator.CSharp.Syntax
         private static AsExpressionInfo Default { get; } = new AsExpressionInfo();
 
         /// <summary>
-        /// 
+        /// The "as" expression.
         /// </summary>
         public BinaryExpressionSyntax AsExpression { get; }
 
         /// <summary>
-        /// 
+        /// The expression that is being casted.
         /// </summary>
         public ExpressionSyntax Expression { get; }
 
         /// <summary>
-        /// 
+        /// The type to which the expression is being cast.
         /// </summary>
         public TypeSyntax Type { get; }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// The "as" operator token.
+        /// </summary>
+        public SyntaxToken OperatorToken
+        {
+            get { return AsExpression?.OperatorToken ?? default(SyntaxToken); }
+        }
+
+        /// <summary>
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -95,7 +103,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return AsExpression?.ToString() ?? base.ToString();
+            return AsExpression?.ToString() ?? "";
         }
 
         /// <summary>
@@ -127,23 +135,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<BinaryExpressionSyntax>.Default.GetHashCode(AsExpression);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(AsExpressionInfo info1, AsExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(AsExpressionInfo info1, AsExpressionInfo info2)
         {
             return !(info1 == info2);

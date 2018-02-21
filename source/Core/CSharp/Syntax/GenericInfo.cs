@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Syntax
         public SyntaxKind Kind { get; }
 
         /// <summary>
-        /// Type parameter list.
+        /// The type parameter list.
         /// </summary>
         public TypeParameterListSyntax TypeParameterList { get; }
 
@@ -119,7 +119,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -366,7 +366,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Creates a new <see cref="Genericinfo"/> with the specified constraint clause removed.
+        /// Creates a new <see cref="GenericInfo"/> with the specified constraint clause removed.
         /// </summary>
         /// <param name="constraintClause"></param>
         /// <returns></returns>
@@ -429,19 +429,33 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Declaration?.ToString() ?? base.ToString();
+            return Declaration?.ToString() ?? "";
         }
 
+        /// <summary>
+        /// Determines whether this instance and a specified object are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance. </param>
+        /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
             return obj is GenericInfo other && Equals(other);
         }
 
+        /// <summary>
+        /// Determines whether this instance is equal to another object of the same type.
+        /// </summary>
+        /// <param name="other">An object to compare with this object.</param>
+        /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(GenericInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Declaration, other.Declaration);
         }
 
+        /// <summary>
+        /// Returns the hash code for this instance.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Declaration);

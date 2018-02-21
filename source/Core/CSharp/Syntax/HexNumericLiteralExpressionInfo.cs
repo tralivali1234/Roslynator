@@ -119,7 +119,7 @@ namespace Roslynator.CSharp.Syntax
 
         public override string ToString()
         {
-            return LiteralExpression?.ToString() ?? base.ToString();
+            return LiteralExpression?.ToString() ?? "";
         }
 
         public override bool Equals(object obj)

@@ -36,6 +36,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static StatementsInfo Default { get; } = new StatementsInfo();
 
+        //XTODO: Parent
         /// <summary>
         /// The node that contains the statements. It can be either a <see cref="BlockSyntax"/> or a <see cref="SwitchSectionSyntax"/>.
         /// </summary>
@@ -76,7 +77,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -417,7 +418,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
         }
 
         /// <summary>
@@ -449,23 +450,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<CSharpSyntaxNode>.Default.GetHashCode(Node);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(StatementsInfo info1, StatementsInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(StatementsInfo info1, StatementsInfo info2)
         {
             return !(info1 == info2);

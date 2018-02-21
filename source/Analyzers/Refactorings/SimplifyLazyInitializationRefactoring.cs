@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!simpleIf.Success)
                 return;
 
-            StatementSyntax statement = simpleIf.Statement.SingleNonBlockStatementOrDefault();
+            StatementSyntax statement = simpleIf.IfStatement.SingleNonBlockStatementOrDefault();
 
             if (statement == null)
                 return;
@@ -191,7 +191,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var returnStatement = (ReturnStatementSyntax)statements[1];
 
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleStatementOrDefault();
+            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 

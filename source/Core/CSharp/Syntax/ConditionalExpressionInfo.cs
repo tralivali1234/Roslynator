@@ -9,7 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// 
+    /// Provides information about conditional expression.
     /// </summary>
     public readonly struct ConditionalExpressionInfo : IEquatable<ConditionalExpressionInfo>
     {
@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Syntax
         private static ConditionalExpressionInfo Default { get; } = new ConditionalExpressionInfo();
 
         /// <summary>
-        /// 
+        /// The conditional expression.
         /// </summary>
         public ConditionalExpressionSyntax ConditionalExpression
         {
@@ -34,22 +34,22 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// 
+        /// The condition expression.
         /// </summary>
         public ExpressionSyntax Condition { get; }
 
         /// <summary>
-        /// 
+        /// The expression to be executed when the expression is true.
         /// </summary>
         public ExpressionSyntax WhenTrue { get; }
 
         /// <summary>
-        /// 
+        /// The expression to be executed when the expression is false.
         /// </summary>
         public ExpressionSyntax WhenFalse { get; }
 
         /// <summary>
-        /// Determines whether this instance contains an underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -107,7 +107,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return ConditionalExpression?.ToString() ?? base.ToString();
+            return ConditionalExpression?.ToString() ?? "";
         }
 
         /// <summary>

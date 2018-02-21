@@ -144,7 +144,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var ifStatement = (IfStatementSyntax)statement;
 
-                return ifStatement.SingleStatementOrDefault()?.Kind() == SyntaxKind.ThrowStatement;
+                return ifStatement.SingleNonBlockStatementOrDefault()?.Kind() == SyntaxKind.ThrowStatement;
             }
 
             return false;

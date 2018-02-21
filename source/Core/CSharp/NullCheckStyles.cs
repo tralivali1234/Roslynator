@@ -43,7 +43,7 @@ namespace Roslynator.CSharp
         NotIsNull = 8,
 
         /// <summary>
-        /// Expressions that use pattern syntax.</code>
+        /// Expressions that use pattern syntax.
         /// </summary>
         IsPattern = IsNull | NotIsNull,
 

@@ -17,15 +17,6 @@ namespace Test
     {
         public static void Bar()
         {
-            string s = null;
-
-            var items = new List<string>();
-
-            var item = items.Find(null);
-
-            Document d;
-            SyntaxNodeOrToken x;
-            GenericInfo g;
         }
     }
 }

@@ -11,7 +11,7 @@ using Roslynator.CSharp.Comparers;
 namespace Roslynator.CSharp.Syntax
 {
     /// <summary>
-    /// Provides information about a node and its accessibility modifiers.
+    /// Provides information about a declaration and its accessibility modifiers.
     /// </summary>
     public readonly struct AccessibilityInfo : IEquatable<AccessibilityInfo>
     {
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Determines whether this instance contains any underlying syntax.
+        /// Determines whether this struct was initialized with an actual syntax.
         /// </summary>
         public bool Success
         {
@@ -165,12 +165,6 @@ namespace Roslynator.CSharp.Syntax
                 case SyntaxKind.RemoveAccessorDeclaration:
                 case SyntaxKind.UnknownAccessorDeclaration:
                     return Create(node, ((AccessorDeclarationSyntax)node).Modifiers);
-                case SyntaxKind.LocalDeclarationStatement:
-                    return Create(node, ((LocalDeclarationStatementSyntax)node).Modifiers);
-                case SyntaxKind.LocalFunctionStatement:
-                    return Create(node, ((LocalFunctionStatementSyntax)node).Modifiers);
-                case SyntaxKind.Parameter:
-                    return Create(node, ((ParameterSyntax)node).Modifiers);
             }
 
             return Default;
@@ -463,7 +457,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Node?.ToString() ?? base.ToString();
+            return Node?.ToString() ?? "";
         }
 
         /// <summary>
@@ -496,23 +490,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(AccessibilityInfo info1, AccessibilityInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(AccessibilityInfo info1, AccessibilityInfo info2)
         {
             return !(info1 == info2);

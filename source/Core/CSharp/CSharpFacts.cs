@@ -105,6 +105,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is comment trivia.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsCommentTrivia(SyntaxKind kind)
         {
             return kind.Is(
@@ -114,11 +119,21 @@ namespace Roslynator.CSharp
                 SyntaxKind.MultiLineDocumentationCommentTrivia);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have statements. It can be either <see cref="BlockSyntax"/> or <see cref="SwitchSectionSyntax"/>.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveStatements(SyntaxKind kind)
         {
             return kind.Is(SyntaxKind.Block, SyntaxKind.SwitchSection);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have members.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveMembers(SyntaxKind kind)
         {
             return kind.Is(
@@ -129,6 +144,12 @@ namespace Roslynator.CSharp
                 SyntaxKind.InterfaceDeclaration);
         }
 
+        //XTODO: IsFunction
+        /// <summary>
+        /// Returns true if a syntax of the specified kind if local function or anonymous function.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsNestedMethod(SyntaxKind kind)
         {
             return kind.Is(
@@ -138,6 +159,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.LocalFunctionStatement);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is a for, foreach, while or do statement.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsLoopStatement(SyntaxKind kind)
         {
             return kind.Is(
@@ -147,6 +173,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.DoStatement);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is true or false literal expression.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsBooleanLiteralExpression(SyntaxKind kind)
         {
             return kind.Is(
@@ -154,6 +185,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.FalseLiteralExpression);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is a lambda expression.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsLambdaExpression(SyntaxKind kind)
         {
             return kind.Is(
@@ -161,6 +197,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.ParenthesizedLambdaExpression);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is an anonymous method or lambda expression.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsAnonymousFunctionExpression(SyntaxKind kind)
         {
             return kind.Is(
@@ -169,6 +210,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.ParenthesizedLambdaExpression);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is a jump statement.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsJumpStatement(SyntaxKind kind)
         {
             return kind.Is(
@@ -186,6 +232,11 @@ namespace Roslynator.CSharp
                 || kind == SyntaxKind.YieldBreakStatement;
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is pre/post increment/decrement expression.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool IsIncrementOrDecrementExpression(SyntaxKind kind)
         {
             return kind.Is(
@@ -195,6 +246,11 @@ namespace Roslynator.CSharp
                 SyntaxKind.PostDecrementExpression);
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can be simplified to a compound assignment.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool SupportsCompoundAssignment(SyntaxKind kind)
         {
             switch (kind)
@@ -215,6 +271,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have modifiers.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveModifiers(SyntaxKind kind)
         {
             switch (kind)
@@ -249,6 +310,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have expression body.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveExpressionBody(SyntaxKind kind)
         {
             switch (kind)
@@ -270,6 +336,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have an embedded statement.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveEmbeddedStatement(SyntaxKind kind)
         {
             switch (kind)
@@ -290,6 +361,11 @@ namespace Roslynator.CSharp
             }
         }
 
+        /// <summary>
+        /// Returns true if a syntax of the specified kind can have accessibility modifiers.
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
         public static bool CanHaveAccessibility(SyntaxKind kind)
         {
             switch (kind)
@@ -349,6 +425,11 @@ namespace Roslynator.CSharp
         }
 
         // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/built-in-types-table
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is a predefined type.
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
         public static bool IsPredefinedType(SpecialType specialType)
         {
             switch (specialType)
@@ -376,6 +457,11 @@ namespace Roslynator.CSharp
         }
 
         // https://docs.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/types-and-variables
+        /// <summary>
+        /// Returns true if a syntax of the specified kind is a simple type.
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
         public static bool IsSimpleType(SpecialType specialType)
         {
             switch (specialType)
@@ -399,6 +485,11 @@ namespace Roslynator.CSharp
             return false;
         }
 
+        /// <summary>
+        /// Returns true if an expression of the specified type can be used in a prefix or postfix unary operator.
+        /// </summary>
+        /// <param name="specialType"></param>
+        /// <returns></returns>
         public static bool SupportsPrefixOrPostfixUnaryOperator(SpecialType specialType)
         {
             switch (specialType)
@@ -427,6 +518,157 @@ namespace Roslynator.CSharp
                 return "read-only";
 
             return SyntaxFacts.GetText(kind);
+        }
+
+        internal static bool ExistsImplicitNumericConversion(ITypeSymbol from, ITypeSymbol to)
+        {
+            if (from == null)
+                throw new ArgumentNullException(nameof(from));
+
+            if (to == null)
+                throw new ArgumentNullException(nameof(to));
+
+            return ExistsImplicitNumericConversion(from.SpecialType, to.SpecialType);
+        }
+
+        // http://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/implicit-numeric-conversions-table
+        internal static bool ExistsImplicitNumericConversion(SpecialType from, SpecialType to)
+        {
+            switch (from)
+            {
+                case SpecialType.System_Char:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_UInt16:
+                            case SpecialType.System_Int32:
+                            case SpecialType.System_UInt32:
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_UInt64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_SByte:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int16:
+                            case SpecialType.System_Int32:
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_Byte:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int16:
+                            case SpecialType.System_UInt16:
+                            case SpecialType.System_Int32:
+                            case SpecialType.System_UInt32:
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_UInt64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_Int16:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int32:
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_UInt16:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int32:
+                            case SpecialType.System_UInt32:
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_UInt64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_Int32:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_UInt32:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Int64:
+                            case SpecialType.System_UInt64:
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_Int64:
+                case SpecialType.System_UInt64:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Single:
+                            case SpecialType.System_Double:
+                            case SpecialType.System_Decimal:
+                                return true;
+                        }
+
+                        break;
+                    }
+                case SpecialType.System_Single:
+                    {
+                        switch (to)
+                        {
+                            case SpecialType.System_Double:
+                                return true;
+                        }
+
+                        break;
+                    }
+            }
+
+            return false;
         }
     }
 }
