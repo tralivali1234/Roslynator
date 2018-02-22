@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(
+            return CreateImpl(
                 Walk(node, walkDownParentheses) as InvocationExpressionSyntax,
                 allowMissing);
         }
@@ -103,10 +103,10 @@ namespace Roslynator.CSharp.Syntax
             InvocationExpressionSyntax invocationExpression,
             bool allowMissing = false)
         {
-            return CreateCore(invocationExpression, allowMissing);
+            return CreateImpl(invocationExpression, allowMissing);
         }
 
-        private static MemberInvocationExpressionInfo CreateCore(
+        private static MemberInvocationExpressionInfo CreateImpl(
             InvocationExpressionSyntax invocationExpression,
             bool allowMissing = false)
         {

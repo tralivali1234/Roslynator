@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(
+            return CreateImpl(
                 Walk(node, walkDownParentheses) as ConditionalExpressionSyntax,
                 walkDownParentheses,
                 allowMissing);
@@ -72,10 +72,10 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(conditionalExpression, walkDownParentheses, allowMissing);
+            return CreateImpl(conditionalExpression, walkDownParentheses, allowMissing);
         }
 
-        internal static ConditionalExpressionInfo CreateCore(
+        private static ConditionalExpressionInfo CreateImpl(
             ConditionalExpressionSyntax conditionalExpression,
             bool walkDownParentheses = true,
             bool allowMissing = false)

@@ -87,7 +87,6 @@ namespace Roslynator.CSharp.Refactorings
         {
             StatementSyntax newStatement = null;
 
-            //TODO: 
             if (selectedStatements.Count == 1
                 && !ifStatementInfo.Any(f => f.Statement?.Kind() == SyntaxKind.Block))
             {

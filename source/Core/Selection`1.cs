@@ -261,9 +261,13 @@ namespace Roslynator
 
                 int GetLastIndex(TNode node, int i)
                 {
-                    return (i == list.Count - 1)
-                        ? node.FullSpan.End
-                        : list.GetSeparator(i).FullSpan.End;
+                    if (i < list.Count - 1
+                        || list.Count == list.SeparatorCount)
+                    {
+                        return list.GetSeparator(i).FullSpan.End;
+                    }
+
+                    return node.FullSpan.End;
                 }
             }
 

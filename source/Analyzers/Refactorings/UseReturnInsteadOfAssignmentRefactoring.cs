@@ -293,7 +293,6 @@ namespace Roslynator.CSharp.Refactorings
                                 return ReturnStatement(assignment.Right).WithTriviaFrom(f);
                             });
 
-                        //TODO: 
                         int count = 0;
                         bool endsWithElse = false;
 

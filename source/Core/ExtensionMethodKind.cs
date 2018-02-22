@@ -2,7 +2,7 @@
 
 namespace Roslynator
 {
-    //TODO: ExtensionMethodSymbolKind
+    //XTODO: ExtensionMethodSymbolKind
     /// <summary>
     /// Specifies a kind of an extension method.
     /// </summary>

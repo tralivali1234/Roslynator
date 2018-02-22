@@ -73,10 +73,10 @@ namespace Roslynator.CSharp.Syntax
             if (binaryExpression == null)
                 return Default;
 
-            return CreateCore(binaryExpression, binaryExpression.Kind());
+            return CreateImpl(binaryExpression, binaryExpression.Kind());
         }
 
-        private static BinaryExpressionChainInfo CreateCore(BinaryExpressionSyntax binaryExpression, SyntaxKind kind)
+        private static BinaryExpressionChainInfo CreateImpl(BinaryExpressionSyntax binaryExpression, SyntaxKind kind)
         {
             ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
 

@@ -78,17 +78,17 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(Walk(node, walkDownParentheses) as LambdaExpressionSyntax, allowMissing);
+            return CreateImpl(Walk(node, walkDownParentheses) as LambdaExpressionSyntax, allowMissing);
         }
 
         internal static SingleParameterLambdaExpressionInfo Create(
             LambdaExpressionSyntax lambdaExpression,
             bool allowMissing = false)
         {
-            return CreateCore(lambdaExpression, allowMissing);
+            return CreateImpl(lambdaExpression, allowMissing);
         }
 
-        internal static SingleParameterLambdaExpressionInfo CreateCore(
+        private static SingleParameterLambdaExpressionInfo CreateImpl(
             LambdaExpressionSyntax lambdaExpression,
             bool allowMissing = false)
         {

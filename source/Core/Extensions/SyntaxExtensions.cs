@@ -223,14 +223,7 @@ namespace Roslynator
             return (shouldThrow) ? list.SingleOrDefault() : ((list.Count == 1) ? list[0] : default(TNode));
         }
 
-        //TODO: int
-        /// <summary>
-        /// Returns true if the list's span contains any preprocessor directives.
-        /// </summary>
-        /// <typeparam name="TNode"></typeparam>
-        /// <param name="list"></param>
-        /// <returns></returns>
-        public static bool SpanContainsDirectives<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
+        internal static bool SpanContainsDirectives<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode
         {
             int count = list.Count;
 
