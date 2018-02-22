@@ -216,7 +216,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static AccessorListSyntax CreateAccessorList(ExpressionSyntax expression, SyntaxToken semicolon)
         {
-            BlockSyntax block = CreateBlockWithReturnStatement(expression, semicolon);
+            BlockSyntax block = CreateBlock(expression, semicolon);
 
             AccessorListSyntax accessorList = AccessorList(GetAccessorDeclaration(block));
 
