@@ -196,23 +196,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<RegionDirectiveTriviaSyntax>.Default.GetHashCode(Directive);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(RegionInfo info1, RegionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(RegionInfo info1, RegionInfo info2)
         {
             return !(info1 == info2);

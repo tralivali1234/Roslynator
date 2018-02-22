@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for a <see cref="SemanticModel"/>.
     /// </summary>
     public static class SemanticModelExtensions
     {
@@ -35,7 +35,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns the innermost named type symbol that the specified position is considered inside of.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="position"></param>
@@ -50,7 +50,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns the innermost symbol of type <typeparamref name="TSymbol"/> that the specified position is considered inside of.
         /// </summary>
         /// <typeparam name="TSymbol"></typeparam>
         /// <param name="semanticModel"></param>
@@ -79,7 +79,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns what symbol, if any, the specified node bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="node"></param>
@@ -94,7 +94,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns type information about the specified node.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="node"></param>
@@ -109,7 +109,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns the type within the compilation's assembly using its canonical CLR metadata name.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="fullyQualifiedMetadataName"></param>

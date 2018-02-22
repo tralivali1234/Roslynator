@@ -10,13 +10,13 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// A set of extension method for a syntax.
     /// </summary>
     public static class SyntaxExtensions
     {
         #region SeparatedSyntaxList<T>
         /// <summary>
-        /// 
+        /// Creates a new list with a node at the specified index replaced with a new node.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -29,7 +29,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is a first node in the list.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -42,7 +42,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is a last node in the list.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -55,7 +55,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if any node in a list matches the predicate.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -66,9 +66,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (TNode node in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (predicate(node))
+                if (predicate(list[i]))
                     return true;
             }
 
@@ -76,7 +76,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if all nodes in a list matches the predicate.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -87,13 +87,25 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (TNode node in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (!predicate(node))
+                if (!predicate(list[i]))
                     return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Returns true if the specified node is in the <see cref="SeparatedSyntaxList{TNode}"/>.
+        /// </summary>
+        /// <typeparam name="TNode"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static bool Contains<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
+        {
+            return list.IndexOf(node) != -1;
         }
 
         internal static TNode SingleOrDefault<TNode>(this SeparatedSyntaxList<TNode> list, bool shouldthrow) where TNode : SyntaxNode
@@ -114,7 +126,7 @@ namespace Roslynator
 
         #region SyntaxList<T>
         /// <summary>
-        /// 
+        /// Creates a new list with the node at the specified index replaced with a new node.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -127,7 +139,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is a first node in the list.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -140,7 +152,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is a last node in the list.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -153,7 +165,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if any node in a list matches the predicate.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -164,9 +176,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (TNode node in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (predicate(node))
+                if (predicate(list[i]))
                     return true;
             }
 
@@ -174,7 +186,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if all nodes in a list matches the predicate.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -185,9 +197,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (TNode node in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (!predicate(node))
+                if (!predicate(list[i]))
                     return false;
             }
 
@@ -195,7 +207,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified node is in the <see cref="SyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -211,8 +223,9 @@ namespace Roslynator
             return (shouldThrow) ? list.SingleOrDefault() : ((list.Count == 1) ? list[0] : default(TNode));
         }
 
+        //TODO: int
         /// <summary>
-        /// 
+        /// Returns true if the list's span contains any preprocessor directives.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="list"></param>
@@ -250,7 +263,7 @@ namespace Roslynator
 
         #region SyntaxNode
         /// <summary>
-        /// 
+        /// Returns leading and trailing trivia of the specified node in a single list.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -277,7 +290,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the leading trivia replaced with a new trivia where the specified trivia is inserted at the begining of the leading trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -295,7 +308,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the leading trivia replaced with a new trivia where the specified trivia is inserted at the begining of the leading trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -310,7 +323,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the trailing trivia replaced with a new trivia where the specified trivia is inserted at the begining of the trailing trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -328,7 +341,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the trailing trivia replaced with a new trivia where the specified trivia is inserted at the begining of the trailing trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -343,7 +356,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the leading trivia replaced with a new trivia where the specified trivia is added at the end of the leading trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -361,7 +374,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the leading trivia replaced with a new trivia where the specified trivia is added at the end of the leading trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -376,7 +389,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the trailing trivia replaced with a new trivia where the specified trivia is added at the end of the trailing trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -394,7 +407,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with the trailing trivia replaced with a new trivia where the specified trivia is added at the end of the trailing trivia.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -409,7 +422,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the node's span contains any preprocessor directives.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
@@ -442,7 +455,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the node contains any preprocessor directives inside the specified span.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="span"></param>
@@ -458,7 +471,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new node from this node with both the leading and trailing trivia of the specified token.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -495,7 +508,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns the first node of type <typeparamref name="TNode"/> that matches the predicate.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -552,7 +565,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Searches a list of descendant nodes in prefix document order and returns first descendant of type <typeparamref name="TNode"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -574,7 +587,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Searches a list of descendant nodes in prefix document order and returns first descendant of type <typeparamref name="TNode"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -598,7 +611,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Searches a list of descendant nodes (including this node) in prefix document order and returns first descendant of type <typeparamref name="TNode"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -620,7 +633,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Searches a list of descendant nodes (including this node) in prefix document order and returns first descendant of type <typeparamref name="TNode"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -646,7 +659,7 @@ namespace Roslynator
 
         #region SyntaxNodeOrToken
         /// <summary>
-        /// 
+        /// Creates a new <see cref="SyntaxNodeOrToken"/> from this node without leading and trailing trivia.
         /// </summary>
         /// <param name="nodeOrToken"></param>
         /// <returns></returns>
@@ -663,7 +676,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="SyntaxNodeOrToken"/> with the leading trivia removed.
         /// </summary>
         /// <param name="nodeOrToken"></param>
         /// <returns></returns>
@@ -680,7 +693,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="SyntaxNodeOrToken"/> with the trailing trivia removed.
         /// </summary>
         /// <param name="nodeOrToken"></param>
         /// <returns></returns>
@@ -699,7 +712,7 @@ namespace Roslynator
 
         #region SyntaxToken
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the leading trivia replaced with a new trivia where the specified trivia is inserted at the begining of the leading trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -713,7 +726,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the leading trivia replaced with a new trivia where the specified trivia is inserted at the begining of the leading trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -724,7 +737,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the trailing trivia replaced with a new trivia where the specified trivia is inserted at the begining of the trailing trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -738,7 +751,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the trailing trivia replaced with a new trivia where the specified trivia is inserted at the begining of the trailing trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -749,7 +762,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the trailing trivia replaced with a new trivia where the specified trivia is added at the end of the trailing trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -763,7 +776,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the trailing trivia replaced with a new trivia where the specified trivia is added at the end of the trailing trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -774,7 +787,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the leading trivia replaced with a new trivia where the specified trivia is added at the end of the leading trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -788,7 +801,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the leading trivia replaced with a new trivia where the specified trivia is added at the end of the leading trivia.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="trivia"></param>
@@ -799,7 +812,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns leading and trailing trivia of the specified node in a single list.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -843,7 +856,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the leading trivia removed.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -853,7 +866,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with the trailing trivia removed.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -863,7 +876,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Creates a new token from this token with both the leading and trailing trivia of the specified node.
         /// </summary>
         /// <param name="token"></param>
         /// <param name="node"></param>
@@ -891,7 +904,7 @@ namespace Roslynator
 
         #region SyntaxTokenList
         /// <summary>
-        /// 
+        /// Creates a new <see cref="SyntaxTokenList"/> with a token at the specified index replaced with a new token.
         /// </summary>
         /// <param name="tokenList"></param>
         /// <param name="index"></param>
@@ -903,7 +916,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if any token in a <see cref="SyntaxTokenList"/> matches the predicate.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="predicate"></param>
@@ -913,9 +926,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (SyntaxToken token in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (predicate(token))
+                if (predicate(list[i]))
                     return true;
             }
 
@@ -923,7 +936,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if all tokens in a <see cref="SyntaxTokenList"/> matches the predicate.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="predicate"></param>
@@ -933,9 +946,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (SyntaxToken token in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (!predicate(token))
+                if (!predicate(list[i]))
                     return false;
             }
 
@@ -943,7 +956,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified token is in the <see cref="SyntaxTokenList"/>.
         /// </summary>
         /// <param name="tokens"></param>
         /// <param name="token"></param>
@@ -956,7 +969,7 @@ namespace Roslynator
 
         #region SyntaxTrivia
         /// <summary>
-        /// 
+        /// Gets a <see cref="SyntaxTriviaList"/> the specified trivia is contained in.
         /// </summary>
         /// <param name="trivia"></param>
         /// <param name="triviaList"></param>
@@ -1022,7 +1035,7 @@ namespace Roslynator
 
         #region SyntaxTriviaList
         /// <summary>
-        /// 
+        /// Creates a new <see cref="SyntaxTriviaList"/> with a trivia at the specified index replaced with new trivia.
         /// </summary>
         /// <param name="triviaList"></param>
         /// <param name="index"></param>
@@ -1034,7 +1047,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if any trivia in a <see cref="SyntaxTriviaList"/> matches the predicate.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="predicate"></param>
@@ -1044,9 +1057,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (SyntaxTrivia trivia in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (predicate(trivia))
+                if (predicate(list[i]))
                     return true;
             }
 
@@ -1054,7 +1067,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if all trivia in a <see cref="SyntaxTriviaList"/> matches the predicate.
         /// </summary>
         /// <param name="list"></param>
         /// <param name="predicate"></param>
@@ -1064,9 +1077,9 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            foreach (SyntaxTrivia trivia in list)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (!predicate(trivia))
+                if (!predicate(list[i]))
                     return false;
             }
 

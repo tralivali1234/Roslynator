@@ -390,66 +390,67 @@ namespace Roslynator
         public IMethodSymbol ReducedFrom => Symbol.ReducedFrom;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.Kind"/>.
+        /// Gets <see cref="ISymbol.Kind"/>.
         /// </summary>
         public SymbolKind Kind => Symbol.Kind;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.Name"/>.
+        /// Gets <see cref="ISymbol.Name"/>.
         /// </summary>
         public string Name => Symbol.Name;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.MetadataName"/>.
+        /// Gets <see cref="ISymbol.MetadataName"/>.
         /// </summary>
         public string MetadataName => Symbol.MetadataName;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.ContainingSymbol"/>.
+        /// Gets <see cref="ISymbol.ContainingSymbol"/>.
         /// </summary>
         public ISymbol ContainingSymbol => Symbol.ContainingSymbol;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.ContainingType"/>.
+        /// Gets <see cref="ISymbol.ContainingType"/>.
         /// </summary>
         public INamedTypeSymbol ContainingType => Symbol.ContainingType;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.ContainingNamespace"/>.
+        /// Gets <see cref="ISymbol.ContainingNamespace"/>.
         /// </summary>
         public INamespaceSymbol ContainingNamespace => Symbol.ContainingNamespace;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.IsStatic"/>.
+        /// Gets <see cref="ISymbol.IsStatic"/>.
         /// </summary>
         public bool IsStatic => Symbol.IsStatic;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.IsVirtual"/>.
+        /// Gets <see cref="ISymbol.IsVirtual"/>.
         /// </summary>
         public bool IsVirtual => Symbol.IsVirtual;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.IsOverride"/>.
+        /// Gets <see cref="ISymbol.IsOverride"/>.
         /// </summary>
         public bool IsOverride => Symbol.IsOverride;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.IsAbstract"/>.
+        /// Gets <see cref="ISymbol.IsAbstract"/>.
         /// </summary>
         public bool IsAbstract => Symbol.IsAbstract;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.IsSealed"/>.
+        /// Gets <see cref="ISymbol.IsSealed"/>.
         /// </summary>
         public bool IsSealed => Symbol.IsSealed;
 
         /// <summary>
-        /// Gets <see cref="IMethodSymbol.DeclaredAccessibility"/>.
+        /// Gets <see cref="ISymbol.DeclaredAccessibility"/>.
         /// </summary>
         public Accessibility DeclaredAccessibility => Symbol.DeclaredAccessibility;
         #endregion IMethodSymbol
 
+#pragma warning disable CS1591
         public override bool Equals(object obj)
         {
             return obj is MethodInfo other && Equals(other);
@@ -474,5 +475,6 @@ namespace Roslynator
         {
             return !(info1 == info2);
         }
+#pragma warning restore CS1591
     }
 }

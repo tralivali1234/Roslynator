@@ -9,14 +9,13 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for <see cref="SymbolAnalysisContext"/>, <see cref="SyntaxNodeAnalysisContext"/> and <see cref="SyntaxTreeAnalysisContext"/>.
     /// </summary>
     public static class DiagnosticsExtensions
     {
         #region SymbolAnalysisContext
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
-        /// This method simply wraps creation of a <see cref="Diagnostics"/> and reporting it.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -39,7 +38,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -59,7 +58,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -79,7 +78,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor">A <see cref="DiagnosticDescriptor"/> describing the diagnostic.</param>
@@ -98,7 +97,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -120,7 +119,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -142,7 +141,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="ISymbol"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -174,7 +173,7 @@ namespace Roslynator
 
         #region SyntaxNodeAnalysisContext
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -197,7 +196,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -217,7 +216,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -237,7 +236,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -256,7 +255,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -278,7 +277,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -300,7 +299,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxNode"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -351,7 +350,7 @@ namespace Roslynator
 
         #region SyntaxTreeAnalysisContext
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -374,7 +373,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -394,7 +393,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -414,7 +413,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -433,7 +432,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -455,7 +454,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -477,7 +476,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>

@@ -662,23 +662,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Node);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(ModifiersInfo info1, ModifiersInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(ModifiersInfo info1, ModifiersInfo info2)
         {
             return !(info1 == info2);

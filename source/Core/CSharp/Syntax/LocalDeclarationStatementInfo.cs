@@ -159,23 +159,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<LocalDeclarationStatementSyntax>.Default.GetHashCode(Statement);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(LocalDeclarationStatementInfo info1, LocalDeclarationStatementInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(LocalDeclarationStatementInfo info1, LocalDeclarationStatementInfo info2)
         {
             return !(info1 == info2);

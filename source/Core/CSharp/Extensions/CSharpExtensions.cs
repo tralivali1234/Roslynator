@@ -497,7 +497,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns extension method symbol, if any, the specified expression syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="expression"></param>
@@ -512,7 +512,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns extension method symbol, if any, the specified expression syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="expression"></param>
@@ -539,7 +539,7 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Returns method symbol, if any, the specified expression syntax bound to.
         /// </summary>
         /// <param name="semanticModel"></param>
         /// <param name="expression"></param>

@@ -181,23 +181,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<InvocationExpressionSyntax>.Default.GetHashCode(InvocationExpression);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return !(info1 == info2);

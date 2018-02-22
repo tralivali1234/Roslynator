@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
@@ -111,6 +112,7 @@ namespace Roslynator.CSharp.Syntax
             return !(info1 == info2);
         }
 
+#pragma warning disable CS1591
         public struct Enumerator
         {
             private IfStatementOrElseClause _ifOrElse;
@@ -233,5 +235,6 @@ namespace Roslynator.CSharp.Syntax
             {
             }
         }
+#pragma warning disable CS1591
     }
 }

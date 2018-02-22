@@ -166,6 +166,7 @@ namespace Roslynator.CSharp
             return Node?.GetHashCode() ?? 0;
         }
 
+#pragma warning disable CS1591
         public static bool operator ==(IfStatementOrElseClause left, IfStatementOrElseClause right)
         {
             return left.Equals(right);
@@ -195,5 +196,6 @@ namespace Roslynator.CSharp
         {
             return ifOrElse.AsElse();
         }
+#pragma warning restore CS1591
     }
 }
