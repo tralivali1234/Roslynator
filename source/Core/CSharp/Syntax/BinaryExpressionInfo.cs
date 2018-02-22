@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(
+            return CreateImpl(
                 Walk(node, walkDownParentheses) as BinaryExpressionSyntax,
                 walkDownParentheses,
                 allowMissing);
@@ -73,10 +73,10 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(binaryExpression, walkDownParentheses, allowMissing);
+            return CreateImpl(binaryExpression, walkDownParentheses, allowMissing);
         }
 
-        internal static BinaryExpressionInfo CreateCore(
+        private static BinaryExpressionInfo CreateImpl(
             BinaryExpressionSyntax binaryExpression,
             bool walkDownParentheses = true,
             bool allowMissing = false)

@@ -58,15 +58,15 @@ namespace Roslynator.CSharp.Syntax
             switch (node)
             {
                 case MethodDeclarationSyntax methodDeclaration:
-                    return CreateCore(methodDeclaration, semanticModel, cancellationToken);
+                    return CreateImpl(methodDeclaration, semanticModel, cancellationToken);
                 case PropertyDeclarationSyntax propertyDeclaration:
-                    return CreateCore(propertyDeclaration, semanticModel, cancellationToken);
+                    return CreateImpl(propertyDeclaration, semanticModel, cancellationToken);
                 case IndexerDeclarationSyntax indexerDeclaration:
-                    return CreateCore(indexerDeclaration, semanticModel, cancellationToken);
+                    return CreateImpl(indexerDeclaration, semanticModel, cancellationToken);
                 case EventDeclarationSyntax eventDeclaration:
-                    return CreateCore(eventDeclaration, semanticModel, cancellationToken);
+                    return CreateImpl(eventDeclaration, semanticModel, cancellationToken);
                 case VariableDeclaratorSyntax variableDeclarator:
-                    return CreateCore(variableDeclarator, semanticModel, cancellationToken);
+                    return CreateImpl(variableDeclarator, semanticModel, cancellationToken);
                 default:
                     return Default;
             }
@@ -83,7 +83,7 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return CreateCore(methodDeclaration, semanticModel, cancellationToken);
+            return CreateImpl(methodDeclaration, semanticModel, cancellationToken);
         }
 
         internal static OverrideInfo Create(
@@ -97,7 +97,7 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return CreateCore(propertyDeclaration, semanticModel, cancellationToken);
+            return CreateImpl(propertyDeclaration, semanticModel, cancellationToken);
         }
 
         internal static OverrideInfo Create(
@@ -111,7 +111,7 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return CreateCore(indexerDeclaration, semanticModel, cancellationToken);
+            return CreateImpl(indexerDeclaration, semanticModel, cancellationToken);
         }
 
         internal static OverrideInfo Create(
@@ -125,7 +125,7 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return CreateCore(eventDeclaration, semanticModel, cancellationToken);
+            return CreateImpl(eventDeclaration, semanticModel, cancellationToken);
         }
 
         internal static OverrideInfo Create(
@@ -139,10 +139,10 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            return CreateCore(variableDeclarator, semanticModel, cancellationToken);
+            return CreateImpl(variableDeclarator, semanticModel, cancellationToken);
         }
 
-        private static OverrideInfo CreateCore(
+        private static OverrideInfo CreateImpl(
             MethodDeclarationSyntax methodDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -160,7 +160,7 @@ namespace Roslynator.CSharp.Syntax
             return new OverrideInfo(methodSymbol, overriddenMethod);
         }
 
-        private static OverrideInfo CreateCore(
+        private static OverrideInfo CreateImpl(
             BasePropertyDeclarationSyntax basePropertyDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -178,7 +178,7 @@ namespace Roslynator.CSharp.Syntax
             return new OverrideInfo(propertySymbol, overriddenProperty);
         }
 
-        private static OverrideInfo CreateCore(
+        private static OverrideInfo CreateImpl(
             EventDeclarationSyntax eventDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -196,7 +196,7 @@ namespace Roslynator.CSharp.Syntax
             return new OverrideInfo(eventSymbol, overriddenEvent);
         }
 
-        private static OverrideInfo CreateCore(
+        private static OverrideInfo CreateImpl(
             VariableDeclaratorSyntax variableDeclarator,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

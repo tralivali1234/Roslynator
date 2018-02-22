@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for <see cref="FileLinePositionSpan"/>.
     /// </summary>
     public static class FileLinePositionSpanExtensions
     {
         /// <summary>
-        /// 
+        /// Returns zero-based index of the start line of the specified span.
         /// </summary>
         /// <param name="fileLinePositionSpan"></param>
         /// <returns></returns>
@@ -20,7 +20,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns zero-based index of the end line of the specified span.
         /// </summary>
         /// <param name="fileLinePositionSpan"></param>
         /// <returns></returns>
@@ -30,7 +30,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified <see cref="FileLinePositionSpan"/> spans over multiple lines.
         /// </summary>
         /// <param name="fileLinePositionSpan"></param>
         /// <returns></returns>
@@ -40,7 +40,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the specified <see cref="FileLinePositionSpan"/> does not span over multiple lines.
         /// </summary>
         /// <param name="fileLinePositionSpan"></param>
         /// <returns></returns>

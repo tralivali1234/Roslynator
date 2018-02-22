@@ -3,6 +3,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
@@ -15,6 +17,41 @@ namespace Roslynator.CSharp.Syntax
         private IfStatementInfo(IfStatementSyntax ifStatement)
         {
             IfStatement = ifStatement;
+
+#if DEBUG
+            //XTODO: test
+            Debug.Assert(System.Linq.Enumerable.SequenceEqual(GetChain(), this), nameof(IfStatementInfo));
+
+            IEnumerable<IfStatementOrElseClause> GetChain()
+            {
+                yield return ifStatement;
+
+                while (true)
+                {
+                    ElseClauseSyntax elseClause = ifStatement.Else;
+
+                    if (elseClause != null)
+                    {
+                        StatementSyntax statement = elseClause.Statement;
+
+                        if (statement?.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.IfStatement) == true)
+                        {
+                            ifStatement = (IfStatementSyntax)statement;
+                            yield return ifStatement;
+                        }
+                        else
+                        {
+                            yield return elseClause;
+                            yield break;
+                        }
+                    }
+                    else
+                    {
+                        yield break;
+                    }
+                }
+            }
+#endif
         }
 
         /// <summary>
@@ -111,6 +148,7 @@ namespace Roslynator.CSharp.Syntax
             return !(info1 == info2);
         }
 
+#pragma warning disable CS1591
         public struct Enumerator
         {
             private IfStatementOrElseClause _ifOrElse;
@@ -233,5 +271,6 @@ namespace Roslynator.CSharp.Syntax
             {
             }
         }
+#pragma warning disable CS1591
     }
 }

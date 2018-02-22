@@ -78,17 +78,17 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(Walk(node, walkDownParentheses) as LambdaExpressionSyntax, allowMissing);
+            return CreateImpl(Walk(node, walkDownParentheses) as LambdaExpressionSyntax, allowMissing);
         }
 
         internal static SingleParameterLambdaExpressionInfo Create(
             LambdaExpressionSyntax lambdaExpression,
             bool allowMissing = false)
         {
-            return CreateCore(lambdaExpression, allowMissing);
+            return CreateImpl(lambdaExpression, allowMissing);
         }
 
-        internal static SingleParameterLambdaExpressionInfo CreateCore(
+        private static SingleParameterLambdaExpressionInfo CreateImpl(
             LambdaExpressionSyntax lambdaExpression,
             bool allowMissing = false)
         {
@@ -172,23 +172,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<LambdaExpressionSyntax>.Default.GetHashCode(LambdaExpression);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(SingleParameterLambdaExpressionInfo info1, SingleParameterLambdaExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(SingleParameterLambdaExpressionInfo info1, SingleParameterLambdaExpressionInfo info2)
         {
             return !(info1 == info2);

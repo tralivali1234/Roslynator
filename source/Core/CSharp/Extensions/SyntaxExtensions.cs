@@ -1624,18 +1624,6 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Returns true if the specified node is in the <see cref="SeparatedSyntaxList{TNode}"/>.
-        /// </summary>
-        /// <typeparam name="TNode"></typeparam>
-        /// <param name="list"></param>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        public static bool Contains<TNode>(this SeparatedSyntaxList<TNode> list, TNode node) where TNode : SyntaxNode
-        {
-            return list.IndexOf(node) != -1;
-        }
-
-        /// <summary>
         /// Searches for a node of the specified kind and returns the first occurrence within the entire <see cref="SeparatedSyntaxList{TNode}"/>.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>

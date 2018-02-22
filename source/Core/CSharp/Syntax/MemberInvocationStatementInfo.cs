@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Syntax
             if (!(expressionStatement?.Expression is InvocationExpressionSyntax invocationExpression))
                 return Default;
 
-            return CreateCore(invocationExpression, allowMissing);
+            return CreateImpl(invocationExpression, allowMissing);
         }
 
         internal static MemberInvocationStatementInfo Create(
@@ -120,10 +120,10 @@ namespace Roslynator.CSharp.Syntax
             if (invocationExpression?.Parent?.IsKind(SyntaxKind.ExpressionStatement) != true)
                 return Default;
 
-            return CreateCore(invocationExpression, allowMissing);
+            return CreateImpl(invocationExpression, allowMissing);
         }
 
-        private static MemberInvocationStatementInfo CreateCore(InvocationExpressionSyntax invocationExpression, bool allowMissing)
+        private static MemberInvocationStatementInfo CreateImpl(InvocationExpressionSyntax invocationExpression, bool allowMissing)
         {
             MemberInvocationExpressionInfo info = MemberInvocationExpressionInfo.Create(invocationExpression, allowMissing);
 
@@ -175,23 +175,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<ExpressionStatementSyntax>.Default.GetHashCode(Statement);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(MemberInvocationStatementInfo info1, MemberInvocationStatementInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(MemberInvocationStatementInfo info1, MemberInvocationStatementInfo info2)
         {
             return !(info1 == info2);

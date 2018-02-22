@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.CSharp.Syntax
 {
@@ -87,10 +88,10 @@ namespace Roslynator.CSharp.Syntax
         {
             ExpressionSyntax expression = expressionStatement?.Expression;
 
-            if (!Check(expression, allowMissing))
-                return Default;
+            if (Check(expression, allowMissing))
+                return CreateImpl(expression as AssignmentExpressionSyntax, walkDownParentheses, allowMissing);
 
-            return Create(expression as AssignmentExpressionSyntax, walkDownParentheses, allowMissing);
+            return Default;
         }
 
         internal static SimpleAssignmentStatementInfo Create(
@@ -98,12 +99,23 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
+            if (assignmentExpression?.Parent?.Kind() == SyntaxKind.ExpressionStatement)
+                return CreateImpl(assignmentExpression, walkDownParentheses, allowMissing);
+
+            return Default;
+        }
+
+        private static SimpleAssignmentStatementInfo CreateImpl(
+            AssignmentExpressionSyntax assignmentExpression,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
             SimpleAssignmentExpressionInfo info = SimpleAssignmentExpressionInfo.Create(assignmentExpression, walkDownParentheses, allowMissing);
 
-            if (!info.Success)
-                return Default;
+            if (info.Success)
+                return new SimpleAssignmentStatementInfo(info);
 
-            return new SimpleAssignmentStatementInfo(info);
+            return Default;
         }
 
         /// <summary>
@@ -144,23 +156,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<ExpressionStatementSyntax>.Default.GetHashCode(Statement);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(SimpleAssignmentStatementInfo info1, SimpleAssignmentStatementInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(SimpleAssignmentStatementInfo info1, SimpleAssignmentStatementInfo info2)
         {
             return !(info1 == info2);

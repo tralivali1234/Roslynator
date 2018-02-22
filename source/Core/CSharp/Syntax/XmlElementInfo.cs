@@ -157,23 +157,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<XmlNodeSyntax>.Default.GetHashCode(Element);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(XmlElementInfo info1, XmlElementInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(XmlElementInfo info1, XmlElementInfo info2)
         {
             return !(info1 == info2);

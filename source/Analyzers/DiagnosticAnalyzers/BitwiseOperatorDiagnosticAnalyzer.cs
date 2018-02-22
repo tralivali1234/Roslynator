@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,52 +26,60 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzeBinaryExpression,
-                SyntaxKind.BitwiseAndExpression,
-                SyntaxKind.BitwiseOrExpression,
-                SyntaxKind.ExclusiveOrExpression);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol flagsAttribute = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute);
 
-            context.RegisterSyntaxNodeAction(AnalyzePrefixUnaryExpression,
-                SyntaxKind.BitwiseNotExpression);
+                if (flagsAttribute == null)
+                    return;
+
+                startContext.RegisterSyntaxNodeAction(nodeContext => AnalyzeBinaryExpression(nodeContext, flagsAttribute), SyntaxKind.BitwiseAndExpression);
+                startContext.RegisterSyntaxNodeAction(nodeContext => AnalyzeBinaryExpression(nodeContext, flagsAttribute), SyntaxKind.BitwiseOrExpression);
+                startContext.RegisterSyntaxNodeAction(nodeContext => AnalyzeBinaryExpression(nodeContext, flagsAttribute), SyntaxKind.ExclusiveOrExpression);
+                startContext.RegisterSyntaxNodeAction(nodeContext => AnalyzeBitwiseNotExpression(nodeContext, flagsAttribute), SyntaxKind.BitwiseNotExpression);
+            });
         }
 
-        private static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol flagsAttribute)
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
-            if (IsEnumWithoutFlags(context, binaryExpression.Left)
-                || IsEnumWithoutFlags(context, binaryExpression.Right))
+            if (IsEnumWithoutFlags(binaryExpression.Left, flagsAttribute, context.SemanticModel, context.CancellationToken)
+                || IsEnumWithoutFlags(binaryExpression.Right, flagsAttribute, context.SemanticModel, context.CancellationToken))
             {
-                ReportDiagnostic(context, binaryExpression);
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.BitwiseOperationOnEnumWithoutFlagsAttribute,
+                    binaryExpression);
             }
         }
 
-        private static void AnalyzePrefixUnaryExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeBitwiseNotExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol flagsAttribute)
         {
             var prefixUnaryExpression = (PrefixUnaryExpressionSyntax)context.Node;
 
-            if (IsEnumWithoutFlags(context, prefixUnaryExpression.Operand))
-                ReportDiagnostic(context, prefixUnaryExpression);
+            if (IsEnumWithoutFlags(prefixUnaryExpression.Operand, flagsAttribute, context.SemanticModel, context.CancellationToken))
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.BitwiseOperationOnEnumWithoutFlagsAttribute,
+                    prefixUnaryExpression);
+            }
         }
 
-        private static bool IsEnumWithoutFlags(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
+        private static bool IsEnumWithoutFlags(
+            ExpressionSyntax expression,
+            INamedTypeSymbol flagsAttribute,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
             if (expression?.IsMissing == false)
             {
-                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(expression, context.CancellationToken);
+                ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
 
-                return typeSymbol?.IsEnum() == true
-                    && !typeSymbol.HasAttribute(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
+                return typeSymbol?.TypeKind == TypeKind.Enum
+                    && !typeSymbol.HasAttribute(flagsAttribute);
             }
 
             return false;
-        }
-
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
-        {
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.BitwiseOperationOnEnumWithoutFlagsAttribute,
-                expression);
         }
     }
 }

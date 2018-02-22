@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator.Text
 {
     /// <summary>
-    /// 
+    /// Represents selected lines in a <see cref="TextLineCollection"/>.
     /// </summary>
     public class TextLineCollectionSelection : Selection<TextLine>
     {
@@ -23,17 +23,17 @@ namespace Roslynator.Text
         }
 
         /// <summary>
-        /// 
+        /// Gets an underlying collection that contains selected lines.
         /// </summary>
         public TextLineCollection UnderlyingLines { get; }
 
         /// <summary>
-        /// 
+        /// Gets an underlying collection that contains selected lines.
         /// </summary>
         protected override IReadOnlyList<TextLine> Items => UnderlyingLines;
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TextLineCollectionSelection"/> based on the specified list and span.
         /// </summary>
         /// <param name="lines"></param>
         /// <param name="span"></param>
@@ -49,12 +49,12 @@ namespace Roslynator.Text
         }
 
         /// <summary>
-        /// 
+        /// Creates a new <see cref="TextLineCollectionSelection"/> based on the specified list and span.
         /// </summary>
         /// <param name="lines"></param>
         /// <param name="span"></param>
         /// <param name="selectedLines"></param>
-        /// <returns></returns>
+        /// <returns>True if the specified span contains at least one line; otherwise, false.</returns>
         public static bool TryCreate(TextLineCollection lines, TextSpan span, out TextLineCollectionSelection selectedLines)
         {
             selectedLines = Create(lines, span, 1, int.MaxValue);

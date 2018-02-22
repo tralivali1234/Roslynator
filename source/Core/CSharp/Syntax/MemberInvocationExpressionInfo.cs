@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Syntax
             bool walkDownParentheses = true,
             bool allowMissing = false)
         {
-            return CreateCore(
+            return CreateImpl(
                 Walk(node, walkDownParentheses) as InvocationExpressionSyntax,
                 allowMissing);
         }
@@ -103,10 +103,10 @@ namespace Roslynator.CSharp.Syntax
             InvocationExpressionSyntax invocationExpression,
             bool allowMissing = false)
         {
-            return CreateCore(invocationExpression, allowMissing);
+            return CreateImpl(invocationExpression, allowMissing);
         }
 
-        private static MemberInvocationExpressionInfo CreateCore(
+        private static MemberInvocationExpressionInfo CreateImpl(
             InvocationExpressionSyntax invocationExpression,
             bool allowMissing = false)
         {
@@ -181,23 +181,11 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<InvocationExpressionSyntax>.Default.GetHashCode(InvocationExpression);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator ==(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="info1"></param>
-        /// <param name="info2"></param>
-        /// <returns></returns>
         public static bool operator !=(MemberInvocationExpressionInfo info1, MemberInvocationExpressionInfo info2)
         {
             return !(info1 == info2);

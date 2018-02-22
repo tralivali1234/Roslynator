@@ -52,7 +52,7 @@ namespace Roslynator
             SelectionResult result = SelectionResult.Create(list, span);
 
             if (!result.Success)
-                throw new InvalidOperationException("No selected item(s) found.");
+                throw new InvalidOperationException("No selected node(s) found.");
 
             return new SeparatedSyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }

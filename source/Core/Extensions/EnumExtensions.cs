@@ -6,13 +6,13 @@ using Microsoft.CodeAnalysis;
 namespace Roslynator
 {
     /// <summary>
-    /// 
+    /// A set of extension methods for enumerations.
     /// </summary>
     public static class EnumExtensions
     {
         #region Accessibility
         /// <summary>
-        /// 
+        /// Returns true if the accessibility is one of the specified accessibilities.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <param name="accessibility1"></param>
@@ -25,7 +25,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the accessibility is one of the specified accessibilities.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <param name="accessibility1"></param>
@@ -40,7 +40,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the accessibility is one of the specified accessibilities.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <param name="accessibility1"></param>
@@ -57,7 +57,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the accessibility is one of the specified accessibilities.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <param name="accessibility1"></param>
@@ -76,7 +76,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the accessibility if more restrictrive than the other accessibility.
         /// </summary>
         /// <param name="accessibility"></param>
         /// <param name="other"></param>
@@ -159,7 +159,7 @@ namespace Roslynator
 
         #region MethodKind
         /// <summary>
-        /// 
+        /// Returns true if the method kind is one of the specified method kinds.
         /// </summary>
         /// <param name="methodKind"></param>
         /// <param name="methodKind1"></param>
@@ -172,7 +172,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the method kind is one of the specified method kinds.
         /// </summary>
         /// <param name="methodKind"></param>
         /// <param name="methodKind1"></param>
@@ -187,7 +187,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the method kind is one of the specified method kinds.
         /// </summary>
         /// <param name="methodKind"></param>
         /// <param name="methodKind1"></param>
@@ -204,7 +204,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the method kind is one of the specified method kinds.
         /// </summary>
         /// <param name="methodKind"></param>
         /// <param name="methodKind1"></param>
@@ -225,7 +225,7 @@ namespace Roslynator
 
         #region SpecialType
         /// <summary>
-        /// 
+        /// Returns true if the special type is one of the specified special types.
         /// </summary>
         /// <param name="specialType"></param>
         /// <param name="specialType1"></param>
@@ -238,7 +238,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the special type is one of the specified special types.
         /// </summary>
         /// <param name="specialType"></param>
         /// <param name="specialType1"></param>
@@ -253,7 +253,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the special type is one of the specified special types.
         /// </summary>
         /// <param name="specialType"></param>
         /// <param name="specialType1"></param>
@@ -270,7 +270,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the special type is one of the specified special types.
         /// </summary>
         /// <param name="specialType"></param>
         /// <param name="specialType1"></param>
@@ -291,7 +291,7 @@ namespace Roslynator
 
         #region TypeKind
         /// <summary>
-        /// 
+        /// Returns true if the type kind is one of the specified type kinds.
         /// </summary>
         /// <param name="typeKind"></param>
         /// <param name="typeKind1"></param>
@@ -304,7 +304,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the type kind is one of the specified type kinds.
         /// </summary>
         /// <param name="typeKind"></param>
         /// <param name="typeKind1"></param>
@@ -319,7 +319,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the type kind is one of the specified type kinds.
         /// </summary>
         /// <param name="typeKind"></param>
         /// <param name="typeKind1"></param>
@@ -336,7 +336,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// 
+        /// Returns true if the type kind is one of the specified type kinds.
         /// </summary>
         /// <param name="typeKind"></param>
         /// <param name="typeKind1"></param>
