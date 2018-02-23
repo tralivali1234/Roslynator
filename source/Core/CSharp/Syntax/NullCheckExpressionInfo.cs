@@ -106,7 +106,7 @@ namespace Roslynator.CSharp.Syntax
             bool allowMissing,
             CancellationToken cancellationToken)
         {
-            ExpressionSyntax expression = WalkAndCheck(node, allowMissing, walkDownParentheses);
+            ExpressionSyntax expression = WalkAndCheck(node, walkDownParentheses, allowMissing);
 
             if (expression == null)
                 return Default;
@@ -120,12 +120,12 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var binaryExpression = (BinaryExpressionSyntax)expression;
 
-                        ExpressionSyntax left = WalkAndCheck(binaryExpression.Left, allowMissing, walkDownParentheses);
+                        ExpressionSyntax left = WalkAndCheck(binaryExpression.Left, walkDownParentheses, allowMissing);
 
                         if (left == null)
                             break;
 
-                        ExpressionSyntax right = WalkAndCheck(binaryExpression.Right, allowMissing, walkDownParentheses);
+                        ExpressionSyntax right = WalkAndCheck(binaryExpression.Right, walkDownParentheses, allowMissing);
 
                         if (right == null)
                             break;
@@ -163,7 +163,7 @@ namespace Roslynator.CSharp.Syntax
                         if (constantPattern.Expression?.IsKind(SyntaxKind.NullLiteralExpression) != true)
                             break;
 
-                        ExpressionSyntax e = WalkAndCheck(isPatternExpression.Expression, allowMissing, walkDownParentheses);
+                        ExpressionSyntax e = WalkAndCheck(isPatternExpression.Expression, walkDownParentheses, allowMissing);
 
                         if (e == null)
                             break;
@@ -177,7 +177,7 @@ namespace Roslynator.CSharp.Syntax
 
                         var logicalNotExpression = (PrefixUnaryExpressionSyntax)expression;
 
-                        ExpressionSyntax operand = WalkAndCheck(logicalNotExpression.Operand, allowMissing, walkDownParentheses);
+                        ExpressionSyntax operand = WalkAndCheck(logicalNotExpression.Operand, walkDownParentheses, allowMissing);
 
                         if (operand == null)
                             break;
@@ -203,7 +203,7 @@ namespace Roslynator.CSharp.Syntax
                                     if (constantPattern.Expression?.IsKind(SyntaxKind.NullLiteralExpression) != true)
                                         break;
 
-                                    ExpressionSyntax e = WalkAndCheck(isPatternExpression.Expression, allowMissing, walkDownParentheses);
+                                    ExpressionSyntax e = WalkAndCheck(isPatternExpression.Expression, walkDownParentheses, allowMissing);
 
                                     if (e == null)
                                         break;

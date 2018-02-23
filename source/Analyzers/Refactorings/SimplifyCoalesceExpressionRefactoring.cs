@@ -124,7 +124,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (leftKind == rightKind
-                && SyntaxComparer.AreEquivalent(left, right))
+                && CSharpFactory.AreEquivalent(left, right))
             {
                 return BinaryExpressionPart.Right;
             }

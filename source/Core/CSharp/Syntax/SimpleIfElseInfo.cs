@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(whenTrue, allowMissing))
                 return Default;
 
-            ExpressionSyntax condition = WalkAndCheck(ifStatement.Condition, allowMissing, walkDownParentheses);
+            ExpressionSyntax condition = WalkAndCheck(ifStatement.Condition, walkDownParentheses, allowMissing);
 
             if (condition == null)
                 return Default;

@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.Syntax
 
                 ExpressionSyntax left = binaryExpression.Left;
 
-                left = WalkAndCheck(left, allowMissing, walkDownParentheses);
+                left = WalkAndCheck(left, walkDownParentheses, allowMissing);
 
                 if (left == null)
                     break;
@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Syntax
 
                     ExpressionSyntax left = binaryExpression.Left;
 
-                    left = WalkAndCheck(left, allowMissing, walkDownParentheses);
+                    left = WalkAndCheck(left, walkDownParentheses, allowMissing);
 
                     if (left == null)
                         break;

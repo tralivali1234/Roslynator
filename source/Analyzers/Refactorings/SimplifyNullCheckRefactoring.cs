@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax whenNull = (nullCheck.IsCheckingNotNull) ? conditionalExpressionInfo.WhenFalse : conditionalExpressionInfo.WhenTrue;
 
-            if (SyntaxComparer.AreEquivalent(nullCheck.Expression, whenNotNull))
+            if (CSharpFactory.AreEquivalent(nullCheck.Expression, whenNotNull))
             {
                 if (semanticModel
                     .GetTypeSymbol(nullCheck.Expression, cancellationToken)?
@@ -137,7 +137,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax newNode = null;
 
-            if (SyntaxComparer.AreEquivalent(nullCheck.Expression, whenNotNull))
+            if (CSharpFactory.AreEquivalent(nullCheck.Expression, whenNotNull))
             {
                 newNode = nullCheck.Expression;
                 coalesce = true;

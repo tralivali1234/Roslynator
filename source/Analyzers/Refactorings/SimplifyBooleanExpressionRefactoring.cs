@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (expression1 != null
                     && expression2 != null
-                    && SyntaxComparer.AreEquivalent(expression1, expression2))
+                    && CSharpFactory.AreEquivalent(expression1, expression2))
                 {
                     context.ReportDiagnostic(DiagnosticDescriptors.SimplifyBooleanExpression, logicalAnd);
                 }

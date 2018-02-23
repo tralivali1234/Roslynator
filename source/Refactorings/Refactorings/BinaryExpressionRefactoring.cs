@@ -100,7 +100,8 @@ namespace Roslynator.CSharp.Refactorings
             {
                 BinaryExpressionSelection binaryExpressionSelection = BinaryExpressionSelection.Create(binaryExpression, context.Span);
 
-                if (binaryExpressionSelection.Expressions.Length > 1)
+                if (binaryExpressionSelection.Success
+                    && binaryExpressionSelection.Expressions.Length > 1)
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExtractExpressionFromCondition))
                         ExtractConditionRefactoring.ComputeRefactoring(context, binaryExpressionSelection);

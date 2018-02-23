@@ -18,18 +18,14 @@ namespace Roslynator.CSharp.Syntax
 {
     internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>, IReadOnlyList<ExpressionSyntax>
     {
+        private readonly Flags _flags;
+
         private StringConcatenationExpressionInfo(
-            BinaryExpressionSyntax addExpression,
             ImmutableArray<ExpressionSyntax> expressions,
             TextSpan? span = null)
         {
-            ContainsNonSpecificExpression = false;
-            ContainsRegularLiteralExpression = false;
-            ContainsVerbatimLiteralExpression = false;
-            ContainsRegularInterpolatedStringExpression = false;
-            ContainsVerbatimInterpolatedStringExpression = false;
+            _flags = Flags.None;
 
-            OriginalExpression = addExpression;
             Expressions = expressions;
             Span = span;
 
@@ -41,27 +37,27 @@ namespace Roslynator.CSharp.Syntax
                 {
                     if (stringLiteral.IsVerbatim)
                     {
-                        ContainsVerbatimLiteralExpression = true;
+                        _flags |= Flags.VerbatimStringLiteral;
                     }
                     else
                     {
-                        ContainsRegularLiteralExpression = true;
+                        _flags |= Flags.RegularStringLiteral;
                     }
                 }
                 else if (expression.Kind() == SyntaxKind.InterpolatedStringExpression)
                 {
                     if (((InterpolatedStringExpressionSyntax)expression).IsVerbatim())
                     {
-                        ContainsVerbatimInterpolatedStringExpression = true;
+                        _flags |= Flags.VerbatimInterpolatedString;
                     }
                     else
                     {
-                        ContainsRegularInterpolatedStringExpression = true;
+                        _flags |= Flags.RegularInterpolatedString;
                     }
                 }
                 else
                 {
-                    ContainsNonSpecificExpression = true;
+                    _flags |= Flags.Unspecified;
                 }
             }
         }
@@ -71,7 +67,10 @@ namespace Roslynator.CSharp.Syntax
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
         //TODO: UnderlyingExpression
-        public BinaryExpressionSyntax OriginalExpression { get; }
+        public BinaryExpressionSyntax OriginalExpression
+        {
+            get { return (!Expressions.IsDefault) ? (BinaryExpressionSyntax)Expressions[0].Parent : null; }
+        }
 
         public TextSpan? Span { get; }
 
@@ -100,43 +99,27 @@ namespace Roslynator.CSharp.Syntax
             return Expressions.GetEnumerator();
         }
 
-        public bool ContainsNonSpecificExpression { get; }
+        public bool ContainsUnspecifiedExpression => (_flags & Flags.Unspecified) != 0;
 
-        public bool ContainsNonLiteralExpression
-        {
-            get { return ContainsInterpolatedStringExpression || ContainsNonSpecificExpression; }
-        }
+        public bool ContainsNonStringLiteral => (_flags & Flags.NonStringLiteral) != 0;
 
-        public bool ContainsLiteralExpression
-        {
-            get { return ContainsRegularLiteralExpression || ContainsVerbatimLiteralExpression; }
-        }
+        public bool ContainsStringLiteral => (_flags & Flags.StringLiteral) != 0;
 
-        public bool ContainsRegularLiteralExpression { get; }
+        public bool ContainsRegularStringLiteral => (_flags & Flags.RegularStringLiteral) != 0;
 
-        public bool ContainsVerbatimLiteralExpression { get; }
+        public bool ContainsVerbatimStringLiteral => (_flags & Flags.VerbatimStringLiteral) != 0;
 
-        public bool ContainsInterpolatedStringExpression
-        {
-            get { return ContainsRegularInterpolatedStringExpression || ContainsVerbatimInterpolatedStringExpression; }
-        }
+        public bool ContainsInterpolatedString => (_flags & Flags.InterpolatedString) != 0;
 
-        public bool ContainsRegularInterpolatedStringExpression { get; }
+        public bool ContainsRegularInterpolatedString => (_flags & Flags.RegularInterpolatedString) != 0;
 
-        public bool ContainsVerbatimInterpolatedStringExpression { get; }
+        public bool ContainsVerbatimInterpolatedString => (_flags & Flags.VerbatimInterpolatedString) != 0;
 
-        //TODO: ContainsRegularExpression
-        public bool ContainsRegular
-        {
-            get { return ContainsRegularLiteralExpression || ContainsRegularInterpolatedStringExpression; }
-        }
+        public bool ContainsRegular => (_flags & Flags.Regular) != 0;
 
-        //TODO: ContainsVerbatimExpression
-        public bool ContainsVerbatim
-        {
-            get { return ContainsVerbatimLiteralExpression || ContainsVerbatimInterpolatedStringExpression; }
-        }
+        public bool ContainsVerbatim => (_flags & Flags.Verbatim) != 0;
 
+        //TODO: IsDefault
         public bool Success
         {
             get { return OriginalExpression != null; }
@@ -158,7 +141,7 @@ namespace Roslynator.CSharp.Syntax
             if (expressions.IsDefault)
                 return Default;
 
-            return new StringConcatenationExpressionInfo(binaryExpression, expressions);
+            return new StringConcatenationExpressionInfo(expressions);
         }
 
         internal static StringConcatenationExpressionInfo Create(
@@ -182,7 +165,7 @@ namespace Roslynator.CSharp.Syntax
                     return Default;
             }
 
-            return new StringConcatenationExpressionInfo(binaryExpression, expressions, binaryExpressionSelection.Span);
+            return new StringConcatenationExpressionInfo(expressions, binaryExpressionSelection.Span);
         }
 
         private static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
@@ -335,7 +318,7 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (ContainsNonLiteralExpression)
+            if (ContainsNonStringLiteral)
                 throw new InvalidOperationException();
 
             StringBuilder sb = StringBuilderCache.GetInstance();
@@ -377,7 +360,7 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (ContainsNonLiteralExpression)
+            if (ContainsNonStringLiteral)
                 throw new InvalidOperationException();
 
             StringBuilder sb = StringBuilderCache.GetInstance();
@@ -465,6 +448,22 @@ namespace Roslynator.CSharp.Syntax
         public static bool operator !=(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
         {
             return !(info1 == info2);
+        }
+
+        [Flags]
+        private enum Flags
+        {
+            None = 0,
+            Unspecified = 1,
+            RegularStringLiteral = 2,
+            VerbatimStringLiteral = 4,
+            StringLiteral = RegularStringLiteral | VerbatimStringLiteral,
+            RegularInterpolatedString = 8,
+            Regular = RegularStringLiteral | RegularInterpolatedString,
+            VerbatimInterpolatedString = 16,
+            Verbatim = VerbatimStringLiteral | VerbatimInterpolatedString,
+            InterpolatedString = RegularInterpolatedString | VerbatimInterpolatedString,
+            NonStringLiteral = InterpolatedString | Unspecified
         }
     }
 }

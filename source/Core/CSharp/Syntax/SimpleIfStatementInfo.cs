@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.Syntax
             if (ifStatement?.IsSimpleIf() != true)
                 return Default;
 
-            ExpressionSyntax condition = WalkAndCheck(ifStatement.Condition, allowMissing, walkDownParentheses);
+            ExpressionSyntax condition = WalkAndCheck(ifStatement.Condition, walkDownParentheses, allowMissing);
 
             if (condition == null)
                 return Default;

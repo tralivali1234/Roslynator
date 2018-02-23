@@ -41,8 +41,8 @@ namespace Roslynator.CSharp.Refactorings
                     if (expressions2.IsValid
                         && (expressions.Expression.Kind() == expressions2.NegatedExpression.Kind()
                         && expressions.NegatedExpression.Kind() == expressions2.Expression.Kind()
-                        && SyntaxComparer.AreEquivalent(expressions.Expression, expressions2.NegatedExpression)
-                        && SyntaxComparer.AreEquivalent(expressions.NegatedExpression, expressions2.Expression)))
+                        && CSharpFactory.AreEquivalent(expressions.Expression, expressions2.NegatedExpression)
+                        && CSharpFactory.AreEquivalent(expressions.NegatedExpression, expressions2.Expression)))
                     {
                         context.ReportDiagnostic(DiagnosticDescriptors.UseExclusiveOrOperator, logicalOr);
                     }

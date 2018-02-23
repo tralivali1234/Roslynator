@@ -10,21 +10,22 @@ using Roslynator.CSharp.SyntaxRewriters;
 
 namespace Roslynator.CSharp
 {
+    //TODO: pub
     internal static class SyntaxRemover
     {
-        public static SyntaxRemoveOptions DefaultOptions
+        public static SyntaxRemoveOptions DefaultRemoveOptions
         {
             get { return SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepUnbalancedDirectives; }
         }
 
         public static TRoot RemoveNode<TRoot>(TRoot root, SyntaxNode node) where TRoot : SyntaxNode
         {
-            return root.RemoveNode(node, GetOptions(node));
+            return root.RemoveNode(node, GetRemoveOptions(node));
         }
 
-        public static SyntaxRemoveOptions GetOptions(SyntaxNode node)
+        public static SyntaxRemoveOptions GetRemoveOptions(SyntaxNode node)
         {
-            SyntaxRemoveOptions removeOptions = DefaultOptions;
+            SyntaxRemoveOptions removeOptions = DefaultRemoveOptions;
 
             if (node.GetLeadingTrivia().IsEmptyOrWhitespace())
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
@@ -37,7 +38,7 @@ namespace Roslynator.CSharp
 
         public static SyntaxRemoveOptions GetOptions(CSharpSyntaxNode node)
         {
-            SyntaxRemoveOptions removeOptions = DefaultOptions;
+            SyntaxRemoveOptions removeOptions = DefaultRemoveOptions;
 
             if (node.GetLeadingTrivia().IsEmptyOrWhitespace())
                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

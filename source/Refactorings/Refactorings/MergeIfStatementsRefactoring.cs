@@ -139,7 +139,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 for (int i = 0; i < first.Count; i++)
                 {
-                    if (!SyntaxComparer.AreEquivalent(first[i], second[i]))
+                    if (!CSharpFactory.AreEquivalent(first[i], second[i]))
                         return false;
                 }
 
