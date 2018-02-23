@@ -216,5 +216,12 @@ namespace Roslynator
 
             return false;
         }
+
+        internal static bool IsPropertyOfNullableOfT(ISymbol symbol, string name)
+        {
+            return symbol?.Kind == SymbolKind.Property
+                && symbol.ContainingType?.ConstructedFrom.SpecialType == SpecialType.System_Nullable_T
+                && string.Equals(symbol.Name, name, StringComparison.Ordinal);
+        }
     }
 }

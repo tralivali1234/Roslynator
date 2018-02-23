@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
+    //TODO: Flags
     internal static class FlagsUtility
     {
         public static Optional<object> GetUniquePowerOfTwo(

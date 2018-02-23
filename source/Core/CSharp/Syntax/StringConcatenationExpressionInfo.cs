@@ -70,6 +70,7 @@ namespace Roslynator.CSharp.Syntax
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
+        //TODO: UnderlyingExpression
         public BinaryExpressionSyntax OriginalExpression { get; }
 
         public TextSpan? Span { get; }
@@ -124,11 +125,13 @@ namespace Roslynator.CSharp.Syntax
 
         public bool ContainsVerbatimInterpolatedStringExpression { get; }
 
+        //TODO: ContainsRegularExpression
         public bool ContainsRegular
         {
             get { return ContainsRegularLiteralExpression || ContainsRegularInterpolatedStringExpression; }
         }
 
+        //TODO: ContainsVerbatimExpression
         public bool ContainsVerbatim
         {
             get { return ContainsVerbatimLiteralExpression || ContainsVerbatimInterpolatedStringExpression; }

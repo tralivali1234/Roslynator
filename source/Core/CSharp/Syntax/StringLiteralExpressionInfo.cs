@@ -86,20 +86,14 @@ namespace Roslynator.CSharp.Syntax
 
         internal static StringLiteralExpressionInfo Create(
             SyntaxNode node,
-            bool walkDownParentheses = true,
-            bool allowMissing = false)
+            bool walkDownParentheses = true)
         {
-            return Create(WalkAndCheck(node, allowMissing, walkDownParentheses) as LiteralExpressionSyntax, allowMissing);
+            return Create(Walk(node, walkDownParentheses) as LiteralExpressionSyntax);
         }
 
-        internal static StringLiteralExpressionInfo Create(
-            LiteralExpressionSyntax literalExpression,
-            bool allowMissing = false)
+        internal static StringLiteralExpressionInfo Create(LiteralExpressionSyntax literalExpression)
         {
-            if (!Check(literalExpression, allowMissing))
-                return Default;
-
-            if (literalExpression.Kind() != SyntaxKind.StringLiteralExpression)
+            if (literalExpression?.Kind() != SyntaxKind.StringLiteralExpression)
                 return Default;
 
             return new StringLiteralExpressionInfo(literalExpression);

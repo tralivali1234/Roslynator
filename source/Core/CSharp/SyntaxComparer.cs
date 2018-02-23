@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Roslynator
+namespace Roslynator.CSharp
 {
     internal static class SyntaxComparer
     {

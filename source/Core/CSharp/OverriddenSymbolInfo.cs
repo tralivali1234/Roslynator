@@ -7,17 +7,18 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Syntax
+namespace Roslynator.CSharp
 {
-    internal readonly struct OverrideInfo : IEquatable<OverrideInfo>
+    //TODO: pub
+    internal readonly struct OverriddenSymbolInfo : IEquatable<OverriddenSymbolInfo>
     {
-        public OverrideInfo(ISymbol symbol, ISymbol overriddenSymbol)
+        public OverriddenSymbolInfo(ISymbol symbol, ISymbol overriddenSymbol)
         {
             Symbol = symbol;
             OverriddenSymbol = overriddenSymbol;
         }
 
-        private static OverrideInfo Default { get; } = new OverrideInfo();
+        private static OverriddenSymbolInfo Default { get; } = new OverriddenSymbolInfo();
 
         public ISymbol Symbol { get; }
 
@@ -25,26 +26,31 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Success
         {
-            get { return Symbol != null && OverriddenSymbol != null; }
+            get { return Symbol != null; }
         }
 
         public static bool CanCreate(SyntaxNode node)
         {
-            return node != null
-                && CanCreate(node.Kind());
+            switch (node?.Kind())
+            {
+                case SyntaxKind.MethodDeclaration:
+                case SyntaxKind.PropertyDeclaration:
+                case SyntaxKind.IndexerDeclaration:
+                case SyntaxKind.EventDeclaration:
+                    {
+                        return true;
+                    }
+                case SyntaxKind.VariableDeclarator:
+                    {
+                        return node.Parent?.Kind() == SyntaxKind.VariableDeclaration
+                            && node.Parent.Parent?.Kind() == SyntaxKind.EventFieldDeclaration;
+                    }
+            }
+
+            return false;
         }
 
-        public static bool CanCreate(SyntaxKind kind)
-        {
-            return kind.Is(
-                SyntaxKind.MethodDeclaration,
-                SyntaxKind.PropertyDeclaration,
-                SyntaxKind.IndexerDeclaration,
-                SyntaxKind.EventDeclaration,
-                SyntaxKind.VariableDeclarator);
-        }
-
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             SyntaxNode node,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -72,7 +78,7 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             MethodDeclarationSyntax methodDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -86,7 +92,7 @@ namespace Roslynator.CSharp.Syntax
             return CreateImpl(methodDeclaration, semanticModel, cancellationToken);
         }
 
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             PropertyDeclarationSyntax propertyDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -100,7 +106,7 @@ namespace Roslynator.CSharp.Syntax
             return CreateImpl(propertyDeclaration, semanticModel, cancellationToken);
         }
 
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             IndexerDeclarationSyntax indexerDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -114,7 +120,7 @@ namespace Roslynator.CSharp.Syntax
             return CreateImpl(indexerDeclaration, semanticModel, cancellationToken);
         }
 
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             EventDeclarationSyntax eventDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -128,7 +134,7 @@ namespace Roslynator.CSharp.Syntax
             return CreateImpl(eventDeclaration, semanticModel, cancellationToken);
         }
 
-        internal static OverrideInfo Create(
+        internal static OverriddenSymbolInfo Create(
             VariableDeclaratorSyntax variableDeclarator,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -142,7 +148,7 @@ namespace Roslynator.CSharp.Syntax
             return CreateImpl(variableDeclarator, semanticModel, cancellationToken);
         }
 
-        private static OverrideInfo CreateImpl(
+        private static OverriddenSymbolInfo CreateImpl(
             MethodDeclarationSyntax methodDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -157,10 +163,10 @@ namespace Roslynator.CSharp.Syntax
             if (overriddenMethod == null)
                 return Default;
 
-            return new OverrideInfo(methodSymbol, overriddenMethod);
+            return new OverriddenSymbolInfo(methodSymbol, overriddenMethod);
         }
 
-        private static OverrideInfo CreateImpl(
+        private static OverriddenSymbolInfo CreateImpl(
             BasePropertyDeclarationSyntax basePropertyDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -175,10 +181,10 @@ namespace Roslynator.CSharp.Syntax
             if (overriddenProperty == null)
                 return Default;
 
-            return new OverrideInfo(propertySymbol, overriddenProperty);
+            return new OverriddenSymbolInfo(propertySymbol, overriddenProperty);
         }
 
-        private static OverrideInfo CreateImpl(
+        private static OverriddenSymbolInfo CreateImpl(
             EventDeclarationSyntax eventDeclaration,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -193,14 +199,20 @@ namespace Roslynator.CSharp.Syntax
             if (overriddenEvent == null)
                 return Default;
 
-            return new OverrideInfo(eventSymbol, overriddenEvent);
+            return new OverriddenSymbolInfo(eventSymbol, overriddenEvent);
         }
 
-        private static OverrideInfo CreateImpl(
+        private static OverriddenSymbolInfo CreateImpl(
             VariableDeclaratorSyntax variableDeclarator,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
+            if (variableDeclarator.Parent?.Kind() != SyntaxKind.VariableDeclaration)
+                return Default;
+
+            if (variableDeclarator.Parent.Parent?.Kind() != SyntaxKind.EventFieldDeclaration)
+                return Default;
+
             var eventSymbol = semanticModel.GetDeclaredSymbol(variableDeclarator, cancellationToken) as IEventSymbol;
 
             if (eventSymbol == null)
@@ -211,31 +223,30 @@ namespace Roslynator.CSharp.Syntax
             if (overriddenEvent == null)
                 return Default;
 
-            return new OverrideInfo(eventSymbol, overriddenEvent);
+            return new OverriddenSymbolInfo(eventSymbol, overriddenEvent);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is OverrideInfo other && Equals(other);
+            return obj is OverriddenSymbolInfo other && Equals(other);
         }
 
-        public bool Equals(OverrideInfo other)
+        public bool Equals(OverriddenSymbolInfo other)
         {
-            return EqualityComparer<ISymbol>.Default.Equals(Symbol, other.Symbol)
-                && EqualityComparer<ISymbol>.Default.Equals(OverriddenSymbol, other.OverriddenSymbol);
+            return EqualityComparer<ISymbol>.Default.Equals(Symbol, other.Symbol);
         }
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Symbol, Hash.Create(OverriddenSymbol));
+            return Symbol?.GetHashCode() ?? 0;
         }
 
-        public static bool operator ==(OverrideInfo info1, OverrideInfo info2)
+        public static bool operator ==(OverriddenSymbolInfo info1, OverriddenSymbolInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        public static bool operator !=(OverrideInfo info1, OverrideInfo info2)
+        public static bool operator !=(OverriddenSymbolInfo info1, OverriddenSymbolInfo info2)
         {
             return !(info1 == info2);
         }
