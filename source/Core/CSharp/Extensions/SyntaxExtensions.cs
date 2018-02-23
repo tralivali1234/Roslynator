@@ -2421,7 +2421,9 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Removes all leading whitespace from the leading trivia and returns a new node with the new leading trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same node if there is nothing to trim.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2433,20 +2435,33 @@ namespace Roslynator.CSharp
 
             SyntaxTriviaList leadingTrivia = node.GetLeadingTrivia();
 
-            SyntaxTriviaList newLeadingTrivia = leadingTrivia.TrimStart();
+            int count = leadingTrivia.Count;
 
-            if (leadingTrivia.Count != newLeadingTrivia.Count)
-            {
-                return node.WithLeadingTrivia(newLeadingTrivia);
-            }
-            else
-            {
+            if (count == 0)
                 return node;
+
+            for (int i = 0; i < count ; i++)
+            {
+                if (!leadingTrivia[i].IsWhitespaceOrEndOfLineTrivia())
+                {
+                    if (i == 0)
+                    {
+                        return node;
+                    }
+                    else
+                    {
+                        return node.WithLeadingTrivia(leadingTrivia.Skip(i));
+                    }
+                }
             }
+
+            return node.WithoutLeadingTrivia();
         }
 
         /// <summary>
-        /// 
+        /// Removes all trailing whitespace from the trailing trivia and returns a new node with the new trailing trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same node if there is nothing to trim.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2458,20 +2473,33 @@ namespace Roslynator.CSharp
 
             SyntaxTriviaList trailingTrivia = node.GetTrailingTrivia();
 
-            SyntaxTriviaList newTrailingTrivia = trailingTrivia.TrimEnd();
+            int count = trailingTrivia.Count;
 
-            if (trailingTrivia.Count != newTrailingTrivia.Count)
-            {
-                return node.WithTrailingTrivia(newTrailingTrivia);
-            }
-            else
-            {
+            if (count == 0)
                 return node;
+
+            for (int i = count - 1; i >= 0; i--)
+            {
+                if (!trailingTrivia[i].IsWhitespaceOrEndOfLineTrivia())
+                {
+                    if (i == count - 1)
+                    {
+                        return node;
+                    }
+                    else
+                    {
+                        return node.WithTrailingTrivia(trailingTrivia.Take(i + 1));
+                    }
+                }
             }
+
+            return node.WithoutTrailingTrivia();
         }
 
         /// <summary>
-        /// 
+        /// Removes all leading whitespace from the leading trivia and all trailing whitespace from the trailing trivia and returns a new node with the new trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same node if there is nothing to trim.
         /// </summary>
         /// <typeparam name="TNode"></typeparam>
         /// <param name="node"></param>
@@ -2938,47 +2966,77 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// 
+        /// Removes all leading whitespace from the leading trivia and returns a new token with the new leading trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same token if there is nothing to trim.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
         public static SyntaxToken TrimLeadingTrivia(this SyntaxToken token)
         {
             SyntaxTriviaList leadingTrivia = token.LeadingTrivia;
-            SyntaxTriviaList newLeadingTrivia = leadingTrivia.TrimStart();
 
-            if (leadingTrivia.Count != newLeadingTrivia.Count)
-            {
-                return token.WithLeadingTrivia(newLeadingTrivia);
-            }
-            else
-            {
+            int count = leadingTrivia.Count;
+
+            if (count == 0)
                 return token;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!leadingTrivia[i].IsWhitespaceOrEndOfLineTrivia())
+                {
+                    if (i == 0)
+                    {
+                        return token;
+                    }
+                    else
+                    {
+                        return token.WithLeadingTrivia(leadingTrivia.Skip(i));
+                    }
+                }
             }
+
+            return token.WithoutLeadingTrivia();
         }
 
         /// <summary>
-        /// 
+        /// Removes all trailing whitespace from the trailing trivia and returns a new token with the new trailing trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same token if there is nothing to trim.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
         public static SyntaxToken TrimTrailingTrivia(this SyntaxToken token)
         {
             SyntaxTriviaList trailingTrivia = token.TrailingTrivia;
-            SyntaxTriviaList newTrailingTrivia = trailingTrivia.TrimEnd();
 
-            if (trailingTrivia.Count != newTrailingTrivia.Count)
-            {
-                return token.WithTrailingTrivia(newTrailingTrivia);
-            }
-            else
-            {
+            int count = trailingTrivia.Count;
+
+            if (count == 0)
                 return token;
+
+            for (int i = count - 1; i >= 0; i--)
+            {
+                if (!trailingTrivia[i].IsWhitespaceOrEndOfLineTrivia())
+                {
+                    if (i == count - 1)
+                    {
+                        return token;
+                    }
+                    else
+                    {
+                        return token.WithTrailingTrivia(trailingTrivia.Take(i + 1));
+                    }
+                }
             }
+
+            return token.WithoutTrailingTrivia();
         }
 
         /// <summary>
-        /// 
+        /// Removes all leading whitespace from the leading trivia and all trailing whitespace from the trailing trivia and returns a new token with the new trivia.
+        /// <see cref="SyntaxKind.WhitespaceTrivia"/> and <see cref="SyntaxKind.EndOfLineTrivia"/> is considered to be a whitespace.
+        /// Returns the same token if there is nothing to trim.
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -3423,56 +3481,6 @@ namespace Roslynator.CSharp
             }
 
             return default(SyntaxTrivia);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="triviaList"></param>
-        /// <returns></returns>
-        public static SyntaxTriviaList TrimStart(this SyntaxTriviaList triviaList)
-        {
-            for (int i = 0; i < triviaList.Count; i++)
-            {
-                if (!triviaList[i].IsWhitespaceOrEndOfLineTrivia())
-                {
-                    if (i > 0)
-                    {
-                        return TriviaList(triviaList.Skip(i));
-                    }
-                    else
-                    {
-                        return triviaList;
-                    }
-                }
-            }
-
-            return SyntaxTriviaList.Empty;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="triviaList"></param>
-        /// <returns></returns>
-        public static SyntaxTriviaList TrimEnd(this SyntaxTriviaList triviaList)
-        {
-            for (int i = triviaList.Count - 1; i >= 0; i--)
-            {
-                if (!triviaList[i].IsWhitespaceOrEndOfLineTrivia())
-                {
-                    if (i < triviaList.Count - 1)
-                    {
-                        return TriviaList(triviaList.Take(i + 1));
-                    }
-                    else
-                    {
-                        return triviaList;
-                    }
-                }
-            }
-
-            return SyntaxTriviaList.Empty;
         }
 
         /// <summary>

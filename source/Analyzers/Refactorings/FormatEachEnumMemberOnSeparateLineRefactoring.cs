@@ -68,10 +68,8 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (_separators.Contains(token))
                 {
-                    SyntaxTriviaList triviaList = token.TrailingTrivia;
-
-                    if (!triviaList.Contains(SyntaxKind.EndOfLineTrivia))
-                        return token.WithTrailingTrivia(triviaList.TrimEnd().Add(CSharpFactory.NewLine()));
+                    if (!token.TrailingTrivia.Contains(SyntaxKind.EndOfLineTrivia))
+                        return token.TrimTrailingTrivia().AppendToTrailingTrivia(CSharpFactory.NewLine());
                 }
 
                 return base.VisitToken(token);
