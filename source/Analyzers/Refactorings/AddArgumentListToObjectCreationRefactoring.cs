@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.AddArgumentListToObjectCreation,
-                        Location.Create(context.SyntaxTree(), span));
+                        Location.Create(objectCreationExpression.SyntaxTree, span));
                 }
             }
         }

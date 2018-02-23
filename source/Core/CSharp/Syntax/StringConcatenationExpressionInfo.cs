@@ -35,11 +35,11 @@ namespace Roslynator.CSharp.Syntax
 
             foreach (ExpressionSyntax expression in expressions)
             {
-                SyntaxKind kind = expression.Kind();
+                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
-                if (kind == SyntaxKind.StringLiteralExpression)
+                if (stringLiteral.Success)
                 {
-                    if (((LiteralExpressionSyntax)expression).IsVerbatimStringLiteral())
+                    if (stringLiteral.IsVerbatim)
                     {
                         ContainsVerbatimLiteralExpression = true;
                     }
@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Syntax
                         ContainsRegularLiteralExpression = true;
                     }
                 }
-                else if (kind == SyntaxKind.InterpolatedStringExpression)
+                else if (expression.Kind() == SyntaxKind.InterpolatedStringExpression)
                 {
                     if (((InterpolatedStringExpressionSyntax)expression).IsVerbatim())
                     {
@@ -254,14 +254,14 @@ namespace Roslynator.CSharp.Syntax
             {
                 SyntaxKind kind = Expressions[i].Kind();
 
-                if (kind == SyntaxKind.StringLiteralExpression)
-                {
-                    var literal = (LiteralExpressionSyntax)Expressions[i];
+                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(Expressions[i]);
 
+                if (stringLiteral.Success)
+                {
                     if (ContainsRegular
-                        && literal.IsVerbatimStringLiteral())
+                        && stringLiteral.IsVerbatim)
                     {
-                        string s = literal.Token.ValueText;
+                        string s = stringLiteral.ValueText;
                         s = StringUtility.DoubleBackslash(s);
                         s = StringUtility.EscapeQuote(s);
                         s = StringUtility.DoubleBraces(s);
@@ -271,9 +271,7 @@ namespace Roslynator.CSharp.Syntax
                     }
                     else
                     {
-                        string s = GetInnerText(literal.Token.Text);
-                        s = StringUtility.DoubleBraces(s);
-                        sb.Append(s);
+                        sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
                     }
                 }
                 else if (kind == SyntaxKind.InterpolatedStringExpression)
@@ -346,14 +344,14 @@ namespace Roslynator.CSharp.Syntax
 
             foreach (ExpressionSyntax expression in Expressions)
             {
-                if (expression.IsKind(SyntaxKind.StringLiteralExpression))
-                {
-                    var literal = (LiteralExpressionSyntax)expression;
+                StringLiteralExpressionInfo literal = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
+                if (literal.Success)
+                {
                     if (ContainsRegular
-                        && literal.IsVerbatimStringLiteral())
+                        && literal.IsVerbatim)
                     {
-                        string s = literal.Token.ValueText;
+                        string s = literal.ValueText;
                         s = StringUtility.DoubleBackslash(s);
                         s = StringUtility.EscapeQuote(s);
                         s = s.Replace("\n", @"\n");
@@ -362,7 +360,7 @@ namespace Roslynator.CSharp.Syntax
                     }
                     else
                     {
-                        sb.Append(GetInnerText(literal.Token.Text));
+                        sb.Append(literal.InnerText);
                     }
                 }
             }
@@ -432,13 +430,6 @@ namespace Roslynator.CSharp.Syntax
             return (Span != null)
                 ? OriginalExpression.ToString(Span.Value)
                 : OriginalExpression.ToString();
-        }
-
-        private static string GetInnerText(string s)
-        {
-            return (s[0] == '@')
-                ? s.Substring(2, s.Length - 3)
-                : s.Substring(1, s.Length - 2);
         }
 
         private void ThrowInvalidOperationIfNotInitialized()

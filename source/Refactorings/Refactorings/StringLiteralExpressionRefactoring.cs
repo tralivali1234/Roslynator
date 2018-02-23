@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.Refactorings.ReplaceStringLiteralRefactoring;
-using Microsoft.CodeAnalysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,6 +15,13 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, LiteralExpressionSyntax literalExpression)
         {
+            StringLiteralExpressionInfo info = SyntaxInfo.StringLiteralExpressionInfo(literalExpression);
+
+            Debug.Assert(info.Success);
+
+            if (!info.Success)
+                return;
+
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.InsertStringInterpolation)
                 && context.SupportsCSharp6
                 && context.Span.End < literalExpression.Span.End)
@@ -38,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        string name = StringLiteralParser.Parse(literalExpression.Token.Text, startIndex, context.Span.Length, literalExpression.IsVerbatimStringLiteral(), isInterpolatedText: false);
+                        string name = StringLiteralParser.Parse(literalExpression.Token.Text, startIndex, context.Span.Length, info.IsVerbatim, isInterpolatedText: false);
 
                         foreach (ISymbol symbol in semanticModel.LookupSymbols(literalExpression.SpanStart))
                         {
@@ -66,11 +75,9 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.Span.IsBetweenSpans(literalExpression))
             {
-                string text = literalExpression.GetStringLiteralInnerText();
-
-                if (literalExpression.IsVerbatimStringLiteral())
+                if (info.IsVerbatim)
                 {
-                    if (text.Contains("\"\""))
+                    if (info.InnerTextContains("\"\""))
                     {
                         if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiteral))
                         {
@@ -86,7 +93,7 @@ namespace Roslynator.CSharp.Refactorings
                         }
 
                         if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiterals)
-                            && text.Contains("\n"))
+                            && info.InnerTextContains("\n"))
                         {
                             context.RegisterRefactoring(
                                 "Replace verbatim string literal with regular string literals",
@@ -101,7 +108,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 }
                 else if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceRegularStringLiteralWithVerbatimStringLiteral)
-                    && text.Contains(@"\"))
+                    && info.InnerTextContains(@"\"))
                 {
                     context.RegisterRefactoring(
                         "Replace regular string literal with verbatim string literal",

@@ -45,10 +45,8 @@ namespace Roslynator.CSharp.Refactorings
 
             string s = interpolatedString.ToString();
 
-            var literalExpression = (LiteralExpressionSyntax)interpolation.Expression;
-
             s = s.Substring(0, interpolation.Span.Start - interpolatedString.Span.Start)
-                + StringUtility.DoubleBraces(literalExpression.GetStringLiteralInnerText())
+                + StringUtility.DoubleBraces(SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression).InnerText)
                 + s.Substring(interpolation.Span.End - interpolatedString.Span.Start);
 
             var newInterpolatedString = (InterpolatedStringExpressionSyntax)SyntaxFactory.ParseExpression(s)

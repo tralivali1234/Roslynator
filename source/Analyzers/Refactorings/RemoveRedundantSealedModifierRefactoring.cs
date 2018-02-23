@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.RemoveRedundantSealedModifier,
-                        Location.Create(context.SyntaxTree(), sealedKeyword.Span));
+                        Location.Create(declaration.SyntaxTree, sealedKeyword.Span));
                 }
             }
         }

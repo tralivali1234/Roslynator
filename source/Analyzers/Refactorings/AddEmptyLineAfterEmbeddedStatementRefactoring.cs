@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxToken elseKeyword = elseClause.ElseKeyword;
 
             if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement) == false
-                && context.SyntaxTree().IsMultiLineSpan(TextSpan.FromBounds(elseKeyword.SpanStart, statement.SpanStart)))
+                && elseClause.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(elseKeyword.SpanStart, statement.SpanStart)))
             {
                 IfStatementSyntax topmostIf = elseClause.GetTopmostIf();
 
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!token.IsKind(SyntaxKind.None)
                 && !token.IsMissing
                 && statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) == false
-                && context.SyntaxTree().IsMultiLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
+                && containingStatement.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
             {
                 SyntaxNode parent = containingStatement.Parent;
 
@@ -86,8 +86,8 @@ namespace Roslynator.CSharp.Refactorings
                     int index = statements.IndexOf(containingStatement);
 
                     if (index < statements.Count - 1
-                        && context
-                            .SyntaxTree()
+                        && containingStatement
+                            .SyntaxTree
                             .GetLineCount(TextSpan.FromBounds(statement.Span.End, statements[index + 1].SpanStart)) <= 2)
                     {
                         SyntaxTrivia trivia = statement

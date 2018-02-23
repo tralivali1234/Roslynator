@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!token.IsKind(SyntaxKind.None)
                 && !token.IsMissing
                 && statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) == false
-                && context.SyntaxTree().IsSingleLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
+                && statement.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
             {
                 ReportDiagnostic(context, statement);
             }
@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax statement = elseClause.Statement;
 
             if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement) == false
-                && context.SyntaxTree().IsSingleLineSpan(TextSpan.FromBounds(elseClause.ElseKeyword.SpanStart, statement.SpanStart)))
+                && elseClause.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(elseClause.ElseKeyword.SpanStart, statement.SpanStart)))
             {
                 ReportDiagnostic(context, statement);
             }

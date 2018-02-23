@@ -616,7 +616,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             context.ReportDiagnostic(
                 DiagnosticDescriptors.ReplaceCommentWithDocumentationComment,
-                Location.Create(context.SyntaxTree(), span));
+                Location.Create(context.Node.SyntaxTree, span));
         }
     }
 }

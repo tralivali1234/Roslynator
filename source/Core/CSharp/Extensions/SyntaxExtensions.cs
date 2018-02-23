@@ -1072,47 +1072,6 @@ namespace Roslynator.CSharp
 
         #region LiteralExpressionSyntax
         /// <summary>
-        /// Returns true if the specified literal expression is a verbatim string literal expression.
-        /// </summary>
-        /// <param name="literalExpression"></param>
-        /// <returns></returns>
-        public static bool IsVerbatimStringLiteral(this LiteralExpressionSyntax literalExpression)
-        {
-            if (literalExpression == null)
-                throw new ArgumentNullException(nameof(literalExpression));
-
-            return literalExpression.IsKind(SyntaxKind.StringLiteralExpression)
-                && literalExpression.Token.Text.StartsWith("@", StringComparison.Ordinal);
-        }
-
-        internal static string GetStringLiteralInnerText(this LiteralExpressionSyntax literalExpression)
-        {
-            if (literalExpression == null)
-                throw new ArgumentNullException(nameof(literalExpression));
-
-            string s = literalExpression.Token.Text;
-
-            if (s.StartsWith("@", StringComparison.Ordinal))
-            {
-                if (s.StartsWith("@\"", StringComparison.Ordinal))
-                    s = s.Substring(2);
-
-                if (s.EndsWith("\"", StringComparison.Ordinal))
-                    s = s.Remove(s.Length - 1);
-            }
-            else
-            {
-                if (s.StartsWith("\"", StringComparison.Ordinal))
-                    s = s.Substring(1);
-
-                if (s.EndsWith("\"", StringComparison.Ordinal))
-                    s = s.Remove(s.Length - 1);
-            }
-
-            return s;
-        }
-
-        /// <summary>
         /// Returns true if the specified literal expression is a hexadecimal numeric literal expression.
         /// </summary>
         /// <param name="literalExpression"></param>

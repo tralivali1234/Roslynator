@@ -1176,6 +1176,21 @@ namespace Roslynator.CSharp
             return Syntax.StringConcatenationExpressionInfo.Create(binaryExpressionSelection, semanticModel, cancellationToken);
         }
 
+        public static StringLiteralExpressionInfo StringLiteralExpressionInfo(
+            SyntaxNode node,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
+            return Syntax.StringLiteralExpressionInfo.Create(node, walkDownParentheses, allowMissing);
+        }
+
+        public static StringLiteralExpressionInfo StringLiteralExpressionInfo(
+            LiteralExpressionSyntax literalExpression,
+            bool walkDownParentheses = true)
+        {
+            return Syntax.StringLiteralExpressionInfo.Create(literalExpression, walkDownParentheses);
+        }
+
         /// <summary>
         /// Creates a new <see cref="Syntax.TypeParameterConstraintInfo"/> from the specified constraint.
         /// </summary>

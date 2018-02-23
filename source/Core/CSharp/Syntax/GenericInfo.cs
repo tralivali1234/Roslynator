@@ -398,7 +398,7 @@ namespace Roslynator.CSharp.Syntax
         /// Creates a new <see cref="GenericInfo"/> with all constraint clauses removed.
         /// </summary>
         /// <returns></returns>
-        public GenericInfo RemoveConstraintClauses()
+        public GenericInfo RemoveAllConstraintClauses()
         {
             ThrowInvalidOperationIfNotInitialized();
 
