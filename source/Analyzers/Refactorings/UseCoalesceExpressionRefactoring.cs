@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
                     if (assignmentInfo.Success
-                        && SyntaxComparer.AreEquivalent(assignmentInfo.Left, nullCheck.Expression)
+                        && CSharpFactory.AreEquivalent(assignmentInfo.Left, nullCheck.Expression)
                         && assignmentInfo.Right.IsSingleLine()
                         && !ifStatement.SpanContainsDirectives())
                     {
@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(nextStatement);
                                 if (invocationInfo.Success
-                                    && SyntaxComparer.AreEquivalent(nullCheck.Expression, invocationInfo.Expression)
+                                    && CSharpFactory.AreEquivalent(nullCheck.Expression, invocationInfo.Expression)
                                     && !ifStatement.Parent.ContainsDirectives(TextSpan.FromBounds(ifStatement.SpanStart, nextStatement.Span.End)))
                                 {
                                     context.ReportDiagnostic(DiagnosticDescriptors.InlineLazyInitialization, ifStatement);
@@ -136,7 +136,7 @@ namespace Roslynator.CSharp.Refactorings
                     ExpressionSyntax right = assignment.Right;
 
                     return right?.IsMissing == false
-                        && SyntaxComparer.AreEquivalent(expression, left)
+                        && CSharpFactory.AreEquivalent(expression, left)
                         && !parent.ContainsDirectives(TextSpan.FromBounds(right.Span.End, ifStatement.Span.Start));
                 }
             }

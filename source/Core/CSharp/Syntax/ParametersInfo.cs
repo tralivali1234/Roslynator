@@ -11,20 +11,25 @@ namespace Roslynator.CSharp.Syntax
 {
     internal readonly struct ParametersInfo : IEquatable<ParametersInfo>
     {
-        public ParametersInfo(TypeParameterListSyntax typeParameterList, ParameterSyntax parameter, CSharpSyntaxNode body)
+        public ParametersInfo(ParameterSyntax parameter, CSharpSyntaxNode body)
         {
-            TypeParameterList = typeParameterList;
-            Body = body;
             Parameter = parameter;
             ParameterList = default(BaseParameterListSyntax);
+            Body = body;
+            TypeParameterList = default(TypeParameterListSyntax);
         }
 
-        public ParametersInfo(TypeParameterListSyntax typeParameterList, BaseParameterListSyntax parameterList, CSharpSyntaxNode body)
+        public ParametersInfo(BaseParameterListSyntax parameterList, CSharpSyntaxNode body)
+            : this(parameterList, default(TypeParameterListSyntax), body)
         {
-            TypeParameterList = typeParameterList;
-            Body = body;
-            Parameter = default(ParameterSyntax);
+        }
+
+        public ParametersInfo(BaseParameterListSyntax parameterList, TypeParameterListSyntax typeParameterList, CSharpSyntaxNode body)
+        {
             ParameterList = parameterList;
+            Parameter = default(ParameterSyntax);
+            Body = body;
+            TypeParameterList = typeParameterList;
         }
 
         private static ParametersInfo Default { get; } = new ParametersInfo();
@@ -54,7 +59,7 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Success
         {
-            get { return Node != null; }
+            get { return ParameterList != null || Parameter != null; }
         }
 
         internal static ParametersInfo Create(ConstructorDeclarationSyntax constructorDeclaration, bool allowMissing = false)
@@ -69,7 +74,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         internal static ParametersInfo Create(MethodDeclarationSyntax methodDeclaration, bool allowMissing = false)
@@ -101,7 +106,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(typeParameterList, parameterList, body);
+            return new ParametersInfo(parameterList, typeParameterList, body);
         }
 
         internal static ParametersInfo Create(OperatorDeclarationSyntax operatorDeclaration, bool allowMissing = false)
@@ -116,7 +121,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         internal static ParametersInfo Create(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration, bool allowMissing = false)
@@ -131,7 +136,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         internal static ParametersInfo Create(DelegateDeclarationSyntax delegateDeclaration, bool allowMissing = false)
@@ -158,7 +163,7 @@ namespace Roslynator.CSharp.Syntax
                 return Default;
             }
 
-            return new ParametersInfo(typeParameterList, parameterList, default(CSharpSyntaxNode));
+            return new ParametersInfo(parameterList, typeParameterList, default(CSharpSyntaxNode));
         }
 
         internal static ParametersInfo Create(LocalFunctionStatementSyntax localFunction, bool allowMissing = false)
@@ -190,7 +195,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(typeParameterList, parameterList, body);
+            return new ParametersInfo(parameterList, typeParameterList, body);
         }
 
         internal static ParametersInfo Create(IndexerDeclarationSyntax indexerDeclaration, bool allowMissing = false)
@@ -205,7 +210,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         internal static ParametersInfo Create(SimpleLambdaExpressionSyntax simpleLambda, bool allowMissing = false)
@@ -220,7 +225,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameter, body);
+            return new ParametersInfo(parameter, body);
         }
 
         internal static ParametersInfo Create(ParenthesizedLambdaExpressionSyntax parenthesizedLambda, bool allowMissing = false)
@@ -235,7 +240,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         internal static ParametersInfo Create(AnonymousMethodExpressionSyntax anonymousMethod, bool allowMissing = false)
@@ -250,7 +255,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(body, allowMissing))
                 return Default;
 
-            return new ParametersInfo(default(TypeParameterListSyntax), parameterList, body);
+            return new ParametersInfo(parameterList, body);
         }
 
         private static bool CheckParameterList(BaseParameterListSyntax parameterList, bool allowMissing)

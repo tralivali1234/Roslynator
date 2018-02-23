@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.Refactorings
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.SimplifyLinqMethodChain,
-                Location.Create(context.SyntaxTree(), TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
+                Location.Create(invocationExpression.SyntaxTree, TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
         }
 
         public static Task<Document> RefactorAsync(

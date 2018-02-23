@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
                         ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
 
                         if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() == true
-                            && SyntaxComparer.AreEquivalent(left, binaryLeft))
+                            && CSharpFactory.AreEquivalent(left, binaryLeft))
                         {
                             string operatorText = GetOperatorText(assignment);
 

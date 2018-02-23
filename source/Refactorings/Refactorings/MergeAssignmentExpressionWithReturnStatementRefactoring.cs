@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
 
                             if (assignment.Left?.IsMissing == false
                                 && assignment.Right?.IsMissing == false
-                                && SyntaxComparer.AreEquivalent(assignment.Left, returnStatement.Expression))
+                                && CSharpFactory.AreEquivalent(assignment.Left, returnStatement.Expression))
                             {
                                 context.RegisterRefactoring(
                                     "Merge statements",

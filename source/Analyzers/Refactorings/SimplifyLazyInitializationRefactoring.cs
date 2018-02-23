@@ -159,7 +159,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (memberAccess2.Expression?.Kind() != SyntaxKind.ThisExpression)
                             return null;
 
-                        if (!SyntaxUtility.IsPropertyOfNullableOfT(memberAccess.Name as IdentifierNameSyntax, "Value", semanticModel, cancellationToken))
+                        if (!CSharpUtility.IsPropertyOfNullableOfT(memberAccess.Name as IdentifierNameSyntax, "Value", semanticModel, cancellationToken))
                             return null;
 
                         return memberAccess2.Name as IdentifierNameSyntax;
@@ -170,7 +170,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SyntaxKind.IdentifierName:
                     {
-                        if (!SyntaxUtility.IsPropertyOfNullableOfT(memberAccess.Name as IdentifierNameSyntax, "Value", semanticModel, cancellationToken))
+                        if (!CSharpUtility.IsPropertyOfNullableOfT(memberAccess.Name as IdentifierNameSyntax, "Value", semanticModel, cancellationToken))
                             return null;
 
                         return (IdentifierNameSyntax)expression2;

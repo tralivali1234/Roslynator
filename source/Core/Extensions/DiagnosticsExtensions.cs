@@ -330,11 +330,6 @@ namespace Roslynator
             return context.SemanticModel.Compilation.GetTypeByMetadataName(fullyQualifiedMetadataName);
         }
 
-        internal static SyntaxTree SyntaxTree(this SyntaxNodeAnalysisContext context)
-        {
-            return context.Node.SyntaxTree;
-        }
-
         internal static void ReportToken(this SyntaxNodeAnalysisContext context, DiagnosticDescriptor descriptor, SyntaxToken token, params object[] messageArgs)
         {
             if (!token.IsMissing)
@@ -350,7 +345,7 @@ namespace Roslynator
 
         #region SyntaxTreeAnalysisContext
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -373,7 +368,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -393,7 +388,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -413,7 +408,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -432,7 +427,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -454,7 +449,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>
@@ -476,7 +471,7 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Report a <see cref="Diagnostic"/> about a <see cref="Microsoft.CodeAnalysis.SyntaxTree"/>.
+        /// Report a <see cref="Diagnostic"/> about a <see cref="SyntaxTree"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="descriptor"></param>

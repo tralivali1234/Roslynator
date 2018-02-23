@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Roslynator.CodeFixes;
-using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -32,7 +31,7 @@ namespace Roslynator.CSharp.CodeFixes
                 root,
                 context.Span,
                 out SyntaxNode node,
-                predicate: f => OverrideInfo.CanCreate(f)))
+                predicate: f => OverriddenSymbolInfo.CanCreate(f)))
             {
                 return;
             }
@@ -45,7 +44,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            OverrideInfo overrideInfo = OverrideInfo.Create(node, semanticModel, context.CancellationToken);
+                            OverriddenSymbolInfo overrideInfo = OverriddenSymbolInfo.Create(node, semanticModel, context.CancellationToken);
 
                             if (!overrideInfo.Success)
                                 break;

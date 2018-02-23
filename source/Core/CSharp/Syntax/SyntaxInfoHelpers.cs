@@ -17,12 +17,12 @@ namespace Roslynator.CSharp.Syntax
             return expression?.WalkDownParenthesesIf(walkDownParentheses);
         }
 
-        public static ExpressionSyntax WalkAndCheck(SyntaxNode node, bool allowMissing, bool walkDownParentheses)
+        public static ExpressionSyntax WalkAndCheck(SyntaxNode node, bool walkDownParentheses, bool allowMissing)
         {
             return WalkAndCheck(Walk(node, walkDownParentheses), allowMissing);
         }
 
-        public static ExpressionSyntax WalkAndCheck(ExpressionSyntax expression, bool allowMissing, bool walkDownParentheses)
+        public static ExpressionSyntax WalkAndCheck(ExpressionSyntax expression, bool walkDownParentheses, bool allowMissing)
         {
             return WalkAndCheck(Walk(expression, walkDownParentheses), allowMissing);
         }

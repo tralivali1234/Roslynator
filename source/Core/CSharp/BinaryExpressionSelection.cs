@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -18,11 +17,18 @@ namespace Roslynator.CSharp
             Span = span;
         }
 
+        private static BinaryExpressionSelection Default { get; } = new BinaryExpressionSelection();
+
         public BinaryExpressionSyntax BinaryExpression { get; }
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
         public TextSpan Span { get; }
+
+        public bool Success
+        {
+            get { return BinaryExpression != null; }
+        }
 
         public override string ToString()
         {
@@ -36,19 +42,19 @@ namespace Roslynator.CSharp
             if (binaryExpression == null)
                 throw new ArgumentNullException(nameof(binaryExpression));
 
-            List<ExpressionSyntax> expressions = GetExpressions(binaryExpression, span);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, span);
 
-            return new BinaryExpressionSelection(
-                binaryExpression,
-                (expressions != null) ? ImmutableArray.CreateRange(expressions) : ImmutableArray<ExpressionSyntax>.Empty,
-                span);
+            if (expressions.IsDefault)
+                return Default;
+
+            return new BinaryExpressionSelection(binaryExpression, expressions, span);
         }
 
-        private static List<ExpressionSyntax> GetExpressions(BinaryExpressionSyntax binaryExpression, TextSpan span)
+        private static ImmutableArray<ExpressionSyntax> GetExpressions(BinaryExpressionSyntax binaryExpression, TextSpan span)
         {
             SyntaxKind kind = binaryExpression.Kind();
 
-            List<ExpressionSyntax> expressions = null;
+            ImmutableArray<ExpressionSyntax>.Builder builder = null;
             bool success = true;
 
             while (success)
@@ -60,13 +66,13 @@ namespace Roslynator.CSharp
                 if (right?.IsMissing == false
                     && span.Contains(right.Span))
                 {
-                    (expressions ?? (expressions = new List<ExpressionSyntax>())).Add(right);
+                    (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(right);
 
                     if (span.Start >= right.FullSpan.Start
                         && span.Start <= right.SpanStart)
                     {
-                        expressions.Reverse();
-                        return expressions;
+                        builder.Reverse();
+                        return builder.ToImmutable();
                     }
                     else
                     {
@@ -86,7 +92,7 @@ namespace Roslynator.CSharp
                 }
             }
 
-            return null;
+            return default(ImmutableArray<ExpressionSyntax>);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Roslynator.CSharp
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            return document.RemoveNodeAsync(node, SyntaxRemover.GetOptions(node), cancellationToken);
+            return document.RemoveNodeAsync(node, SyntaxRemover.GetRemoveOptions(node), cancellationToken);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Roslynator.CSharp
                     {
                         Debug.Assert(parent == null, parent.Kind().ToString());
 
-                        return document.RemoveNodeAsync(member, SyntaxRemover.DefaultOptions, cancellationToken);
+                        return document.RemoveNodeAsync(member, SyntaxRemover.DefaultRemoveOptions, cancellationToken);
                     }
             }
         }

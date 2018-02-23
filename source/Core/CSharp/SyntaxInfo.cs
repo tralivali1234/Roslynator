@@ -230,20 +230,6 @@ namespace Roslynator.CSharp
                 allowMissing);
         }
 
-        internal static BinaryExpressionChainInfo BinaryExpressionChainInfo(
-            SyntaxNode node,
-            bool walkDownParentheses = true)
-        {
-            return Syntax.BinaryExpressionChainInfo.Create(
-                node,
-                walkDownParentheses);
-        }
-
-        internal static BinaryExpressionChainInfo BinaryExpressionChainInfo(BinaryExpressionSyntax binaryExpression)
-        {
-            return Syntax.BinaryExpressionChainInfo.Create(binaryExpression);
-        }
-
         /// <summary>
         /// Creates a new <see cref="Syntax.BinaryExpressionInfo"/> from the specified node.
         /// </summary>
@@ -1174,6 +1160,18 @@ namespace Roslynator.CSharp
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return Syntax.StringConcatenationExpressionInfo.Create(binaryExpressionSelection, semanticModel, cancellationToken);
+        }
+
+        public static StringLiteralExpressionInfo StringLiteralExpressionInfo(
+            SyntaxNode node,
+            bool walkDownParentheses = true)
+        {
+            return Syntax.StringLiteralExpressionInfo.Create(node, walkDownParentheses);
+        }
+
+        public static StringLiteralExpressionInfo StringLiteralExpressionInfo(LiteralExpressionSyntax literalExpression)
+        {
+            return Syntax.StringLiteralExpressionInfo.Create(literalExpression);
         }
 
         /// <summary>

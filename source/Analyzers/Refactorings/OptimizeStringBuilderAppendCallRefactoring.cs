@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -223,7 +224,11 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SyntaxKind.AddExpression:
                     {
-                        ImmutableArray<ExpressionSyntax> expressions = SyntaxInfo.BinaryExpressionChainInfo((BinaryExpressionSyntax)expression).Expressions;
+                        //TODO: test
+                        ImmutableArray<ExpressionSyntax> expressions = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)expression)
+                            .Expressions()
+                            .Reverse()
+                            .ToImmutableArray();
 
                         newInvocation = invocation
                             .ReplaceNode(invocationInfo.Name, IdentifierName("Append").WithTriviaFrom(invocationInfo.Name))
@@ -303,15 +308,12 @@ namespace Roslynator.CSharp.Refactorings
 
             for (int i = 0; i < contents.Count; i++)
             {
-                InterpolatedStringContentConversion conversion = InterpolatedStringContentConversion.Create(contents[i], isVerbatim);
-
-                string methodName = conversion.MethodName;
-                SeparatedSyntaxList<ArgumentSyntax> arguments = conversion.Arguments;
+                (SyntaxKind contentKind, string methodName, ImmutableArray<ArgumentSyntax> arguments) = RefactoringUtility.ConvertInterpolatedStringToStringBuilderMethod(contents[i], isVerbatim);
 
                 if (i == contents.Count - 1
                     && isAppendLine
                     && string.Equals(methodName, "Append", StringComparison.Ordinal)
-                    && (conversion.Kind == SyntaxKind.InterpolatedStringText
+                    && (contentKind == SyntaxKind.InterpolatedStringText
                         || semanticModel.IsImplicitConversion(((InterpolationSyntax)contents[i]).Expression, semanticModel.Compilation.GetSpecialType(SpecialType.System_String))))
                 {
                     methodName = "AppendLine";
@@ -321,14 +323,14 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     newExpression = invocation
                         .ReplaceNode(invocationInfo.Name, IdentifierName(methodName).WithTriviaFrom(invocationInfo.Name))
-                        .WithArgumentList(invocation.ArgumentList.WithArguments(arguments).WithoutTrailingTrivia());
+                        .WithArgumentList(invocation.ArgumentList.WithArguments(arguments.ToSeparatedSyntaxList()).WithoutTrailingTrivia());
                 }
                 else
                 {
                     newExpression = SimpleMemberInvocationExpression(
                         newExpression,
                         IdentifierName(methodName),
-                        ArgumentList(arguments));
+                        ArgumentList(arguments.ToSeparatedSyntaxList()));
                 }
 
                 if (i == contents.Count - 1

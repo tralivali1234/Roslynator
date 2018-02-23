@@ -83,17 +83,17 @@ namespace Roslynator.CSharp.Syntax
             if (conditionalExpression == null)
                 return Default;
 
-            ExpressionSyntax condition = WalkAndCheck(conditionalExpression.Condition, allowMissing, walkDownParentheses);
+            ExpressionSyntax condition = WalkAndCheck(conditionalExpression.Condition, walkDownParentheses, allowMissing);
 
             if (condition == null)
                 return Default;
 
-            ExpressionSyntax whenTrue = WalkAndCheck(conditionalExpression.WhenTrue, allowMissing, walkDownParentheses);
+            ExpressionSyntax whenTrue = WalkAndCheck(conditionalExpression.WhenTrue, walkDownParentheses, allowMissing);
 
             if (whenTrue == null)
                 return Default;
 
-            ExpressionSyntax whenFalse = WalkAndCheck(conditionalExpression.WhenFalse, allowMissing, walkDownParentheses);
+            ExpressionSyntax whenFalse = WalkAndCheck(conditionalExpression.WhenFalse, walkDownParentheses, allowMissing);
 
             if (whenFalse == null)
                 return Default;

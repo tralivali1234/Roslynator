@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -173,14 +174,14 @@ namespace Roslynator.CSharp.Refactorings
 
                 ExpressionSyntax argumentExpression = arguments[index + 1].Expression;
 
-                if (argumentExpression.Kind() != SyntaxKind.StringLiteralExpression)
-                    continue;
+                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(argumentExpression);
 
-                var literalExpression = (LiteralExpressionSyntax)argumentExpression;
+                if (!stringLiteral.Success)
+                    continue;
 
                 sb.Append(text, pos, interpolation.SpanStart - pos);
 
-                sb.Append(StringUtility.DoubleBraces(literalExpression.GetStringLiteralInnerText()));
+                sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
 
                 pos = interpolation.Span.End;
             }

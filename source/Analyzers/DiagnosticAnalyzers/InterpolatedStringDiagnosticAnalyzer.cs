@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 context.ReportDiagnostic(
                     DiagnosticDescriptors.AvoidInterpolatedStringWithNoInterpolation,
-                    Location.Create(context.SyntaxTree(), GetDollarSpan(interpolatedString)));
+                    Location.Create(interpolatedString.SyntaxTree, GetDollarSpan(interpolatedString)));
             }
         }
 

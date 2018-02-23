@@ -224,14 +224,14 @@ namespace Roslynator.CSharp.Refactorings.If
             CancellationToken cancellationToken)
         {
             if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
-                && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
+                && CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: false);
             }
 
             expression1 = GetNullableOfTValueProperty(expression1, semanticModel, cancellationToken);
 
-            if (SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
+            if (CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
                 return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: true);
 
             return null;
@@ -283,7 +283,7 @@ namespace Roslynator.CSharp.Refactorings.If
             ExpressionSyntax right1 = assignment1.Right;
             ExpressionSyntax right2 = assignment2.Right;
 
-            if (!SyntaxComparer.AreEquivalent(left1, left2))
+            if (!CSharpFactory.AreEquivalent(left1, left2))
                 return Empty;
 
             if (options.UseCoalesceExpression
@@ -338,14 +338,14 @@ namespace Roslynator.CSharp.Refactorings.If
             CancellationToken cancellationToken)
         {
             if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
-                && SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
+                && CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
             {
                 return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: false);
             }
 
             expression1 = GetNullableOfTValueProperty(expression1, semanticModel, cancellationToken);
 
-            if (SyntaxComparer.AreEquivalent(nullCheck.Expression, expression1))
+            if (CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
                 return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: true);
 
             return null;
@@ -505,7 +505,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!assignment2.Success)
                 return Empty;
 
-            if (!SyntaxComparer.AreEquivalent(assignment1.Left, assignment2.Left, assignment.Left))
+            if (!CSharpFactory.AreEquivalent(assignment1.Left, assignment2.Left, assignment.Left))
                 return Empty;
 
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(expressionStatement.SpanStart, ifStatement.Span.End)))

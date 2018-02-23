@@ -368,5 +368,22 @@ namespace Roslynator.CSharp
 
             return false;
         }
+
+        public static bool IsPropertyOfNullableOfT(
+            IdentifierNameSyntax identifierName,
+            string name,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (identifierName == null)
+                return false;
+
+            if (!string.Equals(identifierName.Identifier.ValueText, name, StringComparison.Ordinal))
+                return false;
+
+            ISymbol symbol = semanticModel.GetSymbol(identifierName, cancellationToken);
+
+            return SymbolUtility.IsPropertyOfNullableOfT(symbol, name);
+        }
     }
 }

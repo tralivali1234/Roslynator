@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.CodeFixes
             if (!TryFindFirstAncestorOrSelf(root, context.Span, out InterpolationSyntax interpolation))
                 return;
 
-            string innerText = ((LiteralExpressionSyntax)interpolation.Expression).GetStringLiteralInnerText();
+            string innerText = SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression).InnerText;
 
             CodeAction codeAction = CodeAction.Create(
                 $"Merge '{innerText}' into interpolated string",

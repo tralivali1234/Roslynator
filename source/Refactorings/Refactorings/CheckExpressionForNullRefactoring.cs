@@ -201,7 +201,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!nullCheck.Success)
                 return false;
 
-            return SyntaxComparer.AreEquivalent(expression, nullCheck.Expression);
+            return CSharpFactory.AreEquivalent(expression, nullCheck.Expression);
         }
 
         private static async Task<Document> RefactorAsync(

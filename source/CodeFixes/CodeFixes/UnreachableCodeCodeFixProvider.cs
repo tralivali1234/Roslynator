@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.CodeFixes
                                         }
                                         else
                                         {
-                                            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultOptions;
+                                            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultRemoveOptions;
 
                                             if (statement.GetLeadingTrivia().IsEmptyOrWhitespace())
                                                 removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

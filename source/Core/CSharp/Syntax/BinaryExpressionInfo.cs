@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -57,6 +59,76 @@ namespace Roslynator.CSharp.Syntax
             get { return BinaryExpression != null; }
         }
 
+        //TODO: pub
+        //TODO: leftToRight, rightToLeft
+        internal IEnumerable<ExpressionSyntax> Expressions(bool walkDownParentheses = true, bool allowMissing = false)
+        {
+            ThrowInvalidOperationIfNotInitialized();
+
+            BinaryExpressionSyntax binaryExpression = BinaryExpression;
+            SyntaxKind kind = Kind;
+
+            //XTODO: test
+#if DEBUG
+            Debug.Assert(Enumerate().Reverse().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
+#endif
+
+            while (true)
+            {
+                ExpressionSyntax right = binaryExpression.Right;
+
+                if (Check(right, allowMissing))
+                    yield return right;
+
+                ExpressionSyntax left = binaryExpression.Left;
+
+                left = WalkAndCheck(left, walkDownParentheses, allowMissing);
+
+                if (left == null)
+                    break;
+
+                if (left.Kind() == kind)
+                {
+                    binaryExpression = (BinaryExpressionSyntax)left;
+                }
+                else
+                {
+                    yield return left;
+                    break;
+                }
+            }
+
+#if DEBUG
+            IEnumerable<ExpressionSyntax> Enumerate()
+            {
+                while (true)
+                {
+                    ExpressionSyntax right = binaryExpression.Right;
+
+                    if (Check(right, allowMissing))
+                        yield return right;
+
+                    ExpressionSyntax left = binaryExpression.Left;
+
+                    left = WalkAndCheck(left, walkDownParentheses, allowMissing);
+
+                    if (left == null)
+                        break;
+
+                    if (left.Kind() == kind)
+                    {
+                        binaryExpression = (BinaryExpressionSyntax)left;
+                    }
+                    else
+                    {
+                        yield return left;
+                        break;
+                    }
+                }
+            }
+#endif
+        }
+
         internal static BinaryExpressionInfo Create(
             SyntaxNode node,
             bool walkDownParentheses = true,
@@ -95,6 +167,12 @@ namespace Roslynator.CSharp.Syntax
                 return Default;
 
             return new BinaryExpressionInfo(binaryExpression, left, right);
+        }
+
+        private void ThrowInvalidOperationIfNotInitialized()
+        {
+            if (BinaryExpression == null)
+                throw new InvalidOperationException($"{nameof(BinaryExpressionInfo)} is not initalized.");
         }
 
         /// <summary>

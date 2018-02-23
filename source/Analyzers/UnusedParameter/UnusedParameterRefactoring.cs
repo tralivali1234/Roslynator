@@ -422,7 +422,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             if (typeParameterList.Parameters.Count == 1)
                 node = typeParameterList;
 
-            SyntaxRemoveOptions options = SyntaxRemover.DefaultOptions;
+            SyntaxRemoveOptions options = SyntaxRemover.DefaultRemoveOptions;
 
             if (node.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
                 options &= ~SyntaxRemoveOptions.KeepLeadingTrivia;

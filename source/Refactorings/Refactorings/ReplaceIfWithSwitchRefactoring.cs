@@ -122,7 +122,7 @@ namespace Roslynator.CSharp.Refactorings
                     && semanticModel.GetConstantValue(right).HasValue)
                 {
                     return switchExpression == null
-                        || SyntaxComparer.AreEquivalent(left, switchExpression);
+                        || CSharpFactory.AreEquivalent(left, switchExpression);
                 }
             }
 

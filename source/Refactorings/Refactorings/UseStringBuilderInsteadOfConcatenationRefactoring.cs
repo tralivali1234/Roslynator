@@ -100,12 +100,12 @@ namespace Roslynator.CSharp.Refactorings
 
                     for (int j = 0; j < contents.Count; j++)
                     {
-                        InterpolatedStringContentConversion conversion = InterpolatedStringContentConversion.Create(contents[j], isVerbatim);
+                        (SyntaxKind contentKind, string methodName, ImmutableArray<ArgumentSyntax> arguments) = RefactoringUtility.ConvertInterpolatedStringToStringBuilderMethod(contents[j], isVerbatim);
 
                         newInvocation = SimpleMemberInvocationExpression(
                             newInvocation ?? stringBuilderName,
-                            IdentifierName(conversion.MethodName),
-                            ArgumentList(conversion.Arguments));
+                            IdentifierName(methodName),
+                            ArgumentList(arguments.ToSeparatedSyntaxList()));
                     }
                 }
                 else

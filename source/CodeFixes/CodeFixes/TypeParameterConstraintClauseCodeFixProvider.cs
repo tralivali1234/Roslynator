@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Remove constraints",
                                 cancellationToken =>
                                 {
-                                    GenericInfo newGenericInfo = genericInfo.RemoveConstraintClauses();
+                                    GenericInfo newGenericInfo = genericInfo.RemoveAllConstraintClauses();
 
                                     return context.Document.ReplaceNodeAsync(genericInfo.Declaration, newGenericInfo.Declaration, cancellationToken);
                                 },

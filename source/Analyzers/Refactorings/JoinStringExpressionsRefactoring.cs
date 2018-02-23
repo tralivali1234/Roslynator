@@ -27,8 +27,8 @@ namespace Roslynator.CSharp.Refactorings
             StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(addExpression, context.SemanticModel, context.CancellationToken);
 
             if (concatenationInfo.Success
-                && !concatenationInfo.ContainsNonSpecificExpression
-                && (concatenationInfo.ContainsLiteralExpression ^ concatenationInfo.ContainsInterpolatedStringExpression)
+                && !concatenationInfo.ContainsUnspecifiedExpression
+                && (concatenationInfo.ContainsStringLiteral ^ concatenationInfo.ContainsInterpolatedString)
                 && (concatenationInfo.ContainsRegular ^ concatenationInfo.ContainsVerbatim)
                 && (concatenationInfo.ContainsVerbatim || addExpression.IsSingleLine(includeExteriorTrivia: false, cancellationToken: context.CancellationToken)))
             {
@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax newNode = null;
 
-                if (concatenationInfo.ContainsLiteralExpression)
+                if (concatenationInfo.ContainsStringLiteral)
                 {
                     if (concatenationInfo.ContainsVerbatim
                         && ContainsMultiLine(concatenationInfo, cancellationToken))
