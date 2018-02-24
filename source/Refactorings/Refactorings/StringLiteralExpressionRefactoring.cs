@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (info.IsVerbatim)
                 {
-                    if (info.InnerTextContains("\"\""))
+                    if (info.ContainsEscapeSequence)
                     {
                         if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiteral))
                         {
@@ -93,7 +93,7 @@ namespace Roslynator.CSharp.Refactorings
                         }
 
                         if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiterals)
-                            && info.InnerTextContains("\n"))
+                            && info.ContainsLinefeed)
                         {
                             context.RegisterRefactoring(
                                 "Replace verbatim string literal with regular string literals",
@@ -108,7 +108,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 }
                 else if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceRegularStringLiteralWithVerbatimStringLiteral)
-                    && info.InnerTextContains(@"\"))
+                    && info.ContainsEscapeSequence)
                 {
                     context.RegisterRefactoring(
                         "Replace regular string literal with verbatim string literal",

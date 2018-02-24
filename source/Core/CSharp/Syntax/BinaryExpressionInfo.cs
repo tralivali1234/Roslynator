@@ -60,52 +60,35 @@ namespace Roslynator.CSharp.Syntax
         }
 
         //TODO: pub
-        //TODO: leftToRight, rightToLeft
-        internal IEnumerable<ExpressionSyntax> Expressions(bool walkDownParentheses = true, bool allowMissing = false)
+        //TODO: zrušit allowMissing
+        internal IEnumerable<ExpressionSyntax> Expressions(
+            bool leftToRight = false,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
         {
             ThrowInvalidOperationIfNotInitialized();
 
             BinaryExpressionSyntax binaryExpression = BinaryExpression;
             SyntaxKind kind = Kind;
 
-            //XTODO: test
 #if DEBUG
+            //TODO: test
             Debug.Assert(Enumerate().Reverse().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
+            binaryExpression = BinaryExpression;
+
+            Debug.Assert(EnumerateLeftToRight().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
+            binaryExpression = BinaryExpression;
 #endif
 
-            while (true)
-            {
-                ExpressionSyntax right = binaryExpression.Right;
+            return (leftToRight) ? EnumerateLeftToRight() : Enumerate();
 
-                if (Check(right, allowMissing))
-                    yield return right;
-
-                ExpressionSyntax left = binaryExpression.Left;
-
-                left = WalkAndCheck(left, walkDownParentheses, allowMissing);
-
-                if (left == null)
-                    break;
-
-                if (left.Kind() == kind)
-                {
-                    binaryExpression = (BinaryExpressionSyntax)left;
-                }
-                else
-                {
-                    yield return left;
-                    break;
-                }
-            }
-
-#if DEBUG
             IEnumerable<ExpressionSyntax> Enumerate()
             {
                 while (true)
                 {
-                    ExpressionSyntax right = binaryExpression.Right;
+                    ExpressionSyntax right = WalkAndCheck(binaryExpression.Right, walkDownParentheses, allowMissing);
 
-                    if (Check(right, allowMissing))
+                    if (right != null)
                         yield return right;
 
                     ExpressionSyntax left = binaryExpression.Left;
@@ -126,7 +109,45 @@ namespace Roslynator.CSharp.Syntax
                     }
                 }
             }
-#endif
+
+            IEnumerable<ExpressionSyntax> EnumerateLeftToRight()
+            {
+                int count = 0;
+
+                while (true)
+                {
+                    ExpressionSyntax left2 = WalkAndCheck(binaryExpression.Left, walkDownParentheses, allowMissing);
+
+                    if (left2?.Kind() != kind)
+                        break;
+
+                    binaryExpression = (BinaryExpressionSyntax)left2;
+                    count++;
+                }
+
+                ExpressionSyntax left = WalkAndCheck(binaryExpression.Left, walkDownParentheses, allowMissing);
+
+                if (left != null)
+                    yield return left;
+
+                while (true)
+                {
+                    ExpressionSyntax right = WalkAndCheck(binaryExpression.Right, walkDownParentheses, allowMissing);
+
+                    if (right != null)
+                        yield return right;
+
+                    if (count > 0)
+                    {
+                        binaryExpression = binaryExpression.FirstAncestor<BinaryExpressionSyntax>(ascendOutOfTrivia: false);
+                        count--;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         internal static BinaryExpressionInfo Create(

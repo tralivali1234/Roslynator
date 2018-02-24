@@ -119,7 +119,6 @@ namespace Roslynator.CSharp.Syntax
 
         public bool ContainsVerbatim => (_flags & Flags.Verbatim) != 0;
 
-        //TODO: IsDefault
         public bool Success
         {
             get { return OriginalExpression != null; }

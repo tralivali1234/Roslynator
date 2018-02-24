@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Roslynator
 {
-    //TODO: MethodSymbolInfo
+    //XTODO: MethodSymbolInfo
     /// <summary>
     /// Represents a method symbol.
     /// </summary>
