@@ -9,7 +9,6 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: IsSingleLine, IsMultiLine, ContainsDoubleQuote, ContainsEscapingBackslash
     public readonly struct StringLiteralExpressionInfo : IEquatable<StringLiteralExpressionInfo>
     {
         private StringLiteralExpressionInfo(LiteralExpressionSyntax expression)
@@ -54,34 +53,47 @@ namespace Roslynator.CSharp.Syntax
             get { return Token.ValueText; }
         }
 
-        public bool IsVerbatim
-        {
-            get { return Text.StartsWith("@", StringComparison.Ordinal); }
-        }
-
         public bool IsRegular
         {
             get { return Text.StartsWith("\"", StringComparison.Ordinal); }
         }
 
+        public bool IsVerbatim
+        {
+            get { return Text.StartsWith("@", StringComparison.Ordinal); }
+        }
+
+        public bool ContainsLinefeed
+        {
+            get
+            {
+                if (IsRegular)
+                    return ValueText.Contains("\n");
+
+                if (IsVerbatim)
+                    return Text.Contains("\n");
+
+                return false;
+            }
+        }
+
+        public bool ContainsEscapeSequence
+        {
+            get
+            {
+                if (IsRegular)
+                    return Text.Contains("\\");
+
+                if (IsVerbatim)
+                    return InnerText.Contains("\"\"");
+
+                return false;
+            }
+        }
+
         public bool Success
         {
             get { return Expression != null; }
-        }
-
-        internal bool InnerTextContains(string value, StringComparison stringComparison = StringComparison.Ordinal)
-        {
-            string text = Text;
-
-            int length = text.Length;
-
-            if (length == 0)
-                return false;
-
-            if (text[0] == '@')
-                return text.IndexOf(value, 2, length - 3, stringComparison) >= 0;
-
-            return text.IndexOf(value, 1, length - 2, stringComparison) >= 0;
         }
 
         internal static StringLiteralExpressionInfo Create(

@@ -226,8 +226,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         //TODO: test
                         ImmutableArray<ExpressionSyntax> expressions = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)expression)
-                            .Expressions()
-                            .Reverse()
+                            .Expressions(leftToRight: true)
                             .ToImmutableArray();
 
                         newInvocation = invocation
