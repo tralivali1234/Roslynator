@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Comparers;
 
@@ -20,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
         {
             ImmutableArray<EnumMemberDeclarationSyntax> selectedMembers = selection.ToImmutableArray();
 
-            if (!EnumMemberDeclarationNameComparer.IsSorted(selectedMembers))
+            if (!selectedMembers.IsSorted(EnumMemberDeclarationNameComparer.Instance))
             {
                 context.RegisterRefactoring(
                     "Sort enum members by name",
@@ -75,7 +76,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            var comparer = new EnumMemberDeclarationValueComparer(semanticModel, cancellationToken);
+            SpecialType enumSpecialType = semanticModel.GetDeclaredSymbol(enumDeclaration, cancellationToken).EnumUnderlyingType.SpecialType;
+
+            var comparer = new EnumMemberDeclarationValueComparer(EnumValueComparer.GetInstance(enumSpecialType), semanticModel, cancellationToken);
 
             IEnumerable<EnumMemberDeclarationSyntax> sorted = selectedMembers.OrderBy(f => f, comparer);
 

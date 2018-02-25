@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -116,7 +115,7 @@ namespace Roslynator.CSharp.Refactorings
             if (modifiers.Count <= 1)
                 return;
 
-            if (ModifierComparer.Instance.IsListSorted(modifiers))
+            if (modifiers.IsSorted(ModifierComparer.Instance))
                 return;
 
             if (declaration.ContainsDirectives(modifiers.Span))

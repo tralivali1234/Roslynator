@@ -66,16 +66,13 @@ namespace Roslynator.CSharp.Refactorings
                 && arguments.Count <= 3
                 && arguments[0].Expression?.Kind() == SyntaxKind.FalseLiteralExpression)
             {
-                MethodInfo methodInfo = semanticModel.GetMethodInfo(invocation, cancellationToken);
+                IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
 
-                if (methodInfo.Symbol != null
-                    && methodInfo.ContainingType?.Equals(debugSymbol) == true
-                    && methodInfo.IsName("Assert")
-                    && methodInfo.IsStatic
-                    && methodInfo.ReturnsVoid
-                    && !methodInfo.IsGenericMethod)
+                if (methodSymbol?.ContainingType?.Equals(debugSymbol) == true
+                    && methodSymbol.IsPublicStaticNonGeneric("Assert")
+                    && methodSymbol.ReturnsVoid)
                 {
-                    ImmutableArray<IParameterSymbol> assertParameters = methodInfo.Parameters;
+                    ImmutableArray<IParameterSymbol> assertParameters = methodSymbol.Parameters;
 
                     int length = assertParameters.Length;
 
@@ -89,15 +86,15 @@ namespace Roslynator.CSharp.Refactorings
 
                         int parameterCount = (length == 1) ? 1 : length - 1;
 
-                        foreach (ISymbol symbol in methodInfo.ContainingType.GetMembers("Fail"))
+                        foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers("Fail"))
                         {
-                            if (symbol is IMethodSymbol methodSymbol
-                                && methodSymbol.IsPublic()
-                                && methodSymbol.IsStatic
-                                && methodSymbol.ReturnsVoid
-                                && !methodSymbol.IsGenericMethod)
+                            if (symbol is IMethodSymbol failMethodSymbol
+                                && failMethodSymbol.IsPublic()
+                                && failMethodSymbol.IsStatic
+                                && failMethodSymbol.ReturnsVoid
+                                && !failMethodSymbol.IsGenericMethod)
                             {
-                                ImmutableArray<IParameterSymbol> failParameters = methodSymbol.Parameters;
+                                ImmutableArray<IParameterSymbol> failParameters = failMethodSymbol.Parameters;
 
                                 if (failParameters.Length == parameterCount
                                     && failParameters.All(f => f.Type.IsString()))

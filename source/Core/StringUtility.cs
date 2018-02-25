@@ -8,6 +8,30 @@ namespace Roslynator
 {
     internal static class StringUtility
     {
+        internal static bool IsNullOrEquals(string s, string value)
+        {
+            return s == null
+                || Equals(s, value);
+        }
+
+        internal static bool Equals(string s, string value1, string value2)
+        {
+            return Equals(s, value1)
+                || Equals(s, value2);
+        }
+
+        internal static bool Equals(string s, string value1, string value2, string value3)
+        {
+            return Equals(s, value1)
+                || Equals(s, value2)
+                || Equals(s, value3);
+        }
+
+        internal static bool Equals(string s, string value)
+        {
+            return string.Equals(s, value, StringComparison.Ordinal);
+        }
+
         public static string FirstCharToLower(string value)
         {
             if (value == null)

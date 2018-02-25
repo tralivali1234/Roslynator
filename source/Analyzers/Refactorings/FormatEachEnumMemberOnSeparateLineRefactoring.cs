@@ -66,10 +66,10 @@ namespace Roslynator.CSharp.Refactorings
 
             public override SyntaxToken VisitToken(SyntaxToken token)
             {
-                if (_separators.Contains(token))
+                if (_separators.Contains(token)
+                    && !token.TrailingTrivia.Contains(SyntaxKind.EndOfLineTrivia))
                 {
-                    if (!token.TrailingTrivia.Contains(SyntaxKind.EndOfLineTrivia))
-                        return token.TrimTrailingTrivia().AppendToTrailingTrivia(CSharpFactory.NewLine());
+                    return token.TrimTrailingTrivia().AppendToTrailingTrivia(CSharpFactory.NewLine());
                 }
 
                 return base.VisitToken(token);

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxRewriters.SortMembers;
 
@@ -50,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
                 if (kind != SyntaxKind.None)
                 {
-                    if (MemberDeclarationComparer.CanBeSortedAlphabetically(kind))
+                    if (MemberDeclarationComparer.CanBeSortedByName(kind))
                     {
                         ComputeRefactoring(
                             context,
@@ -86,7 +85,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             MemberDeclarationsSelection selectedMembers,
             ImmutableArray<MemberDeclarationSyntax> members)
         {
-            if (MemberDeclarationComparer.IsSorted(members, sortMode))
+            if (members.IsSorted(MemberDeclarationComparer.GetInstance(sortMode)))
                 return;
 
             context.RegisterRefactoring(

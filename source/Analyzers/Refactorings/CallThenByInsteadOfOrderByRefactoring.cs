@@ -46,11 +46,10 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsOrderByOrOrderByDescending(InvocationExpressionSyntax invocationExpression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken).Symbol;
 
-            return methodInfo.Symbol != null
-                && methodInfo.IsName("OrderBy", "OrderByDescending")
-                && methodInfo.IsLinqExtensionOfIEnumerableOfT(semanticModel);
+            return methodSymbol?.IsName("OrderBy", "OrderByDescending") == true
+                && SymbolUtility.IsLinqExtensionOfIEnumerableOfT(methodSymbol, semanticModel);
         }
 
         public static Task<Document> RefactorAsync(

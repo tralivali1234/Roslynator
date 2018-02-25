@@ -496,46 +496,40 @@ namespace Roslynator.CSharp
                 && value == value2;
         }
 
-        /// <summary>
-        /// Returns extension method symbol, if any, the specified expression syntax bound to.
-        /// </summary>
-        /// <param name="semanticModel"></param>
-        /// <param name="expression"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static MethodInfo GetExtensionMethodInfo(
+        public static ExtensionMethodSymbolInfo GetExtensionMethodInfo(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return GetExtensionMethodInfo(semanticModel, expression, ExtensionMethodKind.Any, cancellationToken);
-        }
-
-        /// <summary>
-        /// Returns extension method symbol, if any, the specified expression syntax bound to.
-        /// </summary>
-        /// <param name="semanticModel"></param>
-        /// <param name="expression"></param>
-        /// <param name="extensionMethodKind"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public static MethodInfo GetExtensionMethodInfo(
-            this SemanticModel semanticModel,
-            ExpressionSyntax expression,
-            ExtensionMethodKind extensionMethodKind,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol
+                && methodSymbol.IsExtensionMethod)
             {
-                ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol, extensionMethodKind);
+                IMethodSymbol reducedFrom = methodSymbol.ReducedFrom;
 
-                if (extensionMethodInfo.Symbol != null)
-                {
-                    return extensionMethodInfo.MethodInfo;
-                }
+                if (reducedFrom != null)
+                    return new ExtensionMethodSymbolInfo(reducedFrom, methodSymbol);
+
+                return new ExtensionMethodSymbolInfo(methodSymbol, null);
             }
 
-            return default(MethodInfo);
+            return default(ExtensionMethodSymbolInfo);
+        }
+
+        public static ExtensionMethodSymbolInfo GetReducedExtensionMethodInfo(
+            this SemanticModel semanticModel,
+            ExpressionSyntax expression,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol
+                && methodSymbol.IsExtensionMethod)
+            {
+                IMethodSymbol reducedFrom = methodSymbol.ReducedFrom;
+
+                if (reducedFrom != null)
+                    return new ExtensionMethodSymbolInfo(reducedFrom, methodSymbol);
+            }
+
+            return default(ExtensionMethodSymbolInfo);
         }
 
         /// <summary>
@@ -545,17 +539,12 @@ namespace Roslynator.CSharp
         /// <param name="expression"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static MethodInfo GetMethodInfo(
+        public static IMethodSymbol GetMethodSymbol(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (GetSymbol(semanticModel, expression, cancellationToken) is IMethodSymbol methodSymbol)
-            {
-                return new MethodInfo(methodSymbol);
-            }
-
-            return default(MethodInfo);
+            return GetSymbol(semanticModel, expression, cancellationToken) as IMethodSymbol;
         }
 
         internal static MethodDeclarationSyntax GetOtherPart(

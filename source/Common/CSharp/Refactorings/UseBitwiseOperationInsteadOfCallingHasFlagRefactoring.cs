@@ -26,14 +26,13 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (memberAccess.Name.Identifier.ValueText == "HasFlag")
                 {
-                    MethodInfo methodInfo = semanticModel.GetMethodInfo(memberAccess, cancellationToken);
+                    IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(memberAccess, cancellationToken);
 
-                    if (methodInfo.Symbol != null
-                        && methodInfo.IsName("HasFlag")
-                        && !methodInfo.IsExtensionMethod
-                        && methodInfo.IsReturnType(SpecialType.System_Boolean)
-                        && methodInfo.Symbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.SpecialType == SpecialType.System_Enum
-                        && methodInfo.IsContainingType(SpecialType.System_Enum))
+                    if (methodSymbol?.Name == "HasFlag"
+                        && !methodSymbol.IsStatic
+                        && methodSymbol.IsReturnType(SpecialType.System_Boolean)
+                        && methodSymbol.HasSingleParameter(SpecialType.System_Enum)
+                        && methodSymbol.IsContainingType(SpecialType.System_Enum))
                     {
                         return true;
                     }

@@ -30,20 +30,15 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            var methodSymbol = semanticModel.GetSymbol(invocationExpression, cancellationToken) as IMethodSymbol;
+            ExtensionMethodSymbolInfo extensionInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
 
-            if (methodSymbol == null)
+            if (extensionInfo.Symbol == null)
                 return;
 
-            ExtensionMethodInfo extensionMethodInfo = ExtensionMethodInfo.Create(methodSymbol);
-
-            if (extensionMethodInfo.Symbol == null)
+            if (!SymbolUtility.IsLinqSelect(extensionInfo.Symbol, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
-            if (!extensionMethodInfo.MethodInfo.IsLinqSelect(semanticModel, allowImmutableArrayExtension: true))
-                return;
-
-            ITypeSymbol typeArgument = extensionMethodInfo.ReducedSymbolOrSymbol.TypeArguments[0];
+            ITypeSymbol typeArgument = extensionInfo.ReducedSymbolOrSymbol.TypeArguments[0];
 
             if (!typeArgument.IsReferenceType)
                 return;

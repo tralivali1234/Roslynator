@@ -69,14 +69,14 @@ namespace Roslynator.CSharp.Syntax
             return Create(Walk(node, walkDownParentheses) as BinaryExpressionSyntax);
         }
 
-        internal static BinaryExpressionChainInfo Create(BinaryExpressionSyntax binaryExpression, bool walkDownParentheses = true)
+        internal static BinaryExpressionChainInfo Create(BinaryExpressionSyntax binaryExpression)
         {
             if (binaryExpression == null)
                 return Default;
 
             SyntaxKind kind = binaryExpression.Kind();
 
-            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind, walkDownParentheses);
+            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, kind);
 
             if (expressions.IsDefault)
                 return Default;
@@ -86,8 +86,7 @@ namespace Roslynator.CSharp.Syntax
 
         private static ImmutableArray<ExpressionSyntax> GetExpressions(
             BinaryExpressionSyntax binaryExpression,
-            SyntaxKind kind,
-            bool walkDownParentheses = true)
+            SyntaxKind kind)
         {
             ImmutableArray<ExpressionSyntax>.Builder builder = null;
             bool success = true;
@@ -108,9 +107,6 @@ namespace Roslynator.CSharp.Syntax
 
                         if (left?.IsMissing == false)
                         {
-                            if (walkDownParentheses)
-                                left = left.WalkDownParentheses();
-
                             if (left.Kind() == kind)
                             {
                                 binaryExpression = (BinaryExpressionSyntax)left;

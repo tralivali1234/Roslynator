@@ -21,12 +21,12 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, "FirstOrDefault"))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, semanticModel, "FirstOrDefault"))
                 return;
 
             ExpressionSyntax expression = memberAccess.Expression;

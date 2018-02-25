@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
 
 namespace Roslynator.CSharp.CodeFixes

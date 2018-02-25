@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    //TODO: pub
     internal readonly struct OverriddenSymbolInfo : IEquatable<OverriddenSymbolInfo>
     {
         public OverriddenSymbolInfo(ISymbol symbol, ISymbol overriddenSymbol)

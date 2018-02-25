@@ -33,12 +33,11 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             if (name != identifierName.Identifier.ValueText)
                 return false;
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            return methodInfo.Symbol != null
-                && !methodInfo.IsStatic
-                && methodInfo.ContainingType?.Equals(typeSymbol) == true
-                && methodInfo.ReturnType.Equals(typeSymbol);
+            return methodSymbol?.IsStatic == false
+                && methodSymbol.ContainingType?.Equals(typeSymbol) == true
+                && methodSymbol.ReturnType.Equals(typeSymbol);
         }
 
         protected override InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement)

@@ -52,20 +52,20 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetExtensionMethodInfo(invocationExpression, cancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, "Any"))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, semanticModel, "Any"))
                 return;
 
-            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocationInfo2.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol2 = semanticModel.GetExtensionMethodInfo(invocationInfo2.InvocationExpression, cancellationToken).Symbol;
 
-            if (methodInfo2.Symbol == null)
+            if (methodSymbol2 == null)
                 return;
 
-            if (!methodInfo2.IsLinqWhere(semanticModel, allowImmutableArrayExtension: true))
+            if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
             SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);

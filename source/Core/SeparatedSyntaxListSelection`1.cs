@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator
 {
     /// <summary>
-    /// Represents selected node(s) in a <see cref="SeparatedSyntaxList{TNode}"/>.
+    /// Represents selected nodes in a <see cref="SeparatedSyntaxList{TNode}"/>.
     /// </summary>
     /// <typeparam name="TNode"></typeparam>
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
@@ -52,7 +52,7 @@ namespace Roslynator
             SelectionResult result = SelectionResult.Create(list, span);
 
             if (!result.Success)
-                throw new InvalidOperationException("No selected node(s) found.");
+                throw new InvalidOperationException("No selected node found.");
 
             return new SeparatedSyntaxListSelection<TNode>(list, span, result.FirstIndex, result.LastIndex);
         }

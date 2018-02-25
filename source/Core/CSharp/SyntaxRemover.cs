@@ -10,7 +10,6 @@ using Roslynator.CSharp.SyntaxRewriters;
 
 namespace Roslynator.CSharp
 {
-    //TODO: pub
     internal static class SyntaxRemover
     {
         public static SyntaxRemoveOptions DefaultRemoveOptions
@@ -36,7 +35,7 @@ namespace Roslynator.CSharp
             return removeOptions;
         }
 
-        public static SyntaxRemoveOptions GetOptions(CSharpSyntaxNode node)
+        public static SyntaxRemoveOptions GetRemoveOptions(CSharpSyntaxNode node)
         {
             SyntaxRemoveOptions removeOptions = DefaultRemoveOptions;
 
@@ -129,7 +128,7 @@ namespace Roslynator.CSharp
 
             classDeclaration = classDeclaration.WithMembers(classDeclaration.Members.ReplaceAt(index, newMember));
 
-            return classDeclaration.RemoveNode(classDeclaration.Members[index], GetOptions(newMember));
+            return classDeclaration.RemoveNode(classDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static CompilationUnitSyntax RemoveMember(CompilationUnitSyntax compilationUnit, MemberDeclarationSyntax member)
@@ -146,7 +145,7 @@ namespace Roslynator.CSharp
 
             compilationUnit = compilationUnit.WithMembers(compilationUnit.Members.ReplaceAt(index, newMember));
 
-            return compilationUnit.RemoveNode(compilationUnit.Members[index], GetOptions(newMember));
+            return compilationUnit.RemoveNode(compilationUnit.Members[index], GetRemoveOptions(newMember));
         }
 
         public static InterfaceDeclarationSyntax RemoveMember(InterfaceDeclarationSyntax interfaceDeclaration, MemberDeclarationSyntax member)
@@ -163,7 +162,7 @@ namespace Roslynator.CSharp
 
             interfaceDeclaration = interfaceDeclaration.WithMembers(interfaceDeclaration.Members.ReplaceAt(index, newMember));
 
-            return interfaceDeclaration.RemoveNode(interfaceDeclaration.Members[index], GetOptions(newMember));
+            return interfaceDeclaration.RemoveNode(interfaceDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static NamespaceDeclarationSyntax RemoveMember(NamespaceDeclarationSyntax namespaceDeclaration, MemberDeclarationSyntax member)
@@ -180,7 +179,7 @@ namespace Roslynator.CSharp
 
             namespaceDeclaration = namespaceDeclaration.WithMembers(namespaceDeclaration.Members.ReplaceAt(index, newMember));
 
-            return namespaceDeclaration.RemoveNode(namespaceDeclaration.Members[index], GetOptions(newMember));
+            return namespaceDeclaration.RemoveNode(namespaceDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static StructDeclarationSyntax RemoveMember(StructDeclarationSyntax structDeclaration, MemberDeclarationSyntax member)
@@ -197,7 +196,7 @@ namespace Roslynator.CSharp
 
             structDeclaration = structDeclaration.WithMembers(structDeclaration.Members.ReplaceAt(index, newMember));
 
-            return structDeclaration.RemoveNode(structDeclaration.Members[index], GetOptions(newMember));
+            return structDeclaration.RemoveNode(structDeclaration.Members[index], GetRemoveOptions(newMember));
         }
 
         public static TypeDeclarationSyntax RemoveMember(TypeDeclarationSyntax typeDeclaration, MemberDeclarationSyntax member)
@@ -214,7 +213,7 @@ namespace Roslynator.CSharp
 
             typeDeclaration = typeDeclaration.WithMembers(typeDeclaration.Members.ReplaceAt(index, newMember));
 
-            return typeDeclaration.RemoveNode(typeDeclaration.Members[index], GetOptions(newMember));
+            return typeDeclaration.RemoveNode(typeDeclaration.Members[index], GetRemoveOptions(newMember));
         }
     }
 }

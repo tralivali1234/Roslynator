@@ -40,18 +40,13 @@ namespace Roslynator.CSharp.Refactorings
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken);
 
-            if (methodInfo.Symbol != null
-                && methodInfo.IsName("ToString")
-                && methodInfo.IsPublic
-                && !methodInfo.IsStatic
-                && methodInfo.IsReturnType(SpecialType.System_String)
-                && !methodInfo.IsGenericMethod
-                && !methodInfo.IsExtensionMethod
-                && !methodInfo.Parameters.Any())
+            if (methodSymbol?.ReturnType.SpecialType == SpecialType.System_String
+                && methodSymbol.IsPublicInstanceNonGeneric("ToString")
+                && !methodSymbol.Parameters.Any())
             {
-                INamedTypeSymbol containingType = methodInfo.ContainingType;
+                INamedTypeSymbol containingType = methodSymbol.ContainingType;
 
                 if (containingType?.IsReferenceType == true
                     && containingType.SpecialType != SpecialType.System_Enum)
@@ -60,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
                         return true;
 
                     if (invocationExpression.IsParentKind(SyntaxKind.Interpolation))
-                        return IsNotHidden(methodInfo.Symbol, containingType);
+                        return IsNotHidden(methodSymbol, containingType);
 
                     ExpressionSyntax expression = invocationExpression.WalkUpParentheses();
 
@@ -68,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (parent?.Kind() == SyntaxKind.AddExpression
                         && !parent.ContainsDiagnostics
-                        && IsNotHidden(methodInfo.Symbol, containingType))
+                        && IsNotHidden(methodSymbol, containingType))
                     {
                         var addExpression = (BinaryExpressionSyntax)expression.Parent;
 

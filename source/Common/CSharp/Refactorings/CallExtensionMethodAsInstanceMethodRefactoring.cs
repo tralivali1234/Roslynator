@@ -51,12 +51,12 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return Fail;
 
-            if (!methodInfo.Symbol.IsNonReducedExtensionMethod())
+            if (!methodSymbol.IsNonReducedExtensionMethod())
                 return Fail;
 
             InvocationExpressionSyntax newInvocationExpression = GetNewInvocationForAnalysis(invocationExpression);
@@ -67,12 +67,12 @@ namespace Roslynator.CSharp.Refactorings
             if (semanticModel
                 .GetSpeculativeMethodSymbol(invocationExpression.SpanStart, newInvocationExpression)?
                 .ReducedFromOrSelf()
-                .Equals(methodInfo.ConstructedFrom) != true)
+                .Equals(methodSymbol.ConstructedFrom) != true)
             {
                 return Fail;
             }
 
-            return new CallExtensionMethodAsInstanceMethodAnalysis(invocationExpression, newInvocationExpression, methodInfo.Symbol);
+            return new CallExtensionMethodAsInstanceMethodAnalysis(invocationExpression, newInvocationExpression, methodSymbol);
         }
 
         public static SyntaxNodeOrToken GetNodeOrToken(ExpressionSyntax expression)

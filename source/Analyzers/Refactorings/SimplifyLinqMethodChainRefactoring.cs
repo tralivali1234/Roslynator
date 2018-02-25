@@ -40,20 +40,20 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetExtensionMethodInfo(invocation, cancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodName, semanticModel))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodSymbol, methodName, semanticModel))
                 return;
 
-            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, cancellationToken);
+            IMethodSymbol methodSymbol2 = semanticModel.GetExtensionMethodInfo(invocation2, cancellationToken).Symbol;
 
-            if (methodInfo2.Symbol == null)
+            if (methodSymbol2 == null)
                 return;
 
-            if (!methodInfo2.IsLinqWhere(semanticModel, allowImmutableArrayExtension: true))
+            if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
             TextSpan span = TextSpan.FromBounds(memberAccess2.Name.Span.Start, invocation.Span.End);

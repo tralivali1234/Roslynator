@@ -48,5 +48,21 @@ namespace Roslynator
 
             return default(T);
         }
+
+        public static bool IsSorted<T>(this IList<T> values, IComparer<T> comparer)
+        {
+            int count = values.Count;
+
+            if (count > 1)
+            {
+                for (int i = 0; i < count - 1; i++)
+                {
+                    if (comparer.Compare(values[i], values[i + 1]) > 0)
+                        return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

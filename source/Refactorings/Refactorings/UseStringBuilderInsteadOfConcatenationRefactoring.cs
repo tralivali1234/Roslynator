@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, StringConcatenationExpressionInfo concatenationInfo)
         {
-            BinaryExpressionSyntax expression = concatenationInfo.OriginalExpression;
+            BinaryExpressionSyntax expression = concatenationInfo.BinaryExpression;
 
             switch (expression.Parent.Kind())
             {
@@ -120,7 +120,7 @@ namespace Roslynator.CSharp.Refactorings
             statements.Add(ExpressionStatement(newInvocation));
 
             statements.Add(statement
-                .ReplaceNode(concatenationInfo.OriginalExpression, SimpleMemberInvocationExpression(stringBuilderName, IdentifierName("ToString")))
+                .ReplaceNode(concatenationInfo.BinaryExpression, SimpleMemberInvocationExpression(stringBuilderName, IdentifierName("ToString")))
                 .WithTrailingTrivia(statement.GetTrailingTrivia())
                 .WithoutLeadingTrivia());
 

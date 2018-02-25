@@ -47,20 +47,20 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsLinqCast(semanticModel))
+            if (!SymbolUtility.IsLinqCast(methodSymbol, semanticModel))
                 return;
 
-            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
+            IMethodSymbol methodSymbol2 = semanticModel.GetReducedExtensionMethodInfo(invocation2, cancellationToken).Symbol;
 
-            if (methodInfo2.Symbol == null)
+            if (methodSymbol2 == null)
                 return;
 
-            if (!methodInfo2.IsLinqWhere(semanticModel))
+            if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel))
                 return;
 
             BinaryExpressionSyntax isExpression = GetIsExpression(arguments.First().Expression);
