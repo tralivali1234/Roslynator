@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
-using Roslynator.CSharp.Comparers;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings

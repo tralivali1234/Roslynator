@@ -30,8 +30,8 @@ namespace Roslynator.CSharp.Refactorings
                     "Join string literals",
                     cancellationToken => ToStringLiteralAsync(context.Document, concatenationInfo, multiline: false, cancellationToken: cancellationToken));
 
-                if (concatenationInfo.OriginalExpression
-                        .DescendantTrivia(concatenationInfo.Span ?? concatenationInfo.OriginalExpression.Span)
+                if (concatenationInfo.BinaryExpression
+                        .DescendantTrivia(concatenationInfo.Span ?? concatenationInfo.BinaryExpression.Span)
                         .Any(f => f.IsEndOfLineTrivia()))
                 {
                     context.RegisterRefactoring(
@@ -74,9 +74,9 @@ namespace Roslynator.CSharp.Refactorings
             {
                 TextSpan span = concatenationInfo.Span.Value;
 
-                int start = concatenationInfo.OriginalExpression.SpanStart;
+                int start = concatenationInfo.BinaryExpression.SpanStart;
 
-                string s = concatenationInfo.OriginalExpression.ToString();
+                string s = concatenationInfo.BinaryExpression.ToString();
 
                 s = s.Remove(span.Start - start)
                     + expression
@@ -86,10 +86,10 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             expression = expression
-                .WithTriviaFrom(concatenationInfo.OriginalExpression)
+                .WithTriviaFrom(concatenationInfo.BinaryExpression)
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(concatenationInfo.OriginalExpression, expression, cancellationToken);
+            return document.ReplaceNodeAsync(concatenationInfo.BinaryExpression, expression, cancellationToken);
         }
     }
 }

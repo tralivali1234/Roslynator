@@ -66,8 +66,7 @@ namespace Roslynator.CSharp.Syntax
 
         public ImmutableArray<ExpressionSyntax> Expressions { get; }
 
-        //TODO: UnderlyingExpression
-        public BinaryExpressionSyntax OriginalExpression
+        public BinaryExpressionSyntax BinaryExpression
         {
             get { return (!Expressions.IsDefault) ? (BinaryExpressionSyntax)Expressions[0].Parent : null; }
         }
@@ -121,7 +120,7 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Success
         {
-            get { return OriginalExpression != null; }
+            get { return BinaryExpression != null; }
         }
 
         internal static StringConcatenationExpressionInfo Create(
@@ -193,12 +192,11 @@ namespace Roslynator.CSharp.Syntax
 
             while (true)
             {
-                MethodInfo methodInfo = semanticModel.GetMethodInfo(binaryExpression, cancellationToken);
+                IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(binaryExpression, cancellationToken);
 
-                if (methodInfo.Symbol != null
-                    && methodInfo.MethodKind == MethodKind.BuiltinOperator
-                    && methodInfo.Name == WellKnownMemberNames.AdditionOperatorName
-                    && methodInfo.IsContainingType(SpecialType.System_String))
+                if (methodSymbol?.MethodKind == MethodKind.BuiltinOperator
+                    && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
+                    && methodSymbol.IsContainingType(SpecialType.System_String))
                 {
                     (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(binaryExpression.Right);
 
@@ -399,7 +397,7 @@ namespace Roslynator.CSharp.Syntax
                     {
                         TextSpan span = TextSpan.FromBounds(Expressions[i].Span.End, Expressions[i + 1].SpanStart);
 
-                        if (OriginalExpression.SyntaxTree.IsMultiLineSpan(span))
+                        if (BinaryExpression.SyntaxTree.IsMultiLineSpan(span))
                             sb.AppendLine();
                     }
                 }
@@ -413,13 +411,13 @@ namespace Roslynator.CSharp.Syntax
         public override string ToString()
         {
             return (Span != null)
-                ? OriginalExpression.ToString(Span.Value)
-                : OriginalExpression.ToString();
+                ? BinaryExpression.ToString(Span.Value)
+                : BinaryExpression.ToString();
         }
 
         private void ThrowInvalidOperationIfNotInitialized()
         {
-            if (OriginalExpression == null)
+            if (BinaryExpression == null)
                 throw new InvalidOperationException($"{nameof(StringConcatenationExpressionInfo)} is not initalized.");
         }
 
@@ -430,13 +428,13 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Equals(StringConcatenationExpressionInfo other)
         {
-            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(OriginalExpression, other.OriginalExpression)
+            return EqualityComparer<BinaryExpressionSyntax>.Default.Equals(BinaryExpression, other.BinaryExpression)
                 && EqualityComparer<TextSpan?>.Default.Equals(Span, other.Span);
         }
 
         public override int GetHashCode()
         {
-            return Hash.Combine(Span.GetHashCode(), Hash.Create(OriginalExpression));
+            return Hash.Combine(Span.GetHashCode(), Hash.Create(BinaryExpression));
         }
 
         public static bool operator ==(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)

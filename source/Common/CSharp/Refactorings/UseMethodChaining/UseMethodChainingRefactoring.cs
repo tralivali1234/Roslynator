@@ -84,17 +84,17 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             if (statements.Count == 1)
                 return false;
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return false;
 
-            ITypeSymbol typeSymbol = methodInfo.ReturnType;
+            ITypeSymbol returnType = methodSymbol.ReturnType;
 
             int i = statements.IndexOf(statement);
 
             if (i != 0
-                && IsFixableStatement(statements[i - 1], name, typeSymbol, semanticModel, cancellationToken))
+                && IsFixableStatement(statements[i - 1], name, returnType, semanticModel, cancellationToken))
             {
                 return false;
             }
@@ -102,7 +102,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             int j = i;
             while (j < statements.Count - 1)
             {
-                if (!IsFixableStatement(statements[j + 1], name, typeSymbol, semanticModel, cancellationToken))
+                if (!IsFixableStatement(statements[j + 1], name, returnType, semanticModel, cancellationToken))
                     break;
 
                 j++;
@@ -148,11 +148,9 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 
             InvocationExpressionSyntax invocationExpression = GetInvocationExpression(expressionStatement);
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationExpression, cancellationToken);
-
             MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
 
-            ITypeSymbol typeSymbol = methodInfo.ReturnType;
+            ITypeSymbol returnType = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken).ReturnType;
 
             string name = ((IdentifierNameSyntax)WalkDownMethodChain(invocationInfo).Expression).Identifier.ValueText;
 
@@ -171,7 +169,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             {
                 StatementSyntax statement = statements[j + 1];
 
-                if (!IsFixableStatement(statement, name, typeSymbol, semanticModel, cancellationToken))
+                if (!IsFixableStatement(statement, name, returnType, semanticModel, cancellationToken))
                     break;
 
                 sb.AppendLine();

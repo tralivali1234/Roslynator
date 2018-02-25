@@ -25,12 +25,12 @@ namespace Roslynator.CSharp.Refactorings
             string fromMethodName,
             string toMethodName)
         {
-            MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, context.CancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetExtensionMethodInfo(invocation, context.CancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return false;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(semanticModel, fromMethodName))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, semanticModel, fromMethodName))
                 return false;
 
             ExpressionSyntax expression = GetExpression(invocation);

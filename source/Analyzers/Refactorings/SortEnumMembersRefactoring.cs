@@ -38,6 +38,8 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (firstField?.HasConstantValue == true)
                 {
+                    SpecialType enumSpecialType = firstField.ContainingType.EnumUnderlyingType.SpecialType;
+
                     object previousValue = firstField.ConstantValue;
 
                     for (int i = 1; i < count - 1; i++)
@@ -49,7 +51,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         object value = field.ConstantValue;
 
-                        if (EnumMemberValueComparer.Instance.Compare(previousValue, value) > 0)
+                        if (EnumValueComparer.GetInstance(enumSpecialType).Compare(previousValue, value) > 0)
                         {
                             i++;
 
@@ -79,8 +81,10 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
+            SpecialType enumSpecialType = semanticModel.GetDeclaredSymbol(enumDeclaration).EnumUnderlyingType.SpecialType;
+
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> newMembers = enumDeclaration.Members
-                .OrderBy(f => GetConstantValue(f, semanticModel, cancellationToken), EnumMemberValueComparer.Instance)
+                .OrderBy(f => GetConstantValue(f, semanticModel, cancellationToken), EnumValueComparer.GetInstance(enumSpecialType))
                 .ToSeparatedSyntaxList();
 
             MemberDeclarationSyntax newNode = enumDeclaration

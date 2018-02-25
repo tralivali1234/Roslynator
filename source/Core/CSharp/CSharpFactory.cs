@@ -12,7 +12,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// A factory for syntax nodes, tokens and trivia. This class is built on top of <see cref="SyntaxFactory"/>.
+    /// A factory for syntax nodes, tokens and trivia. This class is built on top of <see cref="SyntaxFactory"/> members.
     /// </summary>
     public static class CSharpFactory
     {

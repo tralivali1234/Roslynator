@@ -958,6 +958,22 @@ namespace Roslynator
         {
             return tokens.IndexOf(token) != -1;
         }
+
+        internal static bool IsSorted(SyntaxTokenList modifiers, IComparer<SyntaxToken> comparer)
+        {
+            int count = modifiers.Count;
+
+            if (count > 1)
+            {
+                for (int i = 0; i < count - 1; i++)
+                {
+                    if (comparer.Compare(modifiers[i], modifiers[i + 1]) > 0)
+                        return false;
+                }
+            }
+
+            return true;
+        }
         #endregion SyntaxTokenList
 
         #region SyntaxTrivia

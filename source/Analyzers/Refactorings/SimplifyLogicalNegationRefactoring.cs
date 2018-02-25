@@ -64,12 +64,12 @@ namespace Roslynator.CSharp.Refactorings
             if (expression?.IsKind(SyntaxKind.LogicalNotExpression) != true)
                 return;
 
-            MethodInfo methodInfo = context.SemanticModel.GetExtensionMethodInfo(invocationInfo.InvocationExpression, ExtensionMethodKind.Reduced, context.CancellationToken);
+            IMethodSymbol methodSymbol = context.SemanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, context.CancellationToken).Symbol;
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsLinqExtensionOfIEnumerableOfTWithPredicate(context.SemanticModel))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, context.SemanticModel))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, parent);

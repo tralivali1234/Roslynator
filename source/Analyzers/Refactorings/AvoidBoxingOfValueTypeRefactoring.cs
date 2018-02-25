@@ -21,14 +21,13 @@ namespace Roslynator.CSharp.Refactorings
 
             var addExpression = (BinaryExpressionSyntax)context.Node;
 
-            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(addExpression, context.CancellationToken);
+            IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(addExpression, context.CancellationToken);
 
-            if (methodInfo.Symbol != null
-                && methodInfo.MethodKind == MethodKind.BuiltinOperator
-                && methodInfo.Name == WellKnownMemberNames.AdditionOperatorName
-                && methodInfo.IsContainingType(SpecialType.System_String))
+            if (methodSymbol?.MethodKind == MethodKind.BuiltinOperator
+                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
+                && methodSymbol.IsContainingType(SpecialType.System_String))
             {
-                ImmutableArray<IParameterSymbol> parameters = methodInfo.Parameters;
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
 
                 if (parameters[0].Type.IsObject())
                 {

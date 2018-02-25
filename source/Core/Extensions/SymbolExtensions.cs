@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -597,6 +596,22 @@ namespace Roslynator
 
             return null;
         }
+
+        //TODO: pub
+        internal static bool IsName(this ISymbol symbol, string name)
+        {
+            return StringUtility.Equals(symbol.Name, name);
+        }
+
+        internal static bool IsName(this ISymbol symbol, string name1, string name2)
+        {
+            return StringUtility.Equals(symbol.Name, name1, name2);
+        }
+
+        internal static bool IsContainingType(this ISymbol symbol, SpecialType specialType)
+        {
+            return symbol?.ContainingType?.SpecialType == specialType;
+        }
         #endregion ISymbol
 
         #region IEventSymbol
@@ -1012,6 +1027,42 @@ namespace Roslynator
 
             return methodSymbol.IsExtensionMethod
                 && methodSymbol.MethodKind != MethodKind.ReducedExtension;
+        }
+
+        //TODO: pub
+        internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)
+        {
+            return methodSymbol?.ReturnType.SpecialType == specialType;
+        }
+
+        internal static bool IsPublicStaticNonGeneric(this IMethodSymbol methodSymbol, string name = null)
+        {
+            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
+                && methodSymbol.IsStatic
+                && !methodSymbol.IsGenericMethod
+                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
+        }
+
+        internal static bool IsPublicInstanceNonGeneric(this IMethodSymbol methodSymbol, string name = null)
+        {
+            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
+                && !methodSymbol.IsStatic
+                && !methodSymbol.IsGenericMethod
+                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
+        }
+
+        internal static bool HasSingleParameter(this IMethodSymbol methodSymbol, SpecialType parameterType)
+        {
+            return methodSymbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.SpecialType == parameterType;
+        }
+
+        internal static bool HasTwoParameters(this IMethodSymbol methodSymbol, SpecialType firstParameterType, SpecialType secondParameterType)
+        {
+            ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+            return parameters.Length == 2
+                && parameters[0].Type.SpecialType == firstParameterType
+                && parameters[1].Type.SpecialType == secondParameterType;
         }
         #endregion IMethodSymbol
 

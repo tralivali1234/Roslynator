@@ -223,5 +223,174 @@ namespace Roslynator
                 && symbol.ContainingType?.ConstructedFrom.SpecialType == SpecialType.System_Nullable_T
                 && string.Equals(symbol.Name, name, StringComparison.Ordinal);
         }
+
+        internal static bool IsLinqExtensionOfIEnumerableOfTWithoutParameters(
+            IMethodSymbol methodSymbol,
+            string name,
+            SemanticModel semanticModel,
+            bool allowImmutableArrayExtension = false)
+        {
+            return IsLinqExtensionOfIEnumerableOfT(methodSymbol, semanticModel, name, parameterCount: 1, allowImmutableArrayExtension: allowImmutableArrayExtension);
+        }
+
+        internal static bool IsLinqElementAt(
+            IMethodSymbol methodSymbol,
+            SemanticModel semanticModel,
+            bool allowImmutableArrayExtension = false)
+        {
+            return IsLinqExtensionOfIEnumerableOfT(methodSymbol, semanticModel, "ElementAt", parameterCount: 2, allowImmutableArrayExtension: allowImmutableArrayExtension)
+                && methodSymbol.Parameters[1].Type.SpecialType == SpecialType.System_Int32;
+        }
+
+        internal static bool IsLinqWhere(
+            IMethodSymbol methodSymbol,
+            SemanticModel semanticModel,
+            bool allowImmutableArrayExtension = false)
+        {
+            return IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, "Where", parameterCount: 2, semanticModel: semanticModel, allowImmutableArrayExtension: allowImmutableArrayExtension);
+        }
+
+        internal static bool IsLinqWhereWithIndex(IMethodSymbol methodSymbol, SemanticModel semanticModel)
+        {
+            return IsLinqExtensionOfIEnumerableOfT(methodSymbol, semanticModel, "Where", parameterCount: 2, allowImmutableArrayExtension: false)
+                && IsPredicateFunc(methodSymbol.Parameters[1].Type, methodSymbol.TypeArguments[0], semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32), semanticModel);
+        }
+
+        internal static bool IsLinqSelect(IMethodSymbol methodSymbol, SemanticModel semanticModel, bool allowImmutableArrayExtension = false)
+        {
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+                return false;
+
+            if (!methodSymbol.ReturnType.IsConstructedFromIEnumerableOfT())
+                return false;
+
+            if (!methodSymbol.IsName("Select"))
+                return false;
+
+            if (methodSymbol.Arity != 2)
+                return false;
+
+            INamedTypeSymbol containingType = methodSymbol.ContainingType;
+
+            if (containingType == null)
+                return false;
+
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return parameters.Length == 2
+                    && parameters[0].Type.IsConstructedFromIEnumerableOfT()
+                    && IsFunc(parameters[1].Type, methodSymbol.TypeArguments[0], methodSymbol.TypeArguments[1], semanticModel);
+            }
+            else if (allowImmutableArrayExtension
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return parameters.Length == 2
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel)
+                    && IsFunc(parameters[1].Type, methodSymbol.TypeArguments[0], methodSymbol.TypeArguments[1], semanticModel);
+            }
+
+            return false;
+        }
+
+        internal static bool IsLinqCast(IMethodSymbol methodSymbol, SemanticModel semanticModel)
+        {
+            return methodSymbol.DeclaredAccessibility == Accessibility.Public
+                && methodSymbol.ReturnType.IsConstructedFromIEnumerableOfT()
+                && methodSymbol.IsName("Cast")
+                && methodSymbol.Arity == 1
+                && methodSymbol.HasSingleParameter(SpecialType.System_Collections_IEnumerable)
+                && methodSymbol
+                    .ContainingType?
+                    .Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)) == true;
+        }
+
+        internal static bool IsLinqExtensionOfIEnumerableOfT(
+            IMethodSymbol methodSymbol,
+            SemanticModel semanticModel,
+            string name = null,
+            int parameterCount = -1,
+            bool allowImmutableArrayExtension = false)
+        {
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+                return false;
+
+            if (!StringUtility.IsNullOrEquals(name, methodSymbol.Name))
+                return false;
+
+            INamedTypeSymbol containingType = methodSymbol.ContainingType;
+
+            if (containingType == null)
+                return false;
+
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return (parameterCount == -1 || parameters.Length == parameterCount)
+                    && parameters[0].Type.IsConstructedFromIEnumerableOfT();
+            }
+            else if (allowImmutableArrayExtension
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return (parameterCount == -1 || parameters.Length == parameterCount)
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel);
+            }
+
+            return false;
+        }
+
+        internal static bool IsLinqExtensionOfIEnumerableOfTWithPredicate(
+            IMethodSymbol methodSymbol,
+            SemanticModel semanticModel,
+            string name = null,
+            bool allowImmutableArrayExtension = false)
+        {
+            return IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, name, parameterCount: 2, semanticModel: semanticModel, allowImmutableArrayExtension: allowImmutableArrayExtension);
+        }
+
+        private static bool IsLinqExtensionOfIEnumerableOfTWithPredicate(
+            IMethodSymbol methodSymbol,
+            string name,
+            int parameterCount,
+            SemanticModel semanticModel,
+            bool allowImmutableArrayExtension = false)
+        {
+            if (methodSymbol.DeclaredAccessibility != Accessibility.Public)
+                return false;
+
+            if (!StringUtility.IsNullOrEquals(name, methodSymbol.Name))
+                return false;
+
+            INamedTypeSymbol containingType = methodSymbol.ContainingType;
+
+            if (containingType == null)
+                return false;
+
+            if (containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return parameters.Length == parameterCount
+                    && parameters[0].Type.IsConstructedFromIEnumerableOfT()
+                    && IsPredicateFunc(parameters[1].Type, methodSymbol.TypeArguments[0], semanticModel);
+            }
+            else if (allowImmutableArrayExtension
+                && containingType.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_ImmutableArrayExtensions)))
+            {
+                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+                return parameters.Length == parameterCount
+                    && parameters[0].Type.IsConstructedFromImmutableArrayOfT(semanticModel)
+                    && IsPredicateFunc(parameters[1].Type, methodSymbol.TypeArguments[0], semanticModel);
+            }
+
+            return false;
+        }
     }
 }

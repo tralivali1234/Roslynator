@@ -1,35 +1,42 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Comparers
+namespace Roslynator.CSharp
 {
-    internal class MemberDeclarationComparer : IMemberDeclarationComparer
+    public class MemberDeclarationComparer : IMemberDeclarationComparer
     {
-        public static readonly MemberDeclarationComparer ByKind = new MemberDeclarationComparer(MemberDeclarationSortMode.ByKind);
+        internal const int MaxOrderIndex = 18;
 
-        public static readonly MemberDeclarationComparer ByKindThenByName = new MemberDeclarationComparer(MemberDeclarationSortMode.ByKindThenByName);
-
-        private const int _maxOrderIndex = 18;
-
-        private MemberDeclarationComparer(MemberDeclarationSortMode sortMode = MemberDeclarationSortMode.ByKind)
+        public MemberDeclarationComparer(MemberDeclarationSortMode sortMode)
         {
             SortMode = sortMode;
         }
 
         public MemberDeclarationSortMode SortMode { get; }
 
-        public int Compare(MemberDeclarationSyntax x, MemberDeclarationSyntax y)
+        internal static MemberDeclarationComparer ByKind { get; } = new MemberDeclarationComparer(MemberDeclarationSortMode.ByKind);
+
+        internal static MemberDeclarationComparer ByKindThenByName { get; } = new MemberDeclarationComparer(MemberDeclarationSortMode.ByKindThenByName);
+
+        internal static MemberDeclarationComparer GetInstance(MemberDeclarationSortMode sortMode)
         {
-            return Compare(x, y, SortMode);
+            switch (sortMode)
+            {
+                case MemberDeclarationSortMode.ByKind:
+                    return ByKind;
+                case MemberDeclarationSortMode.ByKindThenByName:
+                    return ByKindThenByName;
+                default:
+                    throw new ArgumentException("", nameof(sortMode));
+            }
         }
 
-        private static int Compare(MemberDeclarationSyntax x, MemberDeclarationSyntax y, MemberDeclarationSortMode sortMode)
+        public int Compare(MemberDeclarationSyntax x, MemberDeclarationSyntax y)
         {
             if (object.ReferenceEquals(x, y))
                 return 0;
@@ -42,7 +49,7 @@ namespace Roslynator.CSharp.Comparers
 
             int result = GetOrderIndex(x).CompareTo(GetOrderIndex(y));
 
-            if (sortMode == MemberDeclarationSortMode.ByKindThenByName
+            if (SortMode == MemberDeclarationSortMode.ByKindThenByName
                 && result == 0)
             {
                 return string.Compare(GetName(x), GetName(y), StringComparison.CurrentCulture);
@@ -51,37 +58,6 @@ namespace Roslynator.CSharp.Comparers
             {
                 return result;
             }
-        }
-
-        public bool IsSorted(IEnumerable<MemberDeclarationSyntax> members)
-        {
-            return IsSorted(members, SortMode);
-        }
-
-        public static bool IsSorted(IEnumerable<MemberDeclarationSyntax> members, MemberDeclarationSortMode sortMode)
-        {
-            if (members == null)
-                throw new ArgumentNullException(nameof(members));
-
-            using (IEnumerator<MemberDeclarationSyntax> en = members.GetEnumerator())
-            {
-                if (en.MoveNext())
-                {
-                    MemberDeclarationSyntax member1 = en.Current;
-
-                    while (en.MoveNext())
-                    {
-                        MemberDeclarationSyntax member2 = en.Current;
-
-                        if (Compare(member1, member2, sortMode) > 0)
-                            return false;
-
-                        member1 = member2;
-                    }
-                }
-            }
-
-            return true;
         }
 
         public int GetInsertIndex(SyntaxList<MemberDeclarationSyntax> members, MemberDeclarationSyntax member)
@@ -102,7 +78,7 @@ namespace Roslynator.CSharp.Comparers
             return GetInsertIndex(members, (isConst) ? 0 : 1);
         }
 
-        private static int GetInsertIndex(SyntaxList<MemberDeclarationSyntax> members, int orderIndex)
+        private int GetInsertIndex(SyntaxList<MemberDeclarationSyntax> members, int orderIndex)
         {
             if (members.Any())
             {
@@ -119,49 +95,38 @@ namespace Roslynator.CSharp.Comparers
             }
 
             return 0;
-        }
 
-        public static MemberDeclarationComparer GetInstance(MemberDeclarationSortMode sortMode)
-        {
-            switch (sortMode)
+            bool IsMatch(MemberDeclarationSyntax member, SyntaxKind kind, int index)
             {
-                case MemberDeclarationSortMode.ByKind:
-                    return ByKind;
-                case MemberDeclarationSortMode.ByKindThenByName:
-                    return ByKindThenByName;
-                default:
-                    throw new ArgumentException("", nameof(sortMode));
+                switch (index)
+                {
+                    case 0:
+                        {
+                            return member.Kind() == SyntaxKind.FieldDeclaration
+                               && ((FieldDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.ConstKeyword);
+                        }
+                    case 1:
+                        {
+                            return member.Kind() == SyntaxKind.FieldDeclaration
+                               && !((FieldDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.ConstKeyword);
+                        }
+                    default:
+                        {
+                            return member.Kind() == kind;
+                        }
+                }
             }
         }
 
-        private static bool IsMatch(MemberDeclarationSyntax memberDeclaration, SyntaxKind kind, int orderIndex)
+        protected virtual int GetOrderIndex(MemberDeclarationSyntax member)
         {
-            switch (orderIndex)
-            {
-                case 0:
-                    {
-                        return memberDeclaration.IsKind(SyntaxKind.FieldDeclaration)
-                           && ((FieldDeclarationSyntax)memberDeclaration).IsConst();
-                    }
-                case 1:
-                    {
-                        return memberDeclaration.IsKind(SyntaxKind.FieldDeclaration)
-                           && !((FieldDeclarationSyntax)memberDeclaration).IsConst();
-                    }
-                default:
-                    {
-                        return memberDeclaration.IsKind(kind);
-                    }
-            }
-        }
-
-        private static int GetOrderIndex(MemberDeclarationSyntax memberDeclaration)
-        {
-            switch (memberDeclaration.Kind())
+            switch (member.Kind())
             {
                 case SyntaxKind.FieldDeclaration:
                     {
-                        return (((FieldDeclarationSyntax)memberDeclaration).IsConst()) ? 0 : 1;
+                        return (((FieldDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.ConstKeyword))
+                            ? 0
+                            : 1;
                     }
                 case SyntaxKind.ConstructorDeclaration:
                     return 2;
@@ -197,15 +162,15 @@ namespace Roslynator.CSharp.Comparers
                     return 17;
                 default:
                     {
-                        Debug.Fail($"unknown member '{memberDeclaration.Kind()}'");
-                        return _maxOrderIndex;
+                        Debug.Fail($"unknown member '{member.Kind()}'");
+                        return MaxOrderIndex;
                     }
             }
         }
 
-        private static int GetOrderIndex(SyntaxKind kind)
+        protected virtual int GetOrderIndex(SyntaxKind memberKind)
         {
-            switch (kind)
+            switch (memberKind)
             {
                 case SyntaxKind.FieldDeclaration:
                     return 1;
@@ -243,13 +208,13 @@ namespace Roslynator.CSharp.Comparers
                     return 17;
                 default:
                     {
-                        Debug.Fail($"unknown member '{kind}'");
-                        return _maxOrderIndex;
+                        Debug.Fail($"unknown member '{memberKind}'");
+                        return MaxOrderIndex;
                     }
             }
         }
 
-        private static SyntaxKind GetKind(int orderIndex)
+        protected virtual SyntaxKind GetKind(int orderIndex)
         {
             switch (orderIndex)
             {
@@ -336,9 +301,9 @@ namespace Roslynator.CSharp.Comparers
             }
         }
 
-        public static bool CanBeSortedAlphabetically(SyntaxKind kind)
+        internal static bool CanBeSortedByName(SyntaxKind memberKind)
         {
-            switch (kind)
+            switch (memberKind)
             {
                 case SyntaxKind.FieldDeclaration:
                 case SyntaxKind.ConstructorDeclaration:
@@ -361,7 +326,7 @@ namespace Roslynator.CSharp.Comparers
                     return false;
                 default:
                     {
-                        Debug.Fail($"unknown member '{kind}'");
+                        Debug.Fail($"unknown member '{memberKind}'");
                         return false;
                     }
             }

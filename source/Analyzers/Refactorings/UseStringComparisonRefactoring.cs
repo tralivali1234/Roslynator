@@ -99,21 +99,25 @@ namespace Roslynator.CSharp.Refactorings
             if (!CheckSymbol(invocationInfo, semanticModel, cancellationToken))
                 return;
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo2.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo2.InvocationExpression, cancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsPublicInstanceNonGeneric(name2))
+            if (!methodSymbol.IsPublicInstanceNonGeneric(name2))
                 return;
 
-            if (!methodInfo.IsContainingType(SpecialType.System_String))
+            if (!methodSymbol.IsContainingType(SpecialType.System_String))
                 return;
 
-            if (!methodInfo.IsReturnType((name2.EndsWith("IndexOf", StringComparison.Ordinal)) ? SpecialType.System_Int32 : SpecialType.System_Boolean))
+            SpecialType returnType = (name2.EndsWith("IndexOf", StringComparison.Ordinal))
+                ? SpecialType.System_Int32
+                : SpecialType.System_Boolean;
+
+            if (!methodSymbol.IsReturnType(returnType))
                 return;
 
-            if (!methodInfo.HasParameter(SpecialType.System_String))
+            if (!methodSymbol.HasSingleParameter(SpecialType.System_String))
                 return;
 
             if (!isStringLiteral
@@ -149,21 +153,21 @@ namespace Roslynator.CSharp.Refactorings
             if (!IsFixable(context, invocationInfo, argument, arguments))
                 return;
 
-            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(equalsInvocation.InvocationExpression, context.CancellationToken);
+            IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(equalsInvocation.InvocationExpression, context.CancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (!methodInfo.IsPublicStaticNonGeneric("Equals"))
+            if (!methodSymbol.IsPublicStaticNonGeneric("Equals"))
                 return;
 
-            if (!methodInfo.IsContainingType(SpecialType.System_String))
+            if (!methodSymbol.IsContainingType(SpecialType.System_String))
                 return;
 
-            if (!methodInfo.ReturnsBoolean)
+            if (!methodSymbol.IsReturnType(SpecialType.System_Boolean))
                 return;
 
-            if (!methodInfo.HasParameters(SpecialType.System_String, SpecialType.System_String))
+            if (!methodSymbol.HasTwoParameters(SpecialType.System_String, SpecialType.System_String))
                 return;
 
             ReportDiagnostic(context, equalsInvocation);
@@ -269,13 +273,12 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            return methodInfo.Symbol != null
-                && methodInfo.IsPublicInstanceNonGeneric()
-                && methodInfo.IsContainingType(SpecialType.System_String)
-                && methodInfo.ReturnsString
-                && !methodInfo.Parameters.Any();
+            return methodSymbol?.IsPublicInstanceNonGeneric() == true
+                && methodSymbol.IsContainingType(SpecialType.System_String)
+                && methodSymbol.IsReturnType(SpecialType.System_String)
+                && !methodSymbol.Parameters.Any();
         }
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)

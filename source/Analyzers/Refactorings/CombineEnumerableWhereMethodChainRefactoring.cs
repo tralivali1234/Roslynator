@@ -41,37 +41,37 @@ namespace Roslynator.CSharp.Refactorings
             if (!string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
                 return;
 
-            MethodInfo methodInfo2 = semanticModel.GetExtensionMethodInfo(invocation2, ExtensionMethodKind.Reduced, cancellationToken);
+            IMethodSymbol methodSymbol2 = semanticModel.GetReducedExtensionMethodInfo(invocation2, cancellationToken).Symbol;
 
-            if (methodInfo2.Symbol == null)
+            if (methodSymbol2 == null)
                 return;
 
-            if (!methodInfo2.IsLinqExtensionOfIEnumerableOfT(semanticModel, "Where", parameterCount: 2))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfT(methodSymbol2, semanticModel, "Where", parameterCount: 2))
                 return;
 
             if (SymbolUtility.IsPredicateFunc(
-                methodInfo2.Parameters[1].Type,
-                methodInfo2.TypeArguments[0],
+                methodSymbol2.Parameters[1].Type,
+                methodSymbol2.TypeArguments[0],
                 semanticModel))
             {
-                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+                IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
 
-                if (methodInfo.Symbol != null
-                    && methodInfo.IsLinqWhere(semanticModel))
+                if (methodSymbol != null
+                    && SymbolUtility.IsLinqWhere(methodSymbol, semanticModel))
                 {
                     Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
                 }
             }
             else if (SymbolUtility.IsPredicateFunc(
-                methodInfo2.Parameters[1].Type,
-                methodInfo2.TypeArguments[0],
+                methodSymbol2.Parameters[1].Type,
+                methodSymbol2.TypeArguments[0],
                 semanticModel.Compilation.GetSpecialType(SpecialType.System_Int32),
                 semanticModel))
             {
-                MethodInfo methodInfo = semanticModel.GetExtensionMethodInfo(invocation, ExtensionMethodKind.Reduced, cancellationToken);
+                IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
 
-                if (methodInfo.Symbol != null
-                    && methodInfo.IsLinqWhereWithIndex(semanticModel))
+                if (methodSymbol != null
+                    && SymbolUtility.IsLinqWhereWithIndex(methodSymbol, semanticModel))
                 {
                     Analyze(context, invocation, invocation2, memberAccess, memberAccess2);
                 }

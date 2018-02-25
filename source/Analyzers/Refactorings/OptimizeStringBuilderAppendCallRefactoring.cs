@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -27,24 +26,24 @@ namespace Roslynator.CSharp.Refactorings
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationExpression, context.CancellationToken);
+            IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationExpression, context.CancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return;
 
-            if (methodInfo.IsExtensionMethod)
+            if (methodSymbol.IsExtensionMethod)
                 return;
 
-            if (methodInfo.ContainingType?.Equals(stringBuilderSymbol) != true)
+            if (methodSymbol.ContainingType?.Equals(stringBuilderSymbol) != true)
                 return;
 
-            ImmutableArray<IParameterSymbol> parameters = methodInfo.Parameters;
+            ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
 
             int parameterCount = parameters.Length;
 
             if (parameterCount == 0)
             {
-                if (methodInfo.IsName("AppendLine"))
+                if (methodSymbol.IsName("AppendLine"))
                 {
                     MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
 
@@ -52,21 +51,20 @@ namespace Roslynator.CSharp.Refactorings
                         && invocationInfo2.NameText == "Append"
                         && invocationInfo2.Arguments.Count == 1)
                     {
-                        MethodInfo methodInfo2 = context.SemanticModel.GetMethodInfo(invocationInfo2.InvocationExpression, context.CancellationToken);
+                        IMethodSymbol methodInfo2 = context.SemanticModel.GetMethodSymbol(invocationInfo2.InvocationExpression, context.CancellationToken);
 
-                        if (methodInfo2.Symbol != null
-                            && !methodInfo2.IsStatic
+                        if (methodInfo2?.IsStatic == false
                             && methodInfo2.ContainingType?.Equals(stringBuilderSymbol) == true
-                            && methodInfo2.HasParameter(SpecialType.System_String))
+                            && methodInfo2.HasSingleParameter(SpecialType.System_String))
                         {
-                            context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, invocationInfo.Name, methodInfo.Name);
+                            context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, invocationInfo.Name, methodSymbol.Name);
                         }
                     }
                 }
             }
             else if (parameterCount == 1)
             {
-                if (methodInfo.IsName("Append", "AppendLine"))
+                if (methodSymbol.IsName("Append", "AppendLine"))
                 {
                     ArgumentSyntax argument = invocationInfo.Arguments.SingleOrDefault(shouldThrow: false);
 
@@ -80,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             case SyntaxKind.InterpolatedStringExpression:
                                 {
-                                    context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodInfo.Name);
+                                    context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodSymbol.Name);
                                     return;
                                 }
                             case SyntaxKind.AddExpression:
@@ -88,7 +86,7 @@ namespace Roslynator.CSharp.Refactorings
                                     StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo((BinaryExpressionSyntax)expression, context.SemanticModel, context.CancellationToken);
                                     if (concatenationInfo.Success)
                                     {
-                                        context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodInfo.Name);
+                                        context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodSymbol.Name);
                                         return;
                                     }
 
@@ -99,11 +97,11 @@ namespace Roslynator.CSharp.Refactorings
                                     if (expressionKind == SyntaxKind.InvocationExpression
                                         && IsFixable((InvocationExpressionSyntax)expression, context.SemanticModel, context.CancellationToken))
                                     {
-                                        context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodInfo.Name);
+                                        context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodSymbol.Name);
                                         return;
                                     }
 
-                                    if (methodInfo.IsName("Append")
+                                    if (methodSymbol.IsName("Append")
                                         && parameterCount == 1
                                         && parameters[0].Type.IsObject()
                                         && context.SemanticModel.GetTypeSymbol(argument.Expression, context.CancellationToken).IsValueType)
@@ -120,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             }
             else if (parameterCount == 2)
             {
-                if (methodInfo.IsName("Insert")
+                if (methodSymbol.IsName("Insert")
                     && parameters[0].Type.SpecialType == SpecialType.System_Int32
                     && parameters[1].Type.SpecialType == SpecialType.System_Object)
                 {
@@ -144,29 +142,29 @@ namespace Roslynator.CSharp.Refactorings
             if (!invocationInfo.Success)
                 return false;
 
-            MethodInfo methodInfo = semanticModel.GetMethodInfo(invocationInfo.InvocationExpression, cancellationToken);
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            if (methodInfo.Symbol == null)
+            if (methodSymbol == null)
                 return false;
 
-            if (!methodInfo.IsContainingType(SpecialType.System_String))
+            if (!methodSymbol.IsContainingType(SpecialType.System_String))
                 return false;
 
-            if (!methodInfo.IsReturnType(SpecialType.System_String))
+            if (!methodSymbol.IsReturnType(SpecialType.System_String))
                 return false;
 
-            switch (methodInfo.Name)
+            switch (methodSymbol.Name)
             {
                 case "Substring":
                     {
-                        if (methodInfo.HasParameters(SpecialType.System_Int32, SpecialType.System_Int32))
+                        if (methodSymbol.HasTwoParameters(SpecialType.System_Int32, SpecialType.System_Int32))
                             return true;
 
                         break;
                     }
                 case "Remove":
                     {
-                        if (methodInfo.HasParameter(SpecialType.System_Int32))
+                        if (methodSymbol.HasSingleParameter(SpecialType.System_Int32))
                             return true;
 
                         break;
@@ -224,7 +222,6 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SyntaxKind.AddExpression:
                     {
-                        //TODO: test
                         ImmutableArray<ExpressionSyntax> expressions = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)expression)
                             .Expressions(leftToRight: true)
                             .ToImmutableArray();

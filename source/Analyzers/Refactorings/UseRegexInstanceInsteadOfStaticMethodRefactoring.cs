@@ -26,11 +26,10 @@ namespace Roslynator.CSharp.Refactorings
                 case "Replace":
                 case "Split":
                     {
-                        MethodInfo methodInfo = context.SemanticModel.GetMethodInfo(invocationInfo.InvocationExpression, context.CancellationToken);
+                        IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, context.CancellationToken);
 
-                        if (methodInfo.Symbol != null
-                            && methodInfo.IsPublicStaticNonGeneric()
-                            && methodInfo.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
+                        if (methodSymbol?.IsPublicStaticNonGeneric() == true
+                            && methodSymbol.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
                         {
                             context.ReportDiagnostic(
                                 DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod,

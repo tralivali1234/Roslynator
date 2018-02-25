@@ -32,31 +32,5 @@ namespace Roslynator.CSharp.Comparers
 
             return string.Compare(x.Identifier.ValueText, y.Identifier.ValueText, StringComparison.CurrentCulture);
         }
-
-        public static bool IsSorted(IEnumerable<EnumMemberDeclarationSyntax> members)
-        {
-            if (members == null)
-                throw new ArgumentNullException(nameof(members));
-
-            using (IEnumerator<EnumMemberDeclarationSyntax> en = members.GetEnumerator())
-            {
-                if (en.MoveNext())
-                {
-                    EnumMemberDeclarationSyntax enumMember1 = en.Current;
-
-                    while (en.MoveNext())
-                    {
-                        EnumMemberDeclarationSyntax enumMember2 = en.Current;
-
-                        if (CompareCore(enumMember1, enumMember2) > 0)
-                            return false;
-
-                        enumMember1 = enumMember2;
-                    }
-                }
-            }
-
-            return true;
-        }
     }
 }
