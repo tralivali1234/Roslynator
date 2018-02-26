@@ -10,8 +10,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareEachTypeInSeparateFileRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, CompilationUnitSyntax compilationUnit)
+        public static void AnalyzeCompilationUnit(SyntaxNodeAnalysisContext context)
         {
+            var compilationUnit = (CompilationUnitSyntax)context.Node;
+
             SyntaxList<MemberDeclarationSyntax> members = compilationUnit.Members;
 
             if (!ContainsSingleNamespaceWithSingleNonNamespaceMember(members))

@@ -12,8 +12,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MakeClassStaticRefactoring
     {
-        public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
         {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
             if (symbol.TypeKind != TypeKind.Class
                 || symbol.IsStatic
                 || symbol.IsAbstract

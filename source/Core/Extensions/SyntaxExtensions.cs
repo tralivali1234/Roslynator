@@ -108,6 +108,7 @@ namespace Roslynator
             return list.IndexOf(node) != -1;
         }
 
+        //TODO: shouldThrow
         internal static TNode SingleOrDefault<TNode>(this SeparatedSyntaxList<TNode> list, bool shouldthrow) where TNode : SyntaxNode
         {
             return (shouldthrow) ? list.SingleOrDefault() : (list.Count == 1) ? list[0] : default(TNode);
@@ -959,6 +960,29 @@ namespace Roslynator
             return tokens.IndexOf(token) != -1;
         }
 
+        /// <summary>
+        /// Searches for a token that matches the predicate and returns the zero-based index of the first occurrence within the entire <see cref="SyntaxTokenList"/>.
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static int IndexOf(this SyntaxTokenList tokens, Func<SyntaxToken, bool> predicate)
+        {
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            int index = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (predicate(token))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
+        }
+
         internal static bool IsSorted(SyntaxTokenList modifiers, IComparer<SyntaxToken> comparer)
         {
             int count = modifiers.Count;
@@ -973,6 +997,23 @@ namespace Roslynator
             }
 
             return true;
+        }
+
+        internal static bool SpanContainsDirectives(this SyntaxTokenList tokens)
+        {
+            int count = tokens.Count;
+
+            if (count <= 1)
+                return false;
+
+            for (int i = 1; i < count - 1; i++)
+            {
+                if (tokens[i].ContainsDirectives)
+                    return true;
+            }
+
+            return tokens.First().TrailingTrivia.Any(f => f.IsDirective)
+                || tokens.Last().LeadingTrivia.Any(f => f.IsDirective);
         }
         #endregion SyntaxTokenList
 
@@ -1093,6 +1134,29 @@ namespace Roslynator
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Searches for a trivia that matches the predicate and returns the zero-based index of the first occurrence within the entire <see cref="SyntaxTriviaList"/>.
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static int IndexOf(this SyntaxTriviaList triviaList, Func<SyntaxTrivia, bool> predicate)
+        {
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            int index = 0;
+            foreach (SyntaxTrivia trivia in triviaList)
+            {
+                if (predicate(trivia))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
         }
         #endregion SyntaxTriviaList
     }

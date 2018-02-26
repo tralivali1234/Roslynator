@@ -17,6 +17,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             get
             {
+                //XTODO: split?
                 return ImmutableArray.Create(
                     DiagnosticDescriptors.AddBracesToIfElseWhenExpressionSpansOverMultipleLines,
                     DiagnosticDescriptors.RemoveBracesFromIfElse,

@@ -4,22 +4,21 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ConstructorDeclarationDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class MergeElseClauseWithNestedIfStatementDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
             {
                 return ImmutableArray.Create(
-                    DiagnosticDescriptors.RemoveRedundantBaseConstructorCall,
-                    DiagnosticDescriptors.RemoveRedundantConstructor);
+                    DiagnosticDescriptors.MergeElseClauseWithNestedIfStatement,
+                    DiagnosticDescriptors.MergeElseClauseWithNestedIfStatementFadeOut);
             }
         }
 
@@ -30,16 +29,9 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
-        }
-
-        private static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            var constructor = (ConstructorDeclarationSyntax)context.Node;
-
-            RemoveRedundantBaseConstructorCallRefactoring.Analyze(context, constructor);
-
-            RemoveRedundantConstructorRefactoring.Analyze(context, constructor);
+            context.RegisterSyntaxNodeAction(
+                MergeElseClauseWithNestedIfStatementRefactoring.AnalyzeElseClause,
+                SyntaxKind.ElseClause);
         }
     }
 }

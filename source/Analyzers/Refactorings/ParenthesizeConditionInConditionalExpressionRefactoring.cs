@@ -11,8 +11,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ParenthesizeConditionInConditionalExpressionRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ConditionalExpressionSyntax conditionalExpression)
+        public static void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
         {
+            var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
+
             ExpressionSyntax condition = conditionalExpression.Condition;
 
             if (condition?.IsMissing == false

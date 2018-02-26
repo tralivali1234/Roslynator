@@ -4,23 +4,17 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.FormatEachStatementOnSeparateLineRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class BlockDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class FormatEachStatementOnSeparateLineDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.FormatEmptyBlock,
-                    DiagnosticDescriptors.FormatEachStatementOnSeparateLine);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.FormatEachStatementOnSeparateLine); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -29,17 +23,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(AnalyzeBlock, SyntaxKind.Block);
-        }
-
-        private static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
-        {
-            var block = (BlockSyntax)context.Node;
-
-            FormatEachStatementOnSeparateLineRefactoring.Analyze(context, block);
-
-            FormatEmptyBlockRefactoring.Analyze(context, block);
+            context.RegisterSyntaxNodeAction(AnalyzeSwitchSection, SyntaxKind.SwitchSection);
         }
     }
 }

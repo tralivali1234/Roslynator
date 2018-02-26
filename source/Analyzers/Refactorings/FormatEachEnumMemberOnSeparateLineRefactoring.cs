@@ -14,8 +14,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatEachEnumMemberOnSeparateLineRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, EnumDeclarationSyntax enumDeclaration)
+        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
         {
+            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
+
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
 
             if (members.Count > 1)

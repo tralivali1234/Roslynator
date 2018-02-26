@@ -7,10 +7,12 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseExclusiveOrOperatorRefactoring
     {
         public static void AnalyzeLogicalOrExpression(SyntaxNodeAnalysisContext context)
@@ -23,53 +25,61 @@ namespace Roslynator.CSharp.Refactorings
             if (node.SpanContainsDirectives())
                 return;
 
-            var logicalOr = (BinaryExpressionSyntax)context.Node;
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)context.Node);
 
-            ExpressionSyntax left = logicalOr.Left.WalkDownParentheses();
+            if (!info.Success)
+                return;
 
-            ExpressionSyntax right = logicalOr.Right.WalkDownParentheses();
+            if (!info.Left.IsKind(SyntaxKind.LogicalAndExpression))
+                return;
 
-            if (left.IsKind(SyntaxKind.LogicalAndExpression)
-                && right.IsKind(SyntaxKind.LogicalAndExpression))
-            {
-                ExpressionPair expressions = GetExpressionPair((BinaryExpressionSyntax)left);
+            if (!info.Right.IsKind(SyntaxKind.LogicalAndExpression))
+                return;
 
-                if (expressions.IsValid)
-                {
-                    ExpressionPair expressions2 = GetExpressionPair((BinaryExpressionSyntax)right);
+            ExpressionPair expressions = GetExpressionPair((BinaryExpressionSyntax)info.Left);
 
-                    if (expressions2.IsValid
-                        && (expressions.Expression.Kind() == expressions2.NegatedExpression.Kind()
-                        && expressions.NegatedExpression.Kind() == expressions2.Expression.Kind()
-                        && CSharpFactory.AreEquivalent(expressions.Expression, expressions2.NegatedExpression)
-                        && CSharpFactory.AreEquivalent(expressions.NegatedExpression, expressions2.Expression)))
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.UseExclusiveOrOperator, logicalOr);
-                    }
-                }
-            }
+            if (!expressions.IsValid)
+                return;
+
+            ExpressionPair expressions2 = GetExpressionPair((BinaryExpressionSyntax)info.Right);
+
+            if (!expressions2.IsValid)
+                return;
+
+            if (expressions.Expression.Kind() != expressions2.NegatedExpression.Kind())
+                return;
+
+            if (expressions.NegatedExpression.Kind() != expressions2.Expression.Kind())
+                return;
+
+            if (!AreEquivalent(expressions.Expression, expressions2.NegatedExpression))
+                return;
+
+            if (!AreEquivalent(expressions.NegatedExpression, expressions2.Expression))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseExclusiveOrOperator, context.Node);
         }
 
         private static ExpressionPair GetExpressionPair(BinaryExpressionSyntax logicalAnd)
         {
-            ExpressionSyntax left = logicalAnd.Left.WalkDownParentheses();
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(logicalAnd);
 
-            if (left.IsKind(SyntaxKind.LogicalNotExpression))
+            if (info.Success)
             {
-                ExpressionSyntax right = logicalAnd.Right.WalkDownParentheses();
+                ExpressionSyntax left = info.Left;
+                ExpressionSyntax right = info.Right;
 
-                if (!right.IsKind(SyntaxKind.LogicalNotExpression))
+                if (left.Kind() == SyntaxKind.LogicalNotExpression)
                 {
-                    var logicalNot = (PrefixUnaryExpressionSyntax)left;
+                    if (right.Kind() != SyntaxKind.LogicalNotExpression)
+                    {
+                        var logicalNot = (PrefixUnaryExpressionSyntax)left;
 
-                    return new ExpressionPair(right, logicalNot.Operand.WalkDownParentheses());
+                        return new ExpressionPair(right, logicalNot.Operand.WalkDownParentheses());
+                    }
                 }
-            }
-            else
-            {
-                ExpressionSyntax right = logicalAnd.Right.WalkDownParentheses();
-
-                if (right.IsKind(SyntaxKind.LogicalNotExpression))
+                else if (right.Kind() == SyntaxKind.LogicalNotExpression)
                 {
                     var logicalNot = (PrefixUnaryExpressionSyntax)right;
 

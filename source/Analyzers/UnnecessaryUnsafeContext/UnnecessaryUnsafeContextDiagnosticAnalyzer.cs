@@ -24,6 +24,7 @@ namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(AnalyzeUnsafeStatement, SyntaxKind.UnsafeStatement);
 

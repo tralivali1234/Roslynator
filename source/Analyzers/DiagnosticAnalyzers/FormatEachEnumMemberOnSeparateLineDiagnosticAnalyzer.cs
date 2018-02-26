@@ -10,11 +10,11 @@ using Roslynator.CSharp.Refactorings;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class IdentifierNameDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class FormatEachEnumMemberOnSeparateLineDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UsePredefinedType); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.FormatEachEnumMemberOnSeparateLine); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -23,15 +23,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
-            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(
-                UsePredefinedTypeRefactoring.AnalyzeIdentifierName,
-                SyntaxKind.IdentifierName);
-
-            context.RegisterSyntaxNodeAction(
-                UsePredefinedTypeRefactoring.AnalyzeXmlCrefAttribute,
-                SyntaxKind.XmlCrefAttribute);
+                FormatEachEnumMemberOnSeparateLineRefactoring.AnalyzeEnumDeclaration,
+                SyntaxKind.EnumDeclaration);
         }
     }
 }

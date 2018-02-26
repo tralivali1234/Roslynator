@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -14,50 +14,58 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseGenericEventHandlerRefactoring
     {
-        public static void AnalyzeEvent(SymbolAnalysisContext context)
+        public static void AnalyzeEvent(SymbolAnalysisContext context, INamedTypeSymbol eventHandlerSymbol)
         {
             var eventSymbol = (IEventSymbol)context.Symbol;
 
-            if (!eventSymbol.IsOverride
-                && eventSymbol.ExplicitInterfaceImplementations.IsDefaultOrEmpty
-                && eventSymbol.FindFirstImplementedInterfaceMember<IEventSymbol>(allInterfaces: true) == null)
-            {
-                var namedType = eventSymbol.Type as INamedTypeSymbol;
+            if (eventSymbol.IsOverride)
+                return;
 
-                if (namedType?.Arity == 0
-                    && !namedType.Equals(context.GetTypeByMetadataName(MetadataNames.System_EventHandler)))
-                {
-                    IMethodSymbol method = namedType.DelegateInvokeMethod;
+            if (!eventSymbol.ExplicitInterfaceImplementations.IsDefaultOrEmpty)
+                return;
 
-                    if (method != null)
-                    {
-                        ImmutableArray<IParameterSymbol> parameters = method.Parameters;
+            if (eventSymbol.ImplementsInterfaceMember<IEventSymbol>(allInterfaces: true))
+                return;
 
-                        if (parameters.Length == 2
-                            && parameters[0].Type.IsObject())
-                        {
-                            SyntaxNode node = eventSymbol
-                                .DeclaringSyntaxReferences
-                                .FirstOrDefault()?
-                                .GetSyntax(context.CancellationToken);
+            var namedType = eventSymbol.Type as INamedTypeSymbol;
 
-                            TypeSyntax type = GetTypeSyntax(node);
+            if (namedType?.Arity != 0)
+                return;
 
-                            Debug.Assert(type != null, "");
+            if (namedType.Equals(eventHandlerSymbol))
+                return;
 
-                            if (type != null)
-                                context.ReportDiagnostic(DiagnosticDescriptors.UseGenericEventHandler, type);
-                        }
-                    }
-                }
-            }
+            IMethodSymbol delegateInvokeMethod = namedType.DelegateInvokeMethod;
+
+            if (delegateInvokeMethod == null)
+                return;
+
+            ImmutableArray<IParameterSymbol> parameters = delegateInvokeMethod.Parameters;
+
+            if (parameters.Length != 2)
+                return;
+
+            if (!parameters[0].Type.IsObject())
+                return;
+
+            SyntaxNode node = eventSymbol.GetSyntaxOrDefault(context.CancellationToken);
+
+            Debug.Assert(node != null, eventSymbol.ToString());
+
+            if (node == null)
+                return;
+
+            TypeSyntax type = GetTypeSyntax(node);
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseGenericEventHandler, type);
         }
 
         private static TypeSyntax GetTypeSyntax(SyntaxNode node)
         {
-            switch (node?.Kind())
+            switch (node.Kind())
             {
                 case SyntaxKind.EventDeclaration:
                     {
@@ -80,8 +88,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
             }
 
-            Debug.Fail(node?.Kind().ToString());
-            return default(TypeSyntax);
+            throw new InvalidOperationException();
         }
 
         public static async Task<Document> RefactorAsync(

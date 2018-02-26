@@ -9,8 +9,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatSwitchSectionStatementOnSeparateLineRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, SwitchSectionSyntax switchSection)
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
             SyntaxList<StatementSyntax> statements = switchSection.Statements;
 
             if (statements.Any())

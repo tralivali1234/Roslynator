@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Syntax
 
         //XTODO: EvaluatedExpression
         /// <summary>
-        /// The expression that is evaluated whether is (not) null. e.g. "x" in "x == null".
+        /// The expression that is evaluated whether is (not) null. for example "x" in "x == null".
         /// </summary>
         public ExpressionSyntax Expression { get; }
 
@@ -72,8 +72,7 @@ namespace Roslynator.CSharp.Syntax
             SyntaxNode node,
             NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.IsPattern,
             bool walkDownParentheses = true,
-            bool allowMissing = false,
-            CancellationToken cancellationToken = default(CancellationToken))
+            bool allowMissing = false)
         {
             if ((allowedStyles & NullCheckStyles.HasValue) != 0)
                 throw new ArgumentException($"'{nameof(NullCheckStyles.HasValue)}' style requires a SemanticModel to be provided.", nameof(allowedStyles));
@@ -81,7 +80,7 @@ namespace Roslynator.CSharp.Syntax
             if ((allowedStyles & NullCheckStyles.NotHasValue) != 0)
                 throw new ArgumentException($"'{nameof(NullCheckStyles.NotHasValue)}' style requires a SemanticModel to be provided.", nameof(allowedStyles));
 
-            return CreateImpl(node, default(SemanticModel), allowedStyles, walkDownParentheses, allowMissing, cancellationToken);
+            return CreateImpl(node, default(SemanticModel), allowedStyles, walkDownParentheses, allowMissing, default(CancellationToken));
         }
 
         internal static NullCheckExpressionInfo Create(

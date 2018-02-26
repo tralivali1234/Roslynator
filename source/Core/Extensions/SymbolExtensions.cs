@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -1015,6 +1016,7 @@ namespace Roslynator
             return methodSymbol.MethodKind == MethodKind.ReducedExtension;
         }
 
+        //XTODO: IsOrdinaryExtensionMethod
         /// <summary>
         /// Returns true if this method is an extension method that has not been reduced ("this" parameter has not been removed).
         /// </summary>
@@ -1035,6 +1037,7 @@ namespace Roslynator
             return methodSymbol?.ReturnType.SpecialType == specialType;
         }
 
+        //TODO: csharputility
         internal static bool IsPublicStaticNonGeneric(this IMethodSymbol methodSymbol, string name = null)
         {
             return methodSymbol?.DeclaredAccessibility == Accessibility.Public
@@ -1724,20 +1727,6 @@ namespace Roslynator
         {
             return typeSymbol?.IsNamedType() == true
                 && ((INamedTypeSymbol)typeSymbol).ConstructedFrom?.Equals(constructedFromSymbol) == true;
-        }
-
-        internal static bool IsEventHandlerOrConstructedFromEventHandlerOfT(
-            this ITypeSymbol typeSymbol,
-            SemanticModel semanticModel)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            return typeSymbol.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_EventHandler))
-                || typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_EventHandler_T));
         }
 
         /// <summary>

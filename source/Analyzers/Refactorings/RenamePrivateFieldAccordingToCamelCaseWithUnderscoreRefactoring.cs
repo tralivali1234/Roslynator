@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!fieldSymbol.IsConst
                 && !fieldSymbol.IsImplicitlyDeclared
-                && fieldSymbol.IsPrivate()
+                && fieldSymbol.DeclaredAccessibility == Accessibility.Private
                 && !string.IsNullOrEmpty(fieldSymbol.Name)
                 && !StringUtility.IsCamelCasePrefixedWithUnderscore(fieldSymbol.Name))
             {

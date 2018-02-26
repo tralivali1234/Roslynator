@@ -11,8 +11,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatEmptyBlockRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, BlockSyntax block)
+        public static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
         {
+            var block = (BlockSyntax)context.Node;
+
             SyntaxList<StatementSyntax> statements = block.Statements;
 
             if (!statements.Any()

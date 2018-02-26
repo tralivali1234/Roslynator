@@ -15,8 +15,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AvoidUsageOfForStatementToCreateInfiniteLoopRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ForStatementSyntax forStatement)
+        public static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
         {
+            var forStatement = (ForStatementSyntax)context.Node;
+
             if (forStatement.Declaration == null
                 && forStatement.Condition == null
                 && forStatement.Incrementors.Count == 0

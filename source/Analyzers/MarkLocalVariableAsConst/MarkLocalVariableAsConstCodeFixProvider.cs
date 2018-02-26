@@ -28,24 +28,14 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
             if (!TryFindFirstAncestorOrSelf(root, context.Span, out LocalDeclarationStatementSyntax localDeclaration))
                 return;
 
-            foreach (Diagnostic diagnostic in context.Diagnostics)
-            {
-                switch (diagnostic.Id)
-                {
-                    case DiagnosticIdentifiers.MarkLocalVariableAsConst:
-                        {
-                            string names = GetNames(localDeclaration);
+            Diagnostic diagnostic = context.Diagnostics[0];
 
-                            CodeAction codeAction = CodeAction.Create(
-                                $"Mark {names} as const",
-                                cancellationToken => MarkLocalVariableAsConstRefactoring.RefactorAsync(context.Document, localDeclaration, cancellationToken),
-                                GetEquivalenceKey(diagnostic));
+            CodeAction codeAction = CodeAction.Create(
+                $"Mark {GetNames(localDeclaration)} as const",
+                cancellationToken => MarkLocalVariableAsConstRefactoring.RefactorAsync(context.Document, localDeclaration, cancellationToken),
+                GetEquivalenceKey(diagnostic));
 
-                            context.RegisterCodeFix(codeAction, diagnostic);
-                            break;
-                        }
-                }
-            }
+            context.RegisterCodeFix(codeAction, diagnostic);
         }
 
         private static string GetNames(LocalDeclarationStatementSyntax localDeclaration)

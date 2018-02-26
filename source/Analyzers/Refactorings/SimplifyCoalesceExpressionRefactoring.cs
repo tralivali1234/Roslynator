@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -15,25 +16,22 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax coalesceExpression)
         {
-            ExpressionSyntax left = coalesceExpression.Left;
-            ExpressionSyntax right = coalesceExpression.Right;
+            if (coalesceExpression.SpanContainsDirectives())
+                return;
 
-            if (left != null
-                && right != null)
-            {
-                SemanticModel semanticModel = context.SemanticModel;
-                CancellationToken cancellationToken = context.CancellationToken;
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(coalesceExpression);
 
-                TextSpan span = GetRedundantSpan(coalesceExpression, left, right, semanticModel, cancellationToken);
+            if (!info.Success)
+                return;
 
-                if (span != default(TextSpan)
-                    && !coalesceExpression.SpanContainsDirectives())
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.SimplifyCoalesceExpression,
-                        Location.Create(coalesceExpression.SyntaxTree, span));
-                }
-            }
+            TextSpan span = GetRedundantSpan(coalesceExpression, info.Left, info.Right, context.SemanticModel, context.CancellationToken);
+
+            if (span == default(TextSpan))
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.SimplifyCoalesceExpression,
+                Location.Create(coalesceExpression.SyntaxTree, span));
         }
 
         private static TextSpan GetRedundantSpan(

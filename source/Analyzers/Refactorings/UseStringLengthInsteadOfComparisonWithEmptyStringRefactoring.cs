@@ -29,13 +29,13 @@ namespace Roslynator.CSharp.Refactorings
                     SemanticModel semanticModel = context.SemanticModel;
                     CancellationToken cancellationToken = context.CancellationToken;
 
-                    if (CSharpUtility.IsEmptyString(left, semanticModel, cancellationToken))
+                    if (CSharpUtility.IsEmptyStringExpression(left, semanticModel, cancellationToken))
                     {
-                        if (IsString(right, semanticModel, cancellationToken))
+                        if (CSharpUtility.IsStringExpression(right, semanticModel, cancellationToken))
                             ReportDiagnostic(context, equalsExpression);
                     }
-                    else if (CSharpUtility.IsEmptyString(right, semanticModel, cancellationToken)
-                        && IsString(left, semanticModel, cancellationToken))
+                    else if (CSharpUtility.IsEmptyStringExpression(right, semanticModel, cancellationToken)
+                        && CSharpUtility.IsStringExpression(left, semanticModel, cancellationToken))
                     {
                         ReportDiagnostic(context, equalsExpression);
                     }
@@ -53,12 +53,6 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool IsString(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            return expression?.IsMissing == false
-                && semanticModel.GetTypeInfo(expression, cancellationToken).ConvertedType?.IsString() == true;
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             BinaryExpressionSyntax binaryExpression,
@@ -72,13 +66,13 @@ namespace Roslynator.CSharp.Refactorings
 
             BinaryExpressionSyntax newNode;
 
-            if (CSharpUtility.IsEmptyString(left, semanticModel, cancellationToken))
+            if (CSharpUtility.IsEmptyStringExpression(left, semanticModel, cancellationToken))
             {
                 newNode = binaryExpression
                     .WithLeft(NumericLiteralExpression(0))
                     .WithRight(CreateConditionalAccess(right));
             }
-            else if (CSharpUtility.IsEmptyString(right, semanticModel, cancellationToken))
+            else if (CSharpUtility.IsEmptyStringExpression(right, semanticModel, cancellationToken))
             {
                 newNode = binaryExpression
                     .WithLeft(CreateConditionalAccess(left))

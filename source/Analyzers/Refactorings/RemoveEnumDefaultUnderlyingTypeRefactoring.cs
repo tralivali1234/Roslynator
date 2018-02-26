@@ -11,8 +11,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveEnumDefaultUnderlyingTypeRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, EnumDeclarationSyntax enumDeclaration)
+        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
         {
+            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
+
             BaseTypeSyntax baseType = GetRedundantBaseType(context, enumDeclaration);
 
             if (baseType != null)

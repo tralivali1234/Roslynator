@@ -4,24 +4,17 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class BinaryExpressionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class FormatBinaryOperatorOnNextLineDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.FormatBinaryOperatorOnNextLine,
-                    DiagnosticDescriptors.AvoidNullLiteralExpressionOnLeftSideOfBinaryExpression,
-                    DiagnosticDescriptors.UseStringIsNullOrEmptyMethod);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.FormatBinaryOperatorOnNextLine); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -31,7 +24,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AnalyzeBinaryExpression,
+            context.RegisterSyntaxNodeAction(
+                FormatBinaryOperatorOnNextLineRefactoring.AnalyzeBinaryExpression,
                 SyntaxKind.AddExpression,
                 SyntaxKind.SubtractExpression,
                 SyntaxKind.MultiplyExpression,
@@ -52,17 +46,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 SyntaxKind.GreaterThanOrEqualExpression,
                 SyntaxKind.IsExpression,
                 SyntaxKind.AsExpression);
-        }
-
-        private static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
-        {
-            var binaryExpression = (BinaryExpressionSyntax)context.Node;
-
-            FormatBinaryOperatorOnNextLineRefactoring.Analyze(context, binaryExpression);
-
-            AvoidNullLiteralExpressionOnLeftSideOfBinaryExpressionRefactoring.Analyze(context, binaryExpression);
-
-            UseStringIsNullOrEmptyMethodRefactoring.Analyze(context, binaryExpression);
         }
     }
 }

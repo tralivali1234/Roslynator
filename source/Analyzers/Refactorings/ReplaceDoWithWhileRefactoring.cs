@@ -5,24 +5,30 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReplaceDoWithWhileRefactoring
     {
-        public static bool CanRefactor(DoStatementSyntax doStatement)
+        public static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
         {
-            return doStatement.Condition?.Kind() == SyntaxKind.TrueLiteralExpression;
+            var doStatement = (DoStatementSyntax)context.Node;
+
+            if (doStatement.Condition?.Kind() == SyntaxKind.TrueLiteralExpression)
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.AvoidUsageOfDoStatementToCreateInfiniteLoop,
+                    doStatement.DoKeyword);
+            }
         }
 
-        public static async Task<Document> RefactorAsync(
+        public static Task<Document> RefactorAsync(
             Document document,
             DoStatementSyntax doStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            SyntaxNode oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-
             SyntaxTriviaList trailingTrivia = doStatement.Statement
                 .GetTrailingTrivia()
                 .AddRange(doStatement.CloseParenToken.TrailingTrivia)
@@ -38,9 +44,7 @@ namespace Roslynator.CSharp.Refactorings
 
             newNode = newNode.WithFormatterAnnotation();
 
-            SyntaxNode newRoot = oldRoot.ReplaceNode(doStatement, newNode);
-
-            return document.WithSyntaxRoot(newRoot);
+            return document.ReplaceNodeAsync(doStatement, newNode, cancellationToken);
         }
     }
 }

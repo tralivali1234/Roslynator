@@ -13,27 +13,28 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveUnnecessaryCaseLabelRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, SwitchSectionSyntax switchSection)
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
-            if (switchSection.IsParentKind(SyntaxKind.SwitchStatement))
-            {
-                SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
+            var switchSection = (SwitchSectionSyntax)context.Node;
 
-                if (labels.Count > 1
-                    && labels.Any(SyntaxKind.DefaultSwitchLabel))
+            if (!switchSection.IsParentKind(SyntaxKind.SwitchStatement))
+                return;
+
+            SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
+
+            if (labels.Count <= 1)
+                return;
+
+            if (!labels.Any(SyntaxKind.DefaultSwitchLabel))
+                return;
+
+            foreach (SwitchLabelSyntax label in labels)
+            {
+                if (!label.IsKind(SyntaxKind.DefaultSwitchLabel)
+                    && label.Keyword.TrailingTrivia.IsEmptyOrWhitespace()
+                    && label.ColonToken.LeadingTrivia.IsEmptyOrWhitespace())
                 {
-                    foreach (SwitchLabelSyntax label in labels)
-                    {
-                        if (!label.IsKind(SyntaxKind.DefaultSwitchLabel)
-                            && label
-                                .DescendantTrivia(label.Span)
-                                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.RemoveUnnecessaryCaseLabel,
-                                label);
-                        }
-                    }
+                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnnecessaryCaseLabel, label);
                 }
             }
         }

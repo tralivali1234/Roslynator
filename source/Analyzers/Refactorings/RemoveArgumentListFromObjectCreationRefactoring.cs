@@ -10,8 +10,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveArgumentListFromObjectCreationRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ObjectCreationExpressionSyntax objectCreationExpression)
+        public static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
         {
+            var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
+
             if (objectCreationExpression.Type?.IsMissing == false
                 && objectCreationExpression.Initializer?.IsMissing == false)
             {

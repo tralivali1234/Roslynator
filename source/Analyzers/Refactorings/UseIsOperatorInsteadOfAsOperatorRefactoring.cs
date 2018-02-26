@@ -3,14 +3,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseIsOperatorInsteadOfAsOperatorRefactoring
     {
         public static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
@@ -25,29 +25,20 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression)
         {
-            ExpressionSyntax right = binaryExpression.Right;
+            if (binaryExpression.SpanContainsDirectives())
+                return;
 
-            if (right?.Kind() == SyntaxKind.NullLiteralExpression)
-            {
-                ExpressionSyntax left = binaryExpression.Left;
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression);
 
-                if (left != null)
-                {
-                    left = left.WalkDownParentheses();
+            if (!nullCheck.Success)
+                return;
 
-                    if (left?.Kind() == SyntaxKind.AsExpression)
-                    {
-                        var asExpression = (BinaryExpressionSyntax)left;
+            AsExpressionInfo asExpressionInfo = SyntaxInfo.AsExpressionInfo(nullCheck.Expression);
 
-                        if (asExpression.Left?.IsMissing == false
-                            && asExpression.Right is TypeSyntax
-                            && !binaryExpression.SpanContainsDirectives())
-                        {
-                            context.ReportDiagnostic(DiagnosticDescriptors.UseIsOperatorInsteadOfAsOperator, binaryExpression);
-                        }
-                    }
-                }
-            }
+            if (!asExpressionInfo.Success)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseIsOperatorInsteadOfAsOperator, binaryExpression);
         }
 
         public static Task<Document> RefactorAsync(
@@ -55,11 +46,13 @@ namespace Roslynator.CSharp.Refactorings
             BinaryExpressionSyntax binaryExpression,
             CancellationToken cancellationToken)
         {
-            var asExpression = (BinaryExpressionSyntax)binaryExpression.Left.WalkDownParentheses();
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression);
 
-            ExpressionSyntax newNode = IsExpression(asExpression.Left, (TypeSyntax)asExpression.Right);
+            AsExpressionInfo asExpressionInfo = SyntaxInfo.AsExpressionInfo(nullCheck.Expression);
 
-            if (binaryExpression.IsKind(SyntaxKind.EqualsExpression))
+            ExpressionSyntax newNode = IsExpression(asExpressionInfo.Expression, asExpressionInfo.Type);
+
+            if (nullCheck.IsCheckingNull)
                 newNode = LogicalNotExpression(newNode.WithoutTrivia().Parenthesize()).WithTriviaFrom(newNode);
 
             newNode = newNode

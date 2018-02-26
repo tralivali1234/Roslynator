@@ -11,13 +11,17 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatEachStatementOnSeparateLineRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, BlockSyntax block)
+        public static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
         {
+            var block = (BlockSyntax)context.Node;
+
             Analyze(context, block.Statements);
         }
 
-        public static void Analyze(SyntaxNodeAnalysisContext context, SwitchSectionSyntax switchSection)
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
             Analyze(context, switchSection.Statements);
         }
 

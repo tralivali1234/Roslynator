@@ -38,6 +38,18 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.RegisterSyntaxNodeAction(AnalyzeNotEqualsExpression, SyntaxKind.NotEqualsExpression);
             context.RegisterSyntaxNodeAction(AnalyzeLogicalAndExpression, SyntaxKind.LogicalAndExpression);
             context.RegisterSyntaxNodeAction(AnalyzeLogicalOrExpression, SyntaxKind.LogicalOrExpression);
+
+            context.RegisterSyntaxNodeAction(AnalyzeForStatement, SyntaxKind.ForStatement);
+        }
+
+        private static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+        {
+            var forStatement = (ForStatementSyntax)context.Node;
+
+            ExpressionSyntax condition = forStatement.Condition;
+
+            if (condition?.Kind() == SyntaxKind.TrueLiteralExpression)
+                context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantBooleanLiteral, condition, condition.ToString());
         }
 
         private static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)

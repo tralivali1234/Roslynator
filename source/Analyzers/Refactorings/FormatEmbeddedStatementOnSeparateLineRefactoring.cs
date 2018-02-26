@@ -11,43 +11,59 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatEmbeddedStatementOnSeparateLineRefactoring
     {
-        internal static void Analyze(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement)
+        internal static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
+            var ifStatement = (IfStatementSyntax)context.Node;
+
             Analyze(context, ifStatement.CloseParenToken, ifStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, CommonForEachStatementSyntax forEachStatement)
+        internal static void AnalyzeCommonForEachStatement(SyntaxNodeAnalysisContext context)
         {
+            var forEachStatement = (CommonForEachStatementSyntax)context.Node;
+
             Analyze(context, forEachStatement.CloseParenToken, forEachStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, ForStatementSyntax forStatement)
+        internal static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
         {
+            var forStatement = (ForStatementSyntax)context.Node;
+
             Analyze(context, forStatement.CloseParenToken, forStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, UsingStatementSyntax usingStatement)
+        internal static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
         {
+            var usingStatement = (UsingStatementSyntax)context.Node;
+
             Analyze(context, usingStatement.CloseParenToken, usingStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, WhileStatementSyntax whileStatement)
+        internal static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
         {
+            var whileStatement = (WhileStatementSyntax)context.Node;
+
             Analyze(context, whileStatement.CloseParenToken, whileStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, DoStatementSyntax doStatement)
+        internal static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
         {
+            var doStatement = (DoStatementSyntax)context.Node;
+
             Analyze(context, doStatement.DoKeyword, doStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, LockStatementSyntax lockStatement)
+        internal static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
         {
+            var lockStatement = (LockStatementSyntax)context.Node;
+
             Analyze(context, lockStatement.CloseParenToken, lockStatement.Statement);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, FixedStatementSyntax fixedStatement)
+        internal static void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
         {
+            var fixedStatement = (FixedStatementSyntax)context.Node;
+
             Analyze(context, fixedStatement.CloseParenToken, fixedStatement.Statement);
         }
 
@@ -62,8 +78,10 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static void Analyze(SyntaxNodeAnalysisContext context, ElseClauseSyntax elseClause)
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
         {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
             StatementSyntax statement = elseClause.Statement;
 
             if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement) == false

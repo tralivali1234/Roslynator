@@ -8,7 +8,7 @@ namespace Roslynator.CSharp
 {
     public class ModifierComparer : IModifierComparer
     {
-        public static readonly ModifierComparer Instance = new ModifierComparer();
+        internal static readonly ModifierComparer Instance = new ModifierComparer();
 
         internal const int MaxOrderIndex = 16;
 

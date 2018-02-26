@@ -11,16 +11,11 @@ using Roslynator.CSharp.Refactorings;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class NamespaceDeclarationDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UseEmptyStringLiteralInsteadOfStringEmptyDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.RemoveEmptyNamespaceDeclaration,
-                    DiagnosticDescriptors.DeclareUsingDirectiveOnTopLevel);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.UseEmptyStringLiteralInsteadOfStringEmpty); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -30,16 +25,15 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AnalyzerNamespaceDeclaration, SyntaxKind.NamespaceDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeSimpleMemberAccessExpression, SyntaxKind.SimpleMemberAccessExpression);
         }
 
-        private static void AnalyzerNamespaceDeclaration(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
-            var declaration = (NamespaceDeclarationSyntax)context.Node;
+            var memberAccess = (MemberAccessExpressionSyntax)context.Node;
 
-            RemoveEmptyNamespaceDeclarationRefactoring.Analyze(context, declaration);
-
-            DeclareUsingDirectiveOnTopLevelRefactoring.Analyze(context, declaration);
+            if (UseEmptyStringLiteralInsteadOfStringEmptyRefactoring.CanRefactor(memberAccess, context.SemanticModel, context.CancellationToken))
+                context.ReportDiagnostic(DiagnosticDescriptors.UseEmptyStringLiteralInsteadOfStringEmpty, memberAccess);
         }
     }
 }

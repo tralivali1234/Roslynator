@@ -255,7 +255,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool IsEmptyString(
+        public static bool IsEmptyStringExpression(
             ExpressionSyntax expression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -384,6 +384,30 @@ namespace Roslynator.CSharp
             ISymbol symbol = semanticModel.GetSymbol(identifierName, cancellationToken);
 
             return SymbolUtility.IsPropertyOfNullableOfT(symbol, name);
+        }
+
+        public static bool IsStringConcatenation(BinaryExpressionSyntax addExpression, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return addExpression.Kind() == SyntaxKind.AddExpression
+                && SymbolUtility.IsStringAdditionOperator(semanticModel.GetMethodSymbol(addExpression, cancellationToken));
+        }
+
+        public static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+        {
+            if (expression == null)
+                return false;
+
+            if (expression
+                .WalkDownParentheses()
+                .Kind()
+                .Is(SyntaxKind.StringLiteralExpression, SyntaxKind.InterpolatedStringExpression))
+            {
+                return true;
+            }
+
+            return semanticModel.GetTypeInfo(expression, cancellationToken)
+                .ConvertedType?
+                .SpecialType == SpecialType.System_String;
         }
     }
 }

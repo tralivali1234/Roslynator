@@ -4,24 +4,21 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ConditionalExpressionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class SimplifyNullCheckDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
             {
                 return ImmutableArray.Create(
-                    DiagnosticDescriptors.ParenthesizeConditionInConditionalExpression,
                     DiagnosticDescriptors.UseCoalesceExpressionInsteadOfConditionalExpression,
-                    DiagnosticDescriptors.UseConditionalAccessInsteadOfConditionalExpression,
-                    DiagnosticDescriptors.SimplifyConditionalExpression);
+                    DiagnosticDescriptors.UseConditionalAccessInsteadOfConditionalExpression);
             }
         }
 
@@ -31,20 +28,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
-            context.EnableConcurrentExecution();
-
-            context.RegisterSyntaxNodeAction(AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
 
             context.RegisterSyntaxNodeAction(SimplifyNullCheckRefactoring.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
-        }
-
-        private static void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
-        {
-            var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
-
-            ParenthesizeConditionInConditionalExpressionRefactoring.Analyze(context, conditionalExpression);
-
-            SimplifyConditionalExpressionRefactoring.Analyze(context, conditionalExpression);
         }
     }
 }

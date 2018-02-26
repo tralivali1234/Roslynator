@@ -11,47 +11,36 @@ using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: ren
     internal static class SimplifyNestedUsingStatementRefactoring
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, UsingStatementSyntax usingStatement)
         {
-            if (ContainsEmbeddableUsingStatement(usingStatement)
-                && !usingStatement
-                    .Ancestors()
-                    .Any(f => f.IsKind(SyntaxKind.UsingStatement) && ContainsEmbeddableUsingStatement((UsingStatementSyntax)f)))
+            if (!ContainsEmbeddableUsingStatement(usingStatement))
+                return;
+
+            if (usingStatement
+                .Ancestors()
+                .Any(f => f.IsKind(SyntaxKind.UsingStatement) && ContainsEmbeddableUsingStatement((UsingStatementSyntax)f)))
             {
-                var block = (BlockSyntax)usingStatement.Statement;
-
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.SimplifyNestedUsingStatement,
-                    block);
-
-                context.ReportBraces(DiagnosticDescriptors.SimplifyNestedUsingStatementFadeOut, block);
+                return;
             }
+
+            var block = (BlockSyntax)usingStatement.Statement;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyNestedUsingStatement, block);
+
+            context.ReportBraces(DiagnosticDescriptors.SimplifyNestedUsingStatementFadeOut, block);
         }
 
         public static bool ContainsEmbeddableUsingStatement(UsingStatementSyntax usingStatement)
         {
-            StatementSyntax statement = usingStatement.Statement;
-
-            if (statement?.Kind() == SyntaxKind.Block)
-            {
-                var block = (BlockSyntax)statement;
-                SyntaxList<StatementSyntax> statements = block.Statements;
-
-                if (statements.Count == 1
-                    && statements[0].IsKind(SyntaxKind.UsingStatement))
-                {
-                    var usingStatement2 = (UsingStatementSyntax)statements[0];
-
-                    return block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                        && block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                        && usingStatement2.GetLeadingTrivia().IsEmptyOrWhitespace()
-                        && usingStatement2.GetTrailingTrivia().IsEmptyOrWhitespace();
-                }
-            }
-
-            return false;
+            return usingStatement.Statement is BlockSyntax block
+                && block.Statements.SingleOrDefault(shouldThrow: false) is UsingStatementSyntax usingStatement2
+                && block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
+                && block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
+                && usingStatement2.GetLeadingTrivia().IsEmptyOrWhitespace()
+                && usingStatement2.GetTrailingTrivia().IsEmptyOrWhitespace();
         }
 
         public static Task<Document> RefactorAsync(

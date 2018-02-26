@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -10,6 +11,47 @@ namespace Roslynator.CSharp
 {
     public static class CSharpFacts
     {
+        internal static ImmutableArray<SyntaxKind> AssignmentExpressionKinds { get; } = ImmutableArray.CreateRange(new SyntaxKind[]
+        {
+            SyntaxKind.SimpleAssignmentExpression,
+            SyntaxKind.AddAssignmentExpression,
+            SyntaxKind.SubtractAssignmentExpression,
+            SyntaxKind.MultiplyAssignmentExpression,
+            SyntaxKind.DivideAssignmentExpression,
+            SyntaxKind.ModuloAssignmentExpression,
+            SyntaxKind.AndAssignmentExpression,
+            SyntaxKind.ExclusiveOrAssignmentExpression,
+            SyntaxKind.OrAssignmentExpression,
+            SyntaxKind.LeftShiftAssignmentExpression,
+            SyntaxKind.RightShiftAssignmentExpression
+        });
+
+        //TODO: del
+        internal static ImmutableArray<SyntaxKind> BinaryExpressionKinds { get; } = ImmutableArray.CreateRange(new SyntaxKind[]
+        {
+            SyntaxKind.CoalesceExpression,
+            SyntaxKind.IsExpression,
+            SyntaxKind.AsExpression,
+            SyntaxKind.BitwiseOrExpression,
+            SyntaxKind.ExclusiveOrExpression,
+            SyntaxKind.BitwiseAndExpression,
+            SyntaxKind.EqualsExpression,
+            SyntaxKind.NotEqualsExpression,
+            SyntaxKind.LessThanExpression,
+            SyntaxKind.LessThanOrEqualExpression,
+            SyntaxKind.GreaterThanExpression,
+            SyntaxKind.GreaterThanOrEqualExpression,
+            SyntaxKind.LeftShiftExpression,
+            SyntaxKind.RightShiftExpression,
+            SyntaxKind.AddExpression,
+            SyntaxKind.SubtractExpression,
+            SyntaxKind.MultiplyExpression,
+            SyntaxKind.DivideExpression,
+            SyntaxKind.ModuloExpression,
+            SyntaxKind.LogicalAndExpression,
+            SyntaxKind.LogicalOrExpression
+        });
+
         internal static string GetTitle(SyntaxNode node)
         {
             switch (node.Kind())
@@ -330,6 +372,7 @@ namespace Roslynator.CSharp
                 case SyntaxKind.SetAccessorDeclaration:
                 case SyntaxKind.AddAccessorDeclaration:
                 case SyntaxKind.RemoveAccessorDeclaration:
+                case SyntaxKind.LocalFunctionStatement:
                     return true;
                 default:
                     return false;

@@ -13,8 +13,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveEmptyElseClauseRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ElseClauseSyntax elseClause)
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
         {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
             StatementSyntax statement = elseClause.Statement;
 
             if (statement?.Kind() == SyntaxKind.Block)

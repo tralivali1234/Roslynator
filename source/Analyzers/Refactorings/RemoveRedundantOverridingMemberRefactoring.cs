@@ -13,6 +13,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class RemoveRedundantOverridingMemberRefactoring
     {
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
@@ -25,15 +26,10 @@ namespace Roslynator.CSharp.Refactorings
             if (methodDeclaration.ContainsDiagnostics)
                 return;
 
-            SyntaxTokenList modifiers = methodDeclaration.Modifiers;
-
-            if (!modifiers.Contains(SyntaxKind.OverrideKeyword))
-                return;
-
-            if (modifiers.ContainsAny(SyntaxKind.SealedKeyword, SyntaxKind.PartialKeyword))
-                return;
-
             if (methodDeclaration.AttributeLists.Any())
+                return;
+
+            if (!CheckModifiers(methodDeclaration.Modifiers))
                 return;
 
             if (methodDeclaration.HasDocumentationComment())
@@ -49,22 +45,28 @@ namespace Roslynator.CSharp.Refactorings
             if (!invocationInfo.Success)
                 return;
 
-            if (!invocationInfo.Expression.IsKind(SyntaxKind.BaseExpression))
+            if (invocationInfo.Expression.Kind() != SyntaxKind.BaseExpression)
                 return;
 
-            IMethodSymbol methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodDeclaration, context.CancellationToken);
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
 
-            IMethodSymbol overriddenMethod = methodSymbol?.OverriddenMethod;
+            IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, cancellationToken);
+
+            if (methodSymbol == null)
+                return;
+
+            IMethodSymbol overriddenMethod = methodSymbol.OverriddenMethod;
 
             if (overriddenMethod == null)
                 return;
 
-            ISymbol symbol = context.SemanticModel.GetSymbol(invocationInfo.Name, context.CancellationToken);
+            ISymbol symbol = semanticModel.GetSymbol(invocationInfo.Name, cancellationToken);
 
             if (!overriddenMethod.Equals(symbol))
                 return;
 
-            if (!CheckParameters(methodDeclaration.ParameterList, invocationInfo.ArgumentList, context.SemanticModel, context.CancellationToken))
+            if (!CheckParameters(methodDeclaration.ParameterList, invocationInfo.ArgumentList, semanticModel, cancellationToken))
                 return;
 
             if (!CheckDefaultValues(methodSymbol.Parameters, overriddenMethod.Parameters))
@@ -74,6 +76,30 @@ namespace Roslynator.CSharp.Refactorings
                 DiagnosticDescriptors.RemoveRedundantOverridingMember,
                 methodDeclaration,
                 CSharpFacts.GetTitle(methodDeclaration));
+        }
+
+        private static bool CheckModifiers(SyntaxTokenList modifiers)
+        {
+            bool isOverride = false;
+
+            foreach (SyntaxToken modifier in modifiers)
+            {
+                switch (modifier.Kind())
+                {
+                    case SyntaxKind.OverrideKeyword:
+                        {
+                            isOverride = true;
+                            break;
+                        }
+                    case SyntaxKind.SealedKeyword:
+                    case SyntaxKind.PartialKeyword:
+                        {
+                            return false;
+                        }
+                }
+            }
+
+            return isOverride;
         }
 
         private static bool CheckParameters(
@@ -202,15 +228,10 @@ namespace Roslynator.CSharp.Refactorings
             if (propertyDeclaration.ContainsDiagnostics)
                 return;
 
-            SyntaxTokenList modifiers = propertyDeclaration.Modifiers;
-
-            if (!modifiers.Contains(SyntaxKind.OverrideKeyword))
-                return;
-
-            if (modifiers.Contains(SyntaxKind.SealedKeyword))
-                return;
-
             if (propertyDeclaration.AttributeLists.Any())
+                return;
+
+            if (!CheckModifiers(propertyDeclaration.Modifiers))
                 return;
 
             if (propertyDeclaration.HasDocumentationComment())
@@ -260,7 +281,10 @@ namespace Roslynator.CSharp.Refactorings
 
                         IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, cancellationToken);
 
-                        IPropertySymbol overriddenProperty = propertySymbol?.OverriddenProperty;
+                        if (propertySymbol == null)
+                            return false;
+
+                        IPropertySymbol overriddenProperty = propertySymbol.OverriddenProperty;
 
                         if (overriddenProperty == null)
                             return false;
@@ -273,27 +297,23 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         ExpressionSyntax expression = GetSetAccessorExpression(accessor);
 
-                        if (expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) != true)
+                        SimpleAssignmentExpressionInfo assignment = SyntaxInfo.SimpleAssignmentExpressionInfo(expression);
+
+                        if (!assignment.Success)
                             return false;
 
-                        var assignment = (AssignmentExpressionSyntax)expression;
-
-                        ExpressionSyntax left = assignment.Left;
-
-                        if (left?.IsKind(SyntaxKind.SimpleMemberAccessExpression) != true)
+                        if (assignment.Left.Kind() != SyntaxKind.SimpleMemberAccessExpression)
                             return false;
 
-                        var memberAccess = (MemberAccessExpressionSyntax)left;
+                        var memberAccess = (MemberAccessExpressionSyntax)assignment.Left;
 
                         if (memberAccess.Expression?.IsKind(SyntaxKind.BaseExpression) != true)
                             return false;
 
-                        ExpressionSyntax right = assignment.Right;
-
-                        if (right?.IsKind(SyntaxKind.IdentifierName) != true)
+                        if (assignment.Right.Kind() != SyntaxKind.IdentifierName)
                             return false;
 
-                        var identifierName = (IdentifierNameSyntax)right;
+                        var identifierName = (IdentifierNameSyntax)assignment.Right;
 
                         if (identifierName.Identifier.ValueText != "value")
                             return false;
@@ -305,7 +325,10 @@ namespace Roslynator.CSharp.Refactorings
 
                         IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, cancellationToken);
 
-                        IPropertySymbol overriddenProperty = propertySymbol?.OverriddenProperty;
+                        if (propertySymbol == null)
+                            return false;
+
+                        IPropertySymbol overriddenProperty = propertySymbol.OverriddenProperty;
 
                         if (overriddenProperty == null)
                             return false;
@@ -336,15 +359,10 @@ namespace Roslynator.CSharp.Refactorings
             if (indexerDeclaration.ContainsDiagnostics)
                 return;
 
-            SyntaxTokenList modifiers = indexerDeclaration.Modifiers;
-
-            if (!modifiers.Contains(SyntaxKind.OverrideKeyword))
-                return;
-
-            if (modifiers.Contains(SyntaxKind.SealedKeyword))
-                return;
-
             if (indexerDeclaration.AttributeLists.Any())
+                return;
+
+            if (!CheckModifiers(indexerDeclaration.Modifiers))
                 return;
 
             if (indexerDeclaration.HasDocumentationComment())
@@ -395,7 +413,10 @@ namespace Roslynator.CSharp.Refactorings
 
                         IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(indexerDeclaration, cancellationToken);
 
-                        IPropertySymbol overriddenProperty = propertySymbol?.OverriddenProperty;
+                        if (propertySymbol == null)
+                            return false;
+
+                        IPropertySymbol overriddenProperty = propertySymbol.OverriddenProperty;
 
                         if (overriddenProperty == null)
                             return false;
@@ -410,17 +431,15 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         ExpressionSyntax expression = GetSetAccessorExpression(accessor);
 
-                        if (expression?.IsKind(SyntaxKind.SimpleAssignmentExpression) != true)
+                        SimpleAssignmentExpressionInfo assignment = SyntaxInfo.SimpleAssignmentExpressionInfo(expression);
+
+                        if (!assignment.Success)
                             return false;
 
-                        var assignment = (AssignmentExpressionSyntax)expression;
-
-                        ExpressionSyntax left = assignment.Left;
-
-                        if (left?.IsKind(SyntaxKind.ElementAccessExpression) != true)
+                        if (assignment.Left.Kind() != SyntaxKind.ElementAccessExpression)
                             return false;
 
-                        var elementAccess = (ElementAccessExpressionSyntax)left;
+                        var elementAccess = (ElementAccessExpressionSyntax)assignment.Left;
 
                         if (elementAccess.Expression?.IsKind(SyntaxKind.BaseExpression) != true)
                             return false;
@@ -428,19 +447,20 @@ namespace Roslynator.CSharp.Refactorings
                         if (elementAccess.ArgumentList == null)
                             return false;
 
-                        ExpressionSyntax right = assignment.Right;
-
-                        if (right?.IsKind(SyntaxKind.IdentifierName) != true)
+                        if (assignment.Right.Kind() != SyntaxKind.IdentifierName)
                             return false;
 
-                        var identifierName = (IdentifierNameSyntax)right;
+                        var identifierName = (IdentifierNameSyntax)assignment.Right;
 
                         if (identifierName.Identifier.ValueText != "value")
                             return false;
 
                         IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(indexerDeclaration, cancellationToken);
 
-                        IPropertySymbol overriddenProperty = propertySymbol?.OverriddenProperty;
+                        if (propertySymbol == null)
+                            return false;
+
+                        IPropertySymbol overriddenProperty = propertySymbol.OverriddenProperty;
 
                         if (overriddenProperty == null)
                             return false;

@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.CodeFixes
         {
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindFirstAncestorOrSelf(root, context.Span, out SyntaxNode node, predicate: Predicate))
+            if (!TryFindFirstAncestorOrSelf(root, context.Span, out SyntaxNode node, predicate: f => CSharpFacts.CanHaveExpressionBody(f.Kind())))
                 return;
 
             CodeAction codeAction = CodeAction.Create(
@@ -34,26 +34,6 @@ namespace Roslynator.CSharp.CodeFixes
                 GetEquivalenceKey(DiagnosticIdentifiers.UseExpressionBodiedMember));
 
             context.RegisterCodeFix(codeAction, context.Diagnostics);
-        }
-
-        private static bool Predicate(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.MethodDeclaration:
-                case SyntaxKind.OperatorDeclaration:
-                case SyntaxKind.ConversionOperatorDeclaration:
-                case SyntaxKind.PropertyDeclaration:
-                case SyntaxKind.IndexerDeclaration:
-                case SyntaxKind.ConstructorDeclaration:
-                case SyntaxKind.DestructorDeclaration:
-                case SyntaxKind.LocalFunctionStatement:
-                case SyntaxKind.GetAccessorDeclaration:
-                case SyntaxKind.SetAccessorDeclaration:
-                    return true;
-                default:
-                    return false;
-            }
         }
     }
 }

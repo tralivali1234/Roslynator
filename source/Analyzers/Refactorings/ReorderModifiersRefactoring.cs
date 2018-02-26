@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             if (modifiers.IsSorted(ModifierComparer.Instance))
                 return;
 
-            if (declaration.ContainsDirectives(modifiers.Span))
+            if (modifiers.SpanContainsDirectives())
                 return;
 
             context.ReportDiagnostic(

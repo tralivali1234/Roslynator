@@ -99,8 +99,10 @@ namespace Roslynator.CSharp.Refactorings
             ReportDiagnostic(context, cref);
         }
 
-        public static void Analyze(SyntaxNodeAnalysisContext context, QualifiedNameSyntax qualifiedName)
+        public static void AnalyzeQualifiedName(SyntaxNodeAnalysisContext context)
         {
+            var qualifiedName = (QualifiedNameSyntax)context.Node;
+
             if (qualifiedName.IsParentKind(SyntaxKind.UsingDirective))
                 return;
 
@@ -122,8 +124,10 @@ namespace Roslynator.CSharp.Refactorings
             ReportDiagnostic(context, qualifiedName);
         }
 
-        public static void Analyze(SyntaxNodeAnalysisContext context, MemberAccessExpressionSyntax memberAccess)
+        public static void AnalyzeSimpleMemberAccessExpression(SyntaxNodeAnalysisContext context)
         {
+            var memberAccess = (MemberAccessExpressionSyntax)context.Node;
+
             if (memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression))
                 return;
 

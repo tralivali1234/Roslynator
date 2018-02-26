@@ -3,10 +3,11 @@
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.SyntaxWalkers;
 
 namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 {
-    internal class ReturnTaskInsteadOfNullWalker : CSharpSyntaxWalker
+    internal class ReturnTaskInsteadOfNullWalker : SkipNestedMethodWalker
     {
         public List<ExpressionSyntax> Expressions { get; private set; }
 
@@ -29,22 +30,6 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
             {
                 base.VisitReturnStatement(node);
             }
-        }
-
-        public override void VisitSimpleLambdaExpression(SimpleLambdaExpressionSyntax node)
-        {
-        }
-
-        public override void VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
-        {
-        }
-
-        public override void VisitAnonymousMethodExpression(AnonymousMethodExpressionSyntax node)
-        {
-        }
-
-        public override void VisitLocalFunctionStatement(LocalFunctionStatementSyntax node)
-        {
         }
     }
 }

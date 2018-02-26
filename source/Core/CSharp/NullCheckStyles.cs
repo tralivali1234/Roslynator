@@ -18,12 +18,12 @@ namespace Roslynator.CSharp
         None = 0,
 
         /// <summary>
-        /// x == null
+        /// <code>x == null</code>
         /// </summary>
         EqualsToNull = 1,
 
         /// <summary>
-        /// x != null
+        /// <code>x != null</code>
         /// </summary>
         NotEqualsToNull = 2,
 

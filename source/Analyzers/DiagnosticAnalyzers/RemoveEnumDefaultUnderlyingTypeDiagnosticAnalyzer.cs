@@ -4,18 +4,17 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ThrowExpressionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class RemoveEnumDefaultUnderlyingTypeDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.ThrowingOfNewNotImplementedException); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.RemoveEnumDefaultUnderlyingType); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -26,8 +25,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                f => ThrowingOfNewNotImplementedExceptionRefactoring.Analyze(f, (ThrowExpressionSyntax)f.Node),
-                SyntaxKind.ThrowExpression);
+                RemoveEnumDefaultUnderlyingTypeRefactoring.AnalyzeEnumDeclaration,
+                SyntaxKind.EnumDeclaration);
         }
     }
 }

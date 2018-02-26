@@ -39,6 +39,7 @@ namespace Roslynator.CSharp.Refactorings
         private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression, NullCheckStyles allowedStyles)
         {
             NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, allowedStyles: allowedStyles);
+
             if (nullCheck.Success
                 && IsUnconstrainedTypeParameter(context.SemanticModel.GetTypeSymbol(nullCheck.Expression, context.CancellationToken))
                 && !binaryExpression.SpanContainsDirectives())
@@ -70,6 +71,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!constraintTypes.Any())
                 return true;
 
+            //TODO: optimize
             var stack = new Stack<ITypeSymbol>(constraintTypes);
 
             while (stack.Count > 0)

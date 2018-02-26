@@ -16,7 +16,9 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
         public abstract string Name { get; }
 
         public TNode Node { get; }
+
         public int InsertIndex { get; }
+
         public NewLinePosition NewLinePosition { get; }
     }
 }
