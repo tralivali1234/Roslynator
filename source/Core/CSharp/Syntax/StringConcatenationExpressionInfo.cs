@@ -159,28 +159,11 @@ namespace Roslynator.CSharp.Syntax
 
             foreach (ExpressionSyntax expression in expressions)
             {
-                if (!IsStringExpression(expression, semanticModel, cancellationToken))
+                if (!CSharpUtility.IsStringExpression(expression, semanticModel, cancellationToken))
                     return Default;
             }
 
             return new StringConcatenationExpressionInfo(expressions, binaryExpressionSelection.Span);
-        }
-
-        private static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            if (expression == null)
-                return false;
-
-            if (expression.Kind().Is(
-                SyntaxKind.StringLiteralExpression,
-                SyntaxKind.InterpolatedStringExpression))
-            {
-                return true;
-            }
-
-            return semanticModel.GetTypeInfo(expression, cancellationToken)
-                .ConvertedType?
-                .IsString() == true;
         }
 
         private static ImmutableArray<ExpressionSyntax> GetExpressions(
@@ -192,11 +175,7 @@ namespace Roslynator.CSharp.Syntax
 
             while (true)
             {
-                IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(binaryExpression, cancellationToken);
-
-                if (methodSymbol?.MethodKind == MethodKind.BuiltinOperator
-                    && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
-                    && methodSymbol.IsContainingType(SpecialType.System_String))
+                if (CSharpUtility.IsStringConcatenation(binaryExpression, semanticModel, cancellationToken))
                 {
                     (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(binaryExpression.Right);
 

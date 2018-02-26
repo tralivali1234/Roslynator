@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,9 +10,6 @@ namespace Roslynator.CSharp
     {
         public static BracesAnalysisResult AnalyzeBraces(SwitchSectionSyntax switchSection)
         {
-            if (switchSection == null)
-                throw new ArgumentNullException(nameof(switchSection));
-
             SyntaxList<StatementSyntax> statements = switchSection.Statements;
 
             if (statements.Count > 1)
@@ -37,9 +33,6 @@ namespace Roslynator.CSharp
 
         public static BracesAnalysisResult AnalyzeBraces(IfStatementSyntax ifStatement)
         {
-            if (ifStatement == null)
-                throw new ArgumentNullException(nameof(ifStatement));
-
             bool anyHasEmbedded = false;
             bool anyHasBlock = false;
             bool allSupportsEmbedded = true;
@@ -102,8 +95,7 @@ namespace Roslynator.CSharp
                 statement = block.Statements[0];
             }
 
-            return !statement.IsKind(SyntaxKind.LocalDeclarationStatement)
-                && !statement.IsKind(SyntaxKind.LabeledStatement)
+            return !statement.IsKind(SyntaxKind.LocalDeclarationStatement, SyntaxKind.LabeledStatement)
                 && statement.IsSingleLine();
         }
     }

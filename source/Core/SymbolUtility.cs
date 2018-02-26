@@ -392,5 +392,13 @@ namespace Roslynator
 
             return false;
         }
+
+        public static bool IsPublicInstanceProperty(IPropertySymbol propertySymbol, string name = null)
+        {
+            return !propertySymbol.IsIndexer
+                && propertySymbol.DeclaredAccessibility == Accessibility.Public
+                && !propertySymbol.IsStatic
+                && StringUtility.IsNullOrEquals(name, propertySymbol.Name);
+        }
     }
 }

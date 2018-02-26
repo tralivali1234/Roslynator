@@ -8,105 +8,94 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpTypeFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseStringIsNullOrEmptyMethodRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression)
+        public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
         {
-            if (!binaryExpression.ContainsDiagnostics
-                && !binaryExpression.SpanContainsDirectives())
+            var binaryExpression = (BinaryExpressionSyntax)context.Node;
+
+            if (binaryExpression.ContainsDiagnostics)
+                return;
+
+            if (binaryExpression.SpanContainsDirectives())
+                return;
+
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(binaryExpression);
+
+            if (!info.Success)
+                return;
+
+            SyntaxKind kind = binaryExpression.Kind();
+
+            if (kind == SyntaxKind.LogicalOrExpression)
             {
-                ExpressionSyntax left = binaryExpression.Left.WalkDownParentheses();
-                ExpressionSyntax right = binaryExpression.Right.WalkDownParentheses();
-
-                switch (binaryExpression.Kind())
+                if (info.Left.IsKind(SyntaxKind.EqualsExpression)
+                    && info.Right.IsKind(SyntaxKind.EqualsExpression)
+                    && CanRefactor(
+                        (BinaryExpressionSyntax)info.Left,
+                        (BinaryExpressionSyntax)info.Right,
+                        context.SemanticModel,
+                        context.CancellationToken))
                 {
-                    case SyntaxKind.LogicalOrExpression:
-                        {
-                            if (left.IsKind(SyntaxKind.EqualsExpression)
-                                && right.IsKind(SyntaxKind.EqualsExpression)
-                                && CanRefactor(
-                                    (BinaryExpressionSyntax)left,
-                                    (BinaryExpressionSyntax)right,
-                                    context.SemanticModel,
-                                    context.CancellationToken))
-                            {
-                                context.ReportDiagnostic(DiagnosticDescriptors.UseStringIsNullOrEmptyMethod, binaryExpression);
-                            }
-
-                            break;
-                        }
-                    case SyntaxKind.LogicalAndExpression:
-                        {
-                            if (left.IsKind(SyntaxKind.NotEqualsExpression)
-                                && right.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.GreaterThanExpression)
-                                && CanRefactor(
-                                    (BinaryExpressionSyntax)left,
-                                    (BinaryExpressionSyntax)right,
-                                    context.SemanticModel,
-                                    context.CancellationToken))
-                            {
-                                context.ReportDiagnostic(DiagnosticDescriptors.UseStringIsNullOrEmptyMethod, binaryExpression);
-                            }
-
-                            break;
-                        }
+                    context.ReportDiagnostic(DiagnosticDescriptors.UseStringIsNullOrEmptyMethod, binaryExpression);
+                }
+            }
+            else if (kind == SyntaxKind.LogicalAndExpression)
+            {
+                if (info.Left.IsKind(SyntaxKind.NotEqualsExpression)
+                    && info.Right.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.GreaterThanExpression)
+                    && CanRefactor(
+                        (BinaryExpressionSyntax)info.Left,
+                        (BinaryExpressionSyntax)info.Right,
+                        context.SemanticModel,
+                        context.CancellationToken))
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.UseStringIsNullOrEmptyMethod, binaryExpression);
                 }
             }
         }
 
+        //XTODO: opt
         private static bool CanRefactor(
             BinaryExpressionSyntax left,
             BinaryExpressionSyntax right,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (left.Right.IsKind(SyntaxKind.NullLiteralExpression))
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(left);
+
+            if (!nullCheck.Success)
+                return false;
+
+            ExpressionSyntax expression = nullCheck.Expression;
+
+            if (CSharpFactory.AreEquivalent(expression, right.Left))
             {
-                ExpressionSyntax rightLeft = right.Left;
+                return right.IsKind(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression)
+                    && SymbolEquals(expression, right.Left, semanticModel, cancellationToken)
+                    && CSharpUtility.IsEmptyString(right.Right, semanticModel, cancellationToken);
+            }
 
-                ExpressionSyntax expression = left.Left;
+            if (right.Left.IsKind(SyntaxKind.SimpleMemberAccessExpression))
+            {
+                var memberAccess = (MemberAccessExpressionSyntax)right.Left;
 
-                if (CSharpFactory.AreEquivalent(expression, rightLeft))
-                {
-                    if (right.IsKind(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression)
-                        && SymbolEquals(expression, rightLeft, semanticModel, cancellationToken)
-                        && CSharpUtility.IsEmptyString(right.Right, semanticModel, cancellationToken))
-                    {
-                        return true;
-                    }
-                }
-                else if (rightLeft.IsKind(SyntaxKind.SimpleMemberAccessExpression))
-                {
-                    var memberAccess = (MemberAccessExpressionSyntax)rightLeft;
-
-                    if (string.Equals(memberAccess.Name.Identifier.ValueText, "Length", StringComparison.Ordinal)
-                        && right.Right.IsNumericLiteralExpression("0"))
-                    {
-                        ISymbol symbol = semanticModel.GetSymbol(memberAccess, cancellationToken);
-
-                        if (symbol?.IsProperty() == true)
-                        {
-                            var propertySymbol = (IPropertySymbol)symbol;
-                            if (!propertySymbol.IsIndexer
-                                && propertySymbol.IsPublic()
-                                && !propertySymbol.IsStatic
-                                && propertySymbol.Type.IsInt()
-                                && propertySymbol.ContainingType?.IsString() == true
-                                && string.Equals(propertySymbol.Name, "Length", StringComparison.Ordinal)
-                                && CSharpFactory.AreEquivalent(expression, memberAccess.Expression)
-                                && SymbolEquals(expression, memberAccess.Expression, semanticModel, cancellationToken))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
+                return string.Equals(memberAccess.Name.Identifier.ValueText, "Length", StringComparison.Ordinal)
+                    && right.Right.IsNumericLiteralExpression("0")
+                    && semanticModel.GetSymbol(memberAccess, cancellationToken) is IPropertySymbol propertySymbol
+                    && SymbolUtility.IsPublicInstanceProperty(propertySymbol, "Length")
+                    && propertySymbol.Type.SpecialType == SpecialType.System_Int32
+                    && propertySymbol.ContainingType?.SpecialType == SpecialType.System_String
+                    && CSharpFactory.AreEquivalent(expression, memberAccess.Expression)
+                    && SymbolEquals(expression, memberAccess.Expression, semanticModel, cancellationToken);
             }
 
             return false;
@@ -127,15 +116,14 @@ namespace Roslynator.CSharp.Refactorings
             BinaryExpressionSyntax binaryExpression,
             CancellationToken cancellationToken)
         {
-            ExpressionSyntax left = binaryExpression.Left.WalkDownParentheses();
-            ExpressionSyntax expression = ((BinaryExpressionSyntax)left).Left;
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression.Left);
 
             ExpressionSyntax newNode = SimpleMemberInvocationExpression(
                 StringType(),
                 IdentifierName("IsNullOrEmpty"),
-                Argument(expression));
+                Argument(nullCheck.Expression));
 
-            if (left.IsKind(SyntaxKind.NotEqualsExpression))
+            if (nullCheck.IsCheckingNotNull)
                 newNode = LogicalNotExpression(newNode);
 
             newNode = newNode

@@ -16,6 +16,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             get
             {
+                //XTODO: split
                 return ImmutableArray.Create(
                     DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
                     DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
@@ -29,8 +30,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(AnalyzeVariableDeclaration, SyntaxKind.VariableDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeDeclarationExpression, SyntaxKind.DeclarationExpression);
         }
 
         private static void AnalyzeVariableDeclaration(SyntaxNodeAnalysisContext context)
@@ -62,6 +65,39 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
                         variableDeclaration.Type);
+                }
+            }
+        }
+
+        private static void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
+        {
+            var declarationExpression = (DeclarationExpressionSyntax)context.Node;
+
+            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
+
+            if (flags.IsExplicit())
+            {
+                if (flags.SupportsImplicit()
+                    && flags.IsTypeObvious())
+                {
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious,
+                        declarationExpression.Type);
+                }
+            }
+            else if (flags.SupportsExplicit())
+            {
+                if (flags.IsTypeObvious())
+                {
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                        declarationExpression.Type);
+                }
+                else if (flags.IsValidSymbol())
+                {
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
+                        declarationExpression.Type);
                 }
             }
         }

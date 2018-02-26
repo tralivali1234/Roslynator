@@ -14,8 +14,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareTypeInsideNamespaceRefactoring
     {
-        public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
         {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
             if (symbol.ContainingNamespace?.IsGlobalNamespace == true)
             {
                 foreach (SyntaxReference syntaxReference in symbol.DeclaringSyntaxReferences)

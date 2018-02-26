@@ -13,8 +13,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class DefaultLabelShouldBeLastLabelInSwitchSectionRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, SwitchSectionSyntax switchSection)
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
             SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
 
             for (int i = 0; i < labels.Count - 1; i++)

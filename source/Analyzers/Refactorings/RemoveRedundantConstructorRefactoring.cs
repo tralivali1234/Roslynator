@@ -13,8 +13,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveRedundantConstructorRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ConstructorDeclarationSyntax constructor)
+        public static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
+            var constructor = (ConstructorDeclarationSyntax)context.Node;
+
             if (!constructor.ContainsDiagnostics
                 && constructor.ParameterList?.Parameters.Any() == false
                 && constructor.Body?.Statements.Any() == false)

@@ -13,8 +13,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveUnnecessaryCaseLabelRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, SwitchSectionSyntax switchSection)
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
             if (switchSection.IsParentKind(SyntaxKind.SwitchStatement))
             {
                 SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;

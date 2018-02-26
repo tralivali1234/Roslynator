@@ -11,8 +11,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareUsingDirectiveOnTopLevelRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, NamespaceDeclarationSyntax declaration)
+        public static void AnalyzeNamespaceDeclaration(SyntaxNodeAnalysisContext context)
         {
+            var declaration = (NamespaceDeclarationSyntax)context.Node;
+
             SyntaxList<UsingDirectiveSyntax> usings = declaration.Usings;
 
             if (usings.Any())

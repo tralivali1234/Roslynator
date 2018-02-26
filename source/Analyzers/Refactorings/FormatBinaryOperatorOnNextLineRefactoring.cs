@@ -14,42 +14,34 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatBinaryOperatorOnNextLineRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression)
+        public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
         {
+            var binaryExpression = (BinaryExpressionSyntax)context.Node;
+
             ExpressionSyntax left = binaryExpression.Left;
             ExpressionSyntax right = binaryExpression.Right;
 
-            if (left?.IsMissing == false
-                && right?.IsMissing == false
-                && !IsStringConcatenation(context, binaryExpression)
-                && left.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia())
-                && CheckOperatorTrailingTrivia(binaryExpression.OperatorToken.TrailingTrivia)
-                && right.GetLeadingTrivia().IsEmptyOrWhitespace())
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.FormatBinaryOperatorOnNextLine,
-                    binaryExpression.OperatorToken);
-            }
-        }
+            if (left?.IsMissing != false)
+                return;
 
-        private static bool IsStringConcatenation(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression)
-        {
-            return binaryExpression.IsKind(SyntaxKind.AddExpression)
-                && (IsStringExpression(context, binaryExpression.Left) || IsStringExpression(context, binaryExpression.Right));
-        }
+            if (right?.IsMissing != false)
+                return;
 
-        private static bool IsStringExpression(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
-        {
-            if (expression.IsKind(SyntaxKind.StringLiteralExpression)
-                || expression.IsKind(SyntaxKind.InterpolatedStringExpression))
-            {
-                return true;
-            }
+            if (CSharpUtility.IsStringConcatenation(binaryExpression, context.SemanticModel, context.CancellationToken))
+                return;
 
-            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeInfo(expression, context.CancellationToken).ConvertedType;
+            if (!left.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
+                return;
 
-            return typeSymbol?.IsNamedType() == true
-                && ((INamedTypeSymbol)typeSymbol).IsString();
+            if (!CheckOperatorTrailingTrivia(binaryExpression.OperatorToken.TrailingTrivia))
+                return;
+
+            if (!right.GetLeadingTrivia().IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.FormatBinaryOperatorOnNextLine,
+                binaryExpression.OperatorToken);
         }
 
         private static bool CheckOperatorTrailingTrivia(SyntaxTriviaList triviaList)
@@ -84,19 +76,7 @@ namespace Roslynator.CSharp.Refactorings
             BinaryExpressionSyntax binaryExpression,
             CancellationToken cancellationToken)
         {
-            BinaryExpressionSyntax newBinaryExpression = GetNewBinaryExpression(binaryExpression)
-                .WithTriviaFrom(binaryExpression)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(binaryExpression, newBinaryExpression, cancellationToken);
-        }
-
-        private static BinaryExpressionSyntax GetNewBinaryExpression(BinaryExpressionSyntax binaryExpression)
-        {
-            if (binaryExpression == null)
-                throw new ArgumentNullException(nameof(binaryExpression));
-
-            return BinaryExpression(
+            BinaryExpressionSyntax newBinaryExpression = BinaryExpression(
                 binaryExpression.Kind(),
                 binaryExpression.Left.WithTrailingTrivia(binaryExpression.OperatorToken.TrailingTrivia),
                 Token(
@@ -104,6 +84,12 @@ namespace Roslynator.CSharp.Refactorings
                     binaryExpression.OperatorToken.Kind(),
                     TriviaList(Space)),
                 binaryExpression.Right.WithoutLeadingTrivia());
+
+            newBinaryExpression = newBinaryExpression
+                .WithTriviaFrom(binaryExpression)
+                .WithFormatterAnnotation();
+
+            return document.ReplaceNodeAsync(binaryExpression, newBinaryExpression, cancellationToken);
         }
     }
 }

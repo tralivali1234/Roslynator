@@ -7,21 +7,15 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class CompilationUnitDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class RemoveFileWithNoCodeDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.DeclareEachTypeInSeparateFile,
-                    DiagnosticDescriptors.RemoveFileWithNoCode);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.RemoveFileWithNoCode); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -37,8 +31,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         private static void AnalyzeCompilationUnit(SyntaxNodeAnalysisContext context)
         {
             var compilationUnit = (CompilationUnitSyntax)context.Node;
-
-            DeclareEachTypeInSeparateFileRefactoring.Analyze(context, compilationUnit);
 
             SyntaxToken token = compilationUnit.EndOfFileToken;
 

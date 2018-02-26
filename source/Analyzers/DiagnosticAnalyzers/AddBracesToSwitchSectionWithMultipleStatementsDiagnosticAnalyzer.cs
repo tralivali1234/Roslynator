@@ -6,24 +6,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class SwitchSectionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class AddBracesToSwitchSectionWithMultipleStatementsDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.FormatSwitchSectionStatementOnSeparateLine,
-                    DiagnosticDescriptors.FormatEachStatementOnSeparateLine,
-                    DiagnosticDescriptors.RemoveUnnecessaryCaseLabel,
-                    DiagnosticDescriptors.DefaultLabelShouldBeLastLabelInSwitchSection,
-                    DiagnosticDescriptors.AddBracesToSwitchSectionWithMultipleStatements);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.AddBracesToSwitchSectionWithMultipleStatements); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -39,14 +30,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         private static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
         {
             var switchSection = (SwitchSectionSyntax)context.Node;
-
-            FormatEachStatementOnSeparateLineRefactoring.Analyze(context, switchSection);
-
-            RemoveUnnecessaryCaseLabelRefactoring.Analyze(context, switchSection);
-
-            FormatSwitchSectionStatementOnSeparateLineRefactoring.Analyze(context, switchSection);
-
-            DefaultLabelShouldBeLastLabelInSwitchSectionRefactoring.Analyze(context, switchSection);
 
             SyntaxList<StatementSyntax> statements = switchSection.Statements;
 

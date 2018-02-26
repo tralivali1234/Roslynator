@@ -12,8 +12,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemovePartialModifierFromTypeWithSinglePartRefactoring
     {
-        public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
         {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
             if (symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
             {
                 ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;

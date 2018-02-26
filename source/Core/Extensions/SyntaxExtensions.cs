@@ -959,6 +959,29 @@ namespace Roslynator
             return tokens.IndexOf(token) != -1;
         }
 
+        /// <summary>
+        /// Searches for a token that matches the predicate and returns the zero-based index of the first occurrence within the entire <see cref="SyntaxTokenList"/>.
+        /// </summary>
+        /// <param name="tokens"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static int IndexOf(this SyntaxTokenList tokens, Func<SyntaxToken, bool> predicate)
+        {
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            int index = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (predicate(token))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
+        }
+
         internal static bool IsSorted(SyntaxTokenList modifiers, IComparer<SyntaxToken> comparer)
         {
             int count = modifiers.Count;
@@ -1093,6 +1116,29 @@ namespace Roslynator
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Searches for a trivia that matches the predicate and returns the zero-based index of the first occurrence within the entire <see cref="SyntaxTriviaList"/>.
+        /// </summary>
+        /// <param name="triviaList"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static int IndexOf(this SyntaxTriviaList triviaList, Func<SyntaxTrivia, bool> predicate)
+        {
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            int index = 0;
+            foreach (SyntaxTrivia trivia in triviaList)
+            {
+                if (predicate(trivia))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
         }
         #endregion SyntaxTriviaList
     }

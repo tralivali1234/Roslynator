@@ -798,21 +798,19 @@ namespace Roslynator.CSharp
         /// <param name="allowedStyles"></param>
         /// <param name="walkDownParentheses"></param>
         /// <param name="allowMissing"></param>
-        /// <param name="cancellationToken"></param>
+        /// 
         /// <returns></returns>
         public static NullCheckExpressionInfo NullCheckExpressionInfo(
             SyntaxNode node,
             NullCheckStyles allowedStyles = NullCheckStyles.ComparisonToNull | NullCheckStyles.IsPattern,
             bool walkDownParentheses = true,
-            bool allowMissing = false,
-            CancellationToken cancellationToken = default(CancellationToken))
+            bool allowMissing = false)
         {
             return Syntax.NullCheckExpressionInfo.Create(
                 node,
                 allowedStyles,
                 walkDownParentheses,
-                allowMissing,
-                cancellationToken);
+                allowMissing);
         }
 
         /// <summary>

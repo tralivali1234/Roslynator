@@ -4,23 +4,17 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class QualifiedNameDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class SimplifyNullableOfTDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get
-            {
-                return ImmutableArray.Create(
-                    DiagnosticDescriptors.UsePredefinedType,
-                    DiagnosticDescriptors.SimplifyNullableOfT);
-            }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.SimplifyNullableOfT); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -30,16 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AnalyzeQualifiedName, SyntaxKind.QualifiedName);
-        }
-
-        private static void AnalyzeQualifiedName(SyntaxNodeAnalysisContext context)
-        {
-            var qualifiedName = (QualifiedNameSyntax)context.Node;
-
-            UsePredefinedTypeRefactoring.Analyze(context, qualifiedName);
-
-            SimplifyNullableOfTRefactoring.Analyze(context, qualifiedName);
+            context.RegisterSyntaxNodeAction(SimplifyNullableOfTRefactoring.AnalyzeQualifiedName, SyntaxKind.QualifiedName);
         }
     }
 }

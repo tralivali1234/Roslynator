@@ -12,8 +12,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AddEmptyLineAfterLastStatementInDoStatementRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, DoStatementSyntax doStatement)
+        public static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
         {
+            var doStatement = (DoStatementSyntax)context.Node;
+
             StatementSyntax statement = doStatement.Statement;
 
             if (statement?.Kind() == SyntaxKind.Block)

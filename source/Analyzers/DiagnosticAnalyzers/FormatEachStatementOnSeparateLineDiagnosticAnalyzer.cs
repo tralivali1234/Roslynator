@@ -5,16 +5,16 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.FormatEachStatementOnSeparateLineRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class IdentifierNameDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class FormatEachStatementOnSeparateLineDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UsePredefinedType); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.FormatEachStatementOnSeparateLine); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -25,13 +25,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(
-                UsePredefinedTypeRefactoring.AnalyzeIdentifierName,
-                SyntaxKind.IdentifierName);
-
-            context.RegisterSyntaxNodeAction(
-                UsePredefinedTypeRefactoring.AnalyzeXmlCrefAttribute,
-                SyntaxKind.XmlCrefAttribute);
+            context.RegisterSyntaxNodeAction(AnalyzeBlock, SyntaxKind.Block);
+            context.RegisterSyntaxNodeAction(AnalyzeSwitchSection, SyntaxKind.SwitchSection);
         }
     }
 }

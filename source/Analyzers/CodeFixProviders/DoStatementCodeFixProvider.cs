@@ -17,7 +17,9 @@ namespace Roslynator.CSharp.CodeFixes
     public class DoStatementCodeFixProvider : BaseCodeFixProvider
     {
         public sealed override ImmutableArray<string> FixableDiagnosticIds
-            => ImmutableArray.Create(DiagnosticIdentifiers.AvoidUsageOfDoStatementToCreateInfiniteLoop);
+        {
+            get { return ImmutableArray.Create(DiagnosticIdentifiers.AvoidUsageOfDoStatementToCreateInfiniteLoop); }
+        }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {

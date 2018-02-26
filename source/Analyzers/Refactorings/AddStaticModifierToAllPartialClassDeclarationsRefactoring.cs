@@ -13,8 +13,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AddStaticModifierToAllPartialClassDeclarationsRefactoring
     {
-        public static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol symbol)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
         {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
             if (symbol.IsClass()
                 && symbol.IsStatic
                 && !symbol.IsImplicitClass

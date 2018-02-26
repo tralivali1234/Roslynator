@@ -46,8 +46,10 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static void Analyze(SyntaxNodeAnalysisContext context, QualifiedNameSyntax qualifiedName)
+        public static void AnalyzeQualifiedName(SyntaxNodeAnalysisContext context)
         {
+            var qualifiedName = (QualifiedNameSyntax)context.Node;
+
             if (!qualifiedName.IsParentKind(SyntaxKind.UsingDirective)
                 && !IsWithinNameOfExpression(qualifiedName, context.SemanticModel, context.CancellationToken)
                 && context.SemanticModel.GetSymbol(qualifiedName, context.CancellationToken) is INamedTypeSymbol typeSymbol

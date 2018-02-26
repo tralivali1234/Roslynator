@@ -10,8 +10,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeElseClauseWithNestedIfStatementRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ElseClauseSyntax elseClause)
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
         {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
             if (!(elseClause.Statement is BlockSyntax block))
                 return;
 

@@ -385,5 +385,29 @@ namespace Roslynator.CSharp
 
             return SymbolUtility.IsPropertyOfNullableOfT(symbol, name);
         }
+
+        public static bool IsStringConcatenation(BinaryExpressionSyntax binaryExpression, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(binaryExpression, cancellationToken);
+
+            return methodSymbol?.MethodKind == MethodKind.BuiltinOperator
+                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
+                && methodSymbol.IsContainingType(SpecialType.System_String);
+        }
+
+        public static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+        {
+            if (expression
+                .WalkDownParentheses()
+                .Kind()
+                .Is(SyntaxKind.StringLiteralExpression, SyntaxKind.InterpolatedStringExpression))
+            {
+                return true;
+            }
+
+            return semanticModel.GetTypeInfo(expression, cancellationToken)
+                .ConvertedType?
+                .SpecialType == SpecialType.System_String;
+        }
     }
 }

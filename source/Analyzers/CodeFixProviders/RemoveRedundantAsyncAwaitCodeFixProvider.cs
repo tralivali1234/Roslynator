@@ -26,12 +26,12 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
             if (!TryFindFirstAncestorOrSelf(root, context.Span, out SyntaxNode node, predicate: f => f.IsKind(
-                 SyntaxKind.MethodDeclaration,
+                SyntaxKind.MethodDeclaration,
                 SyntaxKind.LocalFunctionStatement,
                 SyntaxKind.SimpleLambdaExpression,
                 SyntaxKind.ParenthesizedLambdaExpression,
                 SyntaxKind.AnonymousMethodExpression)))
-{
+            {
                 return;
             }
 
