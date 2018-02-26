@@ -4,14 +4,13 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.ThrowingOfNewNotImplementedExceptionRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ThrowStatementDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class ThrowingOfNewNotImplementedExceptionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
@@ -24,10 +23,18 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(
-                f => ThrowingOfNewNotImplementedExceptionRefactoring.Analyze(f, (ThrowStatementSyntax)f.Node),
-                SyntaxKind.ThrowStatement);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol exceptionSymbol = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_NotImplementedException);
+
+                if (exceptionSymbol == null)
+                    return;
+
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeThrowStatement(f, exceptionSymbol), SyntaxKind.ThrowStatement);
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeThrowExpression(f, exceptionSymbol), SyntaxKind.ThrowExpression);
+            });
         }
     }
 }

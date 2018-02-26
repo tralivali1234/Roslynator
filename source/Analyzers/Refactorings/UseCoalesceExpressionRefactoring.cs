@@ -22,51 +22,70 @@ namespace Roslynator.CSharp.Refactorings
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (ifStatement.IsSimpleIf()
-                && !ifStatement.ContainsDiagnostics
-                && ifStatement.TryGetContainingList(out SyntaxList<StatementSyntax> statements)
-                && !IsPartOfLazyInitialization(ifStatement, statements))
+            if (!ifStatement.IsSimpleIf())
+                return;
+
+            if (ifStatement.ContainsDiagnostics)
+                return;
+
+            if (ifStatement.SpanContainsDirectives())
+                return;
+
+            if (!ifStatement.TryGetContainingList(out SyntaxList<StatementSyntax> statements))
+                return;
+
+            if (IsPartOfLazyInitialization(ifStatement, statements))
+                return;
+
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, semanticModel: context.SemanticModel, cancellationToken: context.CancellationToken);
+
+            if (!nullCheck.Success)
+                return;
+
+            SimpleAssignmentStatementInfo simpleAssignment = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
+
+            if (!simpleAssignment.Success)
+                return;
+
+            if (!CSharpFactory.AreEquivalent(simpleAssignment.Left, nullCheck.Expression))
+                return;
+
+            if (!simpleAssignment.Right.IsSingleLine())
+                return;
+
+            int index = statements.IndexOf(ifStatement);
+
+            if (index > 0)
             {
-                NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, semanticModel: context.SemanticModel, cancellationToken: context.CancellationToken);
-                if (nullCheck.Success)
+                StatementSyntax previousStatement = statements[index - 1];
+
+                if (!previousStatement.ContainsDiagnostics
+                    && CanRefactor(previousStatement, ifStatement, nullCheck.Expression, ifStatement.Parent))
                 {
-                    SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo(ifStatement.SingleNonBlockStatementOrDefault());
-                    if (assignmentInfo.Success
-                        && CSharpFactory.AreEquivalent(assignmentInfo.Left, nullCheck.Expression)
-                        && assignmentInfo.Right.IsSingleLine()
-                        && !ifStatement.SpanContainsDirectives())
-                    {
-                        int index = statements.IndexOf(ifStatement);
-
-                        if (index > 0)
-                        {
-                            StatementSyntax previousStatement = statements[index - 1];
-
-                            if (!previousStatement.ContainsDiagnostics
-                                && CanRefactor(previousStatement, ifStatement, nullCheck.Expression, ifStatement.Parent))
-                            {
-                                context.ReportDiagnostic(DiagnosticDescriptors.UseCoalesceExpression, previousStatement);
-                            }
-                        }
-
-                        if (index < statements.Count - 1)
-                        {
-                            StatementSyntax nextStatement = statements[index + 1];
-
-                            if (!nextStatement.ContainsDiagnostics)
-                            {
-                                MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(nextStatement);
-                                if (invocationInfo.Success
-                                    && CSharpFactory.AreEquivalent(nullCheck.Expression, invocationInfo.Expression)
-                                    && !ifStatement.Parent.ContainsDirectives(TextSpan.FromBounds(ifStatement.SpanStart, nextStatement.Span.End)))
-                                {
-                                    context.ReportDiagnostic(DiagnosticDescriptors.InlineLazyInitialization, ifStatement);
-                                }
-                            }
-                        }
-                    }
+                    context.ReportDiagnostic(DiagnosticDescriptors.UseCoalesceExpression, previousStatement);
                 }
             }
+
+            if (index == statements.Count - 1)
+                return;
+
+            StatementSyntax nextStatement = statements[index + 1];
+
+            if (nextStatement.ContainsDiagnostics)
+                return;
+
+            MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo(nextStatement);
+
+            if (!invocationInfo.Success)
+                return;
+
+            if (!CSharpFactory.AreEquivalent(nullCheck.Expression, invocationInfo.Expression))
+                return;
+
+            if (ifStatement.Parent.ContainsDirectives(TextSpan.FromBounds(ifStatement.SpanStart, nextStatement.Span.End)))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.InlineLazyInitialization, ifStatement);
         }
 
         private static bool IsPartOfLazyInitialization(IfStatementSyntax ifStatement, SyntaxList<StatementSyntax> statements)

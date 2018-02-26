@@ -9,36 +9,38 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ThrowingOfNewNotImplementedExceptionRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, ThrowStatementSyntax throwStatement)
+        public static void AnalyzeThrowStatement(SyntaxNodeAnalysisContext context, INamedTypeSymbol exceptionSymbol)
         {
-            Analyze(context, throwStatement.Expression);
+            var throwStatement = (ThrowStatementSyntax)context.Node;
+
+            Analyze(context, throwStatement.Expression, exceptionSymbol);
         }
 
-        internal static void Analyze(SyntaxNodeAnalysisContext context, ThrowExpressionSyntax throwExpression)
+        internal static void AnalyzeThrowExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol exceptionSymbol)
         {
-            Analyze(context, throwExpression.Expression);
+            var throwExpression = (ThrowExpressionSyntax)context.Node;
+
+            Analyze(context, throwExpression.Expression, exceptionSymbol);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
+        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression, INamedTypeSymbol exceptionSymbol)
         {
-            if (expression?.Kind() == SyntaxKind.ObjectCreationExpression)
-            {
-                var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
+            if (expression?.Kind() != SyntaxKind.ObjectCreationExpression)
+                return;
 
-                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationExpression, context.CancellationToken);
+            var objectCreationExpression = (ObjectCreationExpressionSyntax)expression;
 
-                if (typeSymbol != null)
-                {
-                    INamedTypeSymbol exceptionSymbol = context.GetTypeByMetadataName(MetadataNames.System_NotImplementedException);
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreationExpression, context.CancellationToken);
 
-                    if (typeSymbol.Equals(exceptionSymbol))
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.ThrowingOfNewNotImplementedException,
-                            expression);
-                    }
-                }
-            }
+            if (typeSymbol == null)
+                return;
+
+            if (!typeSymbol.Equals(exceptionSymbol))
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.ThrowingOfNewNotImplementedException,
+                expression);
         }
     }
 }

@@ -255,7 +255,7 @@ namespace Roslynator.CSharp
             }
         }
 
-        public static bool IsEmptyString(
+        public static bool IsEmptyStringExpression(
             ExpressionSyntax expression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -386,17 +386,17 @@ namespace Roslynator.CSharp
             return SymbolUtility.IsPropertyOfNullableOfT(symbol, name);
         }
 
-        public static bool IsStringConcatenation(BinaryExpressionSyntax binaryExpression, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        public static bool IsStringConcatenation(BinaryExpressionSyntax addExpression, SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
         {
-            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(binaryExpression, cancellationToken);
-
-            return methodSymbol?.MethodKind == MethodKind.BuiltinOperator
-                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
-                && methodSymbol.IsContainingType(SpecialType.System_String);
+            return addExpression.Kind() == SyntaxKind.AddExpression
+                && SymbolUtility.IsStringAdditionOperator(semanticModel.GetMethodSymbol(addExpression, cancellationToken));
         }
 
         public static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
+            if (expression == null)
+                return false;
+
             if (expression
                 .WalkDownParentheses()
                 .Kind()

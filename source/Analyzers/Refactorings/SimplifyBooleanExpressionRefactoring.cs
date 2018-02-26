@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -17,41 +18,49 @@ namespace Roslynator.CSharp.Refactorings
     {
         internal static void AnalyzeLogicalAndExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node.SpanContainsDirectives())
-                return;
-
             var logicalAnd = (BinaryExpressionSyntax)context.Node;
 
-            ExpressionSyntax left = logicalAnd.Left?.WalkDownParentheses();
+            if (logicalAnd.SpanContainsDirectives())
+                return;
 
-            if (IsPropertyOfNullableOfT(left, "HasValue", context.SemanticModel, context.CancellationToken))
+            BinaryExpressionInfo logicalAndInfo = SyntaxInfo.BinaryExpressionInfo(logicalAnd);
+
+            if (!logicalAndInfo.Success)
+                return;
+
+            ExpressionSyntax left = logicalAndInfo.Left;
+
+            if (!IsPropertyOfNullableOfT(left, "HasValue", context.SemanticModel, context.CancellationToken))
+                return;
+
+            ExpressionSyntax right = logicalAndInfo.Right;
+
+            switch (right.Kind())
             {
-                ExpressionSyntax right = logicalAnd.Right?.WalkDownParentheses();
+                case SyntaxKind.LogicalNotExpression:
+                    {
+                        var logicalNot = (PrefixUnaryExpressionSyntax)right;
 
-                switch (right?.Kind())
-                {
-                    case SyntaxKind.LogicalNotExpression:
+                        Analyze(context, logicalAnd, left, logicalNot.Operand?.WalkDownParentheses());
+                        break;
+                    }
+                case SyntaxKind.EqualsExpression:
+                    {
+                        BinaryExpressionInfo equalsExpressionInfo = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)right);
+
+                        if (equalsExpressionInfo.Success
+                            && equalsExpressionInfo.Right.Kind() == SyntaxKind.FalseLiteralExpression)
                         {
-                            var logicalNot = (PrefixUnaryExpressionSyntax)right;
-
-                            Analyze(context, logicalAnd, left, logicalNot.Operand?.WalkDownParentheses());
-                            break;
+                            Analyze(context, logicalAnd, left, equalsExpressionInfo.Left);
                         }
-                    case SyntaxKind.EqualsExpression:
-                        {
-                            var equalsExpression = (BinaryExpressionSyntax)right;
 
-                            if (equalsExpression.Right?.WalkDownParentheses().IsKind(SyntaxKind.FalseLiteralExpression) == true)
-                                Analyze(context, logicalAnd, left, equalsExpression.Left?.WalkDownParentheses());
-
-                            break;
-                        }
-                    case SyntaxKind.SimpleMemberAccessExpression:
-                        {
-                            Analyze(context, logicalAnd, left, right);
-                            break;
-                        }
-                }
+                        break;
+                    }
+                case SyntaxKind.SimpleMemberAccessExpression:
+                    {
+                        Analyze(context, logicalAnd, left, right);
+                        break;
+                    }
             }
         }
 
@@ -68,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (expression1 != null
                     && expression2 != null
-                    && CSharpFactory.AreEquivalent(expression1, expression2))
+                    && AreEquivalent(expression1, expression2))
                 {
                     context.ReportDiagnostic(DiagnosticDescriptors.SimplifyBooleanExpression, logicalAnd);
                 }

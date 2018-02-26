@@ -4,44 +4,42 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: AnalyzeMethodSymbol, AnalyzePropertySymbol
     internal static class RemoveRedundantSealedModifierRefactoring
     {
         public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
-
-            Analyze(context, propertyDeclaration);
+            Analyze(context, (PropertyDeclarationSyntax)context.Node);
         }
 
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var methodDeclaration = (MethodDeclarationSyntax)context.Node;
-
-            Analyze(context, methodDeclaration);
+            Analyze(context, (MethodDeclarationSyntax)context.Node);
         }
 
         private static void Analyze(SyntaxNodeAnalysisContext context, MemberDeclarationSyntax declaration)
         {
             ISymbol symbol = context.SemanticModel.GetDeclaredSymbol(declaration, context.CancellationToken);
 
-            var containingSymbol = symbol?.ContainingSymbol as INamedTypeSymbol;
+            INamedTypeSymbol containingType = symbol?.ContainingType;
 
-            if (containingSymbol?.IsSealed == true
-                && containingSymbol.IsClass())
-            {
-                SyntaxToken sealedKeyword = SyntaxInfo.ModifiersInfo(declaration).Modifiers.Find(SyntaxKind.SealedKeyword);
+            if (containingType?.TypeKind != TypeKind.Class)
+                return;
 
-                if (sealedKeyword.IsKind(SyntaxKind.SealedKeyword))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.RemoveRedundantSealedModifier,
-                        Location.Create(declaration.SyntaxTree, sealedKeyword.Span));
-                }
-            }
+            if (!containingType.IsSealed)
+                return;
+
+            SyntaxToken sealedKeyword = SyntaxInfo.ModifiersInfo(declaration).Modifiers.Find(SyntaxKind.SealedKeyword);
+
+            if (sealedKeyword.Kind() != SyntaxKind.SealedKeyword)
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.RemoveRedundantSealedModifier,
+                Location.Create(declaration.SyntaxTree, sealedKeyword.Span));
         }
     }
 }

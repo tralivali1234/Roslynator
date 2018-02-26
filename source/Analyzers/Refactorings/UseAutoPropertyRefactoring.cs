@@ -18,6 +18,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //XTODO: optimize
     internal static class UseAutoPropertyRefactoring
     {
         private static readonly SyntaxAnnotation _removeAnnotation = new SyntaxAnnotation();

@@ -231,6 +231,36 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// Creates a new <see cref="Syntax.AssignmentExpressionInfo"/> from the specified node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="walkDownParentheses"></param>
+        /// <param name="allowMissing"></param>
+        /// <returns></returns>
+        public static AssignmentExpressionInfo AssignmentExpressionInfo(
+            SyntaxNode node,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
+            return Syntax.AssignmentExpressionInfo.Create(node, walkDownParentheses, allowMissing);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.AssignmentExpressionInfo"/> from the specified assignment expression.
+        /// </summary>
+        /// <param name="assignmentExpression"></param>
+        /// <param name="walkDownParentheses"></param>
+        /// <param name="allowMissing"></param>
+        /// <returns></returns>
+        public static AssignmentExpressionInfo AssignmentExpressionInfo(
+            AssignmentExpressionSyntax assignmentExpression,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
+            return Syntax.AssignmentExpressionInfo.Create(assignmentExpression, walkDownParentheses, allowMissing);
+        }
+
+        /// <summary>
         /// Creates a new <see cref="Syntax.BinaryExpressionInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>

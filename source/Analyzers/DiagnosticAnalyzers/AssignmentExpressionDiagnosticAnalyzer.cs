@@ -4,9 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.RemoveRedundantDelegateCreationRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -31,15 +30,21 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzeAssignmentExpression, SyntaxKind.AddAssignmentExpression);
-            context.RegisterSyntaxNodeAction(AnalyzeAssignmentExpression, SyntaxKind.SubtractAssignmentExpression);
-        }
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol eventHandler = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_EventHandler);
 
-        private static void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context)
-        {
-            var assignment = (AssignmentExpressionSyntax)context.Node;
+                if (eventHandler == null)
+                    return;
 
-            RemoveRedundantDelegateCreationRefactoring.Analyze(context, assignment);
+                INamedTypeSymbol eventHandlerOfT = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_EventHandler_T);
+
+                if (eventHandlerOfT == null)
+                    return;
+
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeAssignmentExpression(f, eventHandler, eventHandlerOfT), SyntaxKind.AddAssignmentExpression);
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeAssignmentExpression(f, eventHandler, eventHandlerOfT), SyntaxKind.SubtractAssignmentExpression);
+            });
         }
     }
 }

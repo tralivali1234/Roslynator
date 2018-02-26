@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
                                         ExpressionSyntax argumentExpression = firstArgument.Expression;
 
                                         if (argumentExpression != null
-                                            && CSharpUtility.IsEmptyString(argumentExpression, semanticModel, cancellationToken)
+                                            && CSharpUtility.IsEmptyStringExpression(argumentExpression, semanticModel, cancellationToken)
                                             && !invocation.ContainsDirectives(TextSpan.FromBounds(invocation.SpanStart, firstArgument.Span.End)))
                                         {
                                             context.ReportDiagnostic(

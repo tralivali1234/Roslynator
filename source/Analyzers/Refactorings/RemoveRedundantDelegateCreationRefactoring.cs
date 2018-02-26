@@ -8,58 +8,58 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class RemoveRedundantDelegateCreationRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, AssignmentExpressionSyntax assignment)
+        public static void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol eventHandler, INamedTypeSymbol eventHandlerOfT)
         {
-            ExpressionSyntax right = assignment.Right;
+            var assignmentExpression = (AssignmentExpressionSyntax)context.Node;
 
-            if (right?.Kind() == SyntaxKind.ObjectCreationExpression)
-            {
-                var objectCreation = (ObjectCreationExpressionSyntax)right;
+            AssignmentExpressionInfo info = SyntaxInfo.AssignmentExpressionInfo(assignmentExpression);
 
-                SemanticModel semanticModel = context.SemanticModel;
-                CancellationToken cancellationToken = context.CancellationToken;
+            if (!info.Success)
+                return;
 
-                ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(objectCreation, cancellationToken);
+            if (info.Right.Kind() != SyntaxKind.ObjectCreationExpression)
+                return;
 
-                if (typeSymbol?.IsEventHandlerOrConstructedFromEventHandlerOfT(semanticModel) == true)
-                {
-                    ArgumentListSyntax argumentList = objectCreation.ArgumentList;
+            var objectCreation = (ObjectCreationExpressionSyntax)info.Right;
 
-                    if (argumentList != null)
-                    {
-                        SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
+            if (objectCreation.SpanContainsDirectives())
+                return;
 
-                        if (arguments.Count == 1)
-                        {
-                            ArgumentSyntax argument = arguments.First();
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
 
-                            ExpressionSyntax expression = argument.Expression;
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(objectCreation, cancellationToken);
 
-                            if (expression != null
-                                && semanticModel.GetSymbol(expression, cancellationToken) is IMethodSymbol)
-                            {
-                                ExpressionSyntax left = assignment.Left;
+            if (!SymbolUtility.Equals(typeSymbol, eventHandler, eventHandlerOfT))
+                return;
 
-                                if (left?.IsMissing == false
-                                    && semanticModel.GetSymbol(left, cancellationToken)?.IsEvent() == true
-                                    && !objectCreation.SpanContainsDirectives())
-                                {
-                                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDelegateCreation, right);
+            ExpressionSyntax expression = objectCreation
+                .ArgumentList?
+                .Arguments
+                .SingleOrDefault(shouldthrow: false)?
+                .Expression;
 
-                                    context.ReportToken(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.NewKeyword);
-                                    context.ReportNode(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.Type);
-                                    context.ReportParentheses(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.ArgumentList);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            if (expression == null)
+                return;
+
+            if (!(semanticModel.GetSymbol(expression, cancellationToken) is IMethodSymbol))
+                return;
+
+            if (semanticModel.GetSymbol(info.Left, cancellationToken)?.IsEvent() != true)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDelegateCreation, info.Right);
+
+            context.ReportToken(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.NewKeyword);
+            context.ReportNode(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.Type);
+            context.ReportParentheses(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.ArgumentList);
         }
 
         public static Task<Document> RefactorAsync(

@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 return right.IsKind(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression)
                     && SymbolEquals(expression, right.Left, semanticModel, cancellationToken)
-                    && CSharpUtility.IsEmptyString(right.Right, semanticModel, cancellationToken);
+                    && CSharpUtility.IsEmptyStringExpression(right.Right, semanticModel, cancellationToken);
             }
 
             if (right.Left.IsKind(SyntaxKind.SimpleMemberAccessExpression))

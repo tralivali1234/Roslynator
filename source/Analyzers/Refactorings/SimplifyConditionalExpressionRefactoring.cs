@@ -33,14 +33,14 @@ namespace Roslynator.CSharp.Refactorings
             {
                 case SyntaxKind.TrueLiteralExpression:
                     {
-                        if (info.WhenFalse.IsKind(SyntaxKind.FalseLiteralExpression))
+                        if (info.WhenFalse.Kind() == SyntaxKind.FalseLiteralExpression)
                             context.ReportDiagnostic(DiagnosticDescriptors.SimplifyConditionalExpression, conditionalExpression);
 
                         break;
                     }
                 case SyntaxKind.FalseLiteralExpression:
                     {
-                        if (info.WhenFalse.IsKind(SyntaxKind.TrueLiteralExpression))
+                        if (info.WhenFalse.Kind() == SyntaxKind.TrueLiteralExpression)
                             context.ReportDiagnostic(DiagnosticDescriptors.SimplifyConditionalExpression, conditionalExpression);
 
                         break;

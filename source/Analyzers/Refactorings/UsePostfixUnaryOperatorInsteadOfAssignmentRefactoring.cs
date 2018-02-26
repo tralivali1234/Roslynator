@@ -23,38 +23,44 @@ namespace Roslynator.CSharp.Refactorings
 
             var assignment = (AssignmentExpressionSyntax)context.Node;
 
-            if (!assignment.IsParentKind(SyntaxKind.ObjectInitializerExpression))
-            {
-                ExpressionSyntax left = assignment.Left;
-                ExpressionSyntax right = assignment.Right;
+            if (assignment.IsParentKind(SyntaxKind.ObjectInitializerExpression))
+                return;
 
-                if (left?.IsMissing == false
-                    && right?.IsKind(SyntaxKind.AddExpression, SyntaxKind.SubtractExpression) == true)
-                {
-                    var binaryExpression = (BinaryExpressionSyntax)right;
+            ExpressionSyntax left = assignment.Left;
+            ExpressionSyntax right = assignment.Right;
 
-                    ExpressionSyntax binaryLeft = binaryExpression.Left;
-                    ExpressionSyntax binaryRight = binaryExpression.Right;
+            if (left?.IsMissing != false)
+                return;
 
-                    if (binaryLeft?.IsMissing == false
-                        && binaryRight?.IsNumericLiteralExpression("1") == true)
-                    {
-                        ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
+            if (right?.IsKind(SyntaxKind.AddExpression, SyntaxKind.SubtractExpression) != true)
+                return;
 
-                        if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() == true
-                            && CSharpFactory.AreEquivalent(left, binaryLeft))
-                        {
-                            string operatorText = GetOperatorText(assignment);
+            var binaryExpression = (BinaryExpressionSyntax)right;
 
-                            ReportDiagnostic(context, assignment, operatorText);
+            ExpressionSyntax binaryLeft = binaryExpression.Left;
+            ExpressionSyntax binaryRight = binaryExpression.Right;
 
-                            context.ReportToken(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.OperatorToken, operatorText);
-                            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryLeft, operatorText);
-                            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryRight, operatorText);
-                        }
-                    }
-                }
-            }
+            if (binaryLeft?.IsMissing != false)
+                return;
+
+            if (binaryRight?.IsNumericLiteralExpression("1") != true)
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
+
+            if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() != true)
+                return;
+
+            if (!CSharpFactory.AreEquivalent(left, binaryLeft))
+                return;
+
+            string operatorText = GetOperatorText(assignment);
+
+            ReportDiagnostic(context, assignment, operatorText);
+
+            context.ReportToken(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.OperatorToken, operatorText);
+            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryLeft, operatorText);
+            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryRight, operatorText);
         }
 
         public static void AnalyzeAddAssignmentExpression(SyntaxNodeAnalysisContext context)
@@ -77,23 +83,25 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax left = assignment.Left;
             ExpressionSyntax right = assignment.Right;
 
-            if (left?.IsMissing == false
-                && right?.IsNumericLiteralExpression("1") == true)
-            {
-                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
+            if (left?.IsMissing != false)
+                return;
 
-                if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() == true)
-                {
-                    string operatorText = GetOperatorText(assignment);
+            if (right?.IsNumericLiteralExpression("1") != true)
+                return;
 
-                    ReportDiagnostic(context, assignment, operatorText);
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
 
-                    SyntaxToken operatorToken = assignment.OperatorToken;
+            if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() != true)
+                return;
 
-                    context.ReportDiagnostic(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, Location.Create(assignment.SyntaxTree, new TextSpan(operatorToken.SpanStart, 1)), operatorText);
-                    context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.Right, operatorText);
-                }
-            }
+            string operatorText = GetOperatorText(assignment);
+
+            ReportDiagnostic(context, assignment, operatorText);
+
+            SyntaxToken operatorToken = assignment.OperatorToken;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, Location.Create(assignment.SyntaxTree, new TextSpan(operatorToken.SpanStart, 1)), operatorText);
+            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.Right, operatorText);
         }
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, AssignmentExpressionSyntax assignment, string operatorText)

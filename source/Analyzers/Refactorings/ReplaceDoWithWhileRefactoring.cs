@@ -24,13 +24,11 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static async Task<Document> RefactorAsync(
+        public static Task<Document> RefactorAsync(
             Document document,
             DoStatementSyntax doStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            SyntaxNode oldRoot = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-
             SyntaxTriviaList trailingTrivia = doStatement.Statement
                 .GetTrailingTrivia()
                 .AddRange(doStatement.CloseParenToken.TrailingTrivia)
@@ -46,9 +44,7 @@ namespace Roslynator.CSharp.Refactorings
 
             newNode = newNode.WithFormatterAnnotation();
 
-            SyntaxNode newRoot = oldRoot.ReplaceNode(doStatement, newNode);
-
-            return document.WithSyntaxRoot(newRoot);
+            return document.ReplaceNodeAsync(doStatement, newNode, cancellationToken);
         }
     }
 }

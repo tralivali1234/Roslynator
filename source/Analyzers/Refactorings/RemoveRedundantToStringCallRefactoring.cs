@@ -11,23 +11,24 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class RemoveRedundantToStringCallRefactoring
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
-            if (IsFixable(invocationInfo, context.SemanticModel, context.CancellationToken))
-            {
-                InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
+            if (!IsFixable(invocationInfo, context.SemanticModel, context.CancellationToken))
+                return;
 
-                TextSpan span = TextSpan.FromBounds(invocationInfo.OperatorToken.Span.Start, invocationExpression.Span.End);
+            InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-                if (!invocationExpression.ContainsDirectives(span))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.RemoveRedundantToStringCall,
-                        Location.Create(invocationExpression.SyntaxTree, span));
-                }
-            }
+            TextSpan span = TextSpan.FromBounds(invocationInfo.OperatorToken.Span.Start, invocationExpression.Span.End);
+
+            if (invocationExpression.ContainsDirectives(span))
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.RemoveRedundantToStringCall,
+                Location.Create(invocationExpression.SyntaxTree, span));
         }
 
         public static bool IsFixable(
@@ -35,7 +36,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (invocationInfo.Expression.IsKind(SyntaxKind.BaseExpression))
+            if (invocationInfo.Expression.Kind() == SyntaxKind.BaseExpression)
                 return false;
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
@@ -51,56 +52,40 @@ namespace Roslynator.CSharp.Refactorings
                 if (containingType?.IsReferenceType == true
                     && containingType.SpecialType != SpecialType.System_Enum)
                 {
-                    if (containingType.IsString())
+                    if (containingType.SpecialType == SpecialType.System_String)
                         return true;
-
-                    if (invocationExpression.IsParentKind(SyntaxKind.Interpolation))
-                        return IsNotHidden(methodSymbol, containingType);
 
                     ExpressionSyntax expression = invocationExpression.WalkUpParentheses();
 
                     SyntaxNode parent = expression.Parent;
 
-                    if (parent?.Kind() == SyntaxKind.AddExpression
-                        && !parent.ContainsDiagnostics
-                        && IsNotHidden(methodSymbol, containingType))
+                    if (parent != null)
                     {
-                        var addExpression = (BinaryExpressionSyntax)expression.Parent;
+                        SyntaxKind kind = parent.Kind();
 
-                        ExpressionSyntax left = addExpression.Left;
-                        ExpressionSyntax right = addExpression.Right;
-
-                        if (left == expression)
+                        if (kind == SyntaxKind.Interpolation)
                         {
-                            return IsFixable(invocationInfo, addExpression, right, left, semanticModel, cancellationToken);
+                            return IsNotHidden(methodSymbol, containingType);
                         }
-                        else
+                        else if (kind == SyntaxKind.AddExpression)
                         {
-                            return IsFixable(invocationInfo, addExpression, left, right, semanticModel, cancellationToken);
+                            if (!parent.ContainsDiagnostics
+                                && IsNotHidden(methodSymbol, containingType))
+                            {
+                                var addExpression = (BinaryExpressionSyntax)expression.Parent;
+
+                                if (CSharpUtility.IsStringConcatenation(addExpression, semanticModel, cancellationToken))
+                                {
+                                    BinaryExpressionSyntax newAddExpression = addExpression.ReplaceNode(expression, invocationInfo.Expression);
+
+                                    IMethodSymbol speculativeSymbol = semanticModel.GetSpeculativeMethodSymbol(addExpression.SpanStart, newAddExpression);
+
+                                    return SymbolUtility.IsStringAdditionOperator(speculativeSymbol);
+                                }
+                            }
                         }
                     }
                 }
-            }
-
-            return false;
-        }
-
-        private static bool IsFixable(
-            MemberInvocationExpressionInfo invocationInfo,
-            BinaryExpressionSyntax addExpression,
-            ExpressionSyntax left,
-            ExpressionSyntax right,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-        {
-            if (semanticModel.GetTypeSymbol(left, cancellationToken)?.SpecialType == SpecialType.System_String)
-            {
-                BinaryExpressionSyntax newAddExpression = addExpression.ReplaceNode(right, invocationInfo.Expression);
-
-                return semanticModel
-                    .GetSpeculativeMethodSymbol(addExpression.SpanStart, newAddExpression)?
-                    .ContainingType?
-                    .SpecialType == SpecialType.System_String;
             }
 
             return false;
