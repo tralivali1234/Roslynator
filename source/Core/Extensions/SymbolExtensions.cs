@@ -489,22 +489,6 @@ namespace Roslynator
                 .GetSyntax(cancellationToken);
         }
 
-        internal static bool TryGetSyntax<TNode>(this ISymbol symbol, out TNode node, CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
-        {
-            ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
-
-            if (syntaxReferences.Any())
-            {
-                node = syntaxReferences[0].GetSyntax(cancellationToken) as TNode;
-
-                if (node != null)
-                    return true;
-            }
-
-            node = null;
-            return false;
-        }
-
         /// <summary>
         /// Get a value indicating whether the symbol has any attribute.
         /// </summary>

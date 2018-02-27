@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
     {
         public class Foo<T>
         {
-            private static readonly string _field;
+            protected static readonly string _field;
 
             public static object Method() => null;
 

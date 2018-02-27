@@ -15,24 +15,30 @@ namespace Roslynator.CSharp.Refactorings
         {
             var finallyClause = (FinallyClauseSyntax)context.Node;
 
-            if (finallyClause.IsParentKind(SyntaxKind.TryStatement))
-            {
-                var tryStatement = (TryStatementSyntax)finallyClause.Parent;
+            if (!(finallyClause.Parent is TryStatementSyntax tryStatement))
+                return;
 
-                if (tryStatement.Catches.Any())
-                {
-                    BlockSyntax block = finallyClause.Block;
+            if (!tryStatement.Catches.Any())
+                return;
 
-                    if (block?.Statements.Any() == false
-                        && finallyClause.FinallyKeyword.TrailingTrivia.IsEmptyOrWhitespace()
-                        && block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                        && block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                        && block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyFinallyClause, finallyClause);
-                    }
-                }
-            }
+            BlockSyntax block = finallyClause.Block;
+
+            if (block?.Statements.Any() != false)
+                return;
+
+            if (!finallyClause.FinallyKeyword.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyFinallyClause, finallyClause);
         }
 
         public static async Task<Document> RefactorAsync(

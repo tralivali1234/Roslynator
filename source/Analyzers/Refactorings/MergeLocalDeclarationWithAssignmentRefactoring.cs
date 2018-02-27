@@ -14,6 +14,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: pokr.
     internal static class MergeLocalDeclarationWithAssignmentRefactoring
     {
         public static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)

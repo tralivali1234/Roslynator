@@ -19,18 +19,29 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax statement = elseClause.Statement;
 
-            if (statement?.Kind() == SyntaxKind.Block)
-            {
-                var block = (BlockSyntax)statement;
+            if (statement?.Kind() != SyntaxKind.Block)
+                return;
 
-                if (!block.Statements.Any()
-                    && elseClause
-                        .DescendantTrivia(elseClause.Span)
-                        .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyElseClause, elseClause);
-                }
-            }
+            var block = (BlockSyntax)statement;
+
+            if (block.Statements.Any())
+                return;
+
+            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            SyntaxToken openBrace = block.OpenBraceToken;
+
+            if (!openBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyElseClause, elseClause);
         }
 
         public static async Task<Document> RefactorAsync(

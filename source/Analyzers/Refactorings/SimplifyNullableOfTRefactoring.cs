@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             if (genericName
                 .TypeArgumentList?
                 .Arguments
-                .SingleOrDefault(shouldthrow: false)?
+                .SingleOrDefault(shouldThrow: false)?
                 .IsKind(SyntaxKind.OmittedTypeArgument) != false)
             {
                 return;
@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var qualifiedName = (QualifiedNameSyntax)context.Node;
 
-            if (qualifiedName.IsParentKind(SyntaxKind.UsingDirective))
+            if (qualifiedName.IsParentKind(SyntaxKind.UsingDirective, SyntaxKind.QualifiedCref))
                 return;
 
             if (IsWithinNameOfExpression(qualifiedName, context.SemanticModel, context.CancellationToken))

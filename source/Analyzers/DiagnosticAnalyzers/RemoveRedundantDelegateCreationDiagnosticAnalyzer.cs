@@ -10,7 +10,7 @@ using static Roslynator.CSharp.Refactorings.RemoveRedundantDelegateCreationRefac
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class AssignmentExpressionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class RemoveRedundantDelegateCreationDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {

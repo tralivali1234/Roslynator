@@ -37,13 +37,19 @@ namespace Roslynator.CSharp.Refactorings
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(objectCreation, cancellationToken);
 
-            if (!SymbolUtility.Equals(typeSymbol, eventHandler, eventHandlerOfT))
+            if (typeSymbol == null)
                 return;
+
+            if (!typeSymbol.Equals(eventHandler)
+                && !typeSymbol.IsConstructedFrom(eventHandlerOfT))
+            {
+                return;
+            }
 
             ExpressionSyntax expression = objectCreation
                 .ArgumentList?
                 .Arguments
-                .SingleOrDefault(shouldthrow: false)?
+                .SingleOrDefault(shouldThrow: false)?
                 .Expression;
 
             if (expression == null)

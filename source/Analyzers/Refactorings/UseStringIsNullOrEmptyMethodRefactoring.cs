@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
             }
             else if (kind == SyntaxKind.LogicalAndExpression)
             {
-                if (info.Left.IsKind(SyntaxKind.NotEqualsExpression)
+                if (info.Left.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.LogicalNotExpression)
                     && info.Right.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.GreaterThanExpression)
                     && CanRefactor(
                         (BinaryExpressionSyntax)info.Left,

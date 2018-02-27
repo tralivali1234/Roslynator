@@ -12,8 +12,13 @@ namespace Roslynator.CSharp.Analyzers.Tests
 
             foreach (char ch in s.ToCharArray())
             {
-
             }
+
+            foreach (char ch in (s.ToCharArray()))
+            {
+            }
+
+            //n
 
             char[] chars = s.ToCharArray();
         }

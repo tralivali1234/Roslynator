@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,54 +14,30 @@ namespace Roslynator.CSharp.Refactorings
         {
             var symbol = (INamedTypeSymbol)context.Symbol;
 
-            if (symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
+            if (!symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
+                return;
+
+            SyntaxReference syntaxReference = symbol.DeclaringSyntaxReferences.SingleOrDefault(shouldThrow: false);
+
+            if (syntaxReference == null)
+                return;
+
+            if (!(syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax memberDeclaration))
+                return;
+
+            SyntaxToken partialKeyword = SyntaxInfo.ModifiersInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
+
+            if (!partialKeyword.IsKind(SyntaxKind.PartialKeyword))
+                return;
+
+            if (SyntaxInfo.MemberDeclarationsInfo(memberDeclaration)
+                .Members
+                .Any(member => member.Kind() == SyntaxKind.MethodDeclaration && ((MethodDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.PartialKeyword)))
             {
-                ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
-
-                if (syntaxReferences.Length == 1
-                    && (syntaxReferences[0].GetSyntax(context.CancellationToken) is MemberDeclarationSyntax memberDeclaration))
-                {
-                    SyntaxToken partialKeyword = SyntaxInfo.ModifiersInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
-
-                    if (partialKeyword.IsKind(SyntaxKind.PartialKeyword)
-                        && !ContainsPartialMethod(memberDeclaration))
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.RemovePartialModifierFromTypeWithSinglePart,
-                            partialKeyword);
-                    }
-                }
-            }
-        }
-
-        private static bool ContainsPartialMethod(MemberDeclarationSyntax member)
-        {
-            switch (member.Kind())
-            {
-                case SyntaxKind.ClassDeclaration:
-                    return ContainsPartialMethod(((ClassDeclarationSyntax)member).Members);
-                case SyntaxKind.StructDeclaration:
-                    return ContainsPartialMethod(((StructDeclarationSyntax)member).Members);
-                case SyntaxKind.InterfaceDeclaration:
-                    return ContainsPartialMethod(((InterfaceDeclarationSyntax)member).Members);
+                return;
             }
 
-            Debug.Fail(member.Kind().ToString());
-            return false;
-        }
-
-        private static bool ContainsPartialMethod(SyntaxList<MemberDeclarationSyntax> members)
-        {
-            foreach (MemberDeclarationSyntax member in members)
-            {
-                if (member.IsKind(SyntaxKind.MethodDeclaration)
-                    && ((MethodDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.PartialKeyword))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            context.ReportDiagnostic(DiagnosticDescriptors.RemovePartialModifierFromTypeWithSinglePart, partialKeyword);
         }
     }
 }

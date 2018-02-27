@@ -26,13 +26,6 @@ namespace Roslynator.CSharp.Analyzers.Tests
             event FooEventHandler Changed;
         }
 
-        //n
-
-        public class Foo2
-        {
-            public event EventHandler EventName;
-        }
-
         public class FooImplementation : FooInterface
         {
             public event FooEventHandler Changed;
@@ -45,6 +38,13 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 add { throw new NotImplementedException(); }
                 remove { throw new NotImplementedException(); }
             }
+        }
+
+        //n
+
+        public class Foo2
+        {
+            public event EventHandler EventName;
         }
 
         public class FooEventArgs : EventArgs

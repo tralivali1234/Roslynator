@@ -147,7 +147,7 @@ namespace Roslynator.CSharp.Refactorings
             VariableDeclaratorSyntax variable = fieldDeclaration
                 .Declaration?
                 .Variables
-                .SingleOrDefault(shouldthrow: false);
+                .SingleOrDefault(shouldThrow: false);
 
             if (variable != null)
             {

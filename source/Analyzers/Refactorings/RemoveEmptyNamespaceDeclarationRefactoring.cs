@@ -14,21 +14,25 @@ namespace Roslynator.CSharp.Refactorings
         {
             var declaration = (NamespaceDeclarationSyntax)context.Node;
 
-            if (!declaration.Members.Any())
-            {
-                SyntaxToken openBrace = declaration.OpenBraceToken;
-                SyntaxToken closeBrace = declaration.CloseBraceToken;
+            if (declaration.Members.Any())
+                return;
 
-                if (!openBrace.IsMissing
-                    && !closeBrace.IsMissing
-                    && openBrace.TrailingTrivia.IsEmptyOrWhitespace()
-                    && closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.RemoveEmptyNamespaceDeclaration,
-                        declaration);
-                }
-            }
+            SyntaxToken openBrace = declaration.OpenBraceToken;
+            SyntaxToken closeBrace = declaration.CloseBraceToken;
+
+            if (openBrace.IsMissing)
+                return;
+
+            if (closeBrace.IsMissing)
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyNamespaceDeclaration, declaration);
         }
 
         public static Task<Document> RefactorAsync(
@@ -36,30 +40,7 @@ namespace Roslynator.CSharp.Refactorings
             NamespaceDeclarationSyntax declaration,
             CancellationToken cancellationToken)
         {
-            return document.RemoveNodeAsync(declaration, GetRemoveOptions(declaration), cancellationToken);
-        }
-
-        private static SyntaxRemoveOptions GetRemoveOptions(NamespaceDeclarationSyntax declaration)
-        {
-            if (declaration.GetLeadingTrivia().IsEmptyOrWhitespace())
-            {
-                if (declaration.GetTrailingTrivia().IsEmptyOrWhitespace())
-                {
-                    return SyntaxRemoveOptions.KeepNoTrivia;
-                }
-                else
-                {
-                    return SyntaxRemoveOptions.KeepTrailingTrivia;
-                }
-            }
-            else if (declaration.GetTrailingTrivia().IsEmptyOrWhitespace())
-            {
-                return SyntaxRemoveOptions.KeepLeadingTrivia;
-            }
-            else
-            {
-                return SyntaxRemoveOptions.KeepExteriorTrivia;
-            }
+            return document.RemoveNodeAsync(declaration, cancellationToken);
         }
     }
 }

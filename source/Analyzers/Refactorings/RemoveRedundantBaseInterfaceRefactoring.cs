@@ -18,70 +18,74 @@ namespace Roslynator.CSharp.Refactorings
         {
             var baseList = (BaseListSyntax)context.Node;
 
-            if (baseList.IsParentKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration, SyntaxKind.InterfaceDeclaration)
-                && !baseList.ContainsDiagnostics
-                && !baseList.SpanContainsDirectives())
+            if (!baseList.IsParentKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration, SyntaxKind.InterfaceDeclaration))
+                return;
+
+            if (baseList.ContainsDiagnostics)
+                return;
+
+            if (baseList.SpanContainsDirectives())
+                return;
+
+            SeparatedSyntaxList<BaseTypeSyntax> baseTypes = baseList.Types;
+
+            if (baseTypes.Count <= 1)
+                return;
+
+            bool isFirst = true;
+            INamedTypeSymbol typeSymbol = null;
+            var baseClassInfo = default(SymbolInterfaceInfo);
+            List<SymbolInterfaceInfo> baseInterfaceInfos = null;
+
+            foreach (BaseTypeSyntax baseType in baseTypes)
             {
-                SeparatedSyntaxList<BaseTypeSyntax> baseTypes = baseList.Types;
+                TypeSyntax type = baseType.Type;
 
-                if (baseTypes.Count > 1)
+                if (type?.IsMissing == false
+                    && (context.SemanticModel.GetSymbol(type, context.CancellationToken) is INamedTypeSymbol baseSymbol))
                 {
-                    bool isFirst = true;
-                    INamedTypeSymbol typeSymbol = null;
-                    var baseClassInfo = default(SymbolInterfaceInfo);
-                    List<SymbolInterfaceInfo> baseInterfaceInfos = null;
+                    TypeKind typeKind = baseSymbol.TypeKind;
 
-                    foreach (BaseTypeSyntax baseType in baseTypes)
+                    ImmutableArray<INamedTypeSymbol> allInterfaces = baseSymbol.AllInterfaces;
+
+                    if (typeKind == TypeKind.Class)
                     {
-                        TypeSyntax type = baseType.Type;
+                        if (!isFirst)
+                            break;
 
-                        if (type?.IsMissing == false
-                            && (context.SemanticModel.GetSymbol(type, context.CancellationToken) is INamedTypeSymbol baseSymbol))
+                        if (allInterfaces.Any())
+                            baseClassInfo = new SymbolInterfaceInfo(baseType, baseSymbol, allInterfaces);
+                    }
+                    else if (typeKind == TypeKind.Interface)
+                    {
+                        var baseInterfaceInfo = new SymbolInterfaceInfo(baseType, baseSymbol, allInterfaces);
+
+                        if (baseInterfaceInfos == null)
                         {
-                            TypeKind typeKind = baseSymbol.TypeKind;
-
-                            ImmutableArray<INamedTypeSymbol> allInterfaces = baseSymbol.AllInterfaces;
-
-                            if (typeKind == TypeKind.Class)
+                            if (allInterfaces.Any())
+                                baseInterfaceInfos = new List<SymbolInterfaceInfo>() { baseInterfaceInfo };
+                        }
+                        else
+                        {
+                            foreach (SymbolInterfaceInfo baseInterfaceInfo2 in baseInterfaceInfos)
                             {
-                                if (!isFirst)
-                                    break;
-
-                                if (allInterfaces.Any())
-                                    baseClassInfo = new SymbolInterfaceInfo(baseType, baseSymbol, allInterfaces);
-                            }
-                            else if (typeKind == TypeKind.Interface)
-                            {
-                                var baseInterfaceInfo = new SymbolInterfaceInfo(baseType, baseSymbol, allInterfaces);
-
-                                if (baseInterfaceInfos == null)
-                                {
-                                    if (allInterfaces.Any())
-                                        baseInterfaceInfos = new List<SymbolInterfaceInfo>() { baseInterfaceInfo };
-                                }
-                                else
-                                {
-                                    foreach (SymbolInterfaceInfo baseInterfaceInfo2 in baseInterfaceInfos)
-                                    {
-                                        Analyze(context, baseInterfaceInfo, baseInterfaceInfo2);
-                                        Analyze(context, baseInterfaceInfo2, baseInterfaceInfo);
-                                    }
-                                }
-
-                                if (baseClassInfo.IsValid)
-                                {
-                                    if (typeSymbol == null)
-                                        typeSymbol = context.SemanticModel.GetDeclaredSymbol((TypeDeclarationSyntax)baseList.Parent, context.CancellationToken);
-
-                                    Analyze(context, baseInterfaceInfo, baseClassInfo, typeSymbol);
-                                }
+                                Analyze(context, baseInterfaceInfo, baseInterfaceInfo2);
+                                Analyze(context, baseInterfaceInfo2, baseInterfaceInfo);
                             }
                         }
 
-                        if (isFirst)
-                            isFirst = false;
+                        if (baseClassInfo.IsValid)
+                        {
+                            if (typeSymbol == null)
+                                typeSymbol = context.SemanticModel.GetDeclaredSymbol((TypeDeclarationSyntax)baseList.Parent, context.CancellationToken);
+
+                            Analyze(context, baseInterfaceInfo, baseClassInfo, typeSymbol);
+                        }
                     }
                 }
+
+                if (isFirst)
+                    isFirst = false;
             }
         }
 
@@ -151,7 +155,9 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             public BaseTypeSyntax BaseType { get; }
+
             public INamedTypeSymbol Symbol { get; }
+
             public ImmutableArray<INamedTypeSymbol> Interfaces { get; }
         }
     }

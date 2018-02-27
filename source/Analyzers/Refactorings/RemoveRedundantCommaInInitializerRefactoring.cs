@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,18 +19,19 @@ namespace Roslynator.CSharp.Refactorings
 
             SeparatedSyntaxList<ExpressionSyntax> expressions = initializer.Expressions;
 
-            if (expressions.Any()
-                && expressions.Count == expressions.SeparatorCount)
-            {
-                SyntaxToken token = expressions.GetSeparators().Last();
+            if (!expressions.Any())
+                return;
 
-                if (!token.IsMissing)
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.RemoveRedundantCommaInInitializer,
-                        token);
-                }
-            }
+            int count = expressions.Count;
+
+            if (count != expressions.SeparatorCount)
+                return;
+
+            SyntaxToken token = expressions.GetSeparator(count - 1);
+
+            Debug.Assert(!token.IsMissing);
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantCommaInInitializer, token);
         }
 
         public static Task<Document> RefactorAsync(

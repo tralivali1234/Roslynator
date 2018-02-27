@@ -54,6 +54,7 @@ namespace Roslynator.CSharp
                 && IsAutoAccessor(accessorDeclaration);
         }
 
+        //TODO: IsAutoImplemented
         internal static bool IsAutoAccessor(this AccessorDeclarationSyntax accessorDeclaration)
         {
             return accessorDeclaration.SemicolonToken.IsKind(SyntaxKind.SemicolonToken)
@@ -2037,6 +2038,53 @@ namespace Roslynator.CSharp
             }
 
             return statements.Insert(index, statement);
+        }
+
+        //TODO: pub, SeparatedSyntaxList
+        internal static SyntaxList<TNode> ReplaceRange<TNode>(
+            this SyntaxList<TNode> list,
+            int startIndex,
+            int count,
+            IEnumerable<TNode> newNodes) where TNode : SyntaxNode
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
+
+            if (count < 0
+                || startIndex + count > list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "");
+            }
+
+            return List(ReplaceRange());
+
+            IEnumerable<TNode> ReplaceRange()
+            {
+                SyntaxList<TNode>.Enumerator en = list.GetEnumerator();
+
+                int i = 0;
+
+                while (i < startIndex
+                    && en.MoveNext())
+                {
+                    yield return en.Current;
+                    i++;
+                }
+
+                int endIndex = startIndex + count;
+
+                while (i < endIndex
+                    && en.MoveNext())
+                {
+                    i++;
+                }
+
+                foreach (TNode newNode in newNodes)
+                    yield return newNode;
+
+                while (en.MoveNext())
+                    yield return en.Current;
+            }
         }
         #endregion SyntaxList<T>
 

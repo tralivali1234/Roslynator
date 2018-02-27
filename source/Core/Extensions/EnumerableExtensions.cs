@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Roslynator
@@ -27,6 +28,109 @@ namespace Roslynator
             }
 
             return true;
+        }
+
+        public static IEnumerable<T> ReplaceRange<T>(
+            this IEnumerable<T> enumerable,
+            int startIndex,
+            int count,
+            IEnumerable<T> newNodes)
+        {
+            if (enumerable == null)
+                throw new ArgumentNullException(nameof(enumerable));
+
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
+
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count), count, "");
+
+            return ReplaceRange();
+
+            IEnumerable<T> ReplaceRange()
+            {
+                using (IEnumerator<T> en = enumerable.GetEnumerator())
+                {
+                    int i = 0;
+
+                    while (i < startIndex)
+                    {
+                        if (!en.MoveNext())
+                            throw new InvalidOperationException();
+
+                        yield return en.Current;
+                        i++;
+                    }
+
+                    int endIndex = startIndex + count;
+
+                    while (i < endIndex)
+                    {
+                        if (!en.MoveNext())
+                            throw new InvalidOperationException();
+
+                        i++;
+                    }
+
+                    foreach (T newNode in newNodes)
+                        yield return newNode;
+
+                    while (en.MoveNext())
+                        yield return en.Current;
+                }
+            }
+        }
+
+        public static IEnumerable<T> ModifyRange<T>(
+            this IEnumerable<T> enumerable,
+            int startIndex,
+            int count,
+            Func<T, T> modifier)
+        {
+            if (enumerable == null)
+                throw new ArgumentNullException(nameof(enumerable));
+
+            if (modifier == null)
+                throw new ArgumentNullException(nameof(modifier));
+
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
+
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count), count, "");
+
+            return ModifyRange();
+
+            IEnumerable<T> ModifyRange()
+            {
+                using (IEnumerator<T> en = enumerable.GetEnumerator())
+                {
+                    int i = 0;
+
+                    while (i < startIndex)
+                    {
+                        if (!en.MoveNext())
+                            throw new InvalidOperationException();
+
+                        yield return en.Current;
+                        i++;
+                    }
+
+                    int endIndex = startIndex + count;
+
+                    while (i < endIndex)
+                    {
+                        if (!en.MoveNext())
+                            throw new InvalidOperationException();
+
+                        yield return modifier(en.Current);
+                        i++;
+                    }
+
+                    while (en.MoveNext())
+                        yield return en.Current;
+                }
+            }
         }
     }
 }

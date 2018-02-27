@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.SimplifyNullableOfTRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -23,8 +23,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(SimplifyNullableOfTRefactoring.AnalyzeQualifiedName, SyntaxKind.QualifiedName);
+            context.RegisterSyntaxNodeAction(AnalyzeQualifiedName, SyntaxKind.QualifiedName);
+            context.RegisterSyntaxNodeAction(AnalyzeGenericName, SyntaxKind.GenericName);
         }
     }
 }

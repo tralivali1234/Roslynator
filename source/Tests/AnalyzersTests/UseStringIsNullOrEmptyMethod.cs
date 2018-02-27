@@ -25,6 +25,21 @@ namespace Roslynator.CSharp.Analyzers.Tests
             if ((s == null) || (s == "")) { }
 
 
+            if (s is null || s.Length == 0) { }
+
+            if (s is null || s == string.Empty) { }
+
+            if (s is null || s == "") { }
+
+            if (V is null || V.Length == 0) { }
+
+            if ((s is null) || (s.Length == 0)) { }
+
+            if ((s is null) || (s == string.Empty)) { }
+
+            if ((s is null) || (s == "")) { }
+
+
             if (s != null && s.Length != 0) { }
 
             if (s != null && s.Length > 0) { }
@@ -44,6 +59,25 @@ namespace Roslynator.CSharp.Analyzers.Tests
             if ((s != null) && (s != string.Empty)) { }
 
             if ((s != null) && (s != "")) { }
+
+
+            if (!(s is null) && s.Length > 0) { }
+
+            if (!(s is null) && s != string.Empty) { }
+
+            if (!(s is null) && s != "") { }
+
+            if (!(V is null) && V.Length != 0) { }
+
+            if (!(V is null) && V.Length > 0) { }
+
+            if ((!(s is null)) && (s.Length != 0)) { }
+
+            if ((!(s is null)) && (s.Length > 0)) { }
+
+            if ((!(s is null)) && (s != string.Empty)) { }
+
+            if ((!(s is null)) && (s != "")) { }
 
             //n
 

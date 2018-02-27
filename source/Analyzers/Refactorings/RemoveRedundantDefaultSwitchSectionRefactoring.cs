@@ -17,24 +17,33 @@ namespace Roslynator.CSharp.Refactorings
         {
             var switchStatement = (SwitchStatementSyntax)context.Node;
 
-            if (!switchStatement.ContainsDiagnostics)
+            if (switchStatement.ContainsDiagnostics)
+                return;
+
+            SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
+
+            SwitchSectionSyntax defaultSection = FindDefaultSection(sections);
+
+            if (defaultSection == null)
+                return;
+
+            if (!ContainsOnlyBreakStatement(defaultSection))
+                return;
+
+            if (switchStatement.DescendantNodes(sections.Span).Any(f => f.IsKind(SyntaxKind.GotoDefaultStatement)))
+                return;
+
+            if (!defaultSection
+                .DescendantTrivia(defaultSection.Span)
+                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {
-                SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
-
-                SwitchSectionSyntax defaultSection = FindDefaultSection(sections);
-
-                if (defaultSection != null
-                    && ContainsOnlyBreakStatement(defaultSection)
-                    && !switchStatement.DescendantNodes(sections.Span).Any(f => f.IsKind(SyntaxKind.GotoDefaultStatement))
-                    && defaultSection
-                        .DescendantTrivia(defaultSection.Span)
-                        .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDefaultSwitchSection, defaultSection);
-                }
+                return;
             }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDefaultSwitchSection, defaultSection);
         }
 
+        //XTODO: extension
         private static SwitchSectionSyntax FindDefaultSection(SyntaxList<SwitchSectionSyntax> sections)
         {
             foreach (SwitchSectionSyntax section in sections)
@@ -57,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings
                         return ((BlockSyntax)statement)
                             .Statements
                             .SingleOrDefault(shouldThrow: false)?
-                            .IsKind(SyntaxKind.BreakStatement) == true;
+                            .Kind() == SyntaxKind.BreakStatement;
                     }
                 case SyntaxKind.BreakStatement:
                     {

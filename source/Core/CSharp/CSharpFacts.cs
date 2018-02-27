@@ -713,5 +713,14 @@ namespace Roslynator.CSharp
 
             return false;
         }
+
+        //TODO: new
+        public static bool IsSwitchLabel(SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.CasePatternSwitchLabel,
+                SyntaxKind.CaseSwitchLabel,
+                SyntaxKind.DefaultSwitchLabel);
+        }
     }
 }

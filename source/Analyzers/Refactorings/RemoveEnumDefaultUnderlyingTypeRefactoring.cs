@@ -3,7 +3,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -15,34 +14,13 @@ namespace Roslynator.CSharp.Refactorings
         {
             var enumDeclaration = (EnumDeclarationSyntax)context.Node;
 
-            BaseTypeSyntax baseType = GetRedundantBaseType(context, enumDeclaration);
+            TypeSyntax type = enumDeclaration.BaseList?.Types.SingleOrDefault(shouldThrow: false)?.Type;
 
-            if (baseType != null)
-                context.ReportDiagnostic(DiagnosticDescriptors.RemoveEnumDefaultUnderlyingType, baseType);
-        }
-
-        private static BaseTypeSyntax GetRedundantBaseType(SyntaxNodeAnalysisContext context, EnumDeclarationSyntax enumDeclaration)
-        {
-            if (enumDeclaration.BaseList != null)
+            if (type != null
+                && context.SemanticModel.GetTypeSymbol(type, context.CancellationToken).SpecialType == SpecialType.System_Int32)
             {
-                foreach (BaseTypeSyntax baseType in enumDeclaration.BaseList.Types)
-                {
-                    if (baseType.IsKind(SyntaxKind.SimpleBaseType))
-                    {
-                        var simpleBaseType = (SimpleBaseTypeSyntax)baseType;
-
-                        if (simpleBaseType.Type?.Kind() == SyntaxKind.PredefinedType)
-                        {
-                            var symbol = context.SemanticModel.GetSymbol(simpleBaseType.Type, context.CancellationToken) as INamedTypeSymbol;
-
-                            if (symbol?.IsInt() == true)
-                                return baseType;
-                        }
-                    }
-                }
+                context.ReportDiagnostic(DiagnosticDescriptors.RemoveEnumDefaultUnderlyingType, type);
             }
-
-            return null;
         }
 
         public static Task<Document> RefactorAsync(

@@ -8,25 +8,6 @@ namespace Roslynator
 {
     internal static class SymbolUtility
     {
-        public static bool Equals(ISymbol symbol, ISymbol symbol1, ISymbol symbol2)
-        {
-            if (symbol == null)
-                return false;
-
-            return symbol.Equals(symbol1)
-                || symbol.Equals(symbol2);
-        }
-
-        public static bool Equals(ISymbol symbol, ISymbol symbol1, ISymbol symbol2, ISymbol symbol3)
-        {
-            if (symbol == null)
-                return false;
-
-            return symbol.Equals(symbol1)
-                || symbol.Equals(symbol2)
-                || symbol.Equals(symbol3);
-        }
-
         public static bool IsEventHandlerMethod(IMethodSymbol methodSymbol, INamedTypeSymbol eventArgsSymbol)
         {
             if (methodSymbol == null)

@@ -88,6 +88,8 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 set { base[index] = value; }
             }
 
+            //n
+
             public string MethodWithArray_() => MethodWithArray(1, 2, 3);
 
             public string MethodWithParams2_() => MethodWithParams2(1, 2, 3);

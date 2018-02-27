@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,10 +16,10 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
             var switchStatement = (SwitchStatementSyntax)context.Node;
+
+            if (switchStatement.ContainsDiagnostics)
+                return;
 
             SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
@@ -117,13 +116,8 @@ namespace Roslynator.CSharp.Refactorings
         {
             foreach (SwitchLabelSyntax label in section.Labels)
             {
-                SyntaxKind kind = label.Kind();
-
-                if (kind != SyntaxKind.CaseSwitchLabel
-                    && kind != SyntaxKind.DefaultSwitchLabel)
-                {
+                if (!label.Kind().Is(SyntaxKind.CaseSwitchLabel, SyntaxKind.DefaultSwitchLabel))
                     return default(SyntaxList<StatementSyntax>);
-                }
             }
 
             SyntaxList<StatementSyntax> statements = section.Statements;
@@ -159,16 +153,21 @@ namespace Roslynator.CSharp.Refactorings
                 i++;
             }
 
-            IEnumerable<SwitchSectionSyntax> sectionsWithoutStatements = sections
-                .Skip(index)
-                .Take(i - index)
-                .Select(CreateSectionWithoutStatements);
-
+            //TODO: test
             SyntaxList<SwitchSectionSyntax> newSections = sections
-                .Take(index)
-                .Concat(sectionsWithoutStatements)
-                .Concat(sections.Skip(i))
+                .ModifyRange(index, i - index, CreateSectionWithoutStatements)
                 .ToSyntaxList();
+
+            //IEnumerable<SwitchSectionSyntax> sectionsWithoutStatements = sections
+            //    .Skip(index)
+            //    .Take(i - index)
+            //    .Select(CreateSectionWithoutStatements);
+
+            //SyntaxList<SwitchSectionSyntax> newSections = sections
+            //    .Take(index)
+            //    .Concat(sectionsWithoutStatements)
+            //    .Concat(sections.Skip(i))
+            //    .ToSyntaxList();
 
             SwitchStatementSyntax newSwitchStatement = switchStatement.WithSections(newSections);
 

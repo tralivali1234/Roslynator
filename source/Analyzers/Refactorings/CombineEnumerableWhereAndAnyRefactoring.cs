@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
             if (invocationInfo.NameText != "Any")
                 return;
 
-            ArgumentSyntax argument1 = invocationInfo.Arguments.SingleOrDefault(shouldthrow: false);
+            ArgumentSyntax argument1 = invocationInfo.Arguments.SingleOrDefault(shouldThrow: false);
 
             if (argument1 == null)
                 return;
@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
             if (invocationInfo2.NameText != "Where")
                 return;
 
-            ArgumentSyntax argument2 = invocationInfo2.Arguments.SingleOrDefault(shouldthrow: false);
+            ArgumentSyntax argument2 = invocationInfo2.Arguments.SingleOrDefault(shouldThrow: false);
 
             if (argument2 == null)
                 return;

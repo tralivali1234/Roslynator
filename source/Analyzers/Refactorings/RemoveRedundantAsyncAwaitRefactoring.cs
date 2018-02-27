@@ -16,6 +16,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //XTODO: refactor
     internal static partial class RemoveRedundantAsyncAwaitRefactoring
     {
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)

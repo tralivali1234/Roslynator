@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public ConditionalExpressionSyntax ConditionalExpression
         {
-            get { return Condition?.FirstAncestor<ConditionalExpressionSyntax>(); }
+            get { return (ConditionalExpressionSyntax)Condition?.WalkUpParentheses().Parent; }
         }
 
         /// <summary>
@@ -47,6 +47,16 @@ namespace Roslynator.CSharp.Syntax
         /// The expression to be executed when the expression is false.
         /// </summary>
         public ExpressionSyntax WhenFalse { get; }
+
+        public SyntaxToken QuestionToken
+        {
+            get { return ConditionalExpression?.QuestionToken ?? default(SyntaxToken); }
+        }
+
+        public SyntaxToken ColonToken
+        {
+            get { return ConditionalExpression?.ColonToken ?? default(SyntaxToken); }
+        }
 
         /// <summary>
         /// Determines whether this struct was initialized with an actual syntax.

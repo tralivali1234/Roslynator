@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings
             VariableDeclaratorSyntax variableDeclarator = forStatement
                 .Declaration?
                 .Variables
-                .SingleOrDefault(shouldthrow: false);
+                .SingleOrDefault(shouldThrow: false);
 
             if (variableDeclarator != null)
             {

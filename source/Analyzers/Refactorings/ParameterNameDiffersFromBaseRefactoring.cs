@@ -60,10 +60,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (!string.IsNullOrEmpty(name)
                         && !string.Equals(name, parameters2[i].Name, StringComparison.Ordinal)
-                        && (parameters[i]
-                            .DeclaringSyntaxReferences
-                            .FirstOrDefault()?
-                            .GetSyntax(context.CancellationToken) is ParameterSyntax parameterSyntax))
+                        && (parameters[i].GetSyntaxOrDefault(context.CancellationToken) is ParameterSyntax parameterSyntax))
                     {
                         context.ReportDiagnostic(
                             DiagnosticDescriptors.ParameterNameDiffersFromBase,

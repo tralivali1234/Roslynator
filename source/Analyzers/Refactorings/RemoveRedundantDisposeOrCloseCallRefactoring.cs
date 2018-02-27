@@ -26,6 +26,9 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax lastStatement = block.Statements.LastOrDefault();
 
+            if (lastStatement == null)
+                return;
+
             if (lastStatement.SpanContainsDirectives())
                 return;
 

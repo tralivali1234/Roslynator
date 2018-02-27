@@ -439,7 +439,7 @@ namespace Roslynator.CSharp.Refactorings.If
             VariableDeclaratorSyntax declarator = localDeclarationStatement
                 .Declaration?
                 .Variables
-                .SingleOrDefault(shouldthrow: false);
+                .SingleOrDefault(shouldThrow: false);
 
             if (declarator == null)
                 return Empty;
