@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.Syntax
             if (IfStatement != null)
                 return new EnumeratorImpl(IfStatement);
 
-            return Empty.Enumerator<IfStatementOrElseClause>.Instance;
+            return Empty.Enumerator<IfStatementOrElseClause>();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -97,7 +97,7 @@ namespace Roslynator.CSharp.Syntax
             if (IfStatement != null)
                 return new EnumeratorImpl(IfStatement);
 
-            return Empty.Enumerator<IfStatementOrElseClause>.Instance;
+            return Empty.Enumerator<IfStatementOrElseClause>();
         }
 
         /// <summary>

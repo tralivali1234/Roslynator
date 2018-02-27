@@ -1,53 +1,34 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Roslynator
 {
     internal static class Empty
     {
-        internal class Enumerator : IEnumerator
+        public static IEnumerator<T> Enumerator<T>()
         {
-            public static readonly IEnumerator Instance = new Enumerator();
-
-            protected Enumerator()
-            {
-            }
-
-            public object Current
-            {
-                get { throw new InvalidOperationException(); }
-            }
-
-            public bool MoveNext()
-            {
-                return false;
-            }
-
-            public void Reset()
-            {
-                throw new InvalidOperationException();
-            }
+            return Collections.Enumerator<T>.Instance;
         }
 
-        internal class Enumerator<T> : Enumerator, IEnumerator<T>
+        public static IEnumerable<T> Enumerable<T>()
         {
-            new public static readonly IEnumerator<T> Instance = new Enumerator<T>();
+            return Collections.ReadOnlyList<T>.Instance;
+        }
 
-            protected Enumerator()
-            {
-            }
+        public static ICollection<T> Collection<T>()
+        {
+            return Collections.ReadOnlyList<T>.Instance;
+        }
 
-            new public T Current
-            {
-                get { throw new InvalidOperationException(); }
-            }
+        public static IList<T> List<T>()
+        {
+            return Collections.ReadOnlyList<T>.Instance;
+        }
 
-            public void Dispose()
-            {
-            }
+        public static IReadOnlyList<T> ReadOnlyList<T>()
+        {
+            return Collections.ReadOnlyList<T>.Instance;
         }
     }
 }

@@ -49,6 +49,11 @@ namespace Roslynator.CSharp.Syntax
             get { return Declarator?.Initializer; }
         }
 
+        public ExpressionSyntax Value
+        {
+            get { return Initializer?.Value; }
+        }
+
         /// <summary>
         /// The modifier list.
         /// </summary>

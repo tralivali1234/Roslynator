@@ -1580,6 +1580,7 @@ namespace Roslynator
             return typeSymbol?.TypeKind == TypeKind.Delegate;
         }
 
+        //TODO: zlikvidovat
         internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
             if (semanticModel == null)

@@ -19,8 +19,14 @@ namespace Roslynator.CSharp.Refactorings
         {
             var genericName = (GenericNameSyntax)context.Node;
 
-            if (genericName.IsParentKind(SyntaxKind.QualifiedName, SyntaxKind.UsingDirective, SyntaxKind.NameMemberCref))
+            if (genericName.IsParentKind(
+                SyntaxKind.QualifiedName,
+                SyntaxKind.UsingDirective,
+                SyntaxKind.NameMemberCref,
+                SyntaxKind.QualifiedCref))
+            {
                 return;
+            }
 
             if (IsWithinNameOfExpression(genericName, context.SemanticModel, context.CancellationToken))
                 return;

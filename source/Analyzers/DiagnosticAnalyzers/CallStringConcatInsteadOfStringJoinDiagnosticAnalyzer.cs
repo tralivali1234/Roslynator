@@ -9,6 +9,7 @@ using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
+    //TODO: mov InvocationExpressionDiagnosticAnalyzer
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class CallStringConcatInsteadOfStringJoinDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {

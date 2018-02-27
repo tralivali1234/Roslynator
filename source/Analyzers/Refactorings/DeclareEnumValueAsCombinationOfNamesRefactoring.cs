@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -19,50 +20,50 @@ namespace Roslynator.CSharp.Refactorings
         {
             var enumSymbol = (INamedTypeSymbol)context.Symbol;
 
-            if (enumSymbol.IsEnum()
-                && enumSymbol.HasAttribute(flagsAttribute))
+            if (enumSymbol.TypeKind != TypeKind.Enum)
+                return;
+
+            if (!enumSymbol.HasAttribute(flagsAttribute))
+                return;
+
+            var infos = default(ImmutableArray<EnumFieldInfo>);
+
+            foreach (ISymbol member in enumSymbol.GetMembers())
             {
-                var infos = default(ImmutableArray<EnumFieldInfo>);
-
-                foreach (ISymbol member in enumSymbol.GetMembers())
+                if (member is IFieldSymbol fieldSymbol)
                 {
-                    if (member.IsField())
+                    if (!fieldSymbol.HasConstantValue)
+                        return;
+
+                    var info = new EnumFieldInfo(fieldSymbol);
+
+                    if (info.IsComposite())
                     {
-                        var fieldSymbol = (IFieldSymbol)member;
+                        var declaration = (EnumMemberDeclarationSyntax)info.Symbol.GetSyntax(context.CancellationToken);
 
-                        if (!fieldSymbol.HasConstantValue)
-                            break;
+                        ExpressionSyntax valueExpression = declaration.EqualsValue?.Value;
 
-                        var info = new EnumFieldInfo(fieldSymbol);
-
-                        if (info.IsComposite())
+                        if (valueExpression != null
+                            && (valueExpression.IsKind(SyntaxKind.NumericLiteralExpression)
+                                || valueExpression
+                                    .DescendantNodes()
+                                    .Any(f => f.IsKind(SyntaxKind.NumericLiteralExpression))))
                         {
-                            var declaration = (EnumMemberDeclarationSyntax)info.Symbol.GetSyntax(context.CancellationToken);
-
-                            ExpressionSyntax valueExpression = declaration.EqualsValue?.Value;
-
-                            if (valueExpression != null
-                                && (valueExpression.IsKind(SyntaxKind.NumericLiteralExpression)
-                                    || valueExpression
-                                        .DescendantNodes()
-                                        .Any(f => f.IsKind(SyntaxKind.NumericLiteralExpression))))
+                            if (infos.IsDefault)
                             {
+                                infos = EnumFieldInfo.CreateRange(enumSymbol);
+
                                 if (infos.IsDefault)
-                                {
-                                    infos = EnumFieldInfo.CreateRange(enumSymbol);
+                                    return;
+                            }
 
-                                    if (infos.IsDefault)
-                                        break;
-                                }
+                            List<EnumFieldInfo> values = info.Decompose(infos);
 
-                                List<EnumFieldInfo> values = info.Decompose(infos);
-
-                                if (values?.Count > 1)
-                                {
-                                    context.ReportDiagnostic(
-                                        DiagnosticDescriptors.DeclareEnumValueAsCombinationOfNames,
-                                        valueExpression);
-                                }
+                            if (values?.Count > 1)
+                            {
+                                context.ReportDiagnostic(
+                                    DiagnosticDescriptors.DeclareEnumValueAsCombinationOfNames,
+                                    valueExpression);
                             }
                         }
                     }
@@ -108,10 +109,10 @@ namespace Roslynator.CSharp.Refactorings
                 return ((IComparable)f.Value).CompareTo((IComparable)g.Value);
             });
 
-            BinaryExpressionSyntax newValue = CSharpFactory.BitwiseOrExpression(values[0].ToIdentifierName(), values[1].ToIdentifierName());
+            BinaryExpressionSyntax newValue = BitwiseOrExpression(values[0].ToIdentifierName(), values[1].ToIdentifierName());
 
             for (int i = 2; i < values.Count; i++)
-                newValue = CSharpFactory.BitwiseOrExpression(newValue, values[i].ToIdentifierName());
+                newValue = BitwiseOrExpression(newValue, values[i].ToIdentifierName());
 
             newValue = newValue.WithFormatterAnnotation();
 
@@ -128,7 +129,9 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             public IFieldSymbol Symbol { get; }
+
             public object Value { get; }
+
             public SpecialType UnderlyingType { get; }
 
             public bool IsComposite()

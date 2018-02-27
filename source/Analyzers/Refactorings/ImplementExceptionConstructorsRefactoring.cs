@@ -11,28 +11,36 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ImplementExceptionConstructorsRefactoring
     {
-        public static void AnalyzeNamedType(SymbolAnalysisContext context)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol exceptionSymbol)
         {
             var symbol = (INamedTypeSymbol)context.Symbol;
 
-            if (symbol.IsClass()
-                && !symbol.IsStatic
-                && !symbol.IsImplicitClass
-                && !symbol.IsImplicitlyDeclared)
-            {
-                INamedTypeSymbol baseType = symbol.BaseType;
+            if (symbol.TypeKind != TypeKind.Class)
+                return;
 
-                if (baseType?.IsObject() == false
-                    && baseType.EqualsOrInheritsFrom(context.Compilation.GetTypeByMetadataName(MetadataNames.System_Exception))
-                    && GenerateBaseConstructorsRefactoring.IsAnyBaseConstructorMissing(symbol, baseType))
-                {
-                    var classDeclaration = symbol.GetSyntax(context.CancellationToken) as ClassDeclarationSyntax;
+            if (symbol.IsStatic)
+                return;
 
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.ImplementExceptionConstructors,
-                        classDeclaration.Identifier);
-                }
-            }
+            if (symbol.IsImplicitClass)
+                return;
+
+            if (symbol.IsImplicitlyDeclared)
+                return;
+
+            INamedTypeSymbol baseType = symbol.BaseType;
+
+            if (baseType?.IsObject() != false)
+                return;
+
+            if (!baseType.EqualsOrInheritsFrom(exceptionSymbol))
+                return;
+
+            if (!GenerateBaseConstructorsRefactoring.IsAnyBaseConstructorMissing(symbol, baseType))
+                return;
+
+            var classDeclaration = (ClassDeclarationSyntax)symbol.GetSyntax(context.CancellationToken);
+
+            context.ReportDiagnostic(DiagnosticDescriptors.ImplementExceptionConstructors, classDeclaration.Identifier);
         }
 
         public static async Task<Document> RefactorAsync(

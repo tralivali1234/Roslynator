@@ -14,7 +14,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: pokr.
     internal static class MergeLocalDeclarationWithAssignmentRefactoring
     {
         public static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
@@ -65,8 +64,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!localSymbol.Equals(semanticModel.GetDeclaredSymbol(localInfo.Declarator, cancellationToken)))
                 return;
 
-            EqualsValueClauseSyntax initializer = localInfo.Initializer;
-            ExpressionSyntax value = initializer?.Value;
+            ExpressionSyntax value = localInfo.Value;
 
             if (value != null)
             {
@@ -86,7 +84,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (value != null)
             {
-                context.ReportNode(DiagnosticDescriptors.MergeLocalDeclarationWithAssignmentFadeOut, initializer);
+                context.ReportNode(DiagnosticDescriptors.MergeLocalDeclarationWithAssignmentFadeOut, localInfo.Initializer);
                 context.ReportToken(DiagnosticDescriptors.MergeLocalDeclarationWithAssignmentFadeOut, assignmentInfo.OperatorToken);
             }
 

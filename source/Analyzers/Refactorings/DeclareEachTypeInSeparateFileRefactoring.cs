@@ -16,24 +16,24 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<MemberDeclarationSyntax> members = compilationUnit.Members;
 
-            if (!ContainsSingleNamespaceWithSingleNonNamespaceMember(members))
+            if (ContainsSingleNamespaceWithSingleNonNamespaceMember(members))
+                return;
+
+            using (IEnumerator<MemberDeclarationSyntax> en = ExtractTypeDeclarationToNewDocumentRefactoring.GetNonNestedTypeDeclarations(members).GetEnumerator())
             {
-                using (IEnumerator<MemberDeclarationSyntax> en = ExtractTypeDeclarationToNewDocumentRefactoring.GetNonNestedTypeDeclarations(members).GetEnumerator())
+                if (en.MoveNext())
                 {
+                    MemberDeclarationSyntax firstMember = en.Current;
+
                     if (en.MoveNext())
                     {
-                        MemberDeclarationSyntax firstMember = en.Current;
+                        ReportDiagnostic(context, firstMember);
 
-                        if (en.MoveNext())
+                        do
                         {
-                            ReportDiagnostic(context, firstMember);
+                            ReportDiagnostic(context, en.Current);
 
-                            do
-                            {
-                                ReportDiagnostic(context, en.Current);
-
-                            } while (en.MoveNext());
-                        }
+                        } while (en.MoveNext());
                     }
                 }
             }
@@ -43,35 +43,25 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxToken token = ExtractTypeDeclarationToNewDocumentRefactoring.GetIdentifier(member);
 
-            if (!token.IsKind(SyntaxKind.None))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.DeclareEachTypeInSeparateFile,
-                    token);
-            }
+            if (token == default(SyntaxToken))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.DeclareEachTypeInSeparateFile, token);
         }
 
         private static bool ContainsSingleNamespaceWithSingleNonNamespaceMember(SyntaxList<MemberDeclarationSyntax> members)
         {
-            if (members.Count == 1)
-            {
-                MemberDeclarationSyntax member = members[0];
+            MemberDeclarationSyntax member = members.SingleOrDefault(shouldThrow: false);
 
-                if (member.IsKind(SyntaxKind.NamespaceDeclaration))
-                {
-                    var namespaceDeclaration = (NamespaceDeclarationSyntax)member;
+            if (member?.Kind() != SyntaxKind.NamespaceDeclaration)
+                return false;
 
-                    members = namespaceDeclaration.Members;
+            var namespaceDeclaration = (NamespaceDeclarationSyntax)member;
 
-                    if (members.Count == 1
-                        && !members[0].IsKind(SyntaxKind.NamespaceDeclaration))
-                    {
-                        return true;
-                    }
-                }
-            }
+            member = namespaceDeclaration.Members.SingleOrDefault(shouldThrow: false);
 
-            return false;
+            return member != null
+                && member.Kind() != SyntaxKind.NamespaceDeclaration;
         }
     }
 }

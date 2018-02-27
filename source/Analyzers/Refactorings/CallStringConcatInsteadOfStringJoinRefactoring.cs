@@ -4,10 +4,10 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -18,61 +18,57 @@ namespace Roslynator.CSharp.Refactorings
         {
             var invocation = (InvocationExpressionSyntax)context.Node;
 
-            ExpressionSyntax expression = invocation.Expression;
+            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocation);
 
-            if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
+            if (!invocationInfo.Success)
+                return;
+
+            ArgumentSyntax firstArgument = invocationInfo.Arguments.FirstOrDefault();
+
+            if (firstArgument == null)
+                return;
+
+            if (invocationInfo.NameText != "Join")
+                return;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
+
+            if (methodSymbol?.ContainingType?.SpecialType != SpecialType.System_String)
+                return;
+
+            if (!methodSymbol.IsPublicStaticNonGeneric("Join"))
+                return;
+
+            if (!methodSymbol.IsReturnType(SpecialType.System_String))
+                return;
+
+            ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
+
+            if (parameters.Length != 2)
+                return;
+
+            if (parameters[0].Type.SpecialType != SpecialType.System_String)
+                return;
+
+            if (!parameters[1].IsParamsOf(SpecialType.System_String, SpecialType.System_Object)
+                && !parameters[1].Type.IsConstructedFromIEnumerableOfT())
             {
-                var memberAccess = (MemberAccessExpressionSyntax)expression;
-
-                ArgumentListSyntax argumentList = invocation.ArgumentList;
-
-                if (argumentList != null)
-                {
-                    SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
-
-                    if (arguments.Any())
-                    {
-                        SimpleNameSyntax name = memberAccess.Name;
-
-                        if (name?.Identifier.ValueText == "Join")
-                        {
-                            SemanticModel semanticModel = context.SemanticModel;
-                            CancellationToken cancellationToken = context.CancellationToken;
-
-                            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
-
-                            if (methodSymbol?.ContainingType?.SpecialType == SpecialType.System_String
-                                && methodSymbol.IsPublicStaticNonGeneric("Join")
-                                && methodSymbol.IsReturnType(SpecialType.System_String))
-                            {
-                                ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
-
-                                if (parameters.Length == 2
-                                    && parameters[0].Type.IsString())
-                                {
-                                    IParameterSymbol parameter = parameters[1];
-
-                                    if (parameter.IsParamsOf(SpecialType.System_String, SpecialType.System_Object)
-                                        || parameter.Type.IsConstructedFromIEnumerableOfT())
-                                    {
-                                        ArgumentSyntax firstArgument = arguments.First();
-                                        ExpressionSyntax argumentExpression = firstArgument.Expression;
-
-                                        if (argumentExpression != null
-                                            && CSharpUtility.IsEmptyStringExpression(argumentExpression, semanticModel, cancellationToken)
-                                            && !invocation.ContainsDirectives(TextSpan.FromBounds(invocation.SpanStart, firstArgument.Span.End)))
-                                        {
-                                            context.ReportDiagnostic(
-                                                DiagnosticDescriptors.CallStringConcatInsteadOfStringJoin,
-                                                name);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                return;
             }
+
+            if (firstArgument.Expression == null)
+                return;
+
+            if (!CSharpUtility.IsEmptyStringExpression(firstArgument.Expression, semanticModel, cancellationToken))
+                return;
+
+            if (invocation.ContainsDirectives(TextSpan.FromBounds(invocation.SpanStart, firstArgument.Span.End)))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.CallStringConcatInsteadOfStringJoin, invocationInfo.Name);
         }
 
         public static Task<Document> RefactorAsync(

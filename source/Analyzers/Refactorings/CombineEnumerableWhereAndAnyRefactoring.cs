@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
+using static Roslynator.CSharp.SyntaxInfo;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -23,7 +24,7 @@ namespace Roslynator.CSharp.Refactorings
             if (invocationExpression.SpanContainsDirectives())
                 return;
 
-            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
+            MemberInvocationExpressionInfo invocationInfo = MemberInvocationExpressionInfo(invocationExpression);
 
             if (!invocationInfo.Success)
                 return;
@@ -36,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
             if (argument1 == null)
                 return;
 
-            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
+            MemberInvocationExpressionInfo invocationInfo2 = MemberInvocationExpressionInfo(invocationInfo.Expression);
 
             if (!invocationInfo2.Success)
                 return;
@@ -68,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
-            SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument1.Expression);
+            SingleParameterLambdaExpressionInfo lambda = SingleParameterLambdaExpressionInfo(argument1.Expression);
 
             if (!lambda.Success)
                 return;
@@ -76,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(lambda.Body is ExpressionSyntax))
                 return;
 
-            SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo(argument2.Expression);
+            SingleParameterLambdaExpressionInfo lambda2 = SingleParameterLambdaExpressionInfo(argument2.Expression);
 
             if (!lambda2.Success)
                 return;
@@ -97,11 +98,11 @@ namespace Roslynator.CSharp.Refactorings
             InvocationExpressionSyntax invocationExpression,
             CancellationToken cancellationToken)
         {
-            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocationExpression);
-            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
+            MemberInvocationExpressionInfo invocationInfo = MemberInvocationExpressionInfo(invocationExpression);
+            MemberInvocationExpressionInfo invocationInfo2 = MemberInvocationExpressionInfo(invocationInfo.Expression);
 
-            SingleParameterLambdaExpressionInfo lambda = SyntaxInfo.SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo.Arguments.First().Expression);
-            SingleParameterLambdaExpressionInfo lambda2 = SyntaxInfo.SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo2.Arguments.First().Expression);
+            SingleParameterLambdaExpressionInfo lambda = SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo.Arguments.First().Expression);
+            SingleParameterLambdaExpressionInfo lambda2 = SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo2.Arguments.First().Expression);
 
             BinaryExpressionSyntax logicalAnd = CSharpFactory.LogicalAndExpression(
                 ((ExpressionSyntax)lambda2.Body).Parenthesize(),

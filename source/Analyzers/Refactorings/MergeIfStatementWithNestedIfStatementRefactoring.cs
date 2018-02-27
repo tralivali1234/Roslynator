@@ -9,29 +9,40 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class MergeIfStatementWithNestedIfStatementRefactoring
     {
         public static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (ifStatement.IsSimpleIf()
-                && CheckCondition(ifStatement.Condition))
-            {
-                IfStatementSyntax nestedIf = GetNestedIfStatement(ifStatement);
+            if (ifStatement.SpanContainsDirectives())
+                return;
 
-                if (nestedIf != null
-                    && nestedIf.Else == null
-                    && CheckCondition(nestedIf.Condition)
-                    && CheckTrivia(ifStatement, nestedIf)
-                    && !ifStatement.SpanContainsDirectives())
-                {
-                    ReportDiagnostic(context, ifStatement, nestedIf);
-                }
-            }
+            SimpleIfStatementInfo simpleIf = SyntaxInfo.SimpleIfStatementInfo(ifStatement);
+
+            if (!simpleIf.Success)
+                return;
+
+            if (simpleIf.Condition.Kind() == SyntaxKind.LogicalOrExpression)
+                return;
+
+            SimpleIfStatementInfo nestedIf = SyntaxInfo.SimpleIfStatementInfo(GetNestedIfStatement(ifStatement));
+
+            if (!nestedIf.Success)
+                return;
+
+            if (nestedIf.Condition.Kind() == SyntaxKind.LogicalOrExpression)
+                return;
+
+            if (!CheckTrivia(ifStatement, nestedIf.IfStatement))
+                return;
+
+            ReportDiagnostic(context, ifStatement, nestedIf.IfStatement);
         }
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement, IfStatementSyntax nestedIf)
@@ -47,11 +58,6 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.ReportBraces(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatementFadeOut, (BlockSyntax)nestedIf.Statement);
             }
-        }
-
-        private static bool CheckCondition(ExpressionSyntax condition)
-        {
-            return condition?.IsKind(SyntaxKind.LogicalOrExpression) == false;
         }
 
         private static bool CheckTrivia(IfStatementSyntax ifStatement, IfStatementSyntax nestedIf)
@@ -86,21 +92,9 @@ namespace Roslynator.CSharp.Refactorings
             switch (statement?.Kind())
             {
                 case SyntaxKind.Block:
-                    {
-                        SyntaxList<StatementSyntax> statements = ((BlockSyntax)statement).Statements;
-
-                        if (statements.Count == 1
-                            && statements[0].IsKind(SyntaxKind.IfStatement))
-                        {
-                            return (IfStatementSyntax)statements[0];
-                        }
-
-                        break;
-                    }
+                    return ((BlockSyntax)statement).Statements.SingleOrDefault(shouldThrow: false) as IfStatementSyntax;
                 case SyntaxKind.IfStatement:
-                    {
-                        return (IfStatementSyntax)statement;
-                    }
+                    return (IfStatementSyntax)statement;
             }
 
             return null;

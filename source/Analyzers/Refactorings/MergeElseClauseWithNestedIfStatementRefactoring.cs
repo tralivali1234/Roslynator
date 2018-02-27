@@ -20,34 +20,18 @@ namespace Roslynator.CSharp.Refactorings
             if (!(block.Statements.SingleOrDefault(shouldThrow: false) is IfStatementSyntax ifStatement))
                 return;
 
-            if (!CheckTrivia(elseClause, block, ifStatement))
+            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace()
+                || !block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
+                || !block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
+                || !ifStatement.IfKeyword.LeadingTrivia.IsEmptyOrWhitespace()
+                || !ifStatement.GetTrailingTrivia().IsEmptyOrWhitespace()
+                || !block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+            {
                 return;
+            }
 
             context.ReportDiagnostic(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatement, block);
             context.ReportBraces(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatementFadeOut, block);
-        }
-
-        private static bool CheckTrivia(ElseClauseSyntax elseClause, BlockSyntax block, IfStatementSyntax ifStatement)
-        {
-            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace())
-                return false;
-
-            if (!block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                return false;
-
-            if (!block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace())
-                return false;
-
-            if (!ifStatement.IfKeyword.LeadingTrivia.IsEmptyOrWhitespace())
-                return false;
-
-            if (!ifStatement.GetTrailingTrivia().IsEmptyOrWhitespace())
-                return false;
-
-            if (!block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                return false;
-
-            return true;
         }
 
         public static Task<Document> RefactorAsync(

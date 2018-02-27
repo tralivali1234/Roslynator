@@ -17,21 +17,31 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<StatementSyntax> statements = block.Statements;
 
-            if (!statements.Any()
-                && !(block.Parent is AccessorDeclarationSyntax)
-                && !(block.Parent is AnonymousFunctionExpressionSyntax))
-            {
-                int startLine = block.OpenBraceToken.GetSpanStartLine();
-                int endLine = block.CloseBraceToken.GetSpanEndLine();
+            if (statements.Any())
+                return;
 
-                if ((endLine - startLine) != 1
-                    && block
-                        .DescendantTrivia(block.Span)
-                        .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.FormatEmptyBlock, block);
-                }
-            }
+            if (block.Parent is AccessorDeclarationSyntax)
+                return;
+
+            if (block.Parent is AnonymousFunctionExpressionSyntax)
+                return;
+
+            SyntaxToken openBrace = block.OpenBraceToken;
+            SyntaxToken closeBrace = block.CloseBraceToken;
+
+            int startLine = openBrace.GetSpanStartLine();
+            int endLine = closeBrace.GetSpanEndLine();
+
+            if ((endLine - startLine) == 1)
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.FormatEmptyBlock, block);
         }
 
         public static Task<Document> RefactorAsync(

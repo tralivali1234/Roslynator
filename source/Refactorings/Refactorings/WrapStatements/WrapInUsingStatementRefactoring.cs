@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
             if (!localInfo.Success)
                 return;
 
-            ExpressionSyntax value = localInfo.Initializer?.Value;
+            ExpressionSyntax value = localInfo.Value;
 
             if (value == null)
                 return;

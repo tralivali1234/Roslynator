@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -16,29 +14,27 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //XTODO: refactor
+    //TODO: test
     internal static class CompositeEnumValueContainsUndefinedFlagRefactoring
     {
-        public static void AnalyzeNamedType(SymbolAnalysisContext context)
+        public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol flagsAttribute)
         {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            if (namedType.IsEnumWithFlags(context.Compilation))
-                Analyze(context, namedType);
-        }
+            if (namedType.TypeKind != TypeKind.Enum)
+                return;
 
-        private static void Analyze(SymbolAnalysisContext context, INamedTypeSymbol enumType)
-        {
-            IFieldSymbol[] fields = enumType
-                .GetMembers()
-                .Where(f => f.IsField())
-                .Cast<IFieldSymbol>()
-                .ToArray();
+            if (!namedType.HasAttribute(flagsAttribute))
+                return;
 
-            switch (enumType.EnumUnderlyingType.SpecialType)
+            ImmutableArray<ISymbol> fields = namedType.GetMembers();
+
+            switch (namedType.EnumUnderlyingType.SpecialType)
             {
                 case SpecialType.System_SByte:
                     {
-                        sbyte[] values = GetValues<sbyte>(fields);
+                        ImmutableArray<sbyte> values = GetValues<sbyte>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -47,7 +43,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (sbyte value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -57,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_Byte:
                     {
-                        byte[] values = GetValues<byte>(fields);
+                        ImmutableArray<byte> values = GetValues<byte>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -66,7 +62,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (byte value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -76,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_Int16:
                     {
-                        short[] values = GetValues<short>(fields);
+                        ImmutableArray<short> values = GetValues<short>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -85,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (short value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -95,7 +91,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_UInt16:
                     {
-                        ushort[] values = GetValues<ushort>(fields);
+                        ImmutableArray<ushort> values = GetValues<ushort>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -104,7 +100,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (ushort value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -114,7 +110,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_Int32:
                     {
-                        int[] values = GetValues<int>(fields);
+                        ImmutableArray<int> values = GetValues<int>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -123,7 +119,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (int value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -133,7 +129,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_UInt32:
                     {
-                        uint[] values = GetValues<uint>(fields);
+                        ImmutableArray<uint> values = GetValues<uint>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -142,7 +138,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (uint value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -152,7 +148,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_Int64:
                     {
-                        long[] values = GetValues<long>(fields);
+                        ImmutableArray<long> values = GetValues<long>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -161,7 +157,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (long value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -171,7 +167,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 case SpecialType.System_UInt64:
                     {
-                        ulong[] values = GetValues<ulong>(fields);
+                        ImmutableArray<ulong> values = GetValues<ulong>(fields);
 
                         for (int i = 0; i < values.Length; i++)
                         {
@@ -180,7 +176,7 @@ namespace Roslynator.CSharp.Refactorings
                             {
                                 foreach (ulong value in FlagsUtility.Decompose(values[i]))
                                 {
-                                    if (Array.IndexOf(values, value) == -1)
+                                    if (values.IndexOf(value) == -1)
                                         ReportDiagnostic(context, fields[i], value.ToString());
                                 }
                             }
@@ -190,39 +186,32 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 default:
                     {
-                        Debug.Fail(enumType.EnumUnderlyingType.SpecialType.ToString());
+                        Debug.Fail(namedType.EnumUnderlyingType.SpecialType.ToString());
                         break;
                     }
             }
         }
 
-        private static T[] GetValues<T>(IFieldSymbol[] fields)
+        private static ImmutableArray<T> GetValues<T>(ImmutableArray<ISymbol> members)
         {
-            var values = new T[fields.Length];
-
-            for (int i = 0; i < fields.Length; i++)
+            return ImmutableArray.CreateRange(members, member =>
             {
-                if (fields[i].HasConstantValue)
+                if (!member.IsImplicitlyDeclared
+                    && member is IFieldSymbol fieldSymbol
+                    && fieldSymbol.HasConstantValue)
                 {
-                    values[i] = (T)fields[i].ConstantValue;
+                    return (T)fieldSymbol.ConstantValue;
                 }
                 else
                 {
-                    values[i] = default(T);
+                    return default(T);
                 }
-            }
-
-            return values;
+            });
         }
 
-        private static void ReportDiagnostic(SymbolAnalysisContext context, IFieldSymbol field, string value)
+        private static void ReportDiagnostic(SymbolAnalysisContext context, ISymbol fieldSymbol, string value)
         {
-            var enumMember = field.GetSyntaxOrDefault(context.CancellationToken) as EnumMemberDeclarationSyntax;
-
-            Debug.Assert(enumMember != null);
-
-            if (enumMember == null)
-                return;
+            var enumMember = (EnumMemberDeclarationSyntax)fieldSymbol.GetSyntax(context.CancellationToken);
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.CompositeEnumValueContainsUndefinedFlag,

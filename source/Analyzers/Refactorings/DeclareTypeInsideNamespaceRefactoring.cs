@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -18,24 +17,21 @@ namespace Roslynator.CSharp.Refactorings
         {
             var symbol = (INamedTypeSymbol)context.Symbol;
 
-            if (symbol.ContainingNamespace?.IsGlobalNamespace == true)
+            if (symbol.ContainingNamespace?.IsGlobalNamespace != true)
+                return;
+
+            foreach (SyntaxReference syntaxReference in symbol.DeclaringSyntaxReferences)
             {
-                foreach (SyntaxReference syntaxReference in symbol.DeclaringSyntaxReferences)
+                SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
+
+                SyntaxToken identifier = GetDeclarationIdentifier(symbol, node);
+
+                if (identifier != default(SyntaxToken))
                 {
-                    SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
-
-                    if (node != null)
-                    {
-                        SyntaxToken identifier = GetDeclarationIdentifier(symbol, node);
-
-                        if (!identifier.IsKind(SyntaxKind.None))
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.DeclareTypeInsideNamespace,
-                                identifier,
-                                identifier.ValueText);
-                        }
-                    }
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.DeclareTypeInsideNamespace,
+                        identifier,
+                        identifier.ValueText);
                 }
             }
         }
@@ -69,24 +65,19 @@ namespace Roslynator.CSharp.Refactorings
         {
             Debug.Assert(member.IsParentKind(SyntaxKind.CompilationUnit), member.Parent?.Kind().ToString());
 
-            if (member.IsParentKind(SyntaxKind.CompilationUnit))
-            {
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-                string name = NameGenerator.Default.EnsureUniqueName(
-                    DefaultNames.Namespace,
-                    semanticModel.LookupNamespacesAndTypes(member.SpanStart));
+            string name = NameGenerator.Default.EnsureUniqueName(
+                DefaultNames.Namespace,
+                semanticModel.LookupNamespacesAndTypes(member.SpanStart));
 
-                NamespaceDeclarationSyntax namespaceDeclaration = NamespaceDeclaration(
-                    IdentifierName(Identifier(name).WithRenameAnnotation()),
-                    default(SyntaxList<ExternAliasDirectiveSyntax>),
-                    default(SyntaxList<UsingDirectiveSyntax>),
-                    SingletonList(member));
+            NamespaceDeclarationSyntax namespaceDeclaration = NamespaceDeclaration(
+                IdentifierName(Identifier(name).WithRenameAnnotation()),
+                default(SyntaxList<ExternAliasDirectiveSyntax>),
+                default(SyntaxList<UsingDirectiveSyntax>),
+                SingletonList(member));
 
-                return await document.ReplaceNodeAsync(member, namespaceDeclaration.WithFormatterAnnotation(), cancellationToken).ConfigureAwait(false);
-            }
-
-            return document;
+            return await document.ReplaceNodeAsync(member, namespaceDeclaration.WithFormatterAnnotation(), cancellationToken).ConfigureAwait(false);
         }
     }
 }

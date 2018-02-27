@@ -15,16 +15,18 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, StringConcatenationExpressionInfo concatenationInfo)
         {
-            if (concatenationInfo.ContainsNonStringLiteral)
+            StringConcatenationAnalysis analysis = concatenationInfo.Analyze();
+
+            if (analysis.ContainsNonStringLiteral)
             {
-                if (concatenationInfo.ContainsStringLiteral || concatenationInfo.ContainsInterpolatedString)
+                if (analysis.ContainsStringLiteral || analysis.ContainsInterpolatedString)
                 {
                     context.RegisterRefactoring(
                         "Join string expressions",
                         cancellationToken => ToInterpolatedStringAsync(context.Document, concatenationInfo, cancellationToken));
                 }
             }
-            else if (concatenationInfo.ContainsStringLiteral)
+            else if (analysis.ContainsStringLiteral)
             {
                 context.RegisterRefactoring(
                     "Join string literals",

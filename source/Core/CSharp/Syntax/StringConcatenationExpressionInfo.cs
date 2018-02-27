@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -16,111 +15,31 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>, IReadOnlyList<ExpressionSyntax>
+    //TODO: pub
+    internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
     {
-        private readonly Flags _flags;
-
         private StringConcatenationExpressionInfo(
-            ImmutableArray<ExpressionSyntax> expressions,
+            BinaryExpressionSyntax binaryExpression,
             TextSpan? span = null)
         {
-            _flags = Flags.None;
-
-            Expressions = expressions;
+            BinaryExpression = binaryExpression;
             Span = span;
-
-            foreach (ExpressionSyntax expression in expressions)
-            {
-                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(expression);
-
-                if (stringLiteral.Success)
-                {
-                    if (stringLiteral.IsVerbatim)
-                    {
-                        _flags |= Flags.VerbatimStringLiteral;
-                    }
-                    else
-                    {
-                        _flags |= Flags.RegularStringLiteral;
-                    }
-                }
-                else if (expression.Kind() == SyntaxKind.InterpolatedStringExpression)
-                {
-                    if (((InterpolatedStringExpressionSyntax)expression).IsVerbatim())
-                    {
-                        _flags |= Flags.VerbatimInterpolatedString;
-                    }
-                    else
-                    {
-                        _flags |= Flags.RegularInterpolatedString;
-                    }
-                }
-                else
-                {
-                    _flags |= Flags.Unspecified;
-                }
-            }
         }
 
         private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
 
-        public ImmutableArray<ExpressionSyntax> Expressions { get; }
-
-        public BinaryExpressionSyntax BinaryExpression
-        {
-            get { return (!Expressions.IsDefault) ? (BinaryExpressionSyntax)Expressions[0].Parent : null; }
-        }
+        public BinaryExpressionSyntax BinaryExpression { get; }
 
         public TextSpan? Span { get; }
-
-        public int Count
-        {
-            get { return Expressions.Length; }
-        }
-
-        public ExpressionSyntax this[int index]
-        {
-            get { return Expressions[index]; }
-        }
-
-        IEnumerator<ExpressionSyntax> IEnumerable<ExpressionSyntax>.GetEnumerator()
-        {
-            return ((IEnumerable<ExpressionSyntax>)Expressions).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)Expressions).GetEnumerator();
-        }
-
-        public ImmutableArray<ExpressionSyntax>.Enumerator GetEnumerator()
-        {
-            return Expressions.GetEnumerator();
-        }
-
-        public bool ContainsUnspecifiedExpression => (_flags & Flags.Unspecified) != 0;
-
-        public bool ContainsNonStringLiteral => (_flags & Flags.NonStringLiteral) != 0;
-
-        public bool ContainsStringLiteral => (_flags & Flags.StringLiteral) != 0;
-
-        public bool ContainsRegularStringLiteral => (_flags & Flags.RegularStringLiteral) != 0;
-
-        public bool ContainsVerbatimStringLiteral => (_flags & Flags.VerbatimStringLiteral) != 0;
-
-        public bool ContainsInterpolatedString => (_flags & Flags.InterpolatedString) != 0;
-
-        public bool ContainsRegularInterpolatedString => (_flags & Flags.RegularInterpolatedString) != 0;
-
-        public bool ContainsVerbatimInterpolatedString => (_flags & Flags.VerbatimInterpolatedString) != 0;
-
-        public bool ContainsRegular => (_flags & Flags.Regular) != 0;
-
-        public bool ContainsVerbatim => (_flags & Flags.Verbatim) != 0;
 
         public bool Success
         {
             get { return BinaryExpression != null; }
+        }
+
+        internal StringConcatenationAnalysis Analyze()
+        {
+            return StringConcatenationAnalysis.Create(this);
         }
 
         internal static StringConcatenationExpressionInfo Create(
@@ -134,12 +53,10 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            ImmutableArray<ExpressionSyntax> expressions = GetExpressions(binaryExpression, semanticModel, cancellationToken);
-
-            if (expressions.IsDefault)
+            if (!IsStringConcatenation(binaryExpression, semanticModel, cancellationToken))
                 return Default;
 
-            return new StringConcatenationExpressionInfo(expressions);
+            return new StringConcatenationExpressionInfo(binaryExpression);
         }
 
         internal static StringConcatenationExpressionInfo Create(
@@ -155,48 +72,51 @@ namespace Roslynator.CSharp.Syntax
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            ImmutableArray<ExpressionSyntax> expressions = binaryExpressionSelection.Expressions;
-
-            foreach (ExpressionSyntax expression in expressions)
+            foreach (ExpressionSyntax expression in binaryExpressionSelection.Expressions)
             {
                 if (!CSharpUtility.IsStringExpression(expression, semanticModel, cancellationToken))
                     return Default;
             }
 
-            return new StringConcatenationExpressionInfo(expressions, binaryExpressionSelection.Span);
+            return new StringConcatenationExpressionInfo(binaryExpression, binaryExpressionSelection.Span);
         }
 
-        private static ImmutableArray<ExpressionSyntax> GetExpressions(
+        private static bool IsStringConcatenation(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            ImmutableArray<ExpressionSyntax>.Builder builder = null;
-
             while (true)
             {
-                if (CSharpUtility.IsStringConcatenation(binaryExpression, semanticModel, cancellationToken))
+                if (binaryExpression.Right != null)
                 {
-                    (builder ?? (builder = ImmutableArray.CreateBuilder<ExpressionSyntax>())).Add(binaryExpression.Right);
-
                     ExpressionSyntax left = binaryExpression.Left;
 
-                    if (left.IsKind(SyntaxKind.AddExpression))
+                    if (left != null
+                        && CSharpUtility.IsStringConcatenation(binaryExpression, semanticModel, cancellationToken))
                     {
-                        binaryExpression = (BinaryExpressionSyntax)left;
+                        if (left.Kind() == SyntaxKind.AddExpression)
+                        {
+                            binaryExpression = (BinaryExpressionSyntax)left;
+                        }
+                        else
+                        {
+                            return true;
+                        }
                     }
                     else
                     {
-                        builder.Add(left);
-                        builder.Reverse();
-                        return builder.ToImmutable();
+                        return false;
                     }
                 }
-                else
-                {
-                    return default(ImmutableArray<ExpressionSyntax>);
-                }
             }
+        }
+
+        internal IEnumerable<ExpressionSyntax> Expressions()
+        {
+            ThrowInvalidOperationIfNotInitialized();
+
+            return BinaryExpressionInfo.Create(BinaryExpression).Expressions();
         }
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
@@ -207,20 +127,22 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('$');
 
-            if (!ContainsRegular)
+            bool containsRegular = Analyze().ContainsRegularExpression;
+
+            if (!containsRegular)
                 sb.Append('@');
 
             sb.Append('"');
 
-            for (int i = 0; i < Expressions.Length; i++)
+            foreach (ExpressionSyntax expression in Expressions())
             {
-                SyntaxKind kind = Expressions[i].Kind();
+                SyntaxKind kind = expression.Kind();
 
-                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(Expressions[i]);
+                StringLiteralExpressionInfo stringLiteral = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
                 if (stringLiteral.Success)
                 {
-                    if (ContainsRegular
+                    if (containsRegular
                         && stringLiteral.IsVerbatim)
                     {
                         string s = stringLiteral.ValueText;
@@ -238,7 +160,7 @@ namespace Roslynator.CSharp.Syntax
                 }
                 else if (kind == SyntaxKind.InterpolatedStringExpression)
                 {
-                    var interpolatedString = (InterpolatedStringExpressionSyntax)Expressions[i];
+                    var interpolatedString = (InterpolatedStringExpressionSyntax)expression;
 
                     bool isVerbatimInterpolatedString = interpolatedString.IsVerbatim();
 
@@ -252,7 +174,7 @@ namespace Roslynator.CSharp.Syntax
                                 {
                                     var text = (InterpolatedStringTextSyntax)content;
 
-                                    if (ContainsRegular
+                                    if (containsRegular
                                         && isVerbatimInterpolatedString)
                                     {
                                         string s = text.TextToken.ValueText;
@@ -280,7 +202,7 @@ namespace Roslynator.CSharp.Syntax
                 else
                 {
                     sb.Append('{');
-                    sb.Append(Expressions[i].ToString());
+                    sb.Append(expression.ToString());
                     sb.Append('}');
                 }
             }
@@ -294,24 +216,25 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (ContainsNonStringLiteral)
+            StringConcatenationAnalysis analysis = Analyze();
+
+            if (analysis.ContainsNonStringLiteral)
                 throw new InvalidOperationException();
 
             StringBuilder sb = StringBuilderCache.GetInstance();
 
-            if (!ContainsRegular)
+            if (!analysis.ContainsRegularExpression)
                 sb.Append('@');
 
             sb.Append('"');
 
-            foreach (ExpressionSyntax expression in Expressions)
+            foreach (ExpressionSyntax expression in Expressions())
             {
                 StringLiteralExpressionInfo literal = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
                 if (literal.Success)
                 {
-                    if (ContainsRegular
-                        && literal.IsVerbatim)
+                    if (analysis.ContainsRegularExpression && literal.IsVerbatim)
                     {
                         string s = literal.ValueText;
                         s = StringUtility.DoubleBackslash(s);
@@ -336,7 +259,7 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (ContainsNonStringLiteral)
+            if (Analyze().ContainsNonStringLiteral)
                 throw new InvalidOperationException();
 
             StringBuilder sb = StringBuilderCache.GetInstance();
@@ -344,11 +267,13 @@ namespace Roslynator.CSharp.Syntax
             sb.Append('@');
             sb.Append('"');
 
-            for (int i = 0; i < Expressions.Length; i++)
+            ExpressionSyntax[] expressions = Expressions().ToArray();
+
+            for (int i = 0; i < expressions.Length; i++)
             {
-                if (Expressions[i].IsKind(SyntaxKind.StringLiteralExpression))
+                if (expressions[i].IsKind(SyntaxKind.StringLiteralExpression))
                 {
-                    var literal = (LiteralExpressionSyntax)Expressions[i];
+                    var literal = (LiteralExpressionSyntax)expressions[i];
 
                     string s = StringUtility.DoubleQuote(literal.Token.ValueText);
 
@@ -372,9 +297,9 @@ namespace Roslynator.CSharp.Syntax
                     {
                         sb.AppendLine();
                     }
-                    else if (i < Expressions.Length - 1)
+                    else if (i < expressions.Length - 1)
                     {
-                        TextSpan span = TextSpan.FromBounds(Expressions[i].Span.End, Expressions[i + 1].SpanStart);
+                        TextSpan span = TextSpan.FromBounds(expressions[i].Span.End, expressions[i + 1].SpanStart);
 
                         if (BinaryExpression.SyntaxTree.IsMultiLineSpan(span))
                             sb.AppendLine();
@@ -424,22 +349,6 @@ namespace Roslynator.CSharp.Syntax
         public static bool operator !=(StringConcatenationExpressionInfo info1, StringConcatenationExpressionInfo info2)
         {
             return !(info1 == info2);
-        }
-
-        [Flags]
-        private enum Flags
-        {
-            None = 0,
-            Unspecified = 1,
-            RegularStringLiteral = 2,
-            VerbatimStringLiteral = 4,
-            StringLiteral = RegularStringLiteral | VerbatimStringLiteral,
-            RegularInterpolatedString = 8,
-            Regular = RegularStringLiteral | RegularInterpolatedString,
-            VerbatimInterpolatedString = 16,
-            Verbatim = VerbatimStringLiteral | VerbatimInterpolatedString,
-            InterpolatedString = RegularInterpolatedString | VerbatimInterpolatedString,
-            NonStringLiteral = InterpolatedString | Unspecified
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -10,6 +9,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class JoinStringExpressionsRefactoring
     {
         public static void AnalyzeAddExpression(SyntaxNodeAnalysisContext context)
@@ -26,11 +26,15 @@ namespace Roslynator.CSharp.Refactorings
 
             StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(addExpression, context.SemanticModel, context.CancellationToken);
 
-            if (concatenationInfo.Success
-                && !concatenationInfo.ContainsUnspecifiedExpression
-                && (concatenationInfo.ContainsStringLiteral ^ concatenationInfo.ContainsInterpolatedString)
-                && (concatenationInfo.ContainsRegular ^ concatenationInfo.ContainsVerbatim)
-                && (concatenationInfo.ContainsVerbatim || addExpression.IsSingleLine(includeExteriorTrivia: false, cancellationToken: context.CancellationToken)))
+            if (!concatenationInfo.Success)
+                return;
+
+            StringConcatenationAnalysis analysis = concatenationInfo.Analyze();
+
+            if (!analysis.ContainsUnspecifiedExpression
+                && (analysis.ContainsStringLiteral ^ analysis.ContainsInterpolatedString)
+                && (analysis.ContainsRegularExpression ^ analysis.ContainsVerbatimExpression)
+                && (analysis.ContainsVerbatimExpression || addExpression.IsSingleLine(includeExteriorTrivia: false, cancellationToken: context.CancellationToken)))
             {
                 context.ReportDiagnostic(DiagnosticDescriptors.JoinStringExpressions, addExpression);
             }
@@ -38,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool ContainsMultiLine(StringConcatenationExpressionInfo concatenationInfo, CancellationToken cancellationToken)
         {
-            foreach (ExpressionSyntax expression in concatenationInfo.Expressions)
+            foreach (ExpressionSyntax expression in concatenationInfo.Expressions())
             {
                 if (expression.IsMultiLine(includeExteriorTrivia: false, cancellationToken: cancellationToken))
                     return true;
@@ -55,35 +59,31 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(binaryExpression, semanticModel, cancellationToken);
-            if (concatenationInfo.Success)
-            {
-                ExpressionSyntax newNode = null;
 
-                if (concatenationInfo.ContainsStringLiteral)
+            ExpressionSyntax newNode = null;
+
+            StringConcatenationAnalysis analysis = concatenationInfo.Analyze();
+
+            if (analysis.ContainsStringLiteral)
+            {
+                if (analysis.ContainsVerbatimExpression
+                    && ContainsMultiLine(concatenationInfo, cancellationToken))
                 {
-                    if (concatenationInfo.ContainsVerbatim
-                        && ContainsMultiLine(concatenationInfo, cancellationToken))
-                    {
-                        newNode = concatenationInfo.ToMultilineStringLiteral();
-                    }
-                    else
-                    {
-                        newNode = concatenationInfo.ToStringLiteral();
-                    }
+                    newNode = concatenationInfo.ToMultilineStringLiteral();
                 }
                 else
                 {
-                    newNode = concatenationInfo.ToInterpolatedString();
+                    newNode = concatenationInfo.ToStringLiteral();
                 }
-
-                newNode = newNode.WithTriviaFrom(binaryExpression);
-
-                return await document.ReplaceNodeAsync(binaryExpression, newNode, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                newNode = concatenationInfo.ToInterpolatedString();
             }
 
-            Debug.Fail(binaryExpression.ToString());
+            newNode = newNode.WithTriviaFrom(binaryExpression);
 
-            return document;
+            return await document.ReplaceNodeAsync(binaryExpression, newNode, cancellationToken).ConfigureAwait(false);
         }
     }
 }
