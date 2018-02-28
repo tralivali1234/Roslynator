@@ -15,7 +15,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class CallOfTypeInsteadOfWhereAndCastRefactoring
     {
-        //TODO: test
         public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
             MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);

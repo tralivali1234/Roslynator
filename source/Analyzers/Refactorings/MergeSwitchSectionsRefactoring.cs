@@ -153,21 +153,9 @@ namespace Roslynator.CSharp.Refactorings
                 i++;
             }
 
-            //TODO: test
             SyntaxList<SwitchSectionSyntax> newSections = sections
                 .ModifyRange(index, i - index, CreateSectionWithoutStatements)
                 .ToSyntaxList();
-
-            //IEnumerable<SwitchSectionSyntax> sectionsWithoutStatements = sections
-            //    .Skip(index)
-            //    .Take(i - index)
-            //    .Select(CreateSectionWithoutStatements);
-
-            //SyntaxList<SwitchSectionSyntax> newSections = sections
-            //    .Take(index)
-            //    .Concat(sectionsWithoutStatements)
-            //    .Concat(sections.Skip(i))
-            //    .ToSyntaxList();
 
             SwitchStatementSyntax newSwitchStatement = switchStatement.WithSections(newSections);
 

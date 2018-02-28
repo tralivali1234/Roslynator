@@ -45,7 +45,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     DiagnosticDescriptors.UseStringComparison,
                     DiagnosticDescriptors.UseNameOfOperator,
                     DiagnosticDescriptors.RemoveRedundantCast,
-                    DiagnosticDescriptors.SimplifyLogicalNegation);
+                    DiagnosticDescriptors.SimplifyLogicalNegation,
+                    DiagnosticDescriptors.CallStringConcatInsteadOfStringJoin);
            }
         }
 
@@ -98,6 +99,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     string methodName = invocationInfo.NameText;
 
                     AvoidNullReferenceExceptionRefactoring.Analyze(context, invocationInfo);
+
+                    CallStringConcatInsteadOfStringJoinRefactoring.Analyze(context, invocationInfo);
 
                     int argumentCount = invocationInfo.Arguments.Count;
 

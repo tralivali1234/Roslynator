@@ -30,7 +30,7 @@ namespace Roslynator
             return true;
         }
 
-        public static IEnumerable<T> ReplaceRange<T>(
+        public static IEnumerable<T> ReplaceRangeAt<T>(
             this IEnumerable<T> enumerable,
             int startIndex,
             int count,
@@ -85,13 +85,13 @@ namespace Roslynator
             this IEnumerable<T> enumerable,
             int startIndex,
             int count,
-            Func<T, T> modifier)
+            Func<T, T> selector)
         {
             if (enumerable == null)
                 throw new ArgumentNullException(nameof(enumerable));
 
-            if (modifier == null)
-                throw new ArgumentNullException(nameof(modifier));
+            if (selector == null)
+                throw new ArgumentNullException(nameof(selector));
 
             if (startIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
@@ -123,7 +123,7 @@ namespace Roslynator
                         if (!en.MoveNext())
                             throw new InvalidOperationException();
 
-                        yield return modifier(en.Current);
+                        yield return selector(en.Current);
                         i++;
                     }
 

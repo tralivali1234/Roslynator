@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 .SingleOrDefault();
         }
 
-        private static void UseOfTypeInsteadOfWhereAndCast()
+        private static void CallOfTypeInsteadOfWhereAndCast()
         {
             var items = new List<string>();
 

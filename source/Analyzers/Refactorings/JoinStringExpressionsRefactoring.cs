@@ -9,7 +9,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class JoinStringExpressionsRefactoring
     {
         public static void AnalyzeAddExpression(SyntaxNodeAnalysisContext context)

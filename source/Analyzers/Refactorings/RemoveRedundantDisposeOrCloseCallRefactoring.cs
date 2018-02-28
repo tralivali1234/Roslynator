@@ -10,7 +10,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantDisposeOrCloseCallRefactoring
     {
         public static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)

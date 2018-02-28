@@ -1021,23 +1021,6 @@ namespace Roslynator
             return methodSymbol?.ReturnType.SpecialType == specialType;
         }
 
-        //TODO: csharputility
-        internal static bool IsPublicStaticNonGeneric(this IMethodSymbol methodSymbol, string name = null)
-        {
-            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
-                && methodSymbol.IsStatic
-                && !methodSymbol.IsGenericMethod
-                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
-        }
-
-        internal static bool IsPublicInstanceNonGeneric(this IMethodSymbol methodSymbol, string name = null)
-        {
-            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
-                && !methodSymbol.IsStatic
-                && !methodSymbol.IsGenericMethod
-                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
-        }
-
         internal static bool HasSingleParameter(this IMethodSymbol methodSymbol, SpecialType parameterType)
         {
             return methodSymbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type.SpecialType == parameterType;
@@ -1580,25 +1563,10 @@ namespace Roslynator
             return typeSymbol?.TypeKind == TypeKind.Delegate;
         }
 
-        //TODO: zlikvidovat
         internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            return IsEnumWithFlags(typeSymbol, semanticModel.Compilation);
-        }
-
-        internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, Compilation compilation)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (compilation == null)
-                throw new ArgumentNullException(nameof(compilation));
-
-            return typeSymbol.IsEnum()
-                && typeSymbol.HasAttribute(compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
+            return typeSymbol?.TypeKind == TypeKind.Enum
+                && typeSymbol.HasAttribute(semanticModel.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
         }
 
         /// <summary>

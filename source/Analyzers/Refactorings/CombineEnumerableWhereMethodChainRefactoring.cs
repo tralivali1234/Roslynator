@@ -16,7 +16,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class CombineEnumerableWhereMethodChainRefactoring
     {
         public static void Analyze(

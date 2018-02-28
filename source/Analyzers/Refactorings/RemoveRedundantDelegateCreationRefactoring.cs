@@ -12,7 +12,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantDelegateCreationRefactoring
     {
         public static void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol eventHandler, INamedTypeSymbol eventHandlerOfT)

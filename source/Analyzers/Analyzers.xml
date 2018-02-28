@@ -3513,8 +3513,8 @@ public abstract class Foo : IFoo
   </Analyzer>
   <Analyzer Identifier="UseIsOperatorInsteadOfAsOperator">
     <Id>RCS1172</Id>
-    <Title>Use is operator instead of as operator.</Title>
-    <MessageFormat>Use is operator instead of as operator.</MessageFormat>
+    <Title>Use 'is' operator instead of 'as' operator.</Title>
+    <MessageFormat>Use 'is' operator instead of 'as' operator.</MessageFormat>
     <Category>Simplification</Category>
     <DefaultSeverity>Warning</DefaultSeverity>
     <IsEnabledByDefault>true</IsEnabledByDefault>

@@ -11,7 +11,6 @@ using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: ren
     internal static class SimplifyNestedUsingStatementRefactoring
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, UsingStatementSyntax usingStatement)

@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class StaticMemberInGenericTypeShouldUseTypeParameterRefactoring
     {
         public static void AnalyzeNamedType(SymbolAnalysisContext context)
@@ -196,7 +195,6 @@ namespace Roslynator.CSharp.Refactorings
                identifier);
         }
 
-        //TODO: zobecnit
         private static SyntaxToken GetIdentifier(SyntaxNode node)
         {
             switch (node.Kind())

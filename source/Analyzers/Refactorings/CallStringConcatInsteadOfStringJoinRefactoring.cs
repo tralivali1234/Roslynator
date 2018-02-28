@@ -6,22 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class CallStringConcatInsteadOfStringJoinRefactoring
     {
-        public static void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context)
+        public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
-            var invocation = (InvocationExpressionSyntax)context.Node;
-
-            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocation);
-
-            if (!invocationInfo.Success)
-                return;
+            InvocationExpressionSyntax invocation = invocationInfo.InvocationExpression;
 
             ArgumentSyntax firstArgument = invocationInfo.Arguments.FirstOrDefault();
 
@@ -31,15 +26,22 @@ namespace Roslynator.CSharp.Refactorings
             if (invocationInfo.NameText != "Join")
                 return;
 
+            if (invocationInfo.MemberAccessExpression.SpanOrTrailingTriviaContainsDirectives()
+                || invocationInfo.ArgumentList.OpenParenToken.ContainsDirectives
+                || firstArgument.ContainsDirectives)
+            {
+                return;
+            }
+
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
 
-            if (methodSymbol?.ContainingType?.SpecialType != SpecialType.System_String)
+            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Join"))
                 return;
 
-            if (!methodSymbol.IsPublicStaticNonGeneric("Join"))
+            if (methodSymbol.ContainingType?.SpecialType != SpecialType.System_String)
                 return;
 
             if (!methodSymbol.IsReturnType(SpecialType.System_String))
@@ -63,9 +65,6 @@ namespace Roslynator.CSharp.Refactorings
                 return;
 
             if (!CSharpUtility.IsEmptyStringExpression(firstArgument.Expression, semanticModel, cancellationToken))
-                return;
-
-            if (invocation.ContainsDirectives(TextSpan.FromBounds(invocation.SpanStart, firstArgument.Span.End)))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.CallStringConcatInsteadOfStringJoin, invocationInfo.Name);

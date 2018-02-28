@@ -16,7 +16,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class InlineLocalVariableRefactoring
     {
         public static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)

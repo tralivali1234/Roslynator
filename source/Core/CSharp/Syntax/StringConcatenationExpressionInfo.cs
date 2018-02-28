@@ -112,11 +112,11 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
-        internal IEnumerable<ExpressionSyntax> Expressions()
+        internal IEnumerable<ExpressionSyntax> Expressions(bool leftToRight = false)
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            return BinaryExpressionInfo.Create(BinaryExpression).Expressions();
+            return BinaryExpressionInfo.Create(BinaryExpression).Expressions(leftToRight);
         }
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
@@ -134,7 +134,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            foreach (ExpressionSyntax expression in Expressions())
+            foreach (ExpressionSyntax expression in Expressions(leftToRight: true))
             {
                 SyntaxKind kind = expression.Kind();
 
@@ -228,7 +228,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('"');
 
-            foreach (ExpressionSyntax expression in Expressions())
+            foreach (ExpressionSyntax expression in Expressions(leftToRight: true))
             {
                 StringLiteralExpressionInfo literal = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
@@ -267,7 +267,7 @@ namespace Roslynator.CSharp.Syntax
             sb.Append('@');
             sb.Append('"');
 
-            ExpressionSyntax[] expressions = Expressions().ToArray();
+            ExpressionSyntax[] expressions = Expressions(leftToRight: true).ToArray();
 
             for (int i = 0; i < expressions.Length; i++)
             {

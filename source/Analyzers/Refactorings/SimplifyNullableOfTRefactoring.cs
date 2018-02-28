@@ -12,7 +12,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class SimplifyNullableOfTRefactoring
     {
         public static void AnalyzeGenericName(SyntaxNodeAnalysisContext context)

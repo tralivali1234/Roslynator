@@ -67,6 +67,11 @@ namespace Roslynator.CSharp.Syntax
             get { return IfStatement != null; }
         }
 
+        internal static IfStatementInfo Create(SyntaxNode node)
+        {
+            return Create(node as IfStatementSyntax);
+        }
+
         internal static IfStatementInfo Create(IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)

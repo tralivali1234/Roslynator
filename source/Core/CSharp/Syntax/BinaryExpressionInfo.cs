@@ -17,7 +17,6 @@ namespace Roslynator.CSharp.Syntax
     /// </summary>
     public readonly struct BinaryExpressionInfo : IEquatable<BinaryExpressionInfo>
     {
-        //TODO: všechny ctor internal
         internal BinaryExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
             ExpressionSyntax left,

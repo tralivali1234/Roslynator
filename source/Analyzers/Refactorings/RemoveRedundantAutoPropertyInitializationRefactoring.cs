@@ -36,7 +36,7 @@ namespace Roslynator.CSharp.Refactorings
             if (accessorList == null)
                 return;
 
-            if (accessorList.Accessors.Any(f => !f.IsAutoAccessor()))
+            if (accessorList.Accessors.Any(f => !f.IsAutoImplemented()))
                 return;
 
             ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(propertyDeclaration.Type, context.CancellationToken);

@@ -13,7 +13,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class CallDebugFailInsteadOfDebugAssertRefactoring
     {
         public static void AnalyzeInvocationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol debugSymbol)
@@ -43,10 +42,10 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocation, context.CancellationToken);
 
-            if (methodSymbol?.ContainingType?.Equals(debugSymbol) != true)
+            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Assert"))
                 return;
 
-            if (!methodSymbol.IsPublicStaticNonGeneric("Assert"))
+            if (methodSymbol.ContainingType?.Equals(debugSymbol) != true)
                 return;
 
             if (!methodSymbol.ReturnsVoid)
@@ -88,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
                 foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers("Fail"))
                 {
                     if (symbol is IMethodSymbol failMethodSymbol
-                        && failMethodSymbol.IsPublicStaticNonGeneric()
+                        && SymbolUtility.IsPublicStaticNonGenericMethod(failMethodSymbol)
                         && failMethodSymbol.ReturnsVoid)
                     {
                         ImmutableArray<IParameterSymbol> failParameters = failMethodSymbol.Parameters;

@@ -10,22 +10,21 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseIsOperatorInsteadOfAsOperatorRefactoring
     {
         public static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, (BinaryExpressionSyntax)context.Node);
+            Analyze(context, context.Node);
         }
 
         public static void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, (BinaryExpressionSyntax)context.Node);
+            Analyze(context, context.Node);
         }
 
         public static void AnalyzeIsPatternExpression(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, (BinaryExpressionSyntax)context.Node);
+            Analyze(context, context.Node);
         }
 
         private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxNode node)

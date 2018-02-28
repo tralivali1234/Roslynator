@@ -11,7 +11,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantToStringCallRefactoring
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
@@ -43,8 +42,8 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken);
 
-            if (methodSymbol?.ReturnType.SpecialType == SpecialType.System_String
-                && methodSymbol.IsPublicInstanceNonGeneric("ToString")
+            if (SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, "ToString")
+                && methodSymbol.ReturnType.SpecialType == SpecialType.System_String
                 && !methodSymbol.Parameters.Any())
             {
                 INamedTypeSymbol containingType = methodSymbol.ContainingType;

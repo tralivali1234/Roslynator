@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: AnalyzeMethodSymbol, AnalyzePropertySymbol
+    //XTODO: AnalyzeMethodSymbol, AnalyzePropertySymbol
     internal static class RemoveRedundantSealedModifierRefactoring
     {
         public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)

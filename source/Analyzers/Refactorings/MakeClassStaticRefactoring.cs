@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class MakeClassStaticRefactoring
     {
         public static void AnalyzeNamedType(SymbolAnalysisContext context)
