@@ -41,8 +41,10 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
             (ExpressionSyntax expression, SyntaxList<StatementSyntax> statements) = GetExpressionOrStatements(declaration);
 
+            SyntaxNode nodeIncludingConditionalAccess = node.WalkUp(SyntaxKind.ConditionalAccessExpression);
+
             if (expression != null
-                || (statements.Any() && node.IsParentKind(SyntaxKind.ExpressionStatement)))
+                || (statements.Any() && nodeIncludingConditionalAccess.IsParentKind(SyntaxKind.ExpressionStatement)))
             {
                 ImmutableArray<ParameterInfo> parameterInfos = GetParameterInfos(node, symbol);
 
@@ -55,19 +57,19 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                     ? semanticModel
                     : await context.Solution.GetDocument(declaration.SyntaxTree).GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
 
-                InlineRefactoring<TNode, TDeclaration, TSymbol> refactoring = CreateRefactoring(context.Document, node, enclosingType, symbol, declaration, parameterInfos, semanticModel, declarationSemanticModel, context.CancellationToken);
+                InlineRefactoring<TNode, TDeclaration, TSymbol> refactoring = CreateRefactoring(context.Document, nodeIncludingConditionalAccess, enclosingType, symbol, declaration, parameterInfos, semanticModel, declarationSemanticModel, context.CancellationToken);
 
                 string title = CSharpFacts.GetTitle(declaration);
 
                 if (expression != null)
                 {
-                    context.RegisterRefactoring($"Inline {title}", cancellationToken => refactoring.InlineAsync(node, expression, cancellationToken));
+                    context.RegisterRefactoring($"Inline {title}", cancellationToken => refactoring.InlineAsync(nodeIncludingConditionalAccess, expression, cancellationToken));
 
-                    context.RegisterRefactoring($"Inline and remove {title}", cancellationToken => refactoring.InlineAndRemoveAsync(node, expression, cancellationToken));
+                    context.RegisterRefactoring($"Inline and remove {title}", cancellationToken => refactoring.InlineAndRemoveAsync(nodeIncludingConditionalAccess, expression, cancellationToken));
                 }
                 else
                 {
-                    var expressionStatement = (ExpressionStatementSyntax)node.Parent;
+                    var expressionStatement = (ExpressionStatementSyntax)nodeIncludingConditionalAccess.Parent;
 
                     context.RegisterRefactoring($"Inline {title}", cancellationToken => refactoring.InlineAsync(expressionStatement, statements, cancellationToken));
 
@@ -88,7 +90,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
         protected abstract InlineRefactoring<TNode, TDeclaration, TSymbol> CreateRefactoring(
             Document document,
-            TNode node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             TSymbol symbol,
             TDeclaration declaration,

@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantEmptyLineRefactoring
     {
         public static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)

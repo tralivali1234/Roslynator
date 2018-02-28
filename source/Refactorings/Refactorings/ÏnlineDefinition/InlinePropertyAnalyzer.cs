@@ -121,7 +121,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
         protected override InlineRefactoring<IdentifierNameSyntax, PropertyDeclarationSyntax, IPropertySymbol> CreateRefactoring(
             Document document,
-            IdentifierNameSyntax node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             IPropertySymbol symbol,
             PropertyDeclarationSyntax declaration,
