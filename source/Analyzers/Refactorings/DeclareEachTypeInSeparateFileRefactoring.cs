@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -14,26 +13,47 @@ namespace Roslynator.CSharp.Refactorings
         {
             var compilationUnit = (CompilationUnitSyntax)context.Node;
 
-            SyntaxList<MemberDeclarationSyntax> members = compilationUnit.Members;
+            SyntaxList<MemberDeclarationSyntax> compilationUnitMembers = compilationUnit.Members;
 
-            if (ContainsSingleNamespaceWithSingleNonNamespaceMember(members))
+            if (!compilationUnitMembers.Any())
                 return;
 
-            using (IEnumerator<MemberDeclarationSyntax> en = ExtractTypeDeclarationToNewDocumentRefactoring.GetNonNestedTypeDeclarations(members).GetEnumerator())
+            if (ContainsSingleNamespaceWithSingleNonNamespaceMember(compilationUnitMembers))
+                return;
+
+            MemberDeclarationSyntax firstTypeDeclaration = null;
+            bool isFirstReported = false;
+
+            Analyze(compilationUnitMembers);
+
+            void Analyze(SyntaxList<MemberDeclarationSyntax> members)
             {
-                if (en.MoveNext())
+                foreach (MemberDeclarationSyntax member in members)
                 {
-                    MemberDeclarationSyntax firstMember = en.Current;
+                    SyntaxKind kind = member.Kind();
 
-                    if (en.MoveNext())
+                    if (kind == SyntaxKind.NamespaceDeclaration)
                     {
-                        ReportDiagnostic(context, firstMember);
+                        var namespaceDeclaration = (NamespaceDeclarationSyntax)member;
 
-                        do
+                        Analyze(namespaceDeclaration.Members);
+                    }
+                    else if (SyntaxFacts.IsTypeDeclaration(kind))
+                    {
+                        if (firstTypeDeclaration == null)
                         {
-                            ReportDiagnostic(context, en.Current);
+                            firstTypeDeclaration = member;
+                        }
+                        else
+                        {
+                            if (!isFirstReported)
+                            {
+                                ReportDiagnostic(context, firstTypeDeclaration);
+                                isFirstReported = true;
+                            }
 
-                        } while (en.MoveNext());
+                            ReportDiagnostic(context, member);
+                        }
                     }
                 }
             }
