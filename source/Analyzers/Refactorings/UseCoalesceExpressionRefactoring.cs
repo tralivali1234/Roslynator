@@ -121,7 +121,7 @@ namespace Roslynator.CSharp.Refactorings
             VariableDeclaratorSyntax declarator = localDeclarationStatement
                 .Declaration?
                 .Variables
-                .SingleOrDefault(shouldthrow: false);
+                .SingleOrDefault(shouldThrow: false);
 
             if (declarator != null)
             {

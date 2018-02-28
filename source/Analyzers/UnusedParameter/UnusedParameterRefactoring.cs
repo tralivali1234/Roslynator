@@ -363,7 +363,6 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             return false;
         }
 
-        //TODO: util
         private static bool ContainsOnlyThrowNewExpression(CSharpSyntaxNode node)
         {
             switch (node?.Kind())

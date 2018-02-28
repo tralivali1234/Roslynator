@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -16,7 +17,7 @@ namespace Roslynator.CSharp.Syntax
     /// </summary>
     public readonly struct BinaryExpressionInfo : IEquatable<BinaryExpressionInfo>
     {
-        private BinaryExpressionInfo(
+        internal BinaryExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
             ExpressionSyntax left,
             ExpressionSyntax right)
@@ -138,6 +139,37 @@ namespace Roslynator.CSharp.Syntax
                     {
                         break;
                     }
+                }
+            }
+        }
+
+        internal bool IsStringConcatenation(SemanticModel semanticModel, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (semanticModel == null)
+                throw new ArgumentNullException(nameof(semanticModel));
+
+            ThrowInvalidOperationIfNotInitialized();
+
+            BinaryExpressionSyntax binaryExpression = BinaryExpression;
+
+            while (true)
+            {
+                if (CSharpUtility.IsStringConcatenation(binaryExpression, semanticModel, cancellationToken))
+                {
+                    ExpressionSyntax left = binaryExpression.Left;
+
+                    if (left.IsKind(SyntaxKind.AddExpression))
+                    {
+                        binaryExpression = (BinaryExpressionSyntax)left;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return false;
                 }
             }
         }

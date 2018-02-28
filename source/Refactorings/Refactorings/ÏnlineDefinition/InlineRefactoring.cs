@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         protected InlineRefactoring(
             Document document,
-            TNode node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             TSymbol symbol,
             TDeclaration declaration,
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
         public Document Document { get; }
 
-        public TNode Node { get; }
+        public SyntaxNode Node { get; }
 
         public INamedTypeSymbol NodeEnclosingType { get; }
 

@@ -117,7 +117,7 @@ namespace Roslynator.CSharp.Syntax
                         ParameterSyntax parameter = parenthesizedLambda
                             .ParameterList?
                             .Parameters
-                            .SingleOrDefault(shouldthrow: false);
+                            .SingleOrDefault(shouldThrow: false);
 
                         if (!Check(parameter, allowMissing))
                             break;

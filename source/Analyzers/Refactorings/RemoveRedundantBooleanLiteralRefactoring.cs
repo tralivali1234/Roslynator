@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -21,22 +22,22 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax left,
             ExpressionSyntax right)
         {
-            if (!binaryExpression.SpanContainsDirectives())
-            {
-                TextSpan span = GetSpanToRemove(binaryExpression, left, right);
+            if (binaryExpression.SpanContainsDirectives())
+                return;
 
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.RemoveRedundantBooleanLiteral,
-                    Location.Create(binaryExpression.SyntaxTree, span),
-                    binaryExpression.ToString(span));
-            }
+            TextSpan span = GetSpanToRemove(binaryExpression, left, right);
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.RemoveRedundantBooleanLiteral,
+                Location.Create(binaryExpression.SyntaxTree, span),
+                binaryExpression.ToString(span));
         }
 
         public static TextSpan GetSpanToRemove(BinaryExpressionSyntax binaryExpression, ExpressionSyntax left, ExpressionSyntax right)
         {
             SyntaxToken operatorToken = binaryExpression.OperatorToken;
 
-            if (CSharpFacts.IsBooleanLiteralExpression(left.Kind()))
+            if (IsBooleanLiteralExpression(left.Kind()))
             {
                 return TextSpan.FromBounds(left.SpanStart, operatorToken.Span.End);
             }
@@ -62,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
             bool isWhiteSpaceOrEndOfLine = trivia.All(f => f.IsWhitespaceOrEndOfLineTrivia());
 
-            if (CSharpFacts.IsBooleanLiteralExpression(left.Kind()))
+            if (IsBooleanLiteralExpression(left.Kind()))
             {
                 SyntaxTriviaList leadingTrivia = binaryExpression.GetLeadingTrivia();
 
@@ -71,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 newNode = right.WithLeadingTrivia(leadingTrivia);
             }
-            else if (CSharpFacts.IsBooleanLiteralExpression(right.Kind()))
+            else if (IsBooleanLiteralExpression(right.Kind()))
             {
                 SyntaxTriviaList trailingTrivia = binaryExpression.GetTrailingTrivia();
 

@@ -7,11 +7,6 @@ using System.Collections.Generic;
 
 namespace Roslynator.CSharp.Analyzers.Tests
 {
-    /// <summary>
-    /// <see cref="Nullable{T}"/>
-    /// <see cref="System.Nullable{T}"/>
-    /// <see cref="global::System.Nullable{T}"/>
-    /// </summary>
     public static class SimplifyNullableOfT
     {
         public static void Foo(Nullable<int> x, string s)
@@ -35,6 +30,18 @@ namespace Roslynator.CSharp.Analyzers.Tests
             s = nameof(Nullable<int>.Value);
             s = nameof(System.Nullable<int>.Value);
             s = nameof(global::System.Nullable<int>.Value);
+        }
+
+        /// <summary>
+        /// <see cref="Nullable{T}"/>
+        /// <see cref="System.Nullable{T}"/>
+        /// <see cref="global::System.Nullable{T}"/>
+        /// <see cref="Nullable{T}.HasValue"/>
+        /// <see cref="System.Nullable{T}.HasValue"/>
+        /// <see cref="global::System.Nullable{T}.HasValue"/>
+        /// </summary>
+        public static void Foo()
+        {
         }
     }
 }

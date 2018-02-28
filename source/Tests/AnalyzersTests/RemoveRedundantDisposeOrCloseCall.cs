@@ -22,6 +22,8 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 sw.Dispose();
             }
 
+            //n
+
             var sr2 = new StreamReader(null);
 
             using (sr)

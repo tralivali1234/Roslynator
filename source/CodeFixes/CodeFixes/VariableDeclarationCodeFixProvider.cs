@@ -90,7 +90,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!(variableDeclaration.Parent is LocalDeclarationStatementSyntax localDeclaration))
                                 return;
 
-                            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldthrow: false);
+                            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
 
                             if (variableDeclarator == null)
                                 break;

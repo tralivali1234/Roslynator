@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -69,12 +68,11 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken token, StatementSyntax statement)
         {
-            if (!token.IsKind(SyntaxKind.None)
-                && !token.IsMissing
+            if (!token.IsMissing
                 && statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) == false
                 && statement.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
             {
-                ReportDiagnostic(context, statement);
+                context.ReportDiagnostic(DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine, statement);
             }
         }
 
@@ -87,15 +85,8 @@ namespace Roslynator.CSharp.Refactorings
             if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement) == false
                 && elseClause.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(elseClause.ElseKeyword.SpanStart, statement.SpanStart)))
             {
-                ReportDiagnostic(context, statement);
+                context.ReportDiagnostic(DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine, statement);
             }
-        }
-
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, StatementSyntax statement)
-        {
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine,
-                statement);
         }
     }
 }

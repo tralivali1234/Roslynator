@@ -49,6 +49,11 @@ namespace Roslynator.CSharp.Syntax
             get { return Declarator?.Initializer; }
         }
 
+        public ExpressionSyntax Value
+        {
+            get { return Initializer?.Value; }
+        }
+
         /// <summary>
         /// The modifier list.
         /// </summary>
@@ -114,7 +119,7 @@ namespace Roslynator.CSharp.Syntax
             if (!Check(variableDeclaration, allowMissing))
                 return Default;
 
-            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldthrow: false);
+            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
 
             if (!Check(variableDeclarator, allowMissing))
                 return Default;
@@ -132,7 +137,7 @@ namespace Roslynator.CSharp.Syntax
             if (!(variableDeclaration.Parent is LocalDeclarationStatementSyntax localDeclarationStatement))
                 return Default;
 
-            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldthrow: false);
+            VariableDeclaratorSyntax variableDeclarator = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
 
             if (!Check(variableDeclarator, allowMissing))
                 return Default;

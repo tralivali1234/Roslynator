@@ -20,22 +20,34 @@ namespace Roslynator.CSharp.Refactorings
 
             EqualsValueClauseSyntax initializer = propertyDeclaration.Initializer;
 
-            if (initializer?.SpanOrLeadingTriviaContainsDirectives() == false)
-            {
-                ExpressionSyntax value = initializer.Value;
+            if (initializer == null)
+                return;
 
-                if (value != null
-                    && propertyDeclaration.AccessorList?.Accessors.Any(f => !f.IsAutoAccessor()) == false)
-                {
-                    ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(propertyDeclaration.Type, context.CancellationToken);
+            if (initializer.SpanOrLeadingTriviaContainsDirectives())
+                return;
 
-                    if (typeSymbol?.IsErrorType() == false
-                        && context.SemanticModel.IsDefaultValue(typeSymbol, value, context.CancellationToken))
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantAutoPropertyInitialization, value);
-                    }
-                }
-            }
+            ExpressionSyntax value = initializer.Value;
+
+            if (value == null)
+                return;
+
+            AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
+
+            if (accessorList == null)
+                return;
+
+            if (accessorList.Accessors.Any(f => !f.IsAutoImplemented()))
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(propertyDeclaration.Type, context.CancellationToken);
+
+            if (typeSymbol?.IsErrorType() != false)
+                return;
+
+            if (!context.SemanticModel.IsDefaultValue(typeSymbol, value, context.CancellationToken))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantAutoPropertyInitialization, value);
         }
 
         public static Task<Document> RefactorAsync(

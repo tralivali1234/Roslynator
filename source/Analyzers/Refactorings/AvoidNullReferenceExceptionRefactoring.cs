@@ -25,17 +25,18 @@ namespace Roslynator.CSharp.Refactorings
 
                         ExpressionSyntax expression = invocationExpression.WalkUpParentheses();
 
-                        if (IsExpressionOfAccessExpression(expression))
-                        {
-                            IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationExpression, context.CancellationToken);
+                        if (!IsExpressionOfAccessExpression(expression))
+                            break;
 
-                            if (methodSymbol?.ReturnType.IsReferenceType == true
-                                && methodSymbol.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)) == true)
-                            {
-                                ReportDiagnostic(context, expression);
-                            }
-                        }
+                        IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationExpression, context.CancellationToken);
 
+                        if (methodSymbol?.ReturnType.IsReferenceType != true)
+                            break;
+
+                        if (methodSymbol.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable)) != true)
+                            break;
+
+                        ReportDiagnostic(context, expression);
                         break;
                     }
             }
@@ -45,20 +46,22 @@ namespace Roslynator.CSharp.Refactorings
         {
             var asExpression = (BinaryExpressionSyntax)context.Node;
 
-            if (asExpression.IsParentKind(SyntaxKind.ParenthesizedExpression))
+            ExpressionSyntax expression = asExpression.WalkUpParentheses();
+
+            if (asExpression == expression)
+                return;
+
+            if (!IsExpressionOfAccessExpression(expression))
+                return;
+
+            if (context.SemanticModel
+                .GetTypeSymbol(asExpression, context.CancellationToken)?
+                .IsReferenceType != true)
             {
-                var expression = (ExpressionSyntax)asExpression.Parent;
-
-                expression = expression.WalkUpParentheses();
-
-                if (IsExpressionOfAccessExpression(expression)
-                    && context.SemanticModel
-                        .GetTypeSymbol(asExpression, context.CancellationToken)?
-                        .IsReferenceType == true)
-                {
-                    ReportDiagnostic(context, expression);
-                }
+                return;
             }
+
+            ReportDiagnostic(context, expression);
         }
 
         private static bool IsExpressionOfAccessExpression(ExpressionSyntax expression)

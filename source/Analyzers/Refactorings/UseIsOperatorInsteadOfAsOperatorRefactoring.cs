@@ -10,25 +10,29 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseIsOperatorInsteadOfAsOperatorRefactoring
     {
         public static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, (BinaryExpressionSyntax)context.Node);
+            Analyze(context, context.Node);
         }
 
         public static void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
         {
-            Analyze(context, (BinaryExpressionSyntax)context.Node);
+            Analyze(context, context.Node);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, BinaryExpressionSyntax binaryExpression)
+        public static void AnalyzeIsPatternExpression(SyntaxNodeAnalysisContext context)
         {
-            if (binaryExpression.SpanContainsDirectives())
+            Analyze(context, context.Node);
+        }
+
+        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxNode node)
+        {
+            if (node.SpanContainsDirectives())
                 return;
 
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(node);
 
             if (!nullCheck.Success)
                 return;
@@ -38,15 +42,15 @@ namespace Roslynator.CSharp.Refactorings
             if (!asExpressionInfo.Success)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.UseIsOperatorInsteadOfAsOperator, binaryExpression);
+            context.ReportDiagnostic(DiagnosticDescriptors.UseIsOperatorInsteadOfAsOperator, node);
         }
 
         public static Task<Document> RefactorAsync(
             Document document,
-            BinaryExpressionSyntax binaryExpression,
+            SyntaxNode node,
             CancellationToken cancellationToken)
         {
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(node);
 
             AsExpressionInfo asExpressionInfo = SyntaxInfo.AsExpressionInfo(nullCheck.Expression);
 
@@ -59,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
                 .Parenthesize()
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(binaryExpression, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }
     }
 }

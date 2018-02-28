@@ -10,7 +10,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantDisposeOrCloseCallRefactoring
     {
         public static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
@@ -25,6 +24,9 @@ namespace Roslynator.CSharp.Refactorings
             var block = (BlockSyntax)statement;
 
             StatementSyntax lastStatement = block.Statements.LastOrDefault();
+
+            if (lastStatement == null)
+                return;
 
             if (lastStatement.SpanContainsDirectives())
                 return;

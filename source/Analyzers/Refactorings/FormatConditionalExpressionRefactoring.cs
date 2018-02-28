@@ -17,17 +17,19 @@ namespace Roslynator.CSharp.Refactorings
         {
             var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
 
-            if (!conditionalExpression.ContainsDiagnostics
-                && !conditionalExpression.SpanContainsDirectives())
+            if (conditionalExpression.ContainsDiagnostics)
+                return;
+
+            if (conditionalExpression.SpanContainsDirectives())
+                return;
+
+            if (!IsFixable(conditionalExpression.Condition, conditionalExpression.QuestionToken)
+                && !IsFixable(conditionalExpression.WhenTrue, conditionalExpression.ColonToken))
             {
-                if (IsFixable(conditionalExpression.Condition, conditionalExpression.QuestionToken)
-                    || IsFixable(conditionalExpression.WhenTrue, conditionalExpression.ColonToken))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.FormatConditionalExpression,
-                        conditionalExpression);
-                }
+                return;
             }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.FormatConditionalExpression, conditionalExpression);
         }
 
         private static bool IsFixable(ExpressionSyntax expression, SyntaxToken token)

@@ -14,7 +14,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseGenericEventHandlerRefactoring
     {
         public static void AnalyzeEvent(SymbolAnalysisContext context, INamedTypeSymbol eventHandlerSymbol)

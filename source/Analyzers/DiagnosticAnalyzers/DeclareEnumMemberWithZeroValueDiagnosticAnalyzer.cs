@@ -23,9 +23,15 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSymbolAction(
-                DeclareEnumMemberWithZeroValueRefactoring.AnalyzeNamedType,
-                SymbolKind.NamedType);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol flagsAttribute = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute);
+
+                if (flagsAttribute == null)
+                    return;
+
+                startContext.RegisterSymbolAction(f => DeclareEnumMemberWithZeroValueRefactoring.AnalyzeNamedType(f, flagsAttribute), SymbolKind.NamedType);
+            });
         }
     }
 }

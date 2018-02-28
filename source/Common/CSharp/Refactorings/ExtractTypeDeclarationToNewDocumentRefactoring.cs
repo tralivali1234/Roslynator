@@ -90,6 +90,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static IEnumerable<MemberDeclarationSyntax> GetNonNestedTypeDeclarations(SyntaxList<MemberDeclarationSyntax> members)
         {
+            //TODO: optimize
             Stack<NamespaceDeclarationSyntax> namespaces = null;
 
             foreach (MemberDeclarationSyntax member in members)

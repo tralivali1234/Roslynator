@@ -35,6 +35,8 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 if (condition2)
                     Foo();
 
+            // n
+
             if (condition || condition)
             {
                 if (condition2)

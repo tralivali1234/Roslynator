@@ -4,7 +4,7 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.CompositeEnumValueContainsUndefinedFlagRefactoring;
+using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -23,7 +23,15 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSymbolAction(AnalyzeNamedType, SymbolKind.NamedType);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol flagsAttribute = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute);
+
+                if (flagsAttribute == null)
+                    return;
+
+                startContext.RegisterSymbolAction(f => CompositeEnumValueContainsUndefinedFlagRefactoring.AnalyzeNamedType(f, flagsAttribute), SymbolKind.NamedType);
+            });
         }
     }
 }

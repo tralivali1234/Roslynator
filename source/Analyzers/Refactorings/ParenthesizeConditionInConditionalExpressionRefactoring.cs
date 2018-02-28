@@ -6,6 +6,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Roslynator.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -15,19 +17,18 @@ namespace Roslynator.CSharp.Refactorings
         {
             var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
 
-            ExpressionSyntax condition = conditionalExpression.Condition;
+            if (conditionalExpression.ContainsDiagnostics)
+                return;
 
-            if (condition?.IsMissing == false
-                && !condition.IsKind(SyntaxKind.ParenthesizedExpression)
-                && !conditionalExpression.QuestionToken.IsMissing
-                && !conditionalExpression.ColonToken.IsMissing
-                && conditionalExpression.WhenTrue?.IsMissing == false
-                && conditionalExpression.WhenFalse?.IsMissing == false)
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.ParenthesizeConditionInConditionalExpression,
-                    condition);
-            }
+            ConditionalExpressionInfo info = SyntaxInfo.ConditionalExpressionInfo(conditionalExpression);
+
+            if (!info.Success)
+                return;
+
+            if (info.Condition.Kind() == SyntaxKind.ParenthesizedExpression)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.ParenthesizeConditionInConditionalExpression, info.Condition);
         }
 
         public static Task<Document> RefactorAsync(
@@ -37,10 +38,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             ConditionalExpressionSyntax newNode = conditionalExpression
                 .WithCondition(
-                    SyntaxFactory.ParenthesizedExpression(
-                        conditionalExpression.Condition.WithoutTrivia()
-                    ).WithTriviaFrom(conditionalExpression.Condition)
-                ).WithFormatterAnnotation();
+                    ParenthesizedExpression(conditionalExpression.Condition.WithoutTrivia())
+                        .WithTriviaFrom(conditionalExpression.Condition))
+                .WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(conditionalExpression, newNode, cancellationToken);
         }

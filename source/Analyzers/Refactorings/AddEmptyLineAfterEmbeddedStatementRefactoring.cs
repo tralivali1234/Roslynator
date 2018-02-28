@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -86,39 +85,44 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxToken token,
             StatementSyntax statement)
         {
-            if (!token.IsKind(SyntaxKind.None)
-                && !token.IsMissing
-                && statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) == false
-                && containingStatement.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
+            if (token.IsMissing)
+                return;
+
+            if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) != false)
+                return;
+
+            if (!containingStatement.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
+                return;
+
+            SyntaxNode parent = containingStatement.Parent;
+
+            if (parent?.Kind() != SyntaxKind.Block)
+                return;
+
+            var block = (BlockSyntax)parent;
+
+            SyntaxList<StatementSyntax> statements = block.Statements;
+
+            int index = statements.IndexOf(containingStatement);
+
+            if (index == statements.Count - 1)
+                return;
+
+            if (containingStatement
+                .SyntaxTree
+                .GetLineCount(TextSpan.FromBounds(statement.Span.End, statements[index + 1].SpanStart)) > 2)
             {
-                SyntaxNode parent = containingStatement.Parent;
-
-                if (parent?.Kind() == SyntaxKind.Block)
-                {
-                    var block = (BlockSyntax)parent;
-
-                    SyntaxList<StatementSyntax> statements = block.Statements;
-
-                    int index = statements.IndexOf(containingStatement);
-
-                    if (index < statements.Count - 1
-                        && containingStatement
-                            .SyntaxTree
-                            .GetLineCount(TextSpan.FromBounds(statement.Span.End, statements[index + 1].SpanStart)) <= 2)
-                    {
-                        SyntaxTrivia trivia = statement
-                            .GetTrailingTrivia()
-                            .FirstOrDefault(f => f.IsEndOfLineTrivia());
-
-                        if (trivia.IsEndOfLineTrivia())
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.AddEmptyLineAfterEmbeddedStatement,
-                                trivia);
-                        }
-                    }
-                }
+                return;
             }
+
+            SyntaxTrivia trivia = statement
+                .GetTrailingTrivia()
+                .FirstOrDefault(f => f.IsEndOfLineTrivia());
+
+            if (!trivia.IsEndOfLineTrivia())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddEmptyLineAfterEmbeddedStatement, trivia);
         }
 
         public static Task<Document> RefactorAsync(

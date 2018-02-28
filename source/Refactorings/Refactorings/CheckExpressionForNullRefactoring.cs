@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!localInfo.Success)
                 return false;
 
-            ExpressionSyntax value = localInfo.Initializer?.Value;
+            ExpressionSyntax value = localInfo.Value;
 
             if (value?.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression) != false)
                 return false;

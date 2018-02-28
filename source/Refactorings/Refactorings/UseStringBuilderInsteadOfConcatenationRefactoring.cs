@@ -85,14 +85,12 @@ namespace Roslynator.CSharp.Refactorings
                 LocalDeclarationStatement(VarType(), Identifier(name).WithRenameAnnotation(), ObjectCreationExpression(type, ArgumentList())).WithLeadingTrivia(statement.GetLeadingTrivia())
             };
 
-            ImmutableArray<ExpressionSyntax> expressions = concatenationInfo.Expressions;
-
             ExpressionSyntax newInvocation = null;
-            for (int i = 0; i < expressions.Length; i++)
+            foreach (ExpressionSyntax expression in concatenationInfo.Expressions())
             {
-                if (expressions[i].IsKind(SyntaxKind.InterpolatedStringExpression))
+                if (expression.IsKind(SyntaxKind.InterpolatedStringExpression))
                 {
-                    var interpolatedString = (InterpolatedStringExpressionSyntax)expressions[i];
+                    var interpolatedString = (InterpolatedStringExpressionSyntax)expression;
 
                     bool isVerbatim = interpolatedString.IsVerbatim();
 
@@ -113,7 +111,7 @@ namespace Roslynator.CSharp.Refactorings
                     newInvocation = SimpleMemberInvocationExpression(
                         newInvocation ?? stringBuilderName,
                         IdentifierName("Append"),
-                        Argument(expressions[i].WithoutTrivia()));
+                        Argument(expression.WithoutTrivia()));
                 }
             }
 

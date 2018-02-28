@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -17,30 +16,24 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax expression = invocationInfo.Expression;
 
-            if (expression.IsKind(SyntaxKind.InvocationExpression))
+            if (expression.Kind() != SyntaxKind.InvocationExpression)
+                return;
+
+            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo((InvocationExpressionSyntax)expression);
+
+            if (!invocationInfo2.Success)
+                return;
+
+            if (!StringUtility.Equals(invocationInfo2.NameText, "OrderBy", "OrderByDescending"))
+                return;
+
+            if (IsOrderByOrOrderByDescending(invocationInfo.InvocationExpression, context.SemanticModel, context.CancellationToken)
+                && IsOrderByOrOrderByDescending(invocationInfo2.InvocationExpression, context.SemanticModel, context.CancellationToken))
             {
-                MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo((InvocationExpressionSyntax)expression);
-
-                if (invocationInfo2.Success)
-                {
-                    switch (invocationInfo2.NameText)
-                    {
-                        case "OrderBy":
-                        case "OrderByDescending":
-                            {
-                                if (IsOrderByOrOrderByDescending(invocationInfo.InvocationExpression, context.SemanticModel, context.CancellationToken)
-                                    && IsOrderByOrOrderByDescending(invocationInfo2.InvocationExpression, context.SemanticModel, context.CancellationToken))
-                                {
-                                    context.ReportDiagnostic(
-                                        DiagnosticDescriptors.CallThenByInsteadOfOrderBy,
-                                        invocationInfo.Name,
-                                        (invocationInfo.NameText == "OrderByDescending") ? "Descending" : null);
-                                }
-
-                                break;
-                            }
-                    }
-                }
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.CallThenByInsteadOfOrderBy,
+                    invocationInfo.Name,
+                    (invocationInfo.NameText == "OrderByDescending") ? "Descending" : null);
             }
         }
 

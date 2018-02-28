@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using static Roslynator.CSharp.Refactorings.AddEmptyLineBetweenDeclarationsRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -23,22 +23,21 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(
-                AddEmptyLineBetweenDeclarationsRefactoring.AnalyzeMemberDeclaration,
-                SyntaxKind.ConstructorDeclaration,
-                SyntaxKind.DestructorDeclaration,
-                SyntaxKind.EventDeclaration,
-                SyntaxKind.PropertyDeclaration,
-                SyntaxKind.IndexerDeclaration,
-                SyntaxKind.MethodDeclaration,
-                SyntaxKind.ConversionOperatorDeclaration,
-                SyntaxKind.OperatorDeclaration,
-                SyntaxKind.EnumDeclaration,
-                SyntaxKind.InterfaceDeclaration,
-                SyntaxKind.StructDeclaration,
-                SyntaxKind.ClassDeclaration,
-                SyntaxKind.NamespaceDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeDestructorDeclaration, SyntaxKind.DestructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeEventDeclaration, SyntaxKind.EventDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeIndexerDeclaration, SyntaxKind.IndexerDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConversionOperatorDeclaration, SyntaxKind.ConversionOperatorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeOperatorDeclaration, SyntaxKind.OperatorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeEnumDeclaration, SyntaxKind.EnumDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeInterfaceDeclaration, SyntaxKind.InterfaceDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeStructDeclaration, SyntaxKind.StructDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeNamespaceDeclaration, SyntaxKind.NamespaceDeclaration);
         }
     }
 }

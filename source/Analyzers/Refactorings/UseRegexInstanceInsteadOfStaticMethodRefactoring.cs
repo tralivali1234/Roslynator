@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, context.CancellationToken);
 
-                        if (methodSymbol?.IsPublicStaticNonGeneric() == true
+                        if (SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol)
                             && methodSymbol.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
                         {
                             context.ReportDiagnostic(

@@ -12,15 +12,20 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class SimplifyNullableOfTRefactoring
     {
         public static void AnalyzeGenericName(SyntaxNodeAnalysisContext context)
         {
             var genericName = (GenericNameSyntax)context.Node;
 
-            if (genericName.IsParentKind(SyntaxKind.QualifiedName, SyntaxKind.UsingDirective, SyntaxKind.NameMemberCref))
+            if (genericName.IsParentKind(
+                SyntaxKind.QualifiedName,
+                SyntaxKind.UsingDirective,
+                SyntaxKind.NameMemberCref,
+                SyntaxKind.QualifiedCref))
+            {
                 return;
+            }
 
             if (IsWithinNameOfExpression(genericName, context.SemanticModel, context.CancellationToken))
                 return;
@@ -28,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
             if (genericName
                 .TypeArgumentList?
                 .Arguments
-                .SingleOrDefault(shouldthrow: false)?
+                .SingleOrDefault(shouldThrow: false)?
                 .IsKind(SyntaxKind.OmittedTypeArgument) != false)
             {
                 return;
@@ -47,7 +52,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var qualifiedName = (QualifiedNameSyntax)context.Node;
 
-            if (qualifiedName.IsParentKind(SyntaxKind.UsingDirective))
+            if (qualifiedName.IsParentKind(SyntaxKind.UsingDirective, SyntaxKind.QualifiedCref))
                 return;
 
             if (IsWithinNameOfExpression(qualifiedName, context.SemanticModel, context.CancellationToken))

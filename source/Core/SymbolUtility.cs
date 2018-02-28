@@ -8,23 +8,20 @@ namespace Roslynator
 {
     internal static class SymbolUtility
     {
-        public static bool Equals(ISymbol symbol, ISymbol symbol1, ISymbol symbol2)
+        public static bool IsPublicStaticNonGenericMethod(IMethodSymbol methodSymbol, string name = null)
         {
-            if (symbol == null)
-                return false;
-
-            return symbol.Equals(symbol1)
-                || symbol.Equals(symbol2);
+            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
+                && methodSymbol.IsStatic
+                && !methodSymbol.IsGenericMethod
+                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
-        public static bool Equals(ISymbol symbol, ISymbol symbol1, ISymbol symbol2, ISymbol symbol3)
+        public static bool IsPublicInstanceNonGenericMethod(IMethodSymbol methodSymbol, string name = null)
         {
-            if (symbol == null)
-                return false;
-
-            return symbol.Equals(symbol1)
-                || symbol.Equals(symbol2)
-                || symbol.Equals(symbol3);
+            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
+                && !methodSymbol.IsStatic
+                && !methodSymbol.IsGenericMethod
+                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
         public static bool IsEventHandlerMethod(IMethodSymbol methodSymbol, INamedTypeSymbol eventArgsSymbol)

@@ -13,7 +13,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantOverridingMemberRefactoring
     {
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)

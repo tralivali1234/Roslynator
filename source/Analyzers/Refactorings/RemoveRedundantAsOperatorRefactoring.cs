@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -18,25 +19,24 @@ namespace Roslynator.CSharp.Refactorings
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
-            ExpressionSyntax expression = binaryExpression.Left;
+            AsExpressionInfo info = SyntaxInfo.AsExpressionInfo(binaryExpression);
 
-            if (expression != null
-                && (binaryExpression.Right is TypeSyntax type))
-            {
-                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(type, context.CancellationToken);
+            if (!info.Success)
+                return;
 
-                if (typeSymbol?.IsErrorType() == false)
-                {
-                    Conversion conversion = context.SemanticModel.ClassifyConversion(expression, typeSymbol);
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(info.Type, context.CancellationToken);
 
-                    if (conversion.IsIdentity)
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.RemoveRedundantAsOperator,
-                            Location.Create(binaryExpression.SyntaxTree, TextSpan.FromBounds(binaryExpression.OperatorToken.SpanStart, type.Span.End)));
-                    }
-                }
-            }
+            if (typeSymbol?.IsErrorType() != false)
+                return;
+
+            Conversion conversion = context.SemanticModel.ClassifyConversion(info.Expression, typeSymbol);
+
+            if (!conversion.IsIdentity)
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.RemoveRedundantAsOperator,
+                Location.Create(binaryExpression.SyntaxTree, TextSpan.FromBounds(binaryExpression.OperatorToken.SpanStart, info.Type.Span.End)));
         }
 
         public static Task<Document> RefactorAsync(

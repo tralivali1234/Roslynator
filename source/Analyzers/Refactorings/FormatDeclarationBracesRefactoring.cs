@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -43,21 +42,22 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxToken openBrace,
             SyntaxToken closeBrace)
         {
-            if (!openBrace.IsMissing
-                && !closeBrace.IsMissing
-                && declaration.SyntaxTree.GetLineCount(TextSpan.FromBounds(openBrace.Span.End, closeBrace.SpanStart)) != 2)
-            {
-                TextSpan span = TextSpan.FromBounds(openBrace.Span.Start, closeBrace.Span.End);
+            if (openBrace.IsMissing)
+                return;
 
-                if (declaration
-                    .DescendantTrivia(span)
-                    .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.FormatDeclarationBraces,
-                        Location.Create(declaration.SyntaxTree, span));
-                }
-            }
+            if (closeBrace.IsMissing)
+                return;
+
+            if (declaration.SyntaxTree.GetLineCount(TextSpan.FromBounds(openBrace.Span.End, closeBrace.SpanStart)) == 2)
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.FormatDeclarationBraces, openBrace);
         }
 
         public static Task<Document> RefactorAsync(

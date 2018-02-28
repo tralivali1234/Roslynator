@@ -23,6 +23,8 @@ namespace Roslynator.CSharp.Analyzers.Tests
 
             x = string.Join(EmptyString, new object[] { "a", "b" });
 
+            //n
+
             x = string.Join("x", "a", "b");
         }
     }

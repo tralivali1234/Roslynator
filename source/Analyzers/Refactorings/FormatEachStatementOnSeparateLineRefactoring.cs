@@ -27,22 +27,22 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxList<StatementSyntax> statements)
         {
-            if (statements.Count > 1)
+            if (statements.Count <= 1)
+                return;
+
+            int previousEndLine = statements[0].GetSpanEndLine();
+
+            for (int i = 1; i < statements.Count; i++)
             {
-                int previousEndLine = statements[0].GetSpanEndLine();
+                StatementSyntax statement = statements[i];
 
-                for (int i = 1; i < statements.Count; i++)
+                if (!statement.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement)
+                    && statement.GetSpanStartLine() == previousEndLine)
                 {
-                    StatementSyntax statement = statements[i];
-
-                    if (!statement.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement)
-                        && statement.GetSpanStartLine() == previousEndLine)
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.FormatEachStatementOnSeparateLine, statement);
-                    }
-
-                    previousEndLine = statement.GetSpanEndLine();
+                    context.ReportDiagnostic(DiagnosticDescriptors.FormatEachStatementOnSeparateLine, statement);
                 }
+
+                previousEndLine = statement.GetSpanEndLine();
             }
         }
 

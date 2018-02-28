@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         public InlineMethodRefactoring(
             Document document,
-            InvocationExpressionSyntax node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             IMethodSymbol symbol,
             MethodDeclarationSyntax declaration,

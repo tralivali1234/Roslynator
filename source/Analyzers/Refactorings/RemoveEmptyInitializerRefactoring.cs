@@ -18,22 +18,26 @@ namespace Roslynator.CSharp.Refactorings
         {
             var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
 
-            if (!objectCreationExpression.ContainsDiagnostics)
-            {
-                TypeSyntax type = objectCreationExpression.Type;
+            if (objectCreationExpression.ContainsDiagnostics)
+                return;
 
-                if (type?.IsMissing == false)
-                {
-                    InitializerExpressionSyntax initializer = objectCreationExpression.Initializer;
+            TypeSyntax type = objectCreationExpression.Type;
 
-                    if (initializer?.Expressions.Any() == false
-                        && initializer.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                        && initializer.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyInitializer, initializer);
-                    }
-                }
-            }
+            if (type?.IsMissing != false)
+                return;
+
+            InitializerExpressionSyntax initializer = objectCreationExpression.Initializer;
+
+            if (initializer?.Expressions.Any() != false)
+                return;
+
+            if (!initializer.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!initializer.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyInitializer, initializer);
         }
 
         public static Task<Document> RefactorAsync(

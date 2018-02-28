@@ -13,37 +13,39 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AnalyzeNamespaceDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var declaration = (NamespaceDeclarationSyntax)context.Node;
+            var namespaceDeclaration = (NamespaceDeclarationSyntax)context.Node;
 
-            SyntaxList<UsingDirectiveSyntax> usings = declaration.Usings;
+            SyntaxList<UsingDirectiveSyntax> usings = namespaceDeclaration.Usings;
 
-            if (usings.Any())
+            if (!usings.Any())
+                return;
+
+            int count = usings.Count;
+
+            for (int i = 0; i < count; i++)
             {
-                for (int i = 0; i < usings.Count; i++)
+                if (usings[i].ContainsDiagnostics)
+                    return;
+
+                if (i == 0)
                 {
-                    if (usings[i].ContainsDiagnostics)
+                    if (usings[i].SpanOrTrailingTriviaContainsDirectives())
                         return;
-
-                    if (i == 0)
-                    {
-                        if (usings[i].SpanOrTrailingTriviaContainsDirectives())
-                            return;
-                    }
-                    else if (i == usings.Count - 1)
-                    {
-                        if (usings[i].SpanOrLeadingTriviaContainsDirectives())
-                            return;
-                    }
-                    else if (usings[i].ContainsDirectives)
-                    {
-                        return;
-                    }
                 }
-
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.DeclareUsingDirectiveOnTopLevel,
-                    Location.Create(declaration.SyntaxTree, usings.Span));
+                else if (i == count - 1)
+                {
+                    if (usings[i].SpanOrLeadingTriviaContainsDirectives())
+                        return;
+                }
+                else if (usings[i].ContainsDirectives)
+                {
+                    return;
+                }
             }
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.DeclareUsingDirectiveOnTopLevel,
+                Location.Create(namespaceDeclaration.SyntaxTree, usings.Span));
         }
 
         public static async Task<Document> RefactorAsync(

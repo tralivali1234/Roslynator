@@ -6,7 +6,7 @@ namespace Roslynator.CSharp.Refactorings.Tests
 {
     internal static class JoinStringExpressions
     {
-        public static void Foo(string s)
+        public static void Foo()
         {
             string s = "ab";
 

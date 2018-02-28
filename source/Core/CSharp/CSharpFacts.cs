@@ -26,32 +26,6 @@ namespace Roslynator.CSharp
             SyntaxKind.RightShiftAssignmentExpression
         });
 
-        //TODO: del
-        internal static ImmutableArray<SyntaxKind> BinaryExpressionKinds { get; } = ImmutableArray.CreateRange(new SyntaxKind[]
-        {
-            SyntaxKind.CoalesceExpression,
-            SyntaxKind.IsExpression,
-            SyntaxKind.AsExpression,
-            SyntaxKind.BitwiseOrExpression,
-            SyntaxKind.ExclusiveOrExpression,
-            SyntaxKind.BitwiseAndExpression,
-            SyntaxKind.EqualsExpression,
-            SyntaxKind.NotEqualsExpression,
-            SyntaxKind.LessThanExpression,
-            SyntaxKind.LessThanOrEqualExpression,
-            SyntaxKind.GreaterThanExpression,
-            SyntaxKind.GreaterThanOrEqualExpression,
-            SyntaxKind.LeftShiftExpression,
-            SyntaxKind.RightShiftExpression,
-            SyntaxKind.AddExpression,
-            SyntaxKind.SubtractExpression,
-            SyntaxKind.MultiplyExpression,
-            SyntaxKind.DivideExpression,
-            SyntaxKind.ModuloExpression,
-            SyntaxKind.LogicalAndExpression,
-            SyntaxKind.LogicalOrExpression
-        });
-
         internal static string GetTitle(SyntaxNode node)
         {
             switch (node.Kind())
@@ -712,6 +686,15 @@ namespace Roslynator.CSharp
             }
 
             return false;
+        }
+
+        //XTODO: new
+        public static bool IsSwitchLabel(SyntaxKind kind)
+        {
+            return kind.Is(
+                SyntaxKind.CasePatternSwitchLabel,
+                SyntaxKind.CaseSwitchLabel,
+                SyntaxKind.DefaultSwitchLabel);
         }
     }
 }

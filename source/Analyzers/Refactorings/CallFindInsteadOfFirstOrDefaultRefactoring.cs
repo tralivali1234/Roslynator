@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -15,13 +15,12 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(
             SyntaxNodeAnalysisContext context,
-            InvocationExpressionSyntax invocation,
-            MemberAccessExpressionSyntax memberAccess)
+            MemberInvocationExpressionInfo invocationInfo)
         {
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
+            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, cancellationToken).Symbol;
 
             if (methodSymbol == null)
                 return;
@@ -29,32 +28,19 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, semanticModel, "FirstOrDefault"))
                 return;
 
-            ExpressionSyntax expression = memberAccess.Expression;
-
-            if (expression == null)
-                return;
-
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);
 
             if (typeSymbol == null)
                 return;
 
-            if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
+            if (typeSymbol.Kind == SymbolKind.ArrayType
+                && ((IArrayTypeSymbol)typeSymbol).Rank == 1)
             {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
-                    memberAccess.Name);
+                context.ReportDiagnostic(DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault, invocationInfo.Name);
             }
-            else if (typeSymbol.IsArrayType())
+            else if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
             {
-                var arrayType = (IArrayTypeSymbol)typeSymbol;
-
-                if (arrayType.Rank == 1)
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault,
-                        memberAccess.Name);
-                }
+                context.ReportDiagnostic(DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault, invocationInfo.Name);
             }
         }
 
@@ -63,22 +49,13 @@ namespace Roslynator.CSharp.Refactorings
             InvocationExpressionSyntax invocation,
             CancellationToken cancellationToken)
         {
-            var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
-            ExpressionSyntax expression = memberAccess.Expression;
-            SimpleNameSyntax name = memberAccess.Name;
+            MemberInvocationExpressionInfo info = SyntaxInfo.MemberInvocationExpressionInfo(invocation);
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(info.Expression, cancellationToken);
 
-            if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
-            {
-                IdentifierNameSyntax newName = IdentifierName("Find").WithTriviaFrom(name);
-
-                return await document.ReplaceNodeAsync(name, newName, cancellationToken).ConfigureAwait(false);
-            }
-            else if (typeSymbol.IsArrayType()
-                && ((IArrayTypeSymbol)typeSymbol).Rank == 1)
+            if ((typeSymbol as IArrayTypeSymbol)?.Rank == 1)
             {
                 NameSyntax arrayName = ParseName("System.Array")
                     .WithLeadingTrivia(invocation.GetLeadingTrivia())
@@ -86,15 +63,15 @@ namespace Roslynator.CSharp.Refactorings
 
                 MemberAccessExpressionSyntax newMemberAccess = SimpleMemberAccessExpression(
                     arrayName,
-                    memberAccess.OperatorToken,
-                    IdentifierName("Find").WithTriviaFrom(name));
+                    info.OperatorToken,
+                    IdentifierName("Find").WithTriviaFrom(info.Name));
 
                 ArgumentListSyntax argumentList = invocation.ArgumentList;
 
                 InvocationExpressionSyntax newInvocation = InvocationExpression(
                     newMemberAccess,
                     ArgumentList(
-                        Argument(expression.WithoutTrivia()),
+                        Argument(info.Expression.WithoutTrivia()),
                         argumentList.Arguments.First()
                     ).WithTriviaFrom(argumentList));
 
@@ -102,8 +79,9 @@ namespace Roslynator.CSharp.Refactorings
             }
             else
             {
-                Debug.Fail(typeSymbol.ToString());
-                return document;
+                IdentifierNameSyntax newName = IdentifierName("Find").WithTriviaFrom(info.Name);
+
+                return await document.ReplaceNodeAsync(info.Name, newName, cancellationToken).ConfigureAwait(false);
             }
         }
     }

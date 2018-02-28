@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!context.Span.IsEmptyAndContainedInSpan(localInfo.EqualsToken))
                 return;
 
-            ExpressionSyntax value = localInfo.Initializer?.Value;
+            ExpressionSyntax value = localInfo.Value;
 
             if (value == null)
                 return;

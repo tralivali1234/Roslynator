@@ -27,87 +27,81 @@ namespace Roslynator.CSharp.Refactorings
             if (invocation.SpanContainsDirectives())
                 return;
 
-            if (!CanRefactor(invocation, debugSymbol, context.SemanticModel, context.CancellationToken))
+            ArgumentListSyntax argumentList = invocation.ArgumentList;
+
+            if (argumentList == null)
+                return;
+
+            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
+
+            if (arguments.Count < 1 || arguments.Count > 3)
+                return;
+
+            if (arguments[0].Expression?.Kind() != SyntaxKind.FalseLiteralExpression)
+                return;
+
+            IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocation, context.CancellationToken);
+
+            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Assert"))
+                return;
+
+            if (methodSymbol.ContainingType?.Equals(debugSymbol) != true)
+                return;
+
+            if (!methodSymbol.ReturnsVoid)
+                return;
+
+            ImmutableArray<IParameterSymbol> assertParameters = methodSymbol.Parameters;
+
+            int length = assertParameters.Length;
+
+            if (assertParameters[0].Type.SpecialType != SpecialType.System_Boolean)
+                return;
+
+            for (int i = 1; i < length; i++)
+            {
+                if (assertParameters[i].Type.SpecialType != SpecialType.System_String)
+                    return;
+            }
+
+            if (!ContainsFailMethod())
                 return;
 
             if (expression.Kind() != SyntaxKind.SimpleMemberAccessExpression
-                && context.SemanticModel
-                    .GetSpeculativeMethodSymbol(invocation.SpanStart, GetNewInvocation(invocation))?
+                && context.SemanticModel.GetSpeculativeMethodSymbol(invocation.SpanStart, GetNewInvocation(invocation))?
                     .ContainingType?
                     .Equals(debugSymbol) != true)
             {
                 return;
             }
 
-            SyntaxKind kind = expression.Kind();
-
-            if (kind == SyntaxKind.SimpleMemberAccessExpression)
+            if (expression.Kind() == SyntaxKind.SimpleMemberAccessExpression)
                 expression = ((MemberAccessExpressionSyntax)expression).Name;
 
-            Debug.Assert(expression.Kind() == SyntaxKind.IdentifierName, kind.ToString());
+            Debug.Assert(expression.Kind() == SyntaxKind.IdentifierName, expression.Kind().ToString());
 
             context.ReportDiagnostic(DiagnosticDescriptors.CallDebugFailInsteadOfDebugAssert, expression);
-        }
 
-        public static bool CanRefactor(
-            InvocationExpressionSyntax invocation,
-            INamedTypeSymbol debugSymbol,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-        {
-            ArgumentListSyntax argumentList = invocation.ArgumentList;
-
-            if (argumentList == null)
-                return false;
-
-            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
-
-            if (arguments.Count >= 1
-                && arguments.Count <= 3
-                && arguments[0].Expression?.Kind() == SyntaxKind.FalseLiteralExpression)
+            bool ContainsFailMethod()
             {
-                IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
-
-                if (methodSymbol?.ContainingType?.Equals(debugSymbol) == true
-                    && methodSymbol.IsPublicStaticNonGeneric("Assert")
-                    && methodSymbol.ReturnsVoid)
+                foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers("Fail"))
                 {
-                    ImmutableArray<IParameterSymbol> assertParameters = methodSymbol.Parameters;
-
-                    int length = assertParameters.Length;
-
-                    if (assertParameters[0].Type.IsBoolean())
+                    if (symbol is IMethodSymbol failMethodSymbol
+                        && SymbolUtility.IsPublicStaticNonGenericMethod(failMethodSymbol)
+                        && failMethodSymbol.ReturnsVoid)
                     {
-                        for (int i = 1; i < length; i++)
+                        ImmutableArray<IParameterSymbol> failParameters = failMethodSymbol.Parameters;
+
+                        if (failParameters.Length == ((length == 1) ? 1 : length - 1)
+                            && failParameters.All(f => f.Type.SpecialType == SpecialType.System_String))
                         {
-                            if (!assertParameters[i].Type.IsString())
-                                return false;
-                        }
-
-                        int parameterCount = (length == 1) ? 1 : length - 1;
-
-                        foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers("Fail"))
-                        {
-                            if (symbol is IMethodSymbol failMethodSymbol
-                                && failMethodSymbol.IsPublic()
-                                && failMethodSymbol.IsStatic
-                                && failMethodSymbol.ReturnsVoid
-                                && !failMethodSymbol.IsGenericMethod)
-                            {
-                                ImmutableArray<IParameterSymbol> failParameters = failMethodSymbol.Parameters;
-
-                                if (failParameters.Length == parameterCount
-                                    && failParameters.All(f => f.Type.IsString()))
-                                {
-                                    return true;
-                                }
-                            }
+                            return true;
                         }
                     }
                 }
-            }
 
-            return false;
+                return false;
+            }
         }
 
         public static Task<Document> RefactorAsync(

@@ -26,37 +26,16 @@ namespace Roslynator.CSharp
     {
         #region AccessorDeclarationSyntax
         /// <summary>
-        /// Returns true if the specified accessor is auto-implemented get accessor.
+        /// Returns true is the specified accessor is auto-implemented accessor.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
-        public static bool IsAutoGetter(this AccessorDeclarationSyntax accessorDeclaration)
-        {
-            return IsAutoAccessor(accessorDeclaration, SyntaxKind.GetAccessorDeclaration);
-        }
-
-        /// <summary>
-        /// Returns true is the specified accessor is auto-implemented set accessor.
-        /// </summary>
-        /// <param name="accessorDeclaration"></param>
-        /// <returns></returns>
-        public static bool IsAutoSetter(this AccessorDeclarationSyntax accessorDeclaration)
-        {
-            return IsAutoAccessor(accessorDeclaration, SyntaxKind.SetAccessorDeclaration);
-        }
-
-        private static bool IsAutoAccessor(this AccessorDeclarationSyntax accessorDeclaration, SyntaxKind kind)
+        public static bool IsAutoImplemented(this AccessorDeclarationSyntax accessorDeclaration)
         {
             if (accessorDeclaration == null)
                 throw new ArgumentNullException(nameof(accessorDeclaration));
 
-            return accessorDeclaration.IsKind(kind)
-                && IsAutoAccessor(accessorDeclaration);
-        }
-
-        internal static bool IsAutoAccessor(this AccessorDeclarationSyntax accessorDeclaration)
-        {
-            return accessorDeclaration.SemicolonToken.IsKind(SyntaxKind.SemicolonToken)
+            return accessorDeclaration.SemicolonToken.Kind() == SyntaxKind.SemicolonToken
                 && accessorDeclaration.BodyOrExpressionBody() == null;
         }
 
@@ -631,9 +610,9 @@ namespace Roslynator.CSharp
         /// </summary>
         /// <param name="endRegionDirective"></param>
         /// <returns></returns>
-        public static bool HasPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
+        internal static bool HasPreprocessingMessageTrivia(this EndRegionDirectiveTriviaSyntax endRegionDirective)
         {
-            return GetPreprocessingMessageTrivia(endRegionDirective).IsKind(SyntaxKind.PreprocessingMessageTrivia);
+            return GetPreprocessingMessageTrivia(endRegionDirective).Kind() == SyntaxKind.PreprocessingMessageTrivia;
         }
         #endregion EndRegionDirectiveTriviaSyntax
 
@@ -674,13 +653,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static ExpressionSyntax WalkUpParentheses(this ExpressionSyntax expression)
         {
-            if (expression == null)
-                throw new ArgumentNullException(nameof(expression));
-
-            while (expression.Parent?.Kind() == SyntaxKind.ParenthesizedExpression)
-                expression = (ParenthesizedExpressionSyntax)expression.Parent;
-
-            return expression;
+            return WalkUp(expression, SyntaxKind.ParenthesizedExpression);
         }
 
         /// <summary>
@@ -1322,16 +1295,6 @@ namespace Roslynator.CSharp
                 methodDeclaration.ParameterList?.Span.End ?? methodDeclaration.Identifier.Span.End);
         }
 
-        internal static bool ContainsAwait(this MethodDeclarationSyntax methodDeclaration)
-        {
-            if (methodDeclaration == null)
-                throw new ArgumentNullException(nameof(methodDeclaration));
-
-            return methodDeclaration
-                .DescendantNodes(node => !CSharpFacts.IsNestedMethod(node.Kind()))
-                .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
-        }
-
         /// <summary>
         /// Returns method body or an expression body if the body is null.
         /// </summary>
@@ -1550,9 +1513,9 @@ namespace Roslynator.CSharp
         /// </summary>
         /// <param name="regionDirective"></param>
         /// <returns></returns>
-        public static bool HasPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)
+        internal static bool HasPreprocessingMessageTrivia(this RegionDirectiveTriviaSyntax regionDirective)
         {
-            return GetPreprocessingMessageTrivia(regionDirective).IsKind(SyntaxKind.PreprocessingMessageTrivia);
+            return GetPreprocessingMessageTrivia(regionDirective).Kind() == SyntaxKind.PreprocessingMessageTrivia;
         }
         #endregion RegionDirectiveTriviaSyntax
 
@@ -1652,6 +1615,52 @@ namespace Roslynator.CSharp
                 GetEndIndex(list.Last(), includeExteriorTrivia, trim));
 
             return tree.IsMultiLineSpan(span, cancellationToken);
+        }
+
+        internal static SyntaxList<TNode> ReplaceRangeAt<TNode>(
+            this SeparatedSyntaxList<TNode> list,
+            int startIndex,
+            int count,
+            IEnumerable<TNode> newNodes) where TNode : SyntaxNode
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
+
+            if (count < 0
+                || startIndex + count > list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "");
+            }
+
+            return List(ReplaceRange());
+
+            IEnumerable<TNode> ReplaceRange()
+            {
+                SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
+
+                int i = 0;
+
+                while (i < startIndex
+                    && en.MoveNext())
+                {
+                    yield return en.Current;
+                    i++;
+                }
+
+                int endIndex = startIndex + count;
+
+                while (i < endIndex
+                    && en.MoveNext())
+                {
+                    i++;
+                }
+
+                foreach (TNode newNode in newNodes)
+                    yield return newNode;
+
+                while (en.MoveNext())
+                    yield return en.Current;
+            }
         }
         #endregion SeparatedSyntaxList<T>
 
@@ -2037,6 +2046,52 @@ namespace Roslynator.CSharp
             }
 
             return statements.Insert(index, statement);
+        }
+
+        internal static SyntaxList<TNode> ReplaceRangeAt<TNode>(
+            this SyntaxList<TNode> list,
+            int startIndex,
+            int count,
+            IEnumerable<TNode> newNodes) where TNode : SyntaxNode
+        {
+            if (startIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(startIndex), startIndex, "");
+
+            if (count < 0
+                || startIndex + count > list.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "");
+            }
+
+            return List(ReplaceRange());
+
+            IEnumerable<TNode> ReplaceRange()
+            {
+                SyntaxList<TNode>.Enumerator en = list.GetEnumerator();
+
+                int i = 0;
+
+                while (i < startIndex
+                    && en.MoveNext())
+                {
+                    yield return en.Current;
+                    i++;
+                }
+
+                int endIndex = startIndex + count;
+
+                while (i < endIndex
+                    && en.MoveNext())
+                {
+                    i++;
+                }
+
+                foreach (TNode newNode in newNodes)
+                    yield return newNode;
+
+                while (en.MoveNext())
+                    yield return en.Current;
+            }
         }
         #endregion SyntaxList<T>
 
@@ -2824,6 +2879,23 @@ namespace Roslynator.CSharp
             SyntaxTrivia trivia = GetIndentation(node, cancellationToken);
 
             return IncreaseIndentation(trivia);
+        }
+
+        //TODO: new
+        internal static SyntaxNode WalkUp(this SyntaxNode node, SyntaxKind kind)
+        {
+            while (node.Parent?.Kind() == kind)
+                node = node.Parent;
+
+            return node;
+        }
+
+        internal static TNode WalkUp<TNode>(this TNode node, SyntaxKind kind) where TNode : SyntaxNode
+        {
+            while (node.Parent?.Kind() == kind)
+                node = (TNode)node.Parent;
+
+            return node;
         }
         #endregion SyntaxNode
 

@@ -12,7 +12,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantDelegateCreationRefactoring
     {
         public static void AnalyzeAssignmentExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol eventHandler, INamedTypeSymbol eventHandlerOfT)
@@ -37,13 +36,19 @@ namespace Roslynator.CSharp.Refactorings
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(objectCreation, cancellationToken);
 
-            if (!SymbolUtility.Equals(typeSymbol, eventHandler, eventHandlerOfT))
+            if (typeSymbol == null)
                 return;
+
+            if (!typeSymbol.Equals(eventHandler)
+                && !typeSymbol.IsConstructedFrom(eventHandlerOfT))
+            {
+                return;
+            }
 
             ExpressionSyntax expression = objectCreation
                 .ArgumentList?
                 .Arguments
-                .SingleOrDefault(shouldthrow: false)?
+                .SingleOrDefault(shouldThrow: false)?
                 .Expression;
 
             if (expression == null)

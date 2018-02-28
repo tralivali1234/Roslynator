@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
 
-            return accessorList?.Getter()?.IsAutoGetter() == true
+            return accessorList?.Getter()?.IsAutoImplemented() == true
                 && accessorList.Setter() == null;
         }
 

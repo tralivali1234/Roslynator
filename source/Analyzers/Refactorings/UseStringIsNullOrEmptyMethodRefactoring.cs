@@ -15,7 +15,6 @@ using static Roslynator.CSharp.CSharpTypeFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseStringIsNullOrEmptyMethodRefactoring
     {
         public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
@@ -37,10 +36,10 @@ namespace Roslynator.CSharp.Refactorings
 
             if (kind == SyntaxKind.LogicalOrExpression)
             {
-                if (info.Left.IsKind(SyntaxKind.EqualsExpression)
+                if (info.Left.IsKind(SyntaxKind.EqualsExpression, SyntaxKind.IsPatternExpression)
                     && info.Right.IsKind(SyntaxKind.EqualsExpression)
                     && CanRefactor(
-                        (BinaryExpressionSyntax)info.Left,
+                        info.Left,
                         (BinaryExpressionSyntax)info.Right,
                         context.SemanticModel,
                         context.CancellationToken))
@@ -50,10 +49,10 @@ namespace Roslynator.CSharp.Refactorings
             }
             else if (kind == SyntaxKind.LogicalAndExpression)
             {
-                if (info.Left.IsKind(SyntaxKind.NotEqualsExpression)
+                if (info.Left.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.LogicalNotExpression)
                     && info.Right.IsKind(SyntaxKind.NotEqualsExpression, SyntaxKind.GreaterThanExpression)
                     && CanRefactor(
-                        (BinaryExpressionSyntax)info.Left,
+                        info.Left,
                         (BinaryExpressionSyntax)info.Right,
                         context.SemanticModel,
                         context.CancellationToken))
@@ -65,7 +64,7 @@ namespace Roslynator.CSharp.Refactorings
 
         //XTODO: opt
         private static bool CanRefactor(
-            BinaryExpressionSyntax left,
+            ExpressionSyntax left,
             BinaryExpressionSyntax right,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))

@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax value = forStatement
                 .Declaration?
                 .Variables
-                .SingleOrDefault(shouldthrow: false)?
+                .SingleOrDefault(shouldThrow: false)?
                 .Initializer?
                 .Value;
 

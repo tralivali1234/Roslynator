@@ -83,8 +83,10 @@ namespace Roslynator.CSharp.Refactorings
                                 }
                             case SyntaxKind.AddExpression:
                                 {
-                                    StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo((BinaryExpressionSyntax)expression, context.SemanticModel, context.CancellationToken);
-                                    if (concatenationInfo.Success)
+                                    BinaryExpressionInfo binaryExpressionInfo = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)expression);
+
+                                    if (binaryExpressionInfo.Success
+                                        && binaryExpressionInfo.IsStringConcatenation(context.SemanticModel, context.CancellationToken))
                                     {
                                         context.ReportDiagnostic(DiagnosticDescriptors.OptimizeStringBuilderAppendCall, argument, methodSymbol.Name);
                                         return;

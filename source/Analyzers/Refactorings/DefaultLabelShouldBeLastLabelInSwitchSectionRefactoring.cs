@@ -19,19 +19,28 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
 
-            for (int i = 0; i < labels.Count - 1; i++)
+            int count = labels.Count;
+
+            if (count <= 1)
+                return;
+
+            SwitchLabelSyntax lastLabel = labels.Last();
+
+            for (int i = 0; i < count - 1; i++)
             {
                 SwitchLabelSyntax label = labels[i];
 
-                if (label.IsKind(SyntaxKind.DefaultSwitchLabel))
+                if (label.Kind() == SyntaxKind.DefaultSwitchLabel)
                 {
-                    TextSpan span = TextSpan.FromBounds(label.Span.End, labels.Last().Span.Start);
+                    TextSpan span = TextSpan.FromBounds(label.Span.End, lastLabel.Span.Start);
 
                     if (!switchSection.ContainsDirectives(span))
                     {
                         context.ReportDiagnostic(
                             DiagnosticDescriptors.DefaultLabelShouldBeLastLabelInSwitchSection,
                             label);
+
+                        break;
                     }
                 }
             }

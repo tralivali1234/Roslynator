@@ -2033,8 +2033,8 @@ namespace Foo
   </Analyzer>
   <Analyzer Identifier="DefaultLabelShouldBeLastLabelInSwitchSection">
     <Id>RCS1099</Id>
-    <Title>Default label should be last label in switch section.</Title>
-    <MessageFormat>Move default label to last position in switch section.</MessageFormat>
+    <Title>Default label should be the last label in a switch section.</Title>
+    <MessageFormat>Move default label to the last position in a switch section.</MessageFormat>
     <Category>Readability</Category>
     <DefaultSeverity>Info</DefaultSeverity>
     <IsEnabledByDefault>true</IsEnabledByDefault>
@@ -3513,8 +3513,8 @@ public abstract class Foo : IFoo
   </Analyzer>
   <Analyzer Identifier="UseIsOperatorInsteadOfAsOperator">
     <Id>RCS1172</Id>
-    <Title>Use is operator instead of as operator.</Title>
-    <MessageFormat>Use is operator instead of as operator.</MessageFormat>
+    <Title>Use 'is' operator instead of 'as' operator.</Title>
+    <MessageFormat>Use 'is' operator instead of 'as' operator.</MessageFormat>
     <Category>Simplification</Category>
     <DefaultSeverity>Warning</DefaultSeverity>
     <IsEnabledByDefault>true</IsEnabledByDefault>

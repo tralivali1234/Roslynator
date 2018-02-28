@@ -12,7 +12,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantStringToCharArrayCallRefactoring
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
@@ -51,10 +50,10 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
 
-            if (methodSymbol?.ContainingType?.SpecialType != SpecialType.System_String)
+            if (!SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, "ToCharArray"))
                 return false;
 
-            if (!methodSymbol.IsPublicInstanceNonGeneric("ToCharArray"))
+            if (methodSymbol.ContainingType?.SpecialType != SpecialType.System_String)
                 return false;
 
             if (methodSymbol.Parameters.Any())

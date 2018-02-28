@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //XTODO: ?
     internal static class RemoveRedundantCallRefactoring
     {
         public static Task<Document> RefactorAsync(

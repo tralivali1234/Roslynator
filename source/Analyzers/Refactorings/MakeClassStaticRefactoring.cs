@@ -16,15 +16,23 @@ namespace Roslynator.CSharp.Refactorings
         {
             var symbol = (INamedTypeSymbol)context.Symbol;
 
-            if (symbol.TypeKind != TypeKind.Class
-                || symbol.IsStatic
-                || symbol.IsAbstract
-                || symbol.IsImplicitClass
-                || symbol.IsImplicitlyDeclared
-                || symbol.BaseType?.IsObject() != true)
-            {
+            if (symbol.TypeKind != TypeKind.Class)
                 return;
-            }
+
+            if (symbol.IsStatic)
+                return;
+
+            if (symbol.IsAbstract)
+                return;
+
+            if (symbol.IsImplicitClass)
+                return;
+
+            if (symbol.IsImplicitlyDeclared)
+                return;
+
+            if (symbol.BaseType?.IsObject() != true)
+                return;
 
             var syntaxReferences = default(ImmutableArray<SyntaxReference>);
 
@@ -58,11 +66,16 @@ namespace Roslynator.CSharp.Refactorings
         {
             ImmutableArray<ISymbol> members = symbol.GetMembers();
 
-            if (members.All(f => f.IsImplicitlyDeclared))
+            if (!members.Any())
                 return false;
+
+            bool areAllImplicitlyDeclared = true;
 
             foreach (ISymbol memberSymbol in members)
             {
+                if (!memberSymbol.IsImplicitlyDeclared)
+                    areAllImplicitlyDeclared = false;
+
                 switch (memberSymbol.Kind)
                 {
                     case SymbolKind.ErrorType:
@@ -128,7 +141,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            return true;
+            return !areAllImplicitlyDeclared;
         }
     }
 }

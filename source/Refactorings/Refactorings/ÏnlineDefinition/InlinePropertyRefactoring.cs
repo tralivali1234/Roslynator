@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         public InlinePropertyRefactoring(
             Document document,
-            IdentifierNameSyntax node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             IPropertySymbol symbol,
             PropertyDeclarationSyntax declaration,

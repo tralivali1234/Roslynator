@@ -15,7 +15,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseConditionalAccessRefactoring
     {
         public static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context, INamedTypeSymbol expressionType)
@@ -139,7 +138,7 @@ namespace Roslynator.CSharp.Refactorings
                         return ((BinaryExpressionSyntax)expression)
                             .Right?
                             .WalkDownParentheses()
-                            .IsKind(SyntaxKind.NullLiteralExpression) == true;
+                            .Kind() == SyntaxKind.NullLiteralExpression;
                     }
                 case SyntaxKind.SimpleMemberAccessExpression:
                 case SyntaxKind.InvocationExpression:

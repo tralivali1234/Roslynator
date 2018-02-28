@@ -151,7 +151,17 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             {
                 var memberAccess = (MemberAccessExpressionSyntax)node.Expression;
 
-                var parameterInfo = new ParameterInfo(symbol.ReducedFrom.Parameters[0], memberAccess.Expression.TrimTrivia(), isThis: true);
+                ExpressionSyntax expression = memberAccess.Expression;
+
+                SyntaxNode nodeIncludingConditionalAccess = node.WalkUp(SyntaxKind.ConditionalAccessExpression);
+
+                if (nodeIncludingConditionalAccess != node)
+                {
+                    int startIndex = expression.Span.End - nodeIncludingConditionalAccess.SpanStart;
+                    expression = SyntaxFactory.ParseExpression(nodeIncludingConditionalAccess.ToString().Remove(startIndex));
+                }
+
+                var parameterInfo = new ParameterInfo(symbol.ReducedFrom.Parameters[0], expression.TrimTrivia(), isThis: true);
 
                 (parameterInfos ?? (parameterInfos = new List<ParameterInfo>())).Add(parameterInfo);
             }
@@ -189,7 +199,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
 
         protected override InlineRefactoring<InvocationExpressionSyntax, MethodDeclarationSyntax, IMethodSymbol> CreateRefactoring(
             Document document,
-            InvocationExpressionSyntax node,
+            SyntaxNode node,
             INamedTypeSymbol nodeEnclosingType,
             IMethodSymbol symbol,
             MethodDeclarationSyntax declaration,

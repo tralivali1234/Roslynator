@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.ComponentModel;
 
 namespace Roslynator.CSharp.Analyzers.Tests
 {
@@ -17,7 +16,6 @@ namespace Roslynator.CSharp.Analyzers.Tests
 
             protected virtual void OnChanged(object sender, EventArgs e)
             {
-                throw new NotImplementedException();
             }
 
             public event EventHandler Changed;
@@ -32,17 +30,17 @@ namespace Roslynator.CSharp.Analyzers.Tests
         {
             public void Bar()
             {
-                Changed += new EventHandler<CancelEventArgs>(OnChanged);
-                Changed -= new EventHandler<CancelEventArgs>(OnChanged);
+                Changed += new EventHandler<ConsoleCancelEventArgs>(OnChanged);
+                Changed -= new EventHandler<ConsoleCancelEventArgs>(OnChanged);
             }
 
-            protected virtual void OnChanged(object sender, CancelEventArgs e)
+            protected virtual void OnChanged(object sender, ConsoleCancelEventArgs e)
             {
             }
 
-            public event EventHandler<CancelEventArgs> Changed;
+            public event EventHandler<ConsoleCancelEventArgs> Changed;
 
-            protected virtual void OnEventName(CancelEventArgs e)
+            protected virtual void OnEventName(ConsoleCancelEventArgs e)
             {
                 Changed?.Invoke(this, e);
             }

@@ -23,9 +23,15 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSymbolAction(
-                ImplementExceptionConstructorsRefactoring.AnalyzeNamedType,
-                SymbolKind.NamedType);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol exceptionSymbol = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_Exception);
+
+                if (exceptionSymbol == null)
+                    return;
+
+                startContext.RegisterSymbolAction(f => ImplementExceptionConstructorsRefactoring.AnalyzeNamedType(f, exceptionSymbol), SymbolKind.NamedType);
+            });
         }
     }
 }

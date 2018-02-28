@@ -489,22 +489,6 @@ namespace Roslynator
                 .GetSyntax(cancellationToken);
         }
 
-        internal static bool TryGetSyntax<TNode>(this ISymbol symbol, out TNode node, CancellationToken cancellationToken = default(CancellationToken)) where TNode : SyntaxNode
-        {
-            ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
-
-            if (syntaxReferences.Any())
-            {
-                node = syntaxReferences[0].GetSyntax(cancellationToken) as TNode;
-
-                if (node != null)
-                    return true;
-            }
-
-            node = null;
-            return false;
-        }
-
         /// <summary>
         /// Get a value indicating whether the symbol has any attribute.
         /// </summary>
@@ -1035,23 +1019,6 @@ namespace Roslynator
         internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)
         {
             return methodSymbol?.ReturnType.SpecialType == specialType;
-        }
-
-        //TODO: csharputility
-        internal static bool IsPublicStaticNonGeneric(this IMethodSymbol methodSymbol, string name = null)
-        {
-            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
-                && methodSymbol.IsStatic
-                && !methodSymbol.IsGenericMethod
-                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
-        }
-
-        internal static bool IsPublicInstanceNonGeneric(this IMethodSymbol methodSymbol, string name = null)
-        {
-            return methodSymbol?.DeclaredAccessibility == Accessibility.Public
-                && !methodSymbol.IsStatic
-                && !methodSymbol.IsGenericMethod
-                && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
         internal static bool HasSingleParameter(this IMethodSymbol methodSymbol, SpecialType parameterType)
@@ -1598,22 +1565,8 @@ namespace Roslynator
 
         internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            return IsEnumWithFlags(typeSymbol, semanticModel.Compilation);
-        }
-
-        internal static bool IsEnumWithFlags(this ITypeSymbol typeSymbol, Compilation compilation)
-        {
-            if (typeSymbol == null)
-                throw new ArgumentNullException(nameof(typeSymbol));
-
-            if (compilation == null)
-                throw new ArgumentNullException(nameof(compilation));
-
-            return typeSymbol.IsEnum()
-                && typeSymbol.HasAttribute(compilation.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
+            return typeSymbol?.TypeKind == TypeKind.Enum
+                && typeSymbol.HasAttribute(semanticModel.GetTypeByMetadataName(MetadataNames.System_FlagsAttribute));
         }
 
         /// <summary>

@@ -16,65 +16,74 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AddExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
             var addExpression = (BinaryExpressionSyntax)context.Node;
+
+            if (addExpression.ContainsDiagnostics)
+                return;
 
             IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(addExpression, context.CancellationToken);
 
-            if (methodSymbol?.MethodKind == MethodKind.BuiltinOperator
-                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
-                && methodSymbol.IsContainingType(SpecialType.System_String))
+            if (!SymbolUtility.IsStringAdditionOperator(methodSymbol))
+                return;
+
+            ExpressionSyntax expression = GetObjectExpression()?.WalkDownParentheses();
+
+            if (expression == null)
+                return;
+
+            if (expression.Kind() == SyntaxKind.AddExpression)
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(expression, context.CancellationToken);
+
+            if (typeSymbol?.IsValueType != true)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AvoidBoxingOfValueType, expression);
+
+            ExpressionSyntax GetObjectExpression()
             {
                 ImmutableArray<IParameterSymbol> parameters = methodSymbol.Parameters;
 
-                if (parameters[0].Type.IsObject())
+                if (parameters[0].Type.SpecialType == SpecialType.System_Object)
                 {
-                    Analyze(context, addExpression.Left);
+                    return addExpression.Left;
                 }
-                else if (parameters[1].Type.IsObject())
+                else if (parameters[1].Type.SpecialType == SpecialType.System_Object)
                 {
-                    Analyze(context, addExpression.Right);
+                    return addExpression.Right;
+                }
+                else
+                {
+                    return null;
                 }
             }
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression)
+        public static void AnalyzeInterpolation(SyntaxNodeAnalysisContext context)
         {
-            expression = expression.WalkDownParentheses();
-
-            if (!expression.IsKind(SyntaxKind.AddExpression))
-            {
-                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(expression, context.CancellationToken);
-
-                if (typeSymbol?.IsValueType == true)
-                    context.ReportDiagnostic(DiagnosticDescriptors.AvoidBoxingOfValueType, expression);
-            }
-        }
-
-        public static void Interpolation(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
             var interpolation = (InterpolationSyntax)context.Node;
 
-            if (interpolation.AlignmentClause == null
-                && interpolation.FormatClause == null)
-            {
-                ExpressionSyntax expression = interpolation.Expression;
+            if (interpolation.ContainsDiagnostics)
+                return;
 
-                if (expression != null)
-                {
-                    expression = expression.WalkDownParentheses();
+            if (interpolation.AlignmentClause != null)
+                return;
 
-                    ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(expression, context.CancellationToken);
+            if (interpolation.FormatClause != null)
+                return;
 
-                    if (typeSymbol?.IsValueType == true)
-                        context.ReportDiagnostic(DiagnosticDescriptors.AvoidBoxingOfValueType, expression);
-                }
-            }
+            ExpressionSyntax expression = interpolation.Expression?.WalkDownParentheses();
+
+            if (expression == null)
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(expression, context.CancellationToken);
+
+            if (typeSymbol?.IsValueType != true)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AvoidBoxingOfValueType, expression);
         }
 
         public static async Task<Document> RefactorAsync(
@@ -84,7 +93,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ExpressionSyntax newNode = null;
 
-            if (expression.IsKind(SyntaxKind.CharacterLiteralExpression))
+            if (expression.Kind() == SyntaxKind.CharacterLiteralExpression)
             {
                 var literalExpression = (LiteralExpressionSyntax)expression;
 

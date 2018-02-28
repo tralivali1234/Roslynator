@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -18,25 +17,21 @@ namespace Roslynator.CSharp.Refactorings
         {
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
-            ExpressionSyntax left = binaryExpression.Left;
-            ExpressionSyntax right = binaryExpression.Right;
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(binaryExpression);
 
-            if (left?.IsMissing != false)
-                return;
-
-            if (right?.IsMissing != false)
+            if (!info.Success)
                 return;
 
             if (CSharpUtility.IsStringConcatenation(binaryExpression, context.SemanticModel, context.CancellationToken))
                 return;
 
-            if (!left.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
+            if (!info.Left.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
                 return;
 
             if (!CheckOperatorTrailingTrivia(binaryExpression.OperatorToken.TrailingTrivia))
                 return;
 
-            if (!right.GetLeadingTrivia().IsEmptyOrWhitespace())
+            if (!info.Right.GetLeadingTrivia().IsEmptyOrWhitespace())
                 return;
 
             context.ReportDiagnostic(

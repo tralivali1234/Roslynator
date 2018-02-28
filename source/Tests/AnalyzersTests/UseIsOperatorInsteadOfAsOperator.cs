@@ -15,11 +15,11 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 if (x as string == null) { }
                 if ((x as string) == null) { }
 
-                if (x as string != null) { }
-                if ((x as string) != null) { }
-
                 if (x as string is null) { }
                 if ((x as string) is null) { }
+
+                if (x as string != null) { }
+                if ((x as string) != null) { }
             }
         }
     }

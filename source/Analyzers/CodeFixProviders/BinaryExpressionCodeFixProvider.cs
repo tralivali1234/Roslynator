@@ -33,7 +33,6 @@ namespace Roslynator.CSharp.CodeFixes
                     DiagnosticIdentifiers.UseStringLengthInsteadOfComparisonWithEmptyString,
                     DiagnosticIdentifiers.UnconstrainedTypeParameterCheckedForNull,
                     DiagnosticIdentifiers.ValueTypeObjectIsNeverEqualToNull,
-                    DiagnosticIdentifiers.UseIsOperatorInsteadOfAsOperator,
                     DiagnosticIdentifiers.JoinStringExpressions,
                     DiagnosticIdentifiers.UseExclusiveOrOperator,
                     DiagnosticIdentifiers.SimplifyBooleanExpression,
@@ -168,16 +167,6 @@ namespace Roslynator.CSharp.CodeFixes
                             CodeAction codeAction = CodeAction.Create(
                                 title,
                                 cancellationToken => ValueTypeObjectIsNeverEqualToNullRefactoring.RefactorAsync(context.Document, binaryExpression, typeSymbol, cancellationToken),
-                                GetEquivalenceKey(diagnostic));
-
-                            context.RegisterCodeFix(codeAction, diagnostic);
-                            break;
-                        }
-                    case DiagnosticIdentifiers.UseIsOperatorInsteadOfAsOperator:
-                        {
-                            CodeAction codeAction = CodeAction.Create(
-                                "Use is operator",
-                                cancellationToken => UseIsOperatorInsteadOfAsOperatorRefactoring.RefactorAsync(context.Document, binaryExpression, cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 
                             context.RegisterCodeFix(codeAction, diagnostic);

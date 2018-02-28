@@ -10,6 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //XTODO: OpenBraceToken, CloseBraceToken
     /// <summary>
     /// Provides information about a list of member declarations.
     /// </summary>

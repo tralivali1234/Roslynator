@@ -20,27 +20,27 @@ namespace Roslynator.CSharp.Refactorings
 
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
 
-            if (members.Count > 1)
+            if (members.Count <= 1)
+                return;
+
+            int previousIndex = members[0].GetSpanStartLine();
+
+            for (int i = 1; i < members.Count; i++)
             {
-                int previousIndex = members[0].GetSpanStartLine();
-
-                for (int i = 1; i < members.Count; i++)
+                if (members[i].GetSpanStartLine() == previousIndex)
                 {
-                    if (members[i].GetSpanStartLine() == previousIndex)
-                    {
-                        TextSpan span = TextSpan.FromBounds(
-                            members.First().Span.Start,
-                            members.Last().Span.End);
+                    TextSpan span = TextSpan.FromBounds(
+                        members.First().Span.Start,
+                        members.Last().Span.End);
 
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.FormatEachEnumMemberOnSeparateLine,
-                            Location.Create(enumDeclaration.SyntaxTree, span));
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.FormatEachEnumMemberOnSeparateLine,
+                        Location.Create(enumDeclaration.SyntaxTree, span));
 
-                        return;
-                    }
-
-                    previousIndex = members[i].GetSpanEndLine();
+                    return;
                 }
+
+                previousIndex = members[i].GetSpanEndLine();
             }
         }
 
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
             EnumDeclarationSyntax enumDeclaration,
             CancellationToken cancellationToken)
         {
-            var rewriter = new EnumDeclarationSyntaxRewriter(enumDeclaration);
+            var rewriter = new SyntaxRewriter(enumDeclaration);
 
             SyntaxNode newNode = rewriter.Visit(enumDeclaration)
                 .WithFormatterAnnotation();
@@ -57,11 +57,11 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(enumDeclaration, newNode, cancellationToken);
         }
 
-        private class EnumDeclarationSyntaxRewriter : CSharpSyntaxRewriter
+        private class SyntaxRewriter : CSharpSyntaxRewriter
         {
             private readonly SyntaxToken[] _separators;
 
-            public EnumDeclarationSyntaxRewriter(EnumDeclarationSyntax enumDeclaration)
+            public SyntaxRewriter(EnumDeclarationSyntax enumDeclaration)
             {
                 _separators = enumDeclaration.Members.GetSeparators().ToArray();
             }
