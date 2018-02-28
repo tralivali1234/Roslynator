@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: RegionKeyword, EndRegionKeyword
     /// <summary>
     /// Provides information about a region.
     /// </summary>

@@ -17,22 +17,25 @@ namespace Roslynator.CSharp.Refactorings
             var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
 
             TypeSyntax type = objectCreationExpression.Type;
+
+            if (type?.IsMissing != false)
+                return;
+
             InitializerExpressionSyntax initializer = objectCreationExpression.Initializer;
 
-            if (type?.IsMissing == false
-                && initializer?.IsMissing == false)
-            {
-                ArgumentListSyntax argumentList = objectCreationExpression.ArgumentList;
+            if (initializer?.IsMissing != false)
+                return;
 
-                if (argumentList == null)
-                {
-                    var span = new TextSpan(type.Span.End, 1);
+            ArgumentListSyntax argumentList = objectCreationExpression.ArgumentList;
 
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.AddArgumentListToObjectCreation,
-                        Location.Create(objectCreationExpression.SyntaxTree, span));
-                }
-            }
+            if (argumentList != null)
+                return;
+
+            var span = new TextSpan(type.Span.End, 1);
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.AddArgumentListToObjectCreation,
+                Location.Create(objectCreationExpression.SyntaxTree, span));
         }
 
         public static Task<Document> RefactorAsync(
@@ -42,9 +45,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             ObjectCreationExpressionSyntax newNode = objectCreationExpression
                 .WithType(objectCreationExpression.Type.WithoutTrailingTrivia())
-                .WithArgumentList(SyntaxFactory
-                    .ArgumentList()
-                    .WithTrailingTrivia(objectCreationExpression.Type.GetTrailingTrivia()));
+                .WithArgumentList(
+                    SyntaxFactory.ArgumentList()
+                        .WithTrailingTrivia(objectCreationExpression.Type.GetTrailingTrivia()));
 
             return document.ReplaceNodeAsync(objectCreationExpression, newNode, cancellationToken);
         }

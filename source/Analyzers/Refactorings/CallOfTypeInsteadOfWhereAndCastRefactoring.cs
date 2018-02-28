@@ -8,46 +8,33 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class CallOfTypeInsteadOfWhereAndCastRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation)
+        //TODO: test
+        public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
-            var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
+            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
 
-            ExpressionSyntax expression = memberAccess?.Expression;
-
-            if (expression?.Kind() != SyntaxKind.InvocationExpression)
+            if (!invocationInfo2.Success)
                 return;
 
-            var invocation2 = (InvocationExpressionSyntax)expression;
+            ArgumentSyntax argument = invocationInfo2.Arguments.SingleOrDefault(shouldThrow: false);
 
-            ArgumentListSyntax argumentList = invocation2.ArgumentList;
-
-            if (argumentList?.IsMissing != false)
+            if (argument == null)
                 return;
 
-            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
-
-            if (arguments.Count != 1)
-                return;
-
-            if (invocation2.Expression?.Kind() != SyntaxKind.SimpleMemberAccessExpression)
-                return;
-
-            var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
-
-            if (!string.Equals(memberAccess2.Name?.Identifier.ValueText, "Where", StringComparison.Ordinal))
+            if (!string.Equals(invocationInfo2.NameText, "Where", StringComparison.Ordinal))
                 return;
 
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
 
-            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocation, cancellationToken).Symbol;
+            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, cancellationToken).Symbol;
 
             if (methodSymbol == null)
                 return;
@@ -55,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqCast(methodSymbol, semanticModel))
                 return;
 
-            IMethodSymbol methodSymbol2 = semanticModel.GetReducedExtensionMethodInfo(invocation2, cancellationToken).Symbol;
+            IMethodSymbol methodSymbol2 = semanticModel.GetReducedExtensionMethodInfo(invocationInfo2.InvocationExpression, cancellationToken).Symbol;
 
             if (methodSymbol2 == null)
                 return;
@@ -63,17 +50,17 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel))
                 return;
 
-            BinaryExpressionSyntax isExpression = GetIsExpression(arguments.First().Expression);
+            IsExpressionInfo isExpressionInfo = SyntaxInfo.IsExpressionInfo(GetLambdaExpression(argument.Expression));
 
-            if (!(isExpression?.Right is TypeSyntax type))
+            if (!isExpressionInfo.Success)
                 return;
 
-            TypeSyntax type2 = GetTypeArgument(memberAccess.Name);
+            TypeSyntax type2 = (invocationInfo.Name as GenericNameSyntax)?.TypeArgumentList?.Arguments.SingleOrDefault(shouldThrow: false);
 
             if (type2 == null)
                 return;
 
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(isExpressionInfo.Type, cancellationToken);
 
             if (typeSymbol == null)
                 return;
@@ -83,81 +70,34 @@ namespace Roslynator.CSharp.Refactorings
             if (!typeSymbol.Equals(typeSymbol2))
                 return;
 
-            TextSpan span = TextSpan.FromBounds(memberAccess2.Name.Span.Start, invocation.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.Span.Start, invocationInfo.InvocationExpression.Span.End);
 
-            if (invocation.ContainsDirectives(span))
+            if (invocationInfo.InvocationExpression.ContainsDirectives(span))
                 return;
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.SimplifyLinqMethodChain,
-                Location.Create(invocation.SyntaxTree, span));
+                Location.Create(invocationInfo.InvocationExpression.SyntaxTree, span));
         }
 
-        private static TypeSyntax GetTypeArgument(SimpleNameSyntax name)
+        //XTODO: LambdaExpressionInfo
+        private static SyntaxNode GetLambdaExpression(ExpressionSyntax expression)
         {
-            if (name.IsKind(SyntaxKind.GenericName))
+            CSharpSyntaxNode body = (expression as LambdaExpressionSyntax)?.Body;
+
+            if (body?.Kind() == SyntaxKind.Block)
             {
-                var genericName = (GenericNameSyntax)name;
+                StatementSyntax statement = ((BlockSyntax)body).Statements.SingleOrDefault(shouldThrow: false);
 
-                TypeArgumentListSyntax typeArgumentList = genericName.TypeArgumentList;
-
-                if (typeArgumentList?.IsMissing == false)
+                if (statement?.Kind() == SyntaxKind.ReturnStatement)
                 {
-                    SeparatedSyntaxList<TypeSyntax> typeArguments = typeArgumentList.Arguments;
+                    var returnStatement = (ReturnStatementSyntax)statement;
 
-                    if (typeArguments.Count == 1)
-                        return typeArguments.First();
+                    return returnStatement.Expression;
                 }
             }
 
-            return null;
-        }
-
-        private static BinaryExpressionSyntax GetIsExpression(ExpressionSyntax expression)
-        {
-            switch (expression?.Kind())
-            {
-                case SyntaxKind.SimpleLambdaExpression:
-                case SyntaxKind.ParenthesizedLambdaExpression:
-                    {
-                        var lambda = (LambdaExpressionSyntax)expression;
-
-                        return GetIsExpression(lambda.Body);
-                    }
-                default:
-                    {
-                        return null;
-                    }
-            }
-        }
-
-        private static BinaryExpressionSyntax GetIsExpression(CSharpSyntaxNode body)
-        {
-            switch (body?.Kind())
-            {
-                case SyntaxKind.IsExpression:
-                    {
-                        return (BinaryExpressionSyntax)body;
-                    }
-                case SyntaxKind.Block:
-                    {
-                        StatementSyntax statement = ((BlockSyntax)body).Statements.SingleOrDefault(shouldThrow: false);
-
-                        if (statement?.Kind() == SyntaxKind.ReturnStatement)
-                        {
-                            var returnStatement = (ReturnStatementSyntax)statement;
-
-                            ExpressionSyntax returnExpression = returnStatement.Expression;
-
-                            if (returnExpression?.Kind() == SyntaxKind.IsExpression)
-                                return (BinaryExpressionSyntax)returnExpression;
-                        }
-
-                        break;
-                    }
-            }
-
-            return null;
+            return body;
         }
 
         public static Task<Document> RefactorAsync(

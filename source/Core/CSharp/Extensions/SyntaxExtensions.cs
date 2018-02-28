@@ -1323,11 +1323,13 @@ namespace Roslynator.CSharp
                 methodDeclaration.ParameterList?.Span.End ?? methodDeclaration.Identifier.Span.End);
         }
 
+        //TODO: del
         internal static bool ContainsAwait(this MethodDeclarationSyntax methodDeclaration)
         {
             if (methodDeclaration == null)
                 throw new ArgumentNullException(nameof(methodDeclaration));
 
+            //TODO: Walker
             return methodDeclaration
                 .DescendantNodes(node => !CSharpFacts.IsNestedMethod(node.Kind()))
                 .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
@@ -1546,6 +1548,7 @@ namespace Roslynator.CSharp
             return default(SyntaxTrivia);
         }
 
+        //TODO: del
         /// <summary>
         /// Returns true the specified region directive has preprocessing message trivia.
         /// </summary>

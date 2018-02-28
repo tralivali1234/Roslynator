@@ -10,10 +10,10 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AnalyzeCatchClause(SyntaxNodeAnalysisContext context, ITypeSymbol exceptionSymbol)
         {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
             var catchClause = (CatchClauseSyntax)context.Node;
+
+            if (catchClause.ContainsDiagnostics)
+                return;
 
             if (catchClause.Filter != null)
                 return;

@@ -10,22 +10,28 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AsynchronousMethodNameShouldEndWithAsyncRefactoring
     {
-        private const string AsyncSuffix = "Async";
-
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
         {
             var methodDeclaration = (MethodDeclarationSyntax)context.Node;
 
+            if (!methodDeclaration.Modifiers.Contains(SyntaxKind.AsyncKeyword))
+                return;
+
+            if (methodDeclaration.Identifier.ValueText.EndsWith("Async", StringComparison.Ordinal))
+                return;
+
             IMethodSymbol methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodDeclaration, context.CancellationToken);
 
-            if (methodSymbol?.IsAsync == true
-                && !methodSymbol.Name.EndsWith(AsyncSuffix, StringComparison.Ordinal)
-                && methodDeclaration.ContainsAwait())
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AsynchronousMethodNameShouldEndWithAsync,
-                    methodDeclaration.Identifier);
-            }
+            if (methodSymbol?.IsAsync != true)
+                return;
+
+            if (methodSymbol.Name.EndsWith("Async", StringComparison.Ordinal))
+                return;
+
+            if (methodDeclaration.Body?.Statements.Any() == false)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AsynchronousMethodNameShouldEndWithAsync, methodDeclaration.Identifier);
         }
     }
 }

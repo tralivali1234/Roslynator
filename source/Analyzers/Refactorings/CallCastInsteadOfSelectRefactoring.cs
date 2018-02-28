@@ -22,9 +22,10 @@ namespace Roslynator.CSharp.Refactorings
         {
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            TextSpan span = TextSpan.FromBounds(invocationInfo.Name.Span.Start, invocationExpression.Span.End);
+            if (invocationInfo.Name.SpanOrTrailingTriviaContainsDirectives())
+                return;
 
-            if (invocationExpression.ContainsDirectives(span))
+            if (invocationInfo.ArgumentList.SpanOrLeadingTriviaContainsDirectives())
                 return;
 
             SemanticModel semanticModel = context.SemanticModel;
@@ -71,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.CallCastInsteadOfSelect,
-                Location.Create(invocationExpression.SyntaxTree, span));
+                Location.Create(invocationExpression.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.Span.Start, invocationExpression.Span.End)));
         }
 
         private static CastExpressionSyntax GetCastExpression(CSharpSyntaxNode node)

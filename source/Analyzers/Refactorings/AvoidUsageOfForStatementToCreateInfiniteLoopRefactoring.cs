@@ -23,14 +23,12 @@ namespace Roslynator.CSharp.Refactorings
                 && forStatement.Condition == null
                 && forStatement.Incrementors.Count == 0
                 && forStatement.Initializers.Count == 0
-                && !forStatement.ContainsDirectives(
-                    TextSpan.FromBounds(
-                        forStatement.OpenParenToken.Span.End,
-                        forStatement.CloseParenToken.Span.Start)))
+                && !forStatement.OpenParenToken.ContainsDirectives
+                && !forStatement.FirstSemicolonToken.ContainsDirectives
+                && !forStatement.SecondSemicolonToken.ContainsDirectives
+                && !forStatement.CloseParenToken.ContainsDirectives)
             {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AvoidUsageOfForStatementToCreateInfiniteLoop,
-                    forStatement.ForKeyword);
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidUsageOfForStatementToCreateInfiniteLoop, forStatement.ForKeyword);
             }
         }
 

@@ -13,14 +13,16 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void Analyze(SyntaxNodeAnalysisContext context, UsingDirectiveSyntax usingDirective)
         {
-            if (usingDirective.Alias != null
-                && !usingDirective.ContainsDiagnostics
-                && !usingDirective.SpanContainsDirectives())
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AvoidUsageOfUsingAliasDirective,
-                    usingDirective);
-            }
+            if (usingDirective.Alias == null)
+                return;
+
+            if (usingDirective.ContainsDiagnostics)
+                return;
+
+            if (usingDirective.SpanContainsDirectives())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AvoidUsageOfUsingAliasDirective, usingDirective);
         }
 
         public static Task<Document> RefactorAsync(

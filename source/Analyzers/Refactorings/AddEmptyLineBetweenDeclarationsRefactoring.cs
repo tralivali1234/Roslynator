@@ -8,58 +8,178 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class AddEmptyLineBetweenDeclarationsRefactoring
     {
-        public static void AnalyzeMemberDeclaration(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
         {
-            var declaration = (MemberDeclarationSyntax)context.Node;
+            var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
 
-            if (!declaration.IsParentKind(SyntaxKind.CompilationUnit))
+            BlockSyntax body = constructorDeclaration.Body;
+
+            if (body == null)
+                return;
+
+            Analyze(context, constructorDeclaration, body.OpenBraceToken, body.CloseBraceToken);
+        }
+
+        public static void AnalyzeDestructorDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var destructorDeclaration = (DestructorDeclarationSyntax)context.Node;
+
+            BlockSyntax body = destructorDeclaration.Body;
+
+            if (body == null)
+                return;
+
+            Analyze(context, destructorDeclaration, body.OpenBraceToken, body.CloseBraceToken);
+        }
+
+        public static void AnalyzeEventDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var eventDeclaration = (EventDeclarationSyntax)context.Node;
+
+            AccessorListSyntax accessorList = eventDeclaration.AccessorList;
+
+            if (accessorList == null)
+                return;
+
+            Analyze(context, eventDeclaration, accessorList.OpenBraceToken, accessorList.CloseBraceToken);
+        }
+
+        public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
+
+            AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
+
+            if (accessorList == null)
+                return;
+
+            Analyze(context, propertyDeclaration, accessorList.OpenBraceToken, accessorList.CloseBraceToken);
+        }
+
+        public static void AnalyzeIndexerDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var indexerDeclaration = (IndexerDeclarationSyntax)context.Node;
+
+            AccessorListSyntax accessorList = indexerDeclaration.AccessorList;
+
+            if (accessorList == null)
+                return;
+
+            Analyze(context, indexerDeclaration, accessorList.OpenBraceToken, accessorList.CloseBraceToken);
+        }
+
+        public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var methodDeclaration = (MethodDeclarationSyntax)context.Node;
+
+            BlockSyntax body = methodDeclaration.Body;
+
+            if (body == null)
+                return;
+
+            Analyze(context, methodDeclaration, body.OpenBraceToken, body.CloseBraceToken);
+        }
+
+        public static void AnalyzeConversionOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var conversionOperatorDeclaration = (ConversionOperatorDeclarationSyntax)context.Node;
+
+            BlockSyntax body = conversionOperatorDeclaration.Body;
+
+            if (body == null)
+                return;
+
+            Analyze(context, conversionOperatorDeclaration, body.OpenBraceToken, body.CloseBraceToken);
+        }
+
+        public static void AnalyzeOperatorDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var operatorDeclaration = (OperatorDeclarationSyntax)context.Node;
+
+            BlockSyntax body = operatorDeclaration.Body;
+
+            if (body == null)
+                return;
+
+            Analyze(context, operatorDeclaration, body.OpenBraceToken, body.CloseBraceToken);
+        }
+
+        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
+
+            Analyze(context, enumDeclaration, enumDeclaration.OpenBraceToken, enumDeclaration.CloseBraceToken);
+        }
+
+        public static void AnalyzeInterfaceDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var interfaceDeclaration = (InterfaceDeclarationSyntax)context.Node;
+
+            Analyze(context, interfaceDeclaration, interfaceDeclaration.OpenBraceToken, interfaceDeclaration.CloseBraceToken);
+        }
+
+        public static void AnalyzeStructDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var structDeclaration = (StructDeclarationSyntax)context.Node;
+
+            Analyze(context, structDeclaration, structDeclaration.OpenBraceToken, structDeclaration.CloseBraceToken);
+        }
+
+        public static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var classDeclaration = (ClassDeclarationSyntax)context.Node;
+
+            Analyze(context, classDeclaration, classDeclaration.OpenBraceToken, classDeclaration.CloseBraceToken);
+        }
+
+        public static void AnalyzeNamespaceDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var namespaceDeclaration = (NamespaceDeclarationSyntax)context.Node;
+
+            Analyze(context, namespaceDeclaration, namespaceDeclaration.OpenBraceToken, namespaceDeclaration.CloseBraceToken);
+        }
+
+        private static void Analyze(SyntaxNodeAnalysisContext context, MemberDeclarationSyntax declaration, SyntaxToken openToken, SyntaxToken closeToken)
+        {
+            if (declaration.IsParentKind(SyntaxKind.CompilationUnit))
+                return;
+
+            if (openToken.IsMissing)
+                return;
+
+            if (closeToken.IsMissing)
+                return;
+
+            int closeTokenLine = closeToken.GetSpanEndLine();
+
+            if (openToken.GetSpanEndLine() == closeTokenLine)
+                return;
+
+            MemberDeclarationSyntax nextDeclaration = GetNextDeclaration(declaration);
+
+            if (nextDeclaration == null)
+                return;
+
+            int diff = nextDeclaration.GetSpanStartLine() - closeTokenLine;
+
+            if (diff >= 2)
+                return;
+
+            SyntaxTrivia trivia = declaration.GetTrailingTrivia().LastOrDefault();
+
+            if (trivia.IsEndOfLineTrivia())
             {
-                TokenPair tokenPair = GetTokenPair(declaration);
-                SyntaxToken openToken = tokenPair.OpenToken;
-                SyntaxToken closeToken = tokenPair.CloseToken;
-
-                if (!openToken.IsKind(SyntaxKind.None)
-                    && !openToken.IsMissing
-                    && !closeToken.IsKind(SyntaxKind.None)
-                    && !closeToken.IsMissing)
-                {
-                    int closeTokenLine = closeToken.GetSpanEndLine();
-
-                    if (openToken.GetSpanEndLine() != closeTokenLine)
-                    {
-                        MemberDeclarationSyntax nextDeclaration = GetNextDeclaration(declaration);
-
-                        if (nextDeclaration != null)
-                        {
-                            int diff = nextDeclaration.GetSpanStartLine() - closeTokenLine;
-
-                            if (diff < 2)
-                            {
-                                SyntaxTrivia trivia = declaration.GetTrailingTrivia().LastOrDefault();
-
-                                if (trivia.IsEndOfLineTrivia())
-                                {
-                                    context.ReportDiagnostic(
-                                        DiagnosticDescriptors.AddEmptyLineBetweenDeclarations,
-                                        trivia);
-                                }
-                                else
-                                {
-                                    context.ReportDiagnostic(
-                                        DiagnosticDescriptors.AddEmptyLineBetweenDeclarations,
-                                        closeToken);
-                                }
-                            }
-                        }
-                    }
-                }
+                context.ReportDiagnostic(DiagnosticDescriptors.AddEmptyLineBetweenDeclarations, trivia);
+            }
+            else
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.AddEmptyLineBetweenDeclarations, closeToken);
             }
         }
 
@@ -67,134 +187,20 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(declaration.Parent);
 
-            if (info.Success)
-            {
-                SyntaxList<MemberDeclarationSyntax> members = info.Members;
+            if (!info.Success)
+                return null;
 
-                if (members.Count > 1)
-                {
-                    int index = members.IndexOf(declaration);
+            SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
-                    if (index != (members.Count - 1))
-                        return members[index + 1];
-                }
-            }
+            if (members.Count <= 1)
+                return null;
 
-            return null;
-        }
+            int index = members.IndexOf(declaration);
 
-        private static TokenPair GetTokenPair(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.ConstructorDeclaration:
-                    {
-                        var declaration = (ConstructorDeclarationSyntax)node;
+            if (index == members.Count - 1)
+                return null;
 
-                        if (declaration.Body != null)
-                            return new TokenPair(declaration.Body);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.DestructorDeclaration:
-                    {
-                        var declaration = (DestructorDeclarationSyntax)node;
-
-                        if (declaration.Body != null)
-                            return new TokenPair(declaration.Body);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.EventDeclaration:
-                    {
-                        var declaration = (EventDeclarationSyntax)node;
-
-                        if (declaration.AccessorList != null)
-                            return new TokenPair(declaration.AccessorList);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.PropertyDeclaration:
-                    {
-                        var declaration = (PropertyDeclarationSyntax)node;
-
-                        if (declaration.AccessorList != null)
-                            return new TokenPair(declaration.AccessorList);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.IndexerDeclaration:
-                    {
-                        var declaration = (IndexerDeclarationSyntax)node;
-
-                        if (declaration.AccessorList != null)
-                            return new TokenPair(declaration.AccessorList);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.MethodDeclaration:
-                    {
-                        var declaration = (MethodDeclarationSyntax)node;
-
-                        if (declaration.Body != null)
-                            return new TokenPair(declaration.Body);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.ConversionOperatorDeclaration:
-                    {
-                        var declaration = (ConversionOperatorDeclarationSyntax)node;
-
-                        if (declaration.Body != null)
-                            return new TokenPair(declaration.Body);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.OperatorDeclaration:
-                    {
-                        var declaration = (OperatorDeclarationSyntax)node;
-
-                        if (declaration.Body != null)
-                            return new TokenPair(declaration.Body);
-
-                        return default(TokenPair);
-                    }
-                case SyntaxKind.EnumDeclaration:
-                    {
-                        var declaration = (EnumDeclarationSyntax)node;
-
-                        return new TokenPair(declaration.OpenBraceToken, declaration.CloseBraceToken);
-                    }
-                case SyntaxKind.InterfaceDeclaration:
-                    {
-                        var declaration = (InterfaceDeclarationSyntax)node;
-
-                        return new TokenPair(declaration.OpenBraceToken, declaration.CloseBraceToken);
-                    }
-                case SyntaxKind.StructDeclaration:
-                    {
-                        var declaration = (StructDeclarationSyntax)node;
-
-                        return new TokenPair(declaration.OpenBraceToken, declaration.CloseBraceToken);
-                    }
-                case SyntaxKind.ClassDeclaration:
-                    {
-                        var declaration = (ClassDeclarationSyntax)node;
-
-                        return new TokenPair(declaration.OpenBraceToken, declaration.CloseBraceToken);
-                    }
-                case SyntaxKind.NamespaceDeclaration:
-                    {
-                        var declaration = (NamespaceDeclarationSyntax)node;
-
-                        return new TokenPair(declaration.OpenBraceToken, declaration.CloseBraceToken);
-                    }
-                default:
-                    {
-                        Debug.Fail(node.Kind().ToString());
-                        return default(TokenPair);
-                    }
-            }
+            return members[index + 1];
         }
 
         public static Task<Document> RefactorAsync(
@@ -206,30 +212,6 @@ namespace Roslynator.CSharp.Refactorings
                 .WithTrailingTrivia(memberDeclaration.GetTrailingTrivia().Add(CSharpFactory.NewLine()));
 
             return document.ReplaceNodeAsync(memberDeclaration, newNode, cancellationToken);
-        }
-
-        private readonly struct TokenPair
-        {
-            public TokenPair(BlockSyntax block)
-            {
-                OpenToken = block.OpenBraceToken;
-                CloseToken = block.CloseBraceToken;
-            }
-
-            public TokenPair(AccessorListSyntax accessorList)
-            {
-                OpenToken = accessorList.OpenBraceToken;
-                CloseToken = accessorList.CloseBraceToken;
-            }
-
-            public TokenPair(SyntaxToken openToken, SyntaxToken closeToken)
-            {
-                OpenToken = openToken;
-                CloseToken = closeToken;
-            }
-
-            public SyntaxToken OpenToken { get; }
-            public SyntaxToken CloseToken { get; }
         }
     }
 }

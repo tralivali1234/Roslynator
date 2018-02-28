@@ -15,27 +15,31 @@ namespace Roslynator.CSharp.Refactorings
         {
             var block = (BlockSyntax)context.Node;
 
-            if (!(block.Parent is AccessorDeclarationSyntax)
-                && !(block.Parent is AnonymousFunctionExpressionSyntax))
-            {
-                SyntaxList<StatementSyntax> statements = block.Statements;
+            if (block.Parent is AccessorDeclarationSyntax)
+                return;
 
-                if (statements.Any())
-                {
-                    SyntaxToken openBrace = block.OpenBraceToken;
+            if (block.Parent is AnonymousFunctionExpressionSyntax)
+                return;
 
-                    if (!openBrace.IsMissing)
-                    {
-                        SyntaxToken closeBrace = block.CloseBraceToken;
+            SyntaxList<StatementSyntax> statements = block.Statements;
 
-                        if (!closeBrace.IsMissing
-                            && block.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(openBrace.SpanStart, closeBrace.Span.End), context.CancellationToken))
-                        {
-                            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSingleLineBlock, block);
-                        }
-                    }
-                }
-            }
+            if (!statements.Any())
+                return;
+
+            SyntaxToken openBrace = block.OpenBraceToken;
+
+            if (openBrace.IsMissing)
+                return;
+
+            SyntaxToken closeBrace = block.CloseBraceToken;
+
+            if (closeBrace.IsMissing)
+                return;
+
+            if (!block.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(openBrace.SpanStart, closeBrace.Span.End), context.CancellationToken))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSingleLineBlock, block);
         }
 
         public static Task<Document> RefactorAsync(

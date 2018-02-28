@@ -63,67 +63,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var invocation = (InvocationExpressionSyntax)context.Node;
 
-            ExpressionSyntax expression = invocation.Expression;
-
-            if (expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
-            {
-                var memberAccess = (MemberAccessExpressionSyntax)expression;
-
-                ArgumentListSyntax argumentList = invocation.ArgumentList;
-
-                if (argumentList?.IsMissing == false)
-                {
-                    int argumentCount = argumentList.Arguments.Count;
-
-                    string methodName = memberAccess.Name?.Identifier.ValueText;
-
-                    if (argumentCount == 0)
-                    {
-                        switch (methodName)
-                        {
-                            case "Any":
-                                {
-                                    SimplifyLinqMethodChainRefactoring.Analyze(context, invocation, memberAccess, methodName);
-                                    break;
-                                }
-                            case "Cast":
-                                {
-                                    CallOfTypeInsteadOfWhereAndCastRefactoring.Analyze(context, invocation);
-                                    break;
-                                }
-                            case "Count":
-                            case "First":
-                            case "FirstOrDefault":
-                            case "Last":
-                            case "LastOrDefault":
-                            case "LongCount":
-                            case "Single":
-                            case "SingleOrDefault":
-                                {
-                                    SimplifyLinqMethodChainRefactoring.Analyze(context, invocation, memberAccess, methodName);
-                                    break;
-                                }
-                        }
-                    }
-                    else if (argumentCount == 1)
-                    {
-                        switch (methodName)
-                        {
-                            case "FirstOrDefault":
-                                {
-                                    CallFindInsteadOfFirstOrDefaultRefactoring.Analyze(context, invocation, memberAccess);
-                                    break;
-                                }
-                            case "Where":
-                                {
-                                    CombineEnumerableWhereMethodChainRefactoring.Analyze(context, invocation, memberAccess);
-                                    break;
-                                }
-                        }
-                    }
-                }
-            }
-
             if (UseBitwiseOperationInsteadOfCallingHasFlagRefactoring.CanRefactor(invocation, context.SemanticModel, context.CancellationToken)
                 && !invocation.SpanContainsDirectives())
             {
@@ -171,16 +110,20 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "Any":
                                         {
                                             UseCountOrLengthPropertyInsteadOfAnyMethodRefactoring.Analyze(context, invocationInfo);
+
+                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Cast":
                                         {
+                                            CallOfTypeInsteadOfWhereAndCastRefactoring.Analyze(context, invocationInfo);
                                             RemoveRedundantCastRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Count":
                                         {
                                             UseInsteadOfCountMethodRefactoring.Analyze(context, invocationInfo);
+                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "First":
@@ -191,6 +134,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                                 context.ReportDiagnostic(DiagnosticDescriptors.UseElementAccessInsteadOfFirst, invocationInfo.Name);
                                             }
 
+                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ToString":
@@ -205,6 +149,16 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "ToUpperInvariant":
                                         {
                                             UseStringComparisonRefactoring.Analyze(context, invocationInfo);
+                                            break;
+                                        }
+                                    case "FirstOrDefault":
+                                    case "Last":
+                                    case "LastOrDefault":
+                                    case "LongCount":
+                                    case "Single":
+                                    case "SingleOrDefault":
+                                        {
+                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                 }
@@ -229,6 +183,16 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                                 context.ReportDiagnostic(DiagnosticDescriptors.UseElementAccessInsteadOfElementAt, invocationInfo.Name);
                                             }
 
+                                            break;
+                                        }
+                                    case "FirstOrDefault":
+                                        {
+                                            CallFindInsteadOfFirstOrDefaultRefactoring.Analyze(context, invocationInfo);
+                                            break;
+                                        }
+                                    case "Where":
+                                        {
+                                            CombineEnumerableWhereMethodChainRefactoring.Analyze(context, invocationInfo);
                                             break;
                                         }
                                 }

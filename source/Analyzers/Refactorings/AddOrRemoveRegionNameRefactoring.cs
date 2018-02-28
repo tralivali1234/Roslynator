@@ -19,30 +19,24 @@ namespace Roslynator.CSharp.Refactorings
 
             RegionDirectiveTriviaSyntax regionDirective = endRegionDirective.GetRegionDirective();
 
-            if (regionDirective != null)
+            if (regionDirective == null)
+                return;
+
+            SyntaxTrivia trivia = regionDirective.GetPreprocessingMessageTrivia();
+
+            SyntaxTrivia endTrivia = endRegionDirective.GetPreprocessingMessageTrivia();
+
+            if (trivia.Kind() == SyntaxKind.PreprocessingMessageTrivia)
             {
-                SyntaxTrivia trivia = regionDirective.GetPreprocessingMessageTrivia();
-
-                SyntaxTrivia endTrivia = endRegionDirective.GetPreprocessingMessageTrivia();
-
-                if (trivia.IsKind(SyntaxKind.PreprocessingMessageTrivia))
+                if (endTrivia.Kind() != SyntaxKind.PreprocessingMessageTrivia
+                    || !string.Equals(trivia.ToString(), endTrivia.ToString(), StringComparison.Ordinal))
                 {
-                    if (!endTrivia.IsKind(SyntaxKind.PreprocessingMessageTrivia)
-                        || !string.Equals(trivia.ToString(), endTrivia.ToString(), StringComparison.Ordinal))
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.AddOrRemoveRegionName,
-                            endRegionDirective,
-                            "Add", "to");
-                    }
+                    context.ReportDiagnostic(DiagnosticDescriptors.AddOrRemoveRegionName, endRegionDirective, "Add", "to");
                 }
-                else if (endTrivia.IsKind(SyntaxKind.PreprocessingMessageTrivia))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.AddOrRemoveRegionName,
-                        endRegionDirective,
-                        "Remove", "from");
-                }
+            }
+            else if (endTrivia.Kind() == SyntaxKind.PreprocessingMessageTrivia)
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.AddOrRemoveRegionName, endRegionDirective, "Remove", "from");
             }
         }
 
@@ -56,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
 
             EndRegionDirectiveTriviaSyntax newNode = endRegionDirective;
 
-            if (trivia.IsKind(SyntaxKind.PreprocessingMessageTrivia))
+            if (trivia.Kind() == SyntaxKind.PreprocessingMessageTrivia)
             {
                 SyntaxTriviaList trailingTrivia = endRegionKeyword.TrailingTrivia;
 

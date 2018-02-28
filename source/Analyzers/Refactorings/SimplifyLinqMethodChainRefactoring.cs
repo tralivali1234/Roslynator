@@ -5,37 +5,31 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class SimplifyLinqMethodChainRefactoring
     {
-        public static void Analyze(
-            SyntaxNodeAnalysisContext context,
-            InvocationExpressionSyntax invocation,
-            MemberAccessExpressionSyntax memberAccess,
-            string methodName)
+        public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
-            if (memberAccess.Expression?.Kind() != SyntaxKind.InvocationExpression)
+            MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
+
+            if (!invocationInfo2.Success)
                 return;
 
-            var invocation2 = (InvocationExpressionSyntax)memberAccess.Expression;
-
-            if (invocation2.ArgumentList?.Arguments.Count != 1)
+            if (invocationInfo2.Arguments.Count != 1)
                 return;
 
-            if (invocation2.Expression?.Kind() != SyntaxKind.SimpleMemberAccessExpression)
+            if (invocationInfo2.NameText != "Where")
                 return;
 
-            var memberAccess2 = (MemberAccessExpressionSyntax)invocation2.Expression;
-
-            if (memberAccess2.Name?.Identifier.ValueText != "Where")
-                return;
+            InvocationExpressionSyntax invocation = invocationInfo.InvocationExpression;
 
             SemanticModel semanticModel = context.SemanticModel;
             CancellationToken cancellationToken = context.CancellationToken;
@@ -45,10 +39,10 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return;
 
-            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodSymbol, methodName, semanticModel))
+            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodSymbol, invocationInfo.NameText, semanticModel))
                 return;
 
-            IMethodSymbol methodSymbol2 = semanticModel.GetExtensionMethodInfo(invocation2, cancellationToken).Symbol;
+            IMethodSymbol methodSymbol2 = semanticModel.GetExtensionMethodInfo(invocationInfo2.InvocationExpression, cancellationToken).Symbol;
 
             if (methodSymbol2 == null)
                 return;
@@ -56,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
-            TextSpan span = TextSpan.FromBounds(memberAccess2.Name.Span.Start, invocation.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.Span.Start, invocation.Span.End);
 
             if (invocation.ContainsDirectives(span))
                 return;

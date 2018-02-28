@@ -13,26 +13,33 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
             var binaryExpression = (BinaryExpressionSyntax)context.Node;
 
-            SyntaxKind kind = binaryExpression.Kind();
+            if (binaryExpression.ContainsDiagnostics)
+                return;
 
-            Analyze(context, binaryExpression.Left, kind);
-            Analyze(context, binaryExpression.Right, kind);
+            SyntaxKind binaryExpressionKind = binaryExpression.Kind();
+
+            ExpressionSyntax left = binaryExpression.Left;
+
+            if (left?.IsMissing == false)
+                Analyze(context, left, binaryExpressionKind);
+
+            ExpressionSyntax right = binaryExpression.Right;
+
+            if (right?.IsMissing == false)
+                Analyze(context, right, binaryExpressionKind);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression, SyntaxKind parentKind)
+        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression, SyntaxKind binaryExpressionKind)
         {
-            if (IsFixable(expression, parentKind)
-                && !IsNestedDiagnostic(expression))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AddParenthesesAccordingToOperatorPrecedence,
-                    expression);
-            }
+            if (!IsFixable(expression, binaryExpressionKind))
+                return;
+
+            if (IsNestedDiagnostic(expression))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddParenthesesAccordingToOperatorPrecedence, expression);
         }
 
         private static bool IsNestedDiagnostic(SyntaxNode node)
@@ -54,18 +61,13 @@ namespace Roslynator.CSharp.Refactorings
                 && IsFixable(node, parent.Kind());
         }
 
-        private static bool IsFixable(SyntaxNode node, SyntaxKind parentKind)
+        private static bool IsFixable(SyntaxNode node, SyntaxKind binaryExpressionKind)
         {
-            if (node != null)
-            {
-                int groupNumber = GetGroupNumber(parentKind);
+            int groupNumber = GetGroupNumber(binaryExpressionKind);
 
-                return groupNumber != 0
-                    && groupNumber == GetGroupNumber(node)
-                    && OperatorPrecedence.GetPrecedence(node) < OperatorPrecedence.GetPrecedence(parentKind);
-            }
-
-            return false;
+            return groupNumber != 0
+                && groupNumber == GetGroupNumber(node)
+                && OperatorPrecedence.GetPrecedence(node) < OperatorPrecedence.GetPrecedence(binaryExpressionKind);
         }
 
         private static int GetGroupNumber(SyntaxNode node)
@@ -110,20 +112,20 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var newNode = (ExpressionSyntax)AddParenthesesSyntaxRewriter.Instance.Visit(expression);
+            var newNode = (ExpressionSyntax)SyntaxRewriter.Instance.Visit(expression);
 
             newNode = newNode.Parenthesize(simplifiable: false);
 
             return document.ReplaceNodeAsync(expression, newNode, cancellationToken);
         }
 
-        private class AddParenthesesSyntaxRewriter : CSharpSyntaxRewriter
+        private class SyntaxRewriter : CSharpSyntaxRewriter
         {
-            private AddParenthesesSyntaxRewriter()
+            private SyntaxRewriter()
             {
             }
 
-            public static AddParenthesesSyntaxRewriter Instance { get; } = new AddParenthesesSyntaxRewriter();
+            public static SyntaxRewriter Instance { get; } = new SyntaxRewriter();
 
             public override SyntaxNode VisitBinaryExpression(BinaryExpressionSyntax node)
             {

@@ -1,13 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -17,50 +14,34 @@ namespace Roslynator.CSharp.Refactorings
         {
             var symbol = (INamedTypeSymbol)context.Symbol;
 
-            if (symbol.IsClass()
-                && symbol.IsStatic
-                && !symbol.IsImplicitClass
-                && !symbol.IsImplicitlyDeclared)
+            if (symbol.TypeKind != TypeKind.Class)
+                return;
+
+            if (!symbol.IsStatic)
+                return;
+
+            if (symbol.IsImplicitClass)
+                return;
+
+            if (symbol.IsImplicitlyDeclared)
+                return;
+
+            ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
+
+            if (syntaxReferences.Length <= 1)
+                return;
+
+            foreach (SyntaxReference syntaxReference in syntaxReferences)
             {
-                ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
+                var classDeclaration = (ClassDeclarationSyntax)syntaxReference.GetSyntax(context.CancellationToken);
 
-                if (syntaxReferences.Length > 1)
+                SyntaxTokenList modifiers = classDeclaration.Modifiers;
+
+                if (!modifiers.Contains(SyntaxKind.StaticKeyword))
                 {
-                    bool isStatic = false;
-                    List<ClassDeclarationSyntax> classDeclarations = null;
-
-                    foreach (SyntaxReference syntaxReference in syntaxReferences)
-                    {
-                        SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
-
-                        Debug.Assert(node.IsKind(SyntaxKind.ClassDeclaration), node.Kind().ToString());
-
-                        if (node.IsKind(SyntaxKind.ClassDeclaration))
-                        {
-                            var classDeclaration = (ClassDeclarationSyntax)node;
-                            SyntaxTokenList modifiers = classDeclaration.Modifiers;
-
-                            if (modifiers.Contains(SyntaxKind.StaticKeyword))
-                            {
-                                isStatic = true;
-                            }
-                            else if (!classDeclaration.ContainsDirectives(modifiers.Span))
-                            {
-                                (classDeclarations ?? (classDeclarations = new List<ClassDeclarationSyntax>())).Add(classDeclaration);
-                            }
-                        }
-                    }
-
-                    if (isStatic
-                        && classDeclarations != null)
-                    {
-                        foreach (ClassDeclarationSyntax classDeclaration in classDeclarations)
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.AddStaticModifierToAllPartialClassDeclarations,
-                                classDeclaration.Identifier);
-                        }
-                    }
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.AddStaticModifierToAllPartialClassDeclarations,
+                        classDeclaration.Identifier);
                 }
             }
         }

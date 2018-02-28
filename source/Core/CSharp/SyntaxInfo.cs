@@ -442,6 +442,8 @@ namespace Roslynator.CSharp
             return Syntax.HexNumericLiteralExpressionInfo.Create(literalExpression);
         }
 
+        //TODO: IfStatementInfo(SyntaxNode)
+
         /// <summary>
         /// Creates a new <see cref="Syntax.IfStatementInfo"/> from the specified if statement.
         /// </summary>
@@ -450,6 +452,42 @@ namespace Roslynator.CSharp
         public static IfStatementInfo IfStatementInfo(IfStatementSyntax ifStatement)
         {
             return Syntax.IfStatementInfo.Create(ifStatement);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.IsExpressionInfo"/> from the specified node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="walkDownParentheses"></param>
+        /// <param name="allowMissing"></param>
+        /// <returns></returns>
+        public static IsExpressionInfo IsExpressionInfo(
+            SyntaxNode node,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
+            return Syntax.IsExpressionInfo.Create(
+                node,
+                walkDownParentheses,
+                allowMissing);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.IsExpressionInfo"/> from the specified binary expression.
+        /// </summary>
+        /// <param name="binaryExpression"></param>
+        /// <param name="walkDownParentheses"></param>
+        /// <param name="allowMissing"></param>
+        /// <returns></returns>
+        public static IsExpressionInfo IsExpressionInfo(
+            BinaryExpressionSyntax binaryExpression,
+            bool walkDownParentheses = true,
+            bool allowMissing = false)
+        {
+            return Syntax.IsExpressionInfo.Create(
+                binaryExpression,
+                walkDownParentheses,
+                allowMissing);
         }
 
         /// <summary>
