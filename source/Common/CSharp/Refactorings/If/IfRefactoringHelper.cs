@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
         {
-            if (!condition.IsKind(SyntaxKind.ParenthesizedExpression))
+            if (condition.Kind() != SyntaxKind.ParenthesizedExpression)
             {
                 condition = ParenthesizedExpression(condition.WithoutTrivia())
                     .WithTriviaFrom(condition);

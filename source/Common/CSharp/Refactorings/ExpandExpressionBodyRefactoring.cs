@@ -156,7 +156,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static BlockSyntax CreateBlock(ExpressionSyntax expression, SyntaxToken semicolon)
         {
-            if (expression.IsKind(SyntaxKind.ThrowExpression))
+            if (expression.Kind() == SyntaxKind.ThrowExpression)
             {
                 return CreateBlockWithExpressionStatement(expression, semicolon);
             }

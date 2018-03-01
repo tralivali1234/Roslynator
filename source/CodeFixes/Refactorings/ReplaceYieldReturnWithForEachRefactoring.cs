@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -39,27 +40,33 @@ namespace Roslynator.CSharp.Refactorings
 
             CodeAction codeAction = CodeAction.Create(
                 "Replace yield return with foreach",
-                cancellationToken =>
-                {
-                    string name = DefaultNames.ForEachVariable;
-
-                    name = NameGenerator.Default.EnsureUniqueLocalName(name, semanticModel, expression.SpanStart, cancellationToken: cancellationToken);
-
-                    ForEachStatementSyntax forEachStatement = ForEachStatement(
-                        type: VarType(),
-                        identifier: Identifier(name),
-                        expression: expression.TrimTrivia(),
-                        statement: YieldReturnStatement(IdentifierName(name)));
-
-                    SyntaxNode yieldStatement = expression.Parent;
-
-                    forEachStatement = forEachStatement.WithTriviaFrom(yieldStatement);
-
-                    return context.Document.ReplaceNodeAsync(yieldStatement, forEachStatement, cancellationToken);
-                },
+                cancellationToken => RefactorAsync(context.Document, expression, semanticModel, cancellationToken),
                 EquivalenceKey.Create(diagnostic, CodeFixIdentifiers.ReplaceYieldReturnWithForEach));
 
             context.RegisterCodeFix(codeAction, diagnostic);
+        }
+
+        private static Task<Document> RefactorAsync(
+            Document document,
+            ExpressionSyntax expression,
+            SemanticModel semanticModel,
+            System.Threading.CancellationToken cancellationToken)
+        {
+            string name = DefaultNames.ForEachVariable;
+
+            name = NameGenerator.Default.EnsureUniqueLocalName(name, semanticModel, expression.SpanStart, cancellationToken: cancellationToken);
+
+            ForEachStatementSyntax forEachStatement = ForEachStatement(
+                type: VarType(),
+                identifier: Identifier(name),
+                expression: expression.TrimTrivia(),
+                statement: YieldReturnStatement(IdentifierName(name)));
+
+            SyntaxNode yieldStatement = expression.Parent;
+
+            forEachStatement = forEachStatement.WithTriviaFrom(yieldStatement);
+
+            return document.ReplaceNodeAsync(yieldStatement, forEachStatement, cancellationToken);
         }
     }
 }

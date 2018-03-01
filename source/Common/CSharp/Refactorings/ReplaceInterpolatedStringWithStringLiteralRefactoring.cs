@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,13 +13,10 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(InterpolatedStringExpressionSyntax interpolatedString)
         {
-            if (interpolatedString == null)
-                throw new ArgumentNullException(nameof(interpolatedString));
-
             SyntaxList<InterpolatedStringContentSyntax> contents = interpolatedString.Contents;
 
             return contents.Count == 0
-                || (contents.Count == 1 && contents[0].IsKind(SyntaxKind.InterpolatedStringText));
+                || (contents.Count == 1 && contents[0].Kind() == SyntaxKind.InterpolatedStringText);
         }
 
         public static Task<Document> RefactorAsync(
@@ -28,12 +24,6 @@ namespace Roslynator.CSharp.Refactorings
             InterpolatedStringExpressionSyntax interpolatedString,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (interpolatedString == null)
-                throw new ArgumentNullException(nameof(interpolatedString));
-
             string s = UnescapeBraces(interpolatedString.ToString().Substring(1));
 
             var newNode = (LiteralExpressionSyntax)SyntaxFactory.ParseExpression(s)

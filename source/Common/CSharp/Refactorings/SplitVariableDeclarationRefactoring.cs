@@ -16,25 +16,12 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(VariableDeclarationSyntax variableDeclaration)
         {
-            if (variableDeclaration == null)
-                throw new ArgumentNullException(nameof(variableDeclaration));
-
-            switch (variableDeclaration.Parent?.Kind())
-            {
-                case SyntaxKind.LocalDeclarationStatement:
-                case SyntaxKind.FieldDeclaration:
-                case SyntaxKind.EventFieldDeclaration:
-                    return variableDeclaration.Variables.Count > 1;
-            }
-
-            return false;
+            return variableDeclaration.IsParentKind(SyntaxKind.LocalDeclarationStatement, SyntaxKind.FieldDeclaration, SyntaxKind.EventFieldDeclaration)
+                && variableDeclaration.Variables.Count > 1;
         }
 
         public static string GetTitle(VariableDeclarationSyntax variableDeclaration)
         {
-            if (variableDeclaration == null)
-                throw new ArgumentNullException(nameof(variableDeclaration));
-
             return $"Split {GetName()} declaration";
 
             string GetName()
@@ -58,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings
             VariableDeclarationSyntax variableDeclaration,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            switch (variableDeclaration.Parent?.Kind())
+            switch (variableDeclaration.Parent.Kind())
             {
                 case SyntaxKind.LocalDeclarationStatement:
                     return await SplitLocalDeclarationAsync(document, (LocalDeclarationStatementSyntax)variableDeclaration.Parent, cancellationToken).ConfigureAwait(false);
@@ -67,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.EventFieldDeclaration:
                     return await SplitEventFieldDeclarationAsync(document, (EventFieldDeclarationSyntax)variableDeclaration.Parent, cancellationToken).ConfigureAwait(false);
                 default:
-                    return document;
+                    throw new InvalidOperationException();
             }
         }
 

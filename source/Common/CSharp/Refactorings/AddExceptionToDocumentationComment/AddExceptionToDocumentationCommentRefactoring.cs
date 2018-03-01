@@ -230,7 +230,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
         {
             foreach (XmlAttributeSyntax xmlAttribute in attributes)
             {
-                if (xmlAttribute.IsKind(SyntaxKind.XmlCrefAttribute))
+                if (xmlAttribute.Kind() == SyntaxKind.XmlCrefAttribute)
                 {
                     var xmlCrefAttribute = (XmlCrefAttributeSyntax)xmlAttribute;
 

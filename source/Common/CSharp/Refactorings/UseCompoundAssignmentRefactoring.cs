@@ -1,48 +1,42 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseCompoundAssignmentRefactoring
     {
-        public static bool CanRefactor(AssignmentExpressionSyntax assignment)
+        public static bool CanRefactor(AssignmentExpressionSyntax assignmentExpression)
         {
-            if (assignment == null)
-                throw new ArgumentNullException(nameof(assignment));
+            SimpleAssignmentExpressionInfo assignmentInfo = SyntaxInfo.SimpleAssignmentExpressionInfo(assignmentExpression);
 
-            if (assignment.IsKind(SyntaxKind.SimpleAssignmentExpression))
-            {
-                ExpressionSyntax left = assignment.Left;
-                ExpressionSyntax right = assignment.Right;
+            if (!assignmentInfo.Success)
+                return false;
 
-                if (left?.IsMissing == false
-                    && right?.IsMissing == false
-                    && !assignment.IsParentKind(SyntaxKind.ObjectInitializerExpression)
-                    && CSharpFacts.SupportsCompoundAssignment(right.Kind()))
-                {
-                    var binaryExpression = (BinaryExpressionSyntax)right;
-                    ExpressionSyntax binaryLeft = binaryExpression.Left;
-                    ExpressionSyntax binaryRight = binaryExpression.Right;
+            if (assignmentExpression.IsParentKind(SyntaxKind.ObjectInitializerExpression))
+                return false;
 
-                    return binaryLeft?.IsMissing == false
-                        && binaryRight?.IsMissing == false
-                        && CSharpFactory.AreEquivalent(left, binaryLeft)
-                        && (assignment
-                            .DescendantTrivia(assignment.Span)
-                            .All(f => f.IsWhitespaceOrEndOfLineTrivia()));
-                }
-            }
+            if (!SupportsCompoundAssignment(assignmentInfo.Right.Kind()))
+                return false;
 
-            return false;
+            BinaryExpressionInfo binaryInfo = SyntaxInfo.BinaryExpressionInfo((BinaryExpressionSyntax)assignmentInfo.Right);
+
+            if (!binaryInfo.Success)
+                return false;
+
+            if (!CSharpFactory.AreEquivalent(assignmentInfo.Left, binaryInfo.Left))
+                return false;
+
+            return true;
         }
 
         public static Task<Document> RefactorAsync(
@@ -50,93 +44,37 @@ namespace Roslynator.CSharp.Refactorings
             AssignmentExpressionSyntax assignmentExpression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (assignmentExpression == null)
-                throw new ArgumentNullException(nameof(assignmentExpression));
+            SyntaxToken operatorToken = assignmentExpression.OperatorToken;
 
             var binaryExpression = (BinaryExpressionSyntax)assignmentExpression.Right;
 
+            SyntaxKind kind = GetCompoundAssignmentKind(binaryExpression.Kind());
+
+            SyntaxTriviaList trailingTrivia = binaryExpression
+                .Left
+                .DescendantTrivia()
+                .Concat(binaryExpression.OperatorToken.LeadingAndTrailingTrivia())
+                .ToSyntaxTriviaList()
+                .EmptyIfWhitespace();
+
             AssignmentExpressionSyntax newNode = AssignmentExpression(
-                GetCompoundAssignmentKind(binaryExpression),
+                kind,
                 assignmentExpression.Left,
+                Token(operatorToken.LeadingTrivia, kind, operatorToken.TrailingTrivia.AddRange(trailingTrivia)),
                 binaryExpression.Right);
 
-            newNode = newNode
-                .WithTriviaFrom(assignmentExpression)
-                .WithFormatterAnnotation();
+            newNode = newNode.WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(assignmentExpression, newNode, cancellationToken);
         }
 
         public static string GetCompoundOperatorText(BinaryExpressionSyntax binaryExpression)
         {
-            return Token(GetCompoundOperatorKind(binaryExpression)).ToString();
-        }
+            SyntaxKind compoundAssignmentKind = GetCompoundAssignmentKind(binaryExpression.Kind());
 
-        private static SyntaxKind GetCompoundOperatorKind(BinaryExpressionSyntax binaryExpression)
-        {
-            switch (binaryExpression.Kind())
-            {
-                case SyntaxKind.AddExpression:
-                    return SyntaxKind.PlusEqualsToken;
-                case SyntaxKind.SubtractExpression:
-                    return SyntaxKind.MinusEqualsToken;
-                case SyntaxKind.MultiplyExpression:
-                    return SyntaxKind.AsteriskEqualsToken;
-                case SyntaxKind.DivideExpression:
-                    return SyntaxKind.SlashEqualsToken;
-                case SyntaxKind.ModuloExpression:
-                    return SyntaxKind.PercentEqualsToken;
-                case SyntaxKind.LeftShiftExpression:
-                    return SyntaxKind.LessThanLessThanEqualsToken;
-                case SyntaxKind.RightShiftExpression:
-                    return SyntaxKind.GreaterThanGreaterThanEqualsToken;
-                case SyntaxKind.BitwiseOrExpression:
-                    return SyntaxKind.BarEqualsToken;
-                case SyntaxKind.BitwiseAndExpression:
-                    return SyntaxKind.AmpersandEqualsToken;
-                case SyntaxKind.ExclusiveOrExpression:
-                    return SyntaxKind.CaretEqualsToken;
-                default:
-                    {
-                        Debug.Fail(binaryExpression.Kind().ToString());
-                        return SyntaxKind.None;
-                    }
-            }
-        }
+            SyntaxKind compoundAssignmentOperatorKind = GetCompoundAssignmentOperatorKind(compoundAssignmentKind);
 
-        private static SyntaxKind GetCompoundAssignmentKind(BinaryExpressionSyntax binaryExpression)
-        {
-            switch (binaryExpression.Kind())
-            {
-                case SyntaxKind.AddExpression:
-                    return SyntaxKind.AddAssignmentExpression;
-                case SyntaxKind.SubtractExpression:
-                    return SyntaxKind.SubtractAssignmentExpression;
-                case SyntaxKind.MultiplyExpression:
-                    return SyntaxKind.MultiplyAssignmentExpression;
-                case SyntaxKind.DivideExpression:
-                    return SyntaxKind.DivideAssignmentExpression;
-                case SyntaxKind.ModuloExpression:
-                    return SyntaxKind.ModuloAssignmentExpression;
-                case SyntaxKind.LeftShiftExpression:
-                    return SyntaxKind.LeftShiftAssignmentExpression;
-                case SyntaxKind.RightShiftExpression:
-                    return SyntaxKind.RightShiftAssignmentExpression;
-                case SyntaxKind.BitwiseOrExpression:
-                    return SyntaxKind.OrAssignmentExpression;
-                case SyntaxKind.BitwiseAndExpression:
-                    return SyntaxKind.AndAssignmentExpression;
-                case SyntaxKind.ExclusiveOrExpression:
-                    return SyntaxKind.ExclusiveOrAssignmentExpression;
-                default:
-                    {
-                        Debug.Fail(binaryExpression.Kind().ToString());
-                        return SyntaxKind.None;
-                    }
-            }
+            return SyntaxFacts.GetText(compoundAssignmentOperatorKind);
         }
     }
 }

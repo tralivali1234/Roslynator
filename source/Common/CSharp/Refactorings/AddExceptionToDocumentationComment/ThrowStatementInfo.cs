@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
             if (parent != null)
             {
-                if (parent.IsKind(SyntaxKind.Block))
+                if (parent.Kind() == SyntaxKind.Block)
                     parent = parent.Parent;
 
                 if (parent?.Kind() == SyntaxKind.IfStatement)

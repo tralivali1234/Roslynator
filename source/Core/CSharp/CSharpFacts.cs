@@ -265,11 +265,11 @@ namespace Roslynator.CSharp
         /// <summary>
         /// Returns true if a syntax of the specified kind can be simplified to a compound assignment.
         /// </summary>
-        /// <param name="kind"></param>
+        /// <param name="binaryExpressionKind"></param>
         /// <returns></returns>
-        public static bool SupportsCompoundAssignment(SyntaxKind kind)
+        public static bool SupportsCompoundAssignment(SyntaxKind binaryExpressionKind)
         {
-            switch (kind)
+            switch (binaryExpressionKind)
             {
                 case SyntaxKind.AddExpression:
                 case SyntaxKind.SubtractExpression:
@@ -695,6 +695,65 @@ namespace Roslynator.CSharp
                 SyntaxKind.CasePatternSwitchLabel,
                 SyntaxKind.CaseSwitchLabel,
                 SyntaxKind.DefaultSwitchLabel);
+        }
+
+        //TODO: pub
+        internal static SyntaxKind GetCompoundAssignmentKind(SyntaxKind binaryExpressionKind)
+        {
+            switch (binaryExpressionKind)
+            {
+                case SyntaxKind.AddExpression:
+                    return SyntaxKind.AddAssignmentExpression;
+                case SyntaxKind.SubtractExpression:
+                    return SyntaxKind.SubtractAssignmentExpression;
+                case SyntaxKind.MultiplyExpression:
+                    return SyntaxKind.MultiplyAssignmentExpression;
+                case SyntaxKind.DivideExpression:
+                    return SyntaxKind.DivideAssignmentExpression;
+                case SyntaxKind.ModuloExpression:
+                    return SyntaxKind.ModuloAssignmentExpression;
+                case SyntaxKind.LeftShiftExpression:
+                    return SyntaxKind.LeftShiftAssignmentExpression;
+                case SyntaxKind.RightShiftExpression:
+                    return SyntaxKind.RightShiftAssignmentExpression;
+                case SyntaxKind.BitwiseOrExpression:
+                    return SyntaxKind.OrAssignmentExpression;
+                case SyntaxKind.BitwiseAndExpression:
+                    return SyntaxKind.AndAssignmentExpression;
+                case SyntaxKind.ExclusiveOrExpression:
+                    return SyntaxKind.ExclusiveOrAssignmentExpression;
+                default:
+                    return SyntaxKind.None;
+            }
+        }
+
+        internal static SyntaxKind GetCompoundAssignmentOperatorKind(SyntaxKind compoundAssignmentKind)
+        {
+            switch (compoundAssignmentKind)
+            {
+                case SyntaxKind.AddAssignmentExpression:
+                    return SyntaxKind.PlusEqualsToken;
+                case SyntaxKind.SubtractAssignmentExpression:
+                    return SyntaxKind.MinusEqualsToken;
+                case SyntaxKind.MultiplyAssignmentExpression:
+                    return SyntaxKind.AsteriskEqualsToken;
+                case SyntaxKind.DivideAssignmentExpression:
+                    return SyntaxKind.SlashEqualsToken;
+                case SyntaxKind.ModuloAssignmentExpression:
+                    return SyntaxKind.PercentEqualsToken;
+                case SyntaxKind.LeftShiftAssignmentExpression:
+                    return SyntaxKind.LessThanLessThanEqualsToken;
+                case SyntaxKind.RightShiftAssignmentExpression:
+                    return SyntaxKind.GreaterThanGreaterThanEqualsToken;
+                case SyntaxKind.OrAssignmentExpression:
+                    return SyntaxKind.BarEqualsToken;
+                case SyntaxKind.AndAssignmentExpression:
+                    return SyntaxKind.AmpersandEqualsToken;
+                case SyntaxKind.ExclusiveOrAssignmentExpression:
+                    return SyntaxKind.CaretEqualsToken;
+                default:
+                    return SyntaxKind.None;
+            }
         }
     }
 }

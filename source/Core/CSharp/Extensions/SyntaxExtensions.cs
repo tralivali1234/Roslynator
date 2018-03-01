@@ -2725,6 +2725,7 @@ namespace Roslynator.CSharp
             return node.RemoveNode(statement);
         }
 
+        //TODO: RemoveModifiers
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode
         {
             return Modifier.Remove(node, modifierKind);

@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
 
             foreach (SyntaxNode descendant in node.DescendantNodes())
             {
-                if (descendant.IsKind(SyntaxKind.IdentifierName))
+                if (descendant.Kind() == SyntaxKind.IdentifierName)
                 {
                     IAliasSymbol symbol = semanticModel.GetAliasInfo(descendant, cancellationToken);
 

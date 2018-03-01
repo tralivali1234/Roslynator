@@ -459,10 +459,10 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!assignment2.Success)
                 return Empty;
 
-            if (!assignment1.Left.IsKind(SyntaxKind.IdentifierName))
+            if (assignment1.Left.Kind() != SyntaxKind.IdentifierName)
                 return Empty;
 
-            if (!assignment2.Left.IsKind(SyntaxKind.IdentifierName))
+            if (assignment2.Left.Kind() != SyntaxKind.IdentifierName)
                 return Empty;
 
             string identifier1 = ((IdentifierNameSyntax)assignment1.Left).Identifier.ValueText;

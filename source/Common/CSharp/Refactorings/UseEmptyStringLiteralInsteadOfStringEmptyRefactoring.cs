@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -16,25 +15,22 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (memberAccess == null)
-                throw new ArgumentNullException(nameof(memberAccess));
+            if (memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression))
+                return false;
 
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
+            if (memberAccess.Expression == null)
+                return false;
 
-            if (!memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression)
-                && memberAccess.Expression != null
-                && memberAccess.Name?.Identifier.ValueText == "Empty")
-            {
-                var fieldSymbol = semanticModel.GetSymbol(memberAccess.Name, cancellationToken) as IFieldSymbol;
+            if (memberAccess.Name?.Identifier.ValueText != "Empty")
+                return false;
 
-                return fieldSymbol?.IsPublic() == true
-                    && fieldSymbol.IsReadOnly
-                    && fieldSymbol.IsStatic
-                    && fieldSymbol.ContainingType?.IsString() == true;
-            }
+            var fieldSymbol = semanticModel.GetSymbol(memberAccess.Name, cancellationToken) as IFieldSymbol;
 
-            return false;
+            //TODO: IsPublicStaticReadOnly
+            return fieldSymbol?.IsPublic() == true
+                && fieldSymbol.IsReadOnly
+                && fieldSymbol.IsStatic
+                && fieldSymbol.ContainingType?.IsString() == true;
         }
 
         public static Task<Document> RefactorAsync(
@@ -42,8 +38,7 @@ namespace Roslynator.CSharp.Refactorings
             MemberAccessExpressionSyntax node,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            LiteralExpressionSyntax newNode = CSharpFactory.StringLiteralExpression("")
-                .WithTriviaFrom(node);
+            LiteralExpressionSyntax newNode = CSharpFactory.StringLiteralExpression("").WithTriviaFrom(node);
 
             return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }

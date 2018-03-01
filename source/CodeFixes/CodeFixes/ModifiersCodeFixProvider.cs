@@ -166,7 +166,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case CompilerDiagnosticIdentifiers.AccessModifiersAreNotAllowedOnStaticConstructors:
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveInvalidModifier))
-                                ModifiersCodeFixRegistrator.RemoveAccessModifiers(context, diagnostic, node);
+                                ModifiersCodeFixRegistrator.RemoveAccessibility(context, diagnostic, node);
 
                             break;
                         }
@@ -222,7 +222,7 @@ namespace Roslynator.CSharp.CodeFixes
                     case CompilerDiagnosticIdentifiers.AbstractPropertiesCannotHavePrivateAccessors:
                         {
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveInvalidModifier))
-                                ModifiersCodeFixRegistrator.RemoveAccessModifiers(context, diagnostic, node, additionalKey: CodeFixIdentifiers.RemoveInvalidModifier);
+                                ModifiersCodeFixRegistrator.RemoveAccessibility(context, diagnostic, node, additionalKey: CodeFixIdentifiers.RemoveInvalidModifier);
 
                             if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.ChangeAccessibility))
                                 ModifiersCodeFixRegistrator.ChangeAccessibility(context, diagnostic, node, _publicOrInternalOrProtected);

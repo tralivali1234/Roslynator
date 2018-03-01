@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (SyntaxNode node in forEachStatement.Statement.DescendantNodes())
             {
-                if (node.IsKind(SyntaxKind.IdentifierName)
+                if (node.Kind() == SyntaxKind.IdentifierName
                     && symbol.Equals(semanticModel.GetSymbol(node, cancellationToken)))
                 {
                     yield return (IdentifierNameSyntax)node;
