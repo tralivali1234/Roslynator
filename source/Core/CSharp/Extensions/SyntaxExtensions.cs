@@ -3634,6 +3634,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsVoid(this TypeSyntax type)
         {
+            //TODO: throw?
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 

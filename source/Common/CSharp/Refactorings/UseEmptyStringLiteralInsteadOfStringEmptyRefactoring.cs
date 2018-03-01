@@ -27,10 +27,10 @@ namespace Roslynator.CSharp.Refactorings
             var fieldSymbol = semanticModel.GetSymbol(memberAccess.Name, cancellationToken) as IFieldSymbol;
 
             //TODO: IsPublicStaticReadOnly
-            return fieldSymbol?.IsPublic() == true
+            return fieldSymbol?.DeclaredAccessibility == Accessibility.Public
                 && fieldSymbol.IsReadOnly
                 && fieldSymbol.IsStatic
-                && fieldSymbol.ContainingType?.IsString() == true;
+                && fieldSymbol.ContainingType?.SpecialType == SpecialType.System_String;
         }
 
         public static Task<Document> RefactorAsync(

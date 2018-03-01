@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         ISymbol symbol = semanticModel.GetDeclaredSymbol(singleVariableDesignation, context.CancellationToken);
 
-                        if (symbol?.IsLocal() == true)
+                        if (symbol?.Kind == SymbolKind.Local)
                         {
                             var localSymbol = (ILocalSymbol)symbol;
 

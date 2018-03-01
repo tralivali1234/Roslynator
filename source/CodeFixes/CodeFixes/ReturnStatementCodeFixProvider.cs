@@ -128,7 +128,7 @@ namespace Roslynator.CSharp.CodeFixes
                             {
                                 ISymbol symbol = semanticModel.GetEnclosingSymbol(returnStatement.SpanStart, context.CancellationToken);
 
-                                if (symbol?.IsMethod() == true)
+                                if (symbol?.Kind == SymbolKind.Method)
                                 {
                                     var methodSymbol = (IMethodSymbol)symbol;
 

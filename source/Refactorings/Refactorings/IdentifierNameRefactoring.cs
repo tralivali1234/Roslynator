@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     var fieldSymbol = semanticModel.GetSymbol(identifierName, context.CancellationToken) as IFieldSymbol;
 
-                    if (fieldSymbol?.IsPrivate() == true)
+                    if (fieldSymbol?.DeclaredAccessibility == Accessibility.Private)
                     {
                         IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
 

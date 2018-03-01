@@ -103,7 +103,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             ISymbol leftSymbol = semanticModel.GetSymbol(assignment.Left, cancellationToken);
 
-                            if (leftSymbol?.IsProperty() == true)
+                            if (leftSymbol?.Kind == SymbolKind.Property)
                                 return true;
                         }
                     }

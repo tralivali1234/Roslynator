@@ -1678,7 +1678,7 @@ namespace Roslynator
         /// <returns></returns>
         public static bool IsConstructedFrom(this ITypeSymbol typeSymbol, ITypeSymbol constructedFromSymbol)
         {
-            return typeSymbol?.IsNamedType() == true
+            return typeSymbol?.Kind == SymbolKind.NamedType
                 && ((INamedTypeSymbol)typeSymbol).ConstructedFrom?.Equals(constructedFromSymbol) == true;
         }
 

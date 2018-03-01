@@ -107,7 +107,7 @@ namespace Roslynator.CSharp
                         ExpressionSyntax argumentExpression = argument.Expression;
 
                         if (argumentExpression?.IsMissing == false
-                            && semanticModel.GetSymbol(argumentExpression, cancellationToken)?.IsLocal() == true)
+                            && semanticModel.GetSymbol(argumentExpression, cancellationToken)?.Kind == SymbolKind.Local)
                         {
                             return true;
                         }

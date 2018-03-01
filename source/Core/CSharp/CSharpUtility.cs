@@ -181,7 +181,7 @@ namespace Roslynator.CSharp
             {
                 ISymbol symbol = semanticModel.GetSymbol(name, cancellationToken);
 
-                if (symbol?.IsNamespace() == true)
+                if (symbol?.Kind == SymbolKind.Namespace)
                 {
                     string namespaceText = namespaceSymbol.ToString();
 
@@ -284,12 +284,12 @@ namespace Roslynator.CSharp
                 {
                     ISymbol symbol = semanticModel.GetSymbol(memberAccess, cancellationToken);
 
-                    if (symbol?.IsField() == true)
+                    if (symbol?.Kind == SymbolKind.Field)
                     {
                         var fieldSymbol = (IFieldSymbol)symbol;
 
                         if (string.Equals(fieldSymbol.Name, "Empty", StringComparison.Ordinal)
-                            && fieldSymbol.ContainingType?.IsString() == true
+                            && fieldSymbol.ContainingType?.SpecialType == SpecialType.System_String
                             && fieldSymbol.IsPublic()
                             && fieldSymbol.IsStatic
                             && fieldSymbol.IsReadOnly

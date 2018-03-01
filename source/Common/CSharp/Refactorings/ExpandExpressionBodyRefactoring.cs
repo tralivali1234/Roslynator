@@ -204,7 +204,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(returnType, cancellationToken);
 
-                if (typeSymbol?.IsNamedType() == true
+                if (typeSymbol?.Kind == SymbolKind.NamedType
                     && !((INamedTypeSymbol)typeSymbol).ConstructedFrom.EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)))
                 {
                     return true;

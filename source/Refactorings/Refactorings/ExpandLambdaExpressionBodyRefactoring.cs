@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ITypeSymbol returnType = methodSymbol.ReturnType;
 
-                if (returnType?.IsNamedType() == true
+                if (returnType?.Kind == SymbolKind.NamedType
                     && !((INamedTypeSymbol)returnType).ConstructedFrom.EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)))
                 {
                     return true;

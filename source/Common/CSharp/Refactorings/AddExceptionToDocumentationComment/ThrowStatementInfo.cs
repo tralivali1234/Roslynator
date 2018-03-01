@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
                         {
                             ISymbol leftSymbol = semanticModel.GetSymbol(left, cancellationToken);
 
-                            if (leftSymbol?.IsParameter() == true
+                            if (leftSymbol?.Kind == SymbolKind.Parameter
                                 && leftSymbol.ContainingSymbol?.Equals(DeclarationSymbol) == true)
                             {
                                 return (IParameterSymbol)leftSymbol;

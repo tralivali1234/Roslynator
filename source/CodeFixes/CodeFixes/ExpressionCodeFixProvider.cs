@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if ((type is INamedTypeSymbol namedType)
                                 && namedType.ConstructedFrom.SpecialType == SpecialType.System_Nullable_T)
                             {
-                                if (convertedType?.IsBoolean() == true
+                                if (convertedType?.SpecialType == SpecialType.System_Boolean
                                     || AddComparisonWithBooleanLiteralRefactoring.IsCondition(expression))
                                 {
                                     if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.AddComparisonWithBooleanLiteral))
@@ -313,8 +313,8 @@ namespace Roslynator.CSharp.CodeFixes
 
                                     if (whenTrue != null
                                         && whenFalse != null
-                                        && semanticModel.GetTypeSymbol(whenTrue, context.CancellationToken)?.IsVoid() == true
-                                        && semanticModel.GetTypeSymbol(whenFalse, context.CancellationToken)?.IsVoid() == true)
+                                        && semanticModel.GetTypeSymbol(whenTrue, context.CancellationToken)?.SpecialType == SpecialType.System_Void
+                                        && semanticModel.GetTypeSymbol(whenFalse, context.CancellationToken)?.SpecialType == SpecialType.System_Void)
                                     {
                                         CodeAction codeAction = CodeAction.Create(
                                             "Replace ?: with if-else",
@@ -413,7 +413,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                                    if (semanticModel.GetTypeInfo(expression, context.CancellationToken).ConvertedType?.IsChar() == true)
+                                    if (semanticModel.GetTypeInfo(expression, context.CancellationToken).ConvertedType?.SpecialType == SpecialType.System_Char)
                                     {
                                         CodeAction codeAction = CodeAction.Create(
                                             "Replace string literal with character literal",
