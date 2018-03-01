@@ -218,7 +218,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                         if (methodSymbol.ReturnsVoid)
                             return Success(SyntaxKind.ReturnStatement, parent);
 
-                        if (anonymousFunction.AsyncKeyword.IsKind(SyntaxKind.AsyncKeyword)
+                        if (anonymousFunction.AsyncKeyword.Kind() == SyntaxKind.AsyncKeyword
                             && methodSymbol.ReturnType.Equals(taskSymbol))
                         {
                             return Success(SyntaxKind.ReturnStatement, parent);

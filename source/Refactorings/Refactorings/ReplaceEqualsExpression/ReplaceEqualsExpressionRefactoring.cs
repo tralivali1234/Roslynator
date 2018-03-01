@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceEqualsExpression
 
                         ITypeSymbol leftSymbol = semanticModel.GetTypeInfo(left, context.CancellationToken).ConvertedType;
 
-                        if (leftSymbol?.IsString() == true)
+                        if (leftSymbol?.SpecialType == SpecialType.System_String)
                         {
                             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceEqualsExpressionWithStringIsNullOrEmpty))
                             {

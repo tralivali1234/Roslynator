@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             ITypeSymbol expressionType = semanticModel.GetTypeSymbol(expression, context.CancellationToken);
 
-            if (expressionType?.IsNamedType() == true)
+            if (expressionType?.Kind == SymbolKind.NamedType)
             {
                 INamedTypeSymbol constructedFrom = ((INamedTypeSymbol)expressionType).ConstructedFrom;
 

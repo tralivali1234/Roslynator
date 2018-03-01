@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static BinaryExpressionSyntax CreateNewExpression(ExpressionSyntax expression)
         {
-            if (expression.IsKind(SyntaxKind.LogicalNotExpression))
+            if (expression.Kind() == SyntaxKind.LogicalNotExpression)
             {
                 var logicalNot = (PrefixUnaryExpressionSyntax)expression;
 

@@ -65,8 +65,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (_previousIf.Equals(node.Parent)
                     && node.Statement != null
-                    && !node.Statement.IsKind(SyntaxKind.Block)
-                    && !node.Statement.IsKind(SyntaxKind.IfStatement))
+                    && !node.Statement.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement))
                 {
                     return node.WithStatement(SyntaxFactory.Block(node.Statement));
                 }

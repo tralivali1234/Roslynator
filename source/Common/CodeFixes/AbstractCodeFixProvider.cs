@@ -8,6 +8,7 @@ using Roslynator.Diagnostics;
 
 namespace Roslynator.CodeFixes
 {
+    //TODO: 
     public abstract class AbstractCodeFixProvider : CodeFixProvider
     {
         public override FixAllProvider GetFixAllProvider()

@@ -16,63 +16,42 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(MethodDeclarationSyntax declaration)
         {
-            if (declaration == null)
-                throw new ArgumentNullException(nameof(declaration));
-
             return declaration.ExpressionBody == null
                 && GetExpression(declaration.Body) != null;
         }
 
         public static bool CanRefactor(ConstructorDeclarationSyntax declaration)
         {
-            if (declaration == null)
-                throw new ArgumentNullException(nameof(declaration));
-
             return declaration.ExpressionBody == null
                 && GetExpression(declaration.Body) != null;
         }
 
         public static bool CanRefactor(DestructorDeclarationSyntax declaration)
         {
-            if (declaration == null)
-                throw new ArgumentNullException(nameof(declaration));
-
             return declaration.ExpressionBody == null
                 && GetExpression(declaration.Body) != null;
         }
 
         public static bool CanRefactor(LocalFunctionStatementSyntax localFunctionStatement)
         {
-            if (localFunctionStatement == null)
-                throw new ArgumentNullException(nameof(localFunctionStatement));
-
             return localFunctionStatement.ExpressionBody == null
                 && GetExpression(localFunctionStatement.Body) != null;
         }
 
         public static bool CanRefactor(OperatorDeclarationSyntax declaration)
         {
-            if (declaration == null)
-                throw new ArgumentNullException(nameof(declaration));
-
             return declaration.ExpressionBody == null
                 && GetReturnExpression(declaration.Body) != null;
         }
 
         public static bool CanRefactor(ConversionOperatorDeclarationSyntax declaration)
         {
-            if (declaration == null)
-                throw new ArgumentNullException(nameof(declaration));
-
             return declaration.ExpressionBody == null
                 && GetReturnExpression(declaration.Body) != null;
         }
 
         public static bool CanRefactor(AccessorDeclarationSyntax accessor)
         {
-            if (accessor == null)
-                throw new ArgumentNullException(nameof(accessor));
-
             return accessor.ExpressionBody == null
                 && !accessor.AttributeLists.Any()
                 && GetExpression(accessor.Body) != null;
@@ -80,20 +59,12 @@ namespace Roslynator.CSharp.Refactorings
 
         public static ExpressionSyntax GetReturnExpression(AccessorListSyntax accessorList)
         {
-            if (accessorList != null)
+            AccessorDeclarationSyntax accessor = accessorList?.Accessors.SingleOrDefault(shouldThrow: false);
+
+            if (accessor?.Kind() == SyntaxKind.GetAccessorDeclaration
+                && !accessor.AttributeLists.Any())
             {
-                SyntaxList<AccessorDeclarationSyntax> accessors = accessorList.Accessors;
-
-                if (accessors.Count == 1)
-                {
-                    AccessorDeclarationSyntax accessor = accessors[0];
-
-                    if (accessor.IsKind(SyntaxKind.GetAccessorDeclaration)
-                        && !accessor.AttributeLists.Any())
-                    {
-                        return GetReturnExpression(accessor.Body);
-                    }
-                }
+                return GetReturnExpression(accessor.Body);
             }
 
             return default(ExpressionSyntax);
@@ -116,17 +87,14 @@ namespace Roslynator.CSharp.Refactorings
 
         public static ExpressionSyntax GetReturnExpression(BlockSyntax block)
         {
-            if (block != null)
-            {
-                StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
+            StatementSyntax statement = block?.Statements.SingleOrDefault(shouldThrow: false);
 
-                switch (statement?.Kind())
-                {
-                    case SyntaxKind.ReturnStatement:
-                        return ((ReturnStatementSyntax)statement).Expression;
-                    case SyntaxKind.ThrowStatement:
-                        return ((ThrowStatementSyntax)statement).Expression;
-                }
+            switch (statement?.Kind())
+            {
+                case SyntaxKind.ReturnStatement:
+                    return ((ReturnStatementSyntax)statement).Expression;
+                case SyntaxKind.ThrowStatement:
+                    return ((ThrowStatementSyntax)statement).Expression;
             }
 
             return default(ExpressionSyntax);
@@ -134,19 +102,16 @@ namespace Roslynator.CSharp.Refactorings
 
         public static ExpressionSyntax GetExpression(BlockSyntax block)
         {
-            if (block != null)
-            {
-                StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
+            StatementSyntax statement = block?.Statements.SingleOrDefault(shouldThrow: false);
 
-                switch (statement?.Kind())
-                {
-                    case SyntaxKind.ReturnStatement:
-                        return ((ReturnStatementSyntax)statement).Expression;
-                    case SyntaxKind.ExpressionStatement:
-                        return ((ExpressionStatementSyntax)statement).Expression;
-                    case SyntaxKind.ThrowStatement:
-                        return ((ThrowStatementSyntax)statement).Expression;
-                }
+            switch (statement?.Kind())
+            {
+                case SyntaxKind.ReturnStatement:
+                    return ((ReturnStatementSyntax)statement).Expression;
+                case SyntaxKind.ExpressionStatement:
+                    return ((ExpressionStatementSyntax)statement).Expression;
+                case SyntaxKind.ThrowStatement:
+                    return ((ThrowStatementSyntax)statement).Expression;
             }
 
             return default(ExpressionSyntax);
@@ -154,19 +119,16 @@ namespace Roslynator.CSharp.Refactorings
 
         public static ExpressionSyntax GetExpressionOrThrowExpression(BlockSyntax block)
         {
-            if (block != null)
-            {
-                StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
+            StatementSyntax statement = block?.Statements.SingleOrDefault(shouldThrow: false);
 
-                switch (statement?.Kind())
-                {
-                    case SyntaxKind.ReturnStatement:
-                        return ((ReturnStatementSyntax)statement).Expression;
-                    case SyntaxKind.ExpressionStatement:
-                        return ((ExpressionStatementSyntax)statement).Expression;
-                    case SyntaxKind.ThrowStatement:
-                        return ThrowExpression(((ThrowStatementSyntax)statement).Expression);
-                }
+            switch (statement?.Kind())
+            {
+                case SyntaxKind.ReturnStatement:
+                    return ((ReturnStatementSyntax)statement).Expression;
+                case SyntaxKind.ExpressionStatement:
+                    return ((ExpressionStatementSyntax)statement).Expression;
+                case SyntaxKind.ThrowStatement:
+                    return ThrowExpression(((ThrowStatementSyntax)statement).Expression);
             }
 
             return default(ExpressionSyntax);
@@ -194,12 +156,6 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxNode node,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (node == null)
-                throw new ArgumentNullException(nameof(node));
-
             SyntaxNode newNode = GetNewNode(node)
                 .WithTrailingTrivia(node.GetTrailingTrivia())
                 .WithFormatterAnnotation();

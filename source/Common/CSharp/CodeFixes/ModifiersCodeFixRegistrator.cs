@@ -25,9 +25,7 @@ namespace Roslynator.CSharp.CodeFixes
             string additionalKey = null,
             IModifierComparer comparer = null)
         {
-            Document document = context.Document;
-
-            AddModifier(context, document, diagnostic, node, modifierKind, title, additionalKey, comparer);
+            AddModifier(context, context.Document, diagnostic, node, modifierKind, title, additionalKey, comparer);
         }
 
         public static void AddModifier(
@@ -241,7 +239,9 @@ namespace Roslynator.CSharp.CodeFixes
             Func<SyntaxToken, bool> predicate,
             string additionalKey = null)
         {
-            RemoveModifiers(context, diagnostic, node, SyntaxInfo.ModifiersInfo(node).Modifiers, predicate, additionalKey);
+            SyntaxTokenList modifiers = SyntaxInfo.ModifiersInfo(node).Modifiers;
+
+            RemoveModifiers(context, diagnostic, node, modifiers, predicate, additionalKey);
         }
 
         public static void RemoveModifiers(
@@ -314,7 +314,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        public static void RemoveAccessModifiers(
+        public static void RemoveAccessibility(
             CodeFixContext context,
             Diagnostic diagnostic,
             SyntaxNode node,

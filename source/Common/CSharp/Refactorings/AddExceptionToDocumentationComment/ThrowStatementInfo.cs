@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
             if (parent != null)
             {
-                if (parent.IsKind(SyntaxKind.Block))
+                if (parent.Kind() == SyntaxKind.Block)
                     parent = parent.Parent;
 
                 if (parent?.Kind() == SyntaxKind.IfStatement)
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
                         {
                             ISymbol leftSymbol = semanticModel.GetSymbol(left, cancellationToken);
 
-                            if (leftSymbol?.IsParameter() == true
+                            if (leftSymbol?.Kind == SymbolKind.Parameter
                                 && leftSymbol.ContainingSymbol?.Equals(DeclarationSymbol) == true)
                             {
                                 return (IParameterSymbol)leftSymbol;

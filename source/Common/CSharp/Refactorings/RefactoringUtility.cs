@@ -17,9 +17,6 @@ namespace Roslynator.CSharp
     {
         public static InvocationExpressionSyntax ChangeInvokedMethodName(InvocationExpressionSyntax invocation, string newName)
         {
-            if (invocation == null)
-                throw new ArgumentNullException(nameof(invocation));
-
             ExpressionSyntax expression = invocation.Expression;
 
             if (expression != null)
@@ -33,7 +30,7 @@ namespace Roslynator.CSharp
 
                     if (simpleName != null)
                     {
-                        SimpleNameSyntax newSimpleName = ChangeName(simpleName, newName);
+                        SimpleNameSyntax newSimpleName = ChangeName(simpleName);
 
                         return invocation.WithExpression(memberAccess.WithName(newSimpleName));
                     }
@@ -45,7 +42,7 @@ namespace Roslynator.CSharp
 
                     if (simpleName != null)
                     {
-                        SimpleNameSyntax newSimpleName = ChangeName(simpleName, newName);
+                        SimpleNameSyntax newSimpleName = ChangeName(simpleName);
 
                         return invocation.WithExpression(memberBinding.WithName(newSimpleName));
                     }
@@ -54,7 +51,7 @@ namespace Roslynator.CSharp
                 {
                     if (expression is SimpleNameSyntax simpleName)
                     {
-                        SimpleNameSyntax newSimpleName = ChangeName(simpleName, newName);
+                        SimpleNameSyntax newSimpleName = ChangeName(simpleName);
 
                         return invocation.WithExpression(newSimpleName);
                     }
@@ -64,15 +61,15 @@ namespace Roslynator.CSharp
             }
 
             return invocation;
-        }
 
-        private static SimpleNameSyntax ChangeName(SimpleNameSyntax simpleName, string newName)
-        {
-            return simpleName.WithIdentifier(
-                Identifier(
-                    simpleName.GetLeadingTrivia(),
-                    newName,
-                    simpleName.GetTrailingTrivia()));
+            SimpleNameSyntax ChangeName(SimpleNameSyntax simpleName)
+            {
+                return simpleName.WithIdentifier(
+                    Identifier(
+                        simpleName.GetLeadingTrivia(),
+                        newName,
+                        simpleName.GetTrailingTrivia()));
+            }
         }
 
         public static BinaryExpressionSyntax CreateCoalesceExpression(
@@ -101,16 +98,16 @@ namespace Roslynator.CSharp
         {
             foreach (SyntaxNode node in expression.DescendantNodes())
             {
-                if (node.IsKind(SyntaxKind.Argument))
+                if (node.Kind() == SyntaxKind.Argument)
                 {
                     var argument = (ArgumentSyntax)node;
 
-                    if (argument.RefOrOutKeyword.IsKind(SyntaxKind.OutKeyword))
+                    if (argument.RefOrOutKeyword.Kind() == SyntaxKind.OutKeyword)
                     {
                         ExpressionSyntax argumentExpression = argument.Expression;
 
                         if (argumentExpression?.IsMissing == false
-                            && semanticModel.GetSymbol(argumentExpression, cancellationToken)?.IsLocal() == true)
+                            && semanticModel.GetSymbol(argumentExpression, cancellationToken)?.Kind == SymbolKind.Local)
                         {
                             return true;
                         }

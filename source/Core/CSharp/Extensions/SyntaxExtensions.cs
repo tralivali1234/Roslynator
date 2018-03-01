@@ -2725,6 +2725,7 @@ namespace Roslynator.CSharp
             return node.RemoveNode(statement);
         }
 
+        //TODO: RemoveModifiers
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode
         {
             return Modifier.Remove(node, modifierKind);
@@ -3633,6 +3634,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsVoid(this TypeSyntax type)
         {
+            //TODO: throw?
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 

@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                                    if (semanticModel.GetTypeInfo(node, context.CancellationToken).ConvertedType?.IsChar() == true)
+                                    if (semanticModel.GetTypeInfo(node, context.CancellationToken).ConvertedType?.SpecialType == SpecialType.System_Char)
                                     {
                                         CodeAction codeAction = CodeAction.Create(
                                             "Replace string literal with character literal",

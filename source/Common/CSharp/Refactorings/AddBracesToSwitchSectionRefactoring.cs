@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 return true;
             }
-            else if (statements.Count == 1 && !statements[0].IsKind(SyntaxKind.Block))
+            else if (statements.Count == 1 && statements[0].Kind() != SyntaxKind.Block)
             {
                 return true;
             }

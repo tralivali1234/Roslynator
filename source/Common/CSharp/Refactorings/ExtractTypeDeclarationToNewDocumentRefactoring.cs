@@ -138,7 +138,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             IEnumerable<NamespaceDeclarationSyntax> emptyNamespaces = node
                 .DescendantNodes()
-                .Where(f => f.IsKind(SyntaxKind.NamespaceDeclaration))
+                .Where(f => f.Kind() == SyntaxKind.NamespaceDeclaration)
                 .Cast<NamespaceDeclarationSyntax>()
                 .Where(f => !f.Members.Any());
 

@@ -16,12 +16,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(AssignmentExpressionSyntax assignmentExpression)
         {
-            if (assignmentExpression == null)
-                throw new ArgumentNullException(nameof(assignmentExpression));
-
-            return !assignmentExpression.IsKind(SyntaxKind.SimpleAssignmentExpression)
-                && assignmentExpression.Left?.IsMissing == false
-                && assignmentExpression.Right?.IsMissing == false;
+            return SyntaxInfo.SimpleAssignmentExpressionInfo(assignmentExpression).Success;
         }
 
         public static Task<Document> RefactorAsync(

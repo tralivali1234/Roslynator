@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsUnconstrainedTypeParameter(ITypeSymbol typeSymbol)
         {
-            return typeSymbol?.IsTypeParameter() == true
+            return typeSymbol?.Kind == SymbolKind.TypeParameter
                 && VerifyConstraint((ITypeParameterSymbol)typeSymbol, allowReference: false, allowValueType: false, allowConstructor: true);
         }
 

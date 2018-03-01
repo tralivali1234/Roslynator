@@ -31,11 +31,11 @@ namespace Roslynator.CSharp.Refactorings
 
                         ITypeSymbol leftSymbol = semanticModel.GetTypeInfo(left, context.CancellationToken).ConvertedType;
 
-                        if (leftSymbol?.IsString() == true)
+                        if (leftSymbol?.SpecialType == SpecialType.System_String)
                         {
                             ITypeSymbol rightSymbol = semanticModel.GetTypeInfo(right, context.CancellationToken).ConvertedType;
 
-                            if (rightSymbol?.IsString() == true)
+                            if (rightSymbol?.SpecialType == SpecialType.System_String)
                             {
                                 string title = (binaryExpression.IsKind(SyntaxKind.EqualsExpression))
                                     ? "Replace == with string.Equals"

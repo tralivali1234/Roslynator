@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -16,14 +15,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (ifStatement == null)
-                throw new ArgumentNullException(nameof(ifStatement));
-
-            IfStatementSyntax newNode = SyntaxRewriter.VisitNode(ifStatement)
-                .WithFormatterAnnotation();
+            IfStatementSyntax newNode = SyntaxRewriter.VisitNode(ifStatement).WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
@@ -43,9 +35,6 @@ namespace Roslynator.CSharp.Refactorings
 
             public override SyntaxNode VisitIfStatement(IfStatementSyntax node)
             {
-                if (node == null)
-                    throw new ArgumentNullException(nameof(node));
-
                 if (_previousIf == null
                     || _previousIf.Equals(node.GetPreviousIf()))
                 {
@@ -68,12 +57,8 @@ namespace Roslynator.CSharp.Refactorings
 
             public override SyntaxNode VisitElseClause(ElseClauseSyntax node)
             {
-                if (node == null)
-                    throw new ArgumentNullException(nameof(node));
-
                 if (_previousIf.Equals(node.Parent)
-                    && node.Statement != null
-                    && node.Statement.IsKind(SyntaxKind.Block))
+                    && node.Statement?.Kind() == SyntaxKind.Block)
                 {
                     return node.WithStatement(((BlockSyntax)node.Statement).Statements[0]);
                 }

@@ -86,7 +86,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             ISymbol symbol = semanticModel.GetSymbol(memberAccess.Expression, cancellationToken);
 
-                            if (symbol?.IsNamespace() == true)
+                            if (symbol?.Kind == SymbolKind.Namespace)
                                 return null;
                         }
 

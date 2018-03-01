@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ISymbol symbol = semanticModel.GetSymbol(node, context.CancellationToken);
 
-                if (symbol?.IsNamespace() == true)
+                if (symbol?.Kind == SymbolKind.Namespace)
                 {
                     namespaceSymbol = (INamespaceSymbol)symbol;
                     prevNode = node;

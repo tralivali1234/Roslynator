@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.CodeFixes
 
                                 ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
 
-                                if (typeSymbol?.IsNamedType() == true)
+                                if (typeSymbol?.Kind == SymbolKind.NamedType)
                                 {
                                     ArrayTypeSyntax newType = SyntaxFactory.ArrayType(
                                         typeSymbol.ToMinimalTypeSyntax(semanticModel, parameter.SpanStart),

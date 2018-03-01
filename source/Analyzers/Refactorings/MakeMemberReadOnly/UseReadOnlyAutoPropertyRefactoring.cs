@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
                     {
                         IMethodSymbol setMethod = propertySymbol.SetMethod;
 
-                        if (setMethod?.IsPrivate() == true
+                        if (setMethod?.DeclaredAccessibility == Accessibility.Private
                             && !setMethod.HasAttribute()
                             && setMethod.GetSyntaxOrDefault(context.CancellationToken) is AccessorDeclarationSyntax accessor
                             && accessor.BodyOrExpressionBody() == null)
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 
         protected override bool ValidateSymbol(ISymbol symbol)
         {
-            return symbol?.IsProperty() == true;
+            return symbol?.Kind == SymbolKind.Property;
         }
 
         public override void ReportFixableSymbols(SymbolAnalysisContext context, INamedTypeSymbol containingType, HashSet<ISymbol> symbols)

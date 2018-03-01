@@ -11,84 +11,71 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class SimplifyLambdaExpressionRefactoring
     {
         public static bool CanRefactor(LambdaExpressionSyntax lambda)
         {
-            if (lambda == null)
-                throw new ArgumentNullException(nameof(lambda));
-
             CSharpSyntaxNode body = lambda.Body;
 
-            if (body?.Kind() == SyntaxKind.Block)
-            {
-                var block = (BlockSyntax)body;
+            if (body?.Kind() != SyntaxKind.Block)
+                return false;
 
-                StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
+            var block = (BlockSyntax)body;
 
-                if (statement != null)
-                {
-                    ExpressionSyntax expression = GetExpression(statement);
+            StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
 
-                    if (expression?.IsSingleLine() == true
-                        && lambda
-                            .DescendantTrivia(TextSpan.FromBounds(lambda.ArrowToken.Span.End, expression.Span.Start))
-                            .All(f => f.IsWhitespaceOrEndOfLineTrivia())
-                        && lambda
-                            .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, block.Span.End))
-                            .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                    {
-                        return true;
-                    }
-                }
-            }
+            if (statement == null)
+                return false;
 
-            return false;
+            ExpressionSyntax expression = GetExpression(statement);
+
+            return expression?.IsSingleLine() == true
+                && lambda
+                    .DescendantTrivia(TextSpan.FromBounds(lambda.ArrowToken.Span.End, expression.Span.Start))
+                    .All(f => f.IsWhitespaceOrEndOfLineTrivia())
+                && lambda
+                    .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, block.Span.End))
+                    .All(f => f.IsWhitespaceOrEndOfLineTrivia());
         }
 
         public static Task<Document> RefactorAsync(
             Document document,
-            LambdaExpressionSyntax lambdaExpressionSyntax,
+            LambdaExpressionSyntax lambda,
             CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (lambdaExpressionSyntax == null)
-                throw new ArgumentNullException(nameof(lambdaExpressionSyntax));
-
-            LambdaExpressionSyntax newLambda = Refactor(lambdaExpressionSyntax)
-                .WithTriviaFrom(lambdaExpressionSyntax)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(lambdaExpressionSyntax, newLambda, cancellationToken);
-        }
-
-        private static LambdaExpressionSyntax Refactor(LambdaExpressionSyntax lambda)
         {
             var block = (BlockSyntax)lambda.Body;
             StatementSyntax statement = block.Statements[0];
-            ExpressionSyntax expression = GetNewExpression(statement);
+            ExpressionSyntax expression = GetNewExpression(statement).WithoutTrivia();
 
-            expression = expression.WithoutTrivia();
+            LambdaExpressionSyntax newLambda = GetNewLambda()
+                .WithTriviaFrom(lambda)
+                .WithFormatterAnnotation();
 
-            switch (lambda.Kind())
+            return document.ReplaceNodeAsync(lambda, newLambda, cancellationToken);
+
+            LambdaExpressionSyntax GetNewLambda()
             {
-                case SyntaxKind.SimpleLambdaExpression:
-                    {
-                        return ((SimpleLambdaExpressionSyntax)lambda)
-                            .WithArrowToken(lambda.ArrowToken.WithoutTrailingTrivia())
-                            .WithBody(expression);
-                    }
-                case SyntaxKind.ParenthesizedLambdaExpression:
-                    {
-                        return ((ParenthesizedLambdaExpressionSyntax)lambda)
-                            .WithArrowToken(lambda.ArrowToken.WithoutTrailingTrivia())
-                            .WithBody(expression);
-                    }
+                switch (lambda.Kind())
+                {
+                    case SyntaxKind.SimpleLambdaExpression:
+                        {
+                            return ((SimpleLambdaExpressionSyntax)lambda)
+                                .WithArrowToken(lambda.ArrowToken.WithoutTrailingTrivia())
+                                .WithBody(expression);
+                        }
+                    case SyntaxKind.ParenthesizedLambdaExpression:
+                        {
+                            return ((ParenthesizedLambdaExpressionSyntax)lambda)
+                                .WithArrowToken(lambda.ArrowToken.WithoutTrailingTrivia())
+                                .WithBody(expression);
+                        }
+                    default:
+                        {
+                            throw new InvalidOperationException();
+                        }
+                }
             }
-
-            return lambda;
         }
 
         private static ExpressionSyntax GetExpression(StatementSyntax statement)

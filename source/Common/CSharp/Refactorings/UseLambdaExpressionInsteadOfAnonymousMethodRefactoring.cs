@@ -14,9 +14,6 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(AnonymousMethodExpressionSyntax anonymousMethod)
         {
-            if (anonymousMethod == null)
-                throw new ArgumentNullException(nameof(anonymousMethod));
-
             return anonymousMethod.ParameterList?.IsMissing == false;
         }
 
@@ -25,12 +22,6 @@ namespace Roslynator.CSharp.Refactorings
             AnonymousMethodExpressionSyntax anonymousMethod,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (anonymousMethod == null)
-                throw new ArgumentNullException(nameof(anonymousMethod));
-
             ExpressionSyntax newNode = ParenthesizedLambdaExpression(
                 anonymousMethod.AsyncKeyword,
                 anonymousMethod.ParameterList,

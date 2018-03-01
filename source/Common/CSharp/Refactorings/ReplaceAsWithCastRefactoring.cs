@@ -3,8 +3,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -16,25 +16,17 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (binaryExpression.Kind() != SyntaxKind.AsExpression)
+            AsExpressionInfo info = SyntaxInfo.AsExpressionInfo(binaryExpression);
+
+            if (!info.Success)
                 return false;
 
-            ExpressionSyntax left = binaryExpression.Left;
-
-            if (left?.IsMissing != false)
-                return false;
-
-            var type = binaryExpression.Right as TypeSyntax;
-
-            if (type?.IsMissing != false)
-                return false;
-
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(info.Type, cancellationToken);
 
             if (typeSymbol == null)
                 return false;
 
-            if (!semanticModel.IsExplicitConversion(left, typeSymbol))
+            if (!semanticModel.IsExplicitConversion(info.Expression, typeSymbol))
                 return false;
 
             return true;

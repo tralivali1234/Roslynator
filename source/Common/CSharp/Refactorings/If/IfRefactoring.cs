@@ -196,8 +196,8 @@ namespace Roslynator.CSharp.Refactorings.If
 
             if (options.UseBooleanExpression
                 && (IsBooleanLiteralExpression(expression1.Kind()) || IsBooleanLiteralExpression(expression2.Kind()))
-                && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.IsBoolean() == true
-                && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.IsBoolean() == true)
+                && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.SpecialType == SpecialType.System_Boolean
+                && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.SpecialType == SpecialType.System_Boolean)
             {
                 ifToReturnWithBooleanExpression = IfToReturnWithBooleanExpression.Create(ifStatement, expression1, expression2, isYield);
             }
@@ -459,10 +459,10 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!assignment2.Success)
                 return Empty;
 
-            if (!assignment1.Left.IsKind(SyntaxKind.IdentifierName))
+            if (assignment1.Left.Kind() != SyntaxKind.IdentifierName)
                 return Empty;
 
-            if (!assignment2.Left.IsKind(SyntaxKind.IdentifierName))
+            if (assignment2.Left.Kind() != SyntaxKind.IdentifierName)
                 return Empty;
 
             string identifier1 = ((IdentifierNameSyntax)assignment1.Left).Identifier.ValueText;

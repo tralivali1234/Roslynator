@@ -15,7 +15,10 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseElementAccessInsteadOfFirstRefactoring
     {
-        public static bool CanRefactor(MemberInvocationExpressionInfo invocationInfo, SemanticModel semanticModel, CancellationToken cancellationToken)
+        public static bool CanRefactor(
+            MemberInvocationExpressionInfo invocationInfo,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
             if (invocationInfo.Expression?.IsMissing != false)
                 return false;

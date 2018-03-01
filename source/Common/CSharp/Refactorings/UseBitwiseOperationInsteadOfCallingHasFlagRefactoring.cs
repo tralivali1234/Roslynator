@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: test
     internal static class UseBitwiseOperationInsteadOfCallingHasFlagRefactoring
     {
         public const string Title = "Use bitwise operation instead of calling 'HasFlag'";
@@ -19,27 +21,26 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (invocation.Expression?.Kind() == SyntaxKind.SimpleMemberAccessExpression
-                && invocation.ArgumentList?.Arguments.Count == 1)
-            {
-                MemberAccessExpressionSyntax memberAccess = GetTopmostMemberAccessExpression((MemberAccessExpressionSyntax)invocation.Expression);
+            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocation);
 
-                if (memberAccess.Name.Identifier.ValueText == "HasFlag")
-                {
-                    IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(memberAccess, cancellationToken);
+            if (!invocationInfo.Success)
+                return false;
 
-                    if (methodSymbol?.Name == "HasFlag"
-                        && !methodSymbol.IsStatic
-                        && methodSymbol.IsReturnType(SpecialType.System_Boolean)
-                        && methodSymbol.HasSingleParameter(SpecialType.System_Enum)
-                        && methodSymbol.IsContainingType(SpecialType.System_Enum))
-                    {
-                        return true;
-                    }
-                }
-            }
+            if (invocationInfo.Arguments.Count != 1)
+                return false;
 
-            return false;
+            MemberAccessExpressionSyntax memberAccess = GetTopmostMemberAccessExpression(invocationInfo.MemberAccessExpression);
+
+            if (invocationInfo.NameText != "HasFlag")
+                return false;
+
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(memberAccess, cancellationToken);
+
+            return methodSymbol?.Name == "HasFlag"
+                && !methodSymbol.IsStatic
+                && methodSymbol.IsReturnType(SpecialType.System_Boolean)
+                && methodSymbol.HasSingleParameter(SpecialType.System_Enum)
+                && methodSymbol.IsContainingType(SpecialType.System_Enum);
         }
 
         public static Task<Document> RefactorAsync(

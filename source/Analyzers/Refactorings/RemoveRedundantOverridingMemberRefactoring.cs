@@ -140,7 +140,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol containingSymbol = parameterSymbol.ContainingSymbol;
 
-            if (containingSymbol?.IsMethod() == true)
+            if (containingSymbol?.Kind == SymbolKind.Method)
             {
                 var methodSymbol = (IMethodSymbol)containingSymbol;
 

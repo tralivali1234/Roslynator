@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 
         protected override bool ValidateSymbol(ISymbol symbol)
         {
-            return symbol?.IsField() == true;
+            return symbol?.Kind == SymbolKind.Field;
         }
 
         public override void ReportFixableSymbols(SymbolAnalysisContext context, INamedTypeSymbol containingType, HashSet<ISymbol> symbols)

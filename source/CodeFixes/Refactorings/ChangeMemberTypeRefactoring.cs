@@ -141,8 +141,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     SyntaxNode newNode = null;
 
-                    TypeSyntax newType = ParseTypeName(typeName)
-                        .WithTriviaFrom(type);
+                    TypeSyntax newType = ParseTypeName(typeName).WithTriviaFrom(type);
 
                     if (insertAwait)
                     {
@@ -175,9 +174,9 @@ namespace Roslynator.CSharp.Refactorings
         }
 
         private static (ISymbol symbol, ITypeSymbol typeSymbol) GetContainingSymbolAndType(
-        ExpressionSyntax expression,
-        SemanticModel semanticModel,
-        CancellationToken cancellationToken = default(CancellationToken))
+            ExpressionSyntax expression,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (semanticModel.GetEnclosingSymbol(expression.SpanStart, cancellationToken))
             {
