@@ -7,7 +7,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    //TODO: odmazat připonu Info z názvů metod
     /// <summary>
     /// Serves as a factory for types in Roslynator.CSharp.Syntax namespace.
     /// </summary>

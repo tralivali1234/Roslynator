@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
             if (conditionalExpression.ContainsDiagnostics)
                 return;
 
-            ConditionalExpressionInfo info = SyntaxInfo.ConditionalExpressionInfo(conditionalExpression);
+            ConditionalExpressionInfo info = SyntaxInfo.ConditionalExpressionInfo(conditionalExpression, walkDownParentheses: false);
 
             if (!info.Success)
                 return;
