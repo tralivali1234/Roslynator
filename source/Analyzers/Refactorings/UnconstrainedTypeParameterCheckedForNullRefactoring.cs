@@ -66,18 +66,16 @@ namespace Roslynator.CSharp.Refactorings
             if (!CheckConstraint(typeParameterSymbol, allowReference, allowValueType, allowConstructor))
                 return false;
 
-            ImmutableArray<ITypeSymbol> constraintTypes = typeParameterSymbol.ConstraintTypes;
+            return VerifyConstraint(typeParameterSymbol.ConstraintTypes, allowReference, allowValueType, allowConstructor);
+        }
 
+        private static bool VerifyConstraint(ImmutableArray<ITypeSymbol> constraintTypes, bool allowReference, bool allowValueType, bool allowConstructor)
+        {
             if (!constraintTypes.Any())
                 return true;
 
-            //TODO: optimize
-            var stack = new Stack<ITypeSymbol>(constraintTypes);
-
-            while (stack.Count > 0)
+            foreach (ITypeSymbol type in constraintTypes)
             {
-                ITypeSymbol type = stack.Pop();
-
                 switch (type.TypeKind)
                 {
                     case TypeKind.Class:
@@ -100,13 +98,13 @@ namespace Roslynator.CSharp.Refactorings
                         }
                     case TypeKind.TypeParameter:
                         {
-                            var typeParameterSymbol2 = (ITypeParameterSymbol)type;
+                            var typeParameterSymbol = (ITypeParameterSymbol)type;
 
-                            if (!CheckConstraint(typeParameterSymbol2, allowReference, allowValueType, allowConstructor))
+                            if (!CheckConstraint(typeParameterSymbol, allowReference, allowValueType, allowConstructor))
                                 return false;
 
-                            foreach (ITypeSymbol constraintType in typeParameterSymbol2.ConstraintTypes)
-                                stack.Push(constraintType);
+                            if (!VerifyConstraint(typeParameterSymbol.ConstraintTypes, allowReference, allowValueType, allowConstructor))
+                                return false;
 
                             break;
                         }

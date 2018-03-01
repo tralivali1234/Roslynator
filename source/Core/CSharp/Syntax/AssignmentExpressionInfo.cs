@@ -9,7 +9,6 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //TODO: sloučit s SimpleAssignmentExpressionInfo
     /// <summary>
     /// Provides information about simple assignment expression.
     /// </summary>

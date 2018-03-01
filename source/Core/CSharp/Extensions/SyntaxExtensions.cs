@@ -653,7 +653,10 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static ExpressionSyntax WalkUpParentheses(this ExpressionSyntax expression)
         {
-            return WalkUp(expression, SyntaxKind.ParenthesizedExpression);
+            while (expression.Parent?.Kind() == SyntaxKind.ParenthesizedExpression)
+                expression = (ExpressionSyntax)expression.Parent;
+
+            return expression;
         }
 
         /// <summary>
@@ -2881,19 +2884,10 @@ namespace Roslynator.CSharp
             return IncreaseIndentation(trivia);
         }
 
-        //TODO: new
         internal static SyntaxNode WalkUp(this SyntaxNode node, SyntaxKind kind)
         {
             while (node.Parent?.Kind() == kind)
                 node = node.Parent;
-
-            return node;
-        }
-
-        internal static TNode WalkUp<TNode>(this TNode node, SyntaxKind kind) where TNode : SyntaxNode
-        {
-            while (node.Parent?.Kind() == kind)
-                node = (TNode)node.Parent;
 
             return node;
         }

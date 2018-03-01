@@ -88,44 +88,22 @@ namespace Roslynator.CSharp.Refactorings
             return GetNonNestedTypeDeclarations(compilationUnit.Members);
         }
 
-        public static IEnumerable<MemberDeclarationSyntax> GetNonNestedTypeDeclarations(SyntaxList<MemberDeclarationSyntax> members)
+        private static IEnumerable<MemberDeclarationSyntax> GetNonNestedTypeDeclarations(SyntaxList<MemberDeclarationSyntax> members)
         {
-            //TODO: optimize
-            Stack<NamespaceDeclarationSyntax> namespaces = null;
-
             foreach (MemberDeclarationSyntax member in members)
             {
                 SyntaxKind kind = member.Kind();
 
                 if (kind == SyntaxKind.NamespaceDeclaration)
                 {
-                    (namespaces ?? (namespaces = new Stack<NamespaceDeclarationSyntax>())).Push((NamespaceDeclarationSyntax)member);
+                    var namespaceDeclaration = (NamespaceDeclarationSyntax)member;
+
+                    foreach (MemberDeclarationSyntax member2 in GetNonNestedTypeDeclarations(namespaceDeclaration.Members))
+                        yield return member2;
                 }
-                else if (IsTypeDeclaration(kind))
+                else if (SyntaxFacts.IsTypeDeclaration(kind))
                 {
                     yield return member;
-                }
-
-                if (namespaces != null)
-                {
-                    while (namespaces.Count > 0)
-                    {
-                        NamespaceDeclarationSyntax namespaceDeclaration = namespaces.Pop();
-
-                        foreach (MemberDeclarationSyntax member2 in namespaceDeclaration.Members)
-                        {
-                            SyntaxKind kind2 = member2.Kind();
-
-                            if (kind2 == SyntaxKind.NamespaceDeclaration)
-                            {
-                                namespaces.Push((NamespaceDeclarationSyntax)member2);
-                            }
-                            else if (IsTypeDeclaration(kind2))
-                            {
-                                yield return member2;
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -149,21 +127,6 @@ namespace Roslynator.CSharp.Refactorings
             Debug.Fail(memberDeclaration.Kind().ToString());
 
             return default(SyntaxToken);
-        }
-
-        private static bool IsTypeDeclaration(SyntaxKind kind)
-        {
-            switch (kind)
-            {
-                case SyntaxKind.ClassDeclaration:
-                case SyntaxKind.StructDeclaration:
-                case SyntaxKind.InterfaceDeclaration:
-                case SyntaxKind.EnumDeclaration:
-                case SyntaxKind.DelegateDeclaration:
-                    return true;
-                default:
-                    return false;
-            }
         }
 
         public static string GetTitle(string name)
