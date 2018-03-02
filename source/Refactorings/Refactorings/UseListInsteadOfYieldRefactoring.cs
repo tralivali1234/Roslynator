@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.SyntaxRewriters;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -31,38 +31,32 @@ namespace Roslynator.CSharp.Refactorings
             BlockSyntax body,
             SemanticModel semanticModel)
         {
-            if (body?
-                .DescendantNodes(body.Span, f => !CSharpFacts.IsNestedMethod(f.Kind()))
-                .Any(f => f.IsKind(SyntaxKind.YieldReturnStatement)) == true)
-            {
-                var symbol = (IMethodSymbol)semanticModel.GetDeclaredSymbol(node, context.CancellationToken);
+            //TODO: contains yield return
+            if (body?.ContainsYield() != true)
+                return;
 
-                if (symbol?.IsErrorType() == false)
-                {
-                    ITypeSymbol type = GetElementType(symbol.ReturnType, semanticModel);
+            if (!(semanticModel.GetDeclaredSymbol(node, context.CancellationToken) is IMethodSymbol methodSymbol))
+                return;
 
-                    if (type?.IsErrorType() == false)
-                    {
-                        context.RegisterRefactoring(
-                            "Use List<T> instead of yield",
-                            cancellationToken => RefactorAsync(context.Document, type, body, body.Statements, cancellationToken));
-                    }
-                }
-            }
+            ITypeSymbol type = GetElementType(methodSymbol.ReturnType, semanticModel);
+
+            if (type?.IsErrorType() != false)
+                return;
+
+            context.RegisterRefactoring(
+                "Use List<T> instead of yield",
+                cancellationToken => RefactorAsync(context.Document, type, body, body.Statements, cancellationToken));
         }
 
         private static ITypeSymbol GetElementType(ITypeSymbol returnType, SemanticModel semanticModel)
         {
-            if (returnType.IsIEnumerable())
-            {
+            if (returnType.SpecialType == SpecialType.System_Collections_IEnumerable)
                 return semanticModel.Compilation.ObjectType;
-            }
-            else if (returnType.IsNamedType())
-            {
-                var namedType = (INamedTypeSymbol)returnType;
 
-                if (namedType.ConstructedFrom.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T)
-                    return namedType.TypeArguments[0];
+            if (returnType is INamedTypeSymbol namedType
+                && namedType.ConstructedFrom.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T)
+            {
+                return namedType.TypeArguments[0];
             }
 
             return null;
@@ -150,7 +144,7 @@ namespace Roslynator.CSharp.Refactorings
             return false;
         }
 
-        private class YieldRewriter : CSharpSyntaxRewriter
+        private class YieldRewriter : SkipNestedMethodRewriter
         {
             private static readonly IdentifierNameSyntax _addName = IdentifierName("Add");
 
@@ -200,26 +194,6 @@ namespace Roslynator.CSharp.Refactorings
                 Debug.Fail(node.Kind().ToString());
 
                 return base.VisitYieldStatement(node);
-            }
-
-            public override SyntaxNode VisitLocalFunctionStatement(LocalFunctionStatementSyntax node)
-            {
-                return node;
-            }
-
-            public override SyntaxNode VisitAnonymousMethodExpression(AnonymousMethodExpressionSyntax node)
-            {
-                return node;
-            }
-
-            public override SyntaxNode VisitSimpleLambdaExpression(SimpleLambdaExpressionSyntax node)
-            {
-                return node;
-            }
-
-            public override SyntaxNode VisitParenthesizedLambdaExpression(ParenthesizedLambdaExpressionSyntax node)
-            {
-                return node;
             }
         }
     }

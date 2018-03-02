@@ -43,73 +43,75 @@ namespace Roslynator.CSharp.Refactorings
         {
             TypeSyntax type = variableDeclaration.Type;
 
-            if (type != null
-                && !variableDeclaration.IsParentKind(SyntaxKind.EventFieldDeclaration))
-            {
-                VariableDeclaratorSyntax variable = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
+            if (type == null)
+                return;
 
-                if (variable != null)
-                {
-                    SyntaxToken identifier = variable.Identifier;
+            if (variableDeclaration.IsParentKind(SyntaxKind.EventFieldDeclaration))
+                return;
 
-                    if (identifier.Span.Contains(context.Span))
-                    {
-                        SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            //TODO: SingleVariableDeclarationInfo
+            VariableDeclaratorSyntax variable = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
 
-                        ISymbol symbol = semanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
+            if (variable == null)
+                return;
 
-                        if (symbol?.Kind == SymbolKind.Local)
-                        {
-                            var localSymbol = (ILocalSymbol)symbol;
+            SyntaxToken identifier = variable.Identifier;
 
-                            string oldName = identifier.ValueText;
+            if (!identifier.Span.Contains(context.Span))
+                return;
 
-                            string newName = NameGenerator.Default.CreateUniqueLocalName(
-                                localSymbol.Type,
-                                oldName,
-                                semanticModel,
-                                variable.SpanStart,
-                                cancellationToken: context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            if (newName != null)
-                            {
-                                context.RegisterRefactoring(
-                                    $"Rename '{oldName}' to '{newName}'",
-                                    cancellationToken => Renamer.RenameSymbolAsync(context.Solution, symbol, newName, default(OptionSet), cancellationToken));
-                            }
-                        }
-                    }
-                }
-            }
+            if (!(semanticModel.GetDeclaredSymbol(variable, context.CancellationToken) is ILocalSymbol localSymbol))
+                return;
+
+            string oldName = identifier.ValueText;
+
+            string newName = NameGenerator.Default.CreateUniqueLocalName(
+                localSymbol.Type,
+                oldName,
+                semanticModel,
+                variable.SpanStart,
+                cancellationToken: context.CancellationToken);
+
+            if (newName == null)
+                return;
+
+            context.RegisterRefactoring(
+                $"Rename '{oldName}' to '{newName}'",
+                cancellationToken => Renamer.RenameSymbolAsync(context.Solution, localSymbol, newName, default(OptionSet), cancellationToken));
         }
 
         private static async Task AddCastExpressionAsync(
             RefactoringContext context,
             VariableDeclarationSyntax variableDeclaration)
         {
-            if (variableDeclaration.Type?.IsVar == false)
-            {
-                VariableDeclaratorSyntax declarator = variableDeclaration.Variables
-                    .FirstOrDefault(f => f.Initializer?.Value?.Span.Contains(context.Span) == true);
+            if (variableDeclaration.Type?.IsVar != false)
+                return;
 
-                if (declarator != null)
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            VariableDeclaratorSyntax declarator = variableDeclaration
+                .Variables
+                .FirstOrDefault(f => f.Initializer?.Value?.Span.Contains(context.Span) == true);
 
-                    ITypeSymbol declarationType = semanticModel.GetTypeSymbol(variableDeclaration.Type, context.CancellationToken);
+            if (declarator == null)
+                return;
 
-                    if (declarationType?.IsErrorType() == false)
-                    {
-                        ITypeSymbol expressionType = semanticModel.GetTypeSymbol(declarator.Initializer.Value, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        if (expressionType?.IsErrorType() == false
-                            && !declarationType.Equals(expressionType))
-                        {
-                            ModifyExpressionRefactoring.ComputeRefactoring(context, declarator.Initializer.Value, declarationType, semanticModel);
-                        }
-                    }
-                }
-            }
+            ITypeSymbol declarationType = semanticModel.GetTypeSymbol(variableDeclaration.Type, context.CancellationToken);
+
+            if (declarationType?.IsErrorType() != false)
+                return;
+
+            ITypeSymbol expressionType = semanticModel.GetTypeSymbol(declarator.Initializer.Value, context.CancellationToken);
+
+            if (expressionType?.IsErrorType() != false)
+                return;
+
+            if (declarationType.Equals(expressionType))
+                return;
+
+            ModifyExpressionRefactoring.ComputeRefactoring(context, declarator.Initializer.Value, declarationType, semanticModel);
         }
     }
 }

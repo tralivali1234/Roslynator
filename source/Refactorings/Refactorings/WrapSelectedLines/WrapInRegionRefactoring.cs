@@ -4,6 +4,12 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
 {
     internal class WrapInRegionRefactoring : WrapSelectedLinesRefactoring
     {
+        public static WrapInRegionRefactoring Instance { get; } = new WrapInRegionRefactoring();
+
+        private WrapInRegionRefactoring()
+        {
+        }
+
         public override bool Indent
         {
             get { return true; }

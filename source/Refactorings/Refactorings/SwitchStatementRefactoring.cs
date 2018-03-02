@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -27,10 +26,8 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceSwitchWithIf))
             {
-                TextSpan span = context.Span;
-
-                if (span.IsEmptyAndContainedInSpan(switchStatement.SwitchKeyword)
-                    || span.IsBetweenSpans(switchStatement))
+                if (context.Span.IsEmptyAndContainedInSpan(switchStatement.SwitchKeyword)
+                    || context.Span.IsBetweenSpans(switchStatement))
                 {
                     ReplaceSwitchWithIfElseRefactoring.ComputeRefactoring(context, switchStatement);
                 }

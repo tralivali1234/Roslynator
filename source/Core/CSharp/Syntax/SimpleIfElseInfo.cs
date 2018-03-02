@@ -57,6 +57,14 @@ namespace Roslynator.CSharp.Syntax
             get { return IfStatement?.Else; }
         }
 
+        /// <summary>
+        /// Determines whether this struct was initialized with an actual syntax.
+        /// </summary>
+        public bool Success
+        {
+            get { return IfStatement != null; }
+        }
+
         internal static SimpleIfElseInfo Create(
             IfStatementSyntax ifStatement,
             bool walkDownParentheses = true,
