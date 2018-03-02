@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
             foreach (IMethodSymbol baseConstructor in GetBaseConstructors(baseSymbol))
             {
                 if (IsAccessibleFromDerivedClass(baseConstructor)
-                    && constructors.IndexOf(baseConstructor, ConstructorComparer.Instance) == -1)
+                    && constructors.IndexOf(baseConstructor, ParametersComparer.Instance) == -1)
                 {
                     (missing ?? (missing = new List<IMethodSymbol>())).Add(baseConstructor);
                 }
@@ -59,7 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (!baseConstructor.IsImplicitlyDeclared
                     && IsAccessibleFromDerivedClass(baseConstructor)
-                    && constructors.IndexOf(baseConstructor, ConstructorComparer.Instance) == -1)
+                    && constructors.IndexOf(baseConstructor, ParametersComparer.Instance) == -1)
                 {
                     return true;
                 }
@@ -86,11 +86,10 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsAccessibleFromDerivedClass(IMethodSymbol methodSymbol)
         {
-            Accessibility accessibility = methodSymbol.DeclaredAccessibility;
-
-            return accessibility == Accessibility.Public
-                || accessibility == Accessibility.Protected
-                || accessibility == Accessibility.ProtectedOrInternal;
+            return methodSymbol.DeclaredAccessibility.Is(
+                Accessibility.Public,
+                Accessibility.Protected,
+                Accessibility.ProtectedOrInternal);
         }
 
         public static Task<Document> RefactorAsync(
@@ -179,9 +178,10 @@ namespace Roslynator.CSharp.Refactorings
             return constructor.WithFormatterAnnotation();
         }
 
-        private class ConstructorComparer : EqualityComparer<IMethodSymbol>
+        //TODO: mov
+        private class ParametersComparer : EqualityComparer<IMethodSymbol>
         {
-            public static ConstructorComparer Instance { get; } = new ConstructorComparer();
+            public static ParametersComparer Instance { get; } = new ParametersComparer();
 
             public override bool Equals(IMethodSymbol x, IMethodSymbol y)
             {

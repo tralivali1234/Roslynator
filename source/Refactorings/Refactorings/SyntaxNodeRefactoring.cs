@@ -15,6 +15,7 @@ namespace Roslynator.CSharp.Refactorings
                 RefactoringIdentifiers.WrapInRegion,
                 RefactoringIdentifiers.WrapInIfDirective))
             {
+                //TODO: perf?
                 TextLineCollectionSelection selectedLines = await SelectedLinesRefactoring.GetSelectedLinesAsync(context).ConfigureAwait(false);
 
                 if (selectedLines != null)
@@ -23,24 +24,14 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                            "Wrap in region",
-                           cancellationToken =>
-                           {
-                               var refactoring = new WrapInRegionRefactoring();
-
-                               return refactoring.RefactorAsync(context.Document, selectedLines, cancellationToken);
-                           });
+                           ct => WrapInRegionRefactoring.Instance.RefactorAsync(context.Document, selectedLines, ct));
                     }
 
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.WrapInIfDirective))
                     {
                         context.RegisterRefactoring(
                            "Wrap in #if",
-                           cancellationToken =>
-                           {
-                               var refactoring = new WrapInIfDirectiveRefactoring();
-
-                               return refactoring.RefactorAsync(context.Document, selectedLines, cancellationToken);
-                           });
+                           ct => WrapInIfDirectiveRefactoring.Instance.RefactorAsync(context.Document, selectedLines, ct));
                     }
                 }
             }
@@ -50,13 +41,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                    "Remove empty lines",
-                   cancellationToken =>
-                   {
-                       return RemoveEmptyLinesRefactoring.RefactorAsync(
-                           context.Document,
-                           context.Span,
-                           cancellationToken);
-                   });
+                   ct => RemoveEmptyLinesRefactoring.RefactorAsync(context.Document, context.Span, ct));
             }
         }
     }

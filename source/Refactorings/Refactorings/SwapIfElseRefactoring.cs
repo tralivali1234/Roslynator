@@ -3,8 +3,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -12,26 +12,14 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, IfStatementSyntax ifStatement)
         {
-            if (CanRefactor(ifStatement))
-            {
-                context.RegisterRefactoring(
-                    "Swap if-else",
-                    cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
-            }
-        }
+            SimpleIfElseInfo simpleIfElse = SyntaxInfo.SimpleIfElseInfo(ifStatement);
 
-        public static bool CanRefactor(IfStatementSyntax ifStatement)
-        {
-            if (ifStatement.Condition != null
-                && ifStatement.Statement != null)
-            {
-                StatementSyntax falseStatement = ifStatement.Else?.Statement;
+            if (!simpleIfElse.Success)
+                return;
 
-                if (falseStatement?.IsKind(SyntaxKind.IfStatement) == false)
-                    return true;
-            }
-
-            return false;
+            context.RegisterRefactoring(
+                "Swap if-else",
+                cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
         }
 
         public static async Task<Document> RefactorAsync(

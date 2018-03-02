@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,12 +18,6 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax memberDeclaration,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (memberDeclaration == null)
-                throw new ArgumentNullException(nameof(memberDeclaration));
-
             SyntaxNode root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
@@ -71,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static string GetDocumentName(MemberDeclarationSyntax memberDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            string documentName = GetIdentifier(memberDeclaration).ValueText;
+            string documentName = CSharpUtility.GetIdentifier(memberDeclaration).ValueText;
 
             var namedTypeSymbol = semanticModel.GetDeclaredSymbol(memberDeclaration, cancellationToken) as INamedTypeSymbol;
 
@@ -106,27 +98,6 @@ namespace Roslynator.CSharp.Refactorings
                     yield return member;
                 }
             }
-        }
-
-        public static SyntaxToken GetIdentifier(MemberDeclarationSyntax memberDeclaration)
-        {
-            switch (memberDeclaration.Kind())
-            {
-                case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)memberDeclaration).Identifier;
-                case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)memberDeclaration).Identifier;
-                case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)memberDeclaration).Identifier;
-                case SyntaxKind.EnumDeclaration:
-                    return ((EnumDeclarationSyntax)memberDeclaration).Identifier;
-                case SyntaxKind.DelegateDeclaration:
-                    return ((DelegateDeclarationSyntax)memberDeclaration).Identifier;
-            }
-
-            Debug.Fail(memberDeclaration.Kind().ToString());
-
-            return default(SyntaxToken);
         }
 
         public static string GetTitle(string name)

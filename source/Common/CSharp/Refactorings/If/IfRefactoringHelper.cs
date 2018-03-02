@@ -11,16 +11,6 @@ namespace Roslynator.CSharp.Refactorings.If
 {
     internal static class IfRefactoringHelper
     {
-        public static bool IsNullLiteral(SyntaxNode node)
-        {
-            return node?.Kind() == SyntaxKind.NullLiteralExpression;
-        }
-
-        public static bool IsSimpleAssignment(SyntaxNode node)
-        {
-            return node?.Kind() == SyntaxKind.SimpleAssignmentExpression;
-        }
-
         public static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
         {
             if (condition.Kind() != SyntaxKind.ParenthesizedExpression)

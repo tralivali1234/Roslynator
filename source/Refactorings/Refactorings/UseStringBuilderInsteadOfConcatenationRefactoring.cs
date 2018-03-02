@@ -17,45 +17,24 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, StringConcatenationExpressionInfo concatenationInfo)
         {
-            BinaryExpressionSyntax expression = concatenationInfo.BinaryExpression;
+            BinaryExpressionSyntax binaryExpression = concatenationInfo.BinaryExpression;
 
-            switch (expression.Parent.Kind())
+            if (binaryExpression.IsParentKind(SyntaxKind.SimpleAssignmentExpression, SyntaxKind.AddAssignmentExpression))
             {
-                case SyntaxKind.SimpleAssignmentExpression:
-                case SyntaxKind.AddAssignmentExpression:
-                    {
-                        var assignment = (AssignmentExpressionSyntax)expression.Parent;
+                var assignment = (AssignmentExpressionSyntax)binaryExpression.Parent;
 
-                        if (assignment.IsParentKind(SyntaxKind.ExpressionStatement)
-                            && assignment.Right == expression)
-                        {
-                            RegisterRefactoring(context, concatenationInfo, (StatementSyntax)assignment.Parent);
-                        }
+                if (assignment.IsParentKind(SyntaxKind.ExpressionStatement)
+                    && assignment.Right == binaryExpression)
+                {
+                    RegisterRefactoring(context, concatenationInfo, (StatementSyntax)assignment.Parent);
+                }
+            }
+            else
+            {
+                SingleLocalDeclarationStatementInfo info = SyntaxInfo.SingleLocalDeclarationStatementInfo(binaryExpression);
 
-                        break;
-                    }
-                case SyntaxKind.EqualsValueClause:
-                    {
-                        var equalsValue = (EqualsValueClauseSyntax)expression.Parent;
-
-                        if (equalsValue.IsParentKind(SyntaxKind.VariableDeclarator))
-                        {
-                            var variableDeclarator = (VariableDeclaratorSyntax)equalsValue.Parent;
-
-                            if (variableDeclarator.IsParentKind(SyntaxKind.VariableDeclaration))
-                            {
-                                var variableDeclaration = (VariableDeclarationSyntax)variableDeclarator.Parent;
-
-                                if (variableDeclaration.IsParentKind(SyntaxKind.LocalDeclarationStatement)
-                                    && variableDeclaration.Variables.Count == 1)
-                                {
-                                    RegisterRefactoring(context, concatenationInfo, (StatementSyntax)variableDeclaration.Parent);
-                                }
-                            }
-                        }
-
-                        break;
-                    }
+                if (info.Success)
+                    RegisterRefactoring(context, concatenationInfo, info.Statement);
             }
         }
 

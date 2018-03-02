@@ -19,17 +19,12 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     IdentifierNameSyntax name = alias.Name;
 
-                    if (name != null && context.Span.IsContainedInSpanOrBetweenSpans(name))
+                    if (name != null
+                        && context.Span.IsContainedInSpanOrBetweenSpans(name))
                     {
                         context.RegisterRefactoring(
                             "Inline alias expression",
-                            cancellationToken =>
-                            {
-                                return InlineAliasExpressionRefactoring.RefactorAsync(
-                                    context.Document,
-                                    usingDirective,
-                                    cancellationToken);
-                            });
+                            ct => InlineAliasExpressionRefactoring.RefactorAsync(context.Document, usingDirective, ct));
                     }
                 }
             }
@@ -40,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Inline using static",
-                    cancellationToken => InlineUsingStaticRefactoring.RefactorAsync(context.Document, usingDirective, cancellationToken));
+                    ct => InlineUsingStaticRefactoring.RefactorAsync(context.Document, usingDirective, ct));
             }
         }
     }

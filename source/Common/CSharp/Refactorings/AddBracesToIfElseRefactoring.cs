@@ -16,12 +16,6 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (ifStatement == null)
-                throw new ArgumentNullException(nameof(ifStatement));
-
             var rewriter = new SyntaxRewriter();
 
             var newNode = (IfStatementSyntax)rewriter.Visit(ifStatement)

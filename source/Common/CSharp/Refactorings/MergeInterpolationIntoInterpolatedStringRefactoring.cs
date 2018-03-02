@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,21 +14,15 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(InterpolationSyntax interpolation)
         {
-            if (interpolation == null)
-                throw new ArgumentNullException(nameof(interpolation));
+            StringLiteralExpressionInfo stringLiteralExpressionInfo = SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression);
 
-            ExpressionSyntax expression = interpolation.Expression;
+            if (!stringLiteralExpressionInfo.Success)
+                return false;
 
-            if (expression?.Kind() == SyntaxKind.StringLiteralExpression
-                && (interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
-            {
-                var literalExpression = (LiteralExpressionSyntax)expression;
+            if (!(interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
+                return false;
 
-                if (interpolatedString.IsVerbatim() == literalExpression.Token.IsVerbatimStringLiteral())
-                    return true;
-            }
-
-            return false;
+            return interpolatedString.StringStartToken.ValueText.Contains("@") == stringLiteralExpressionInfo.IsVerbatim;
         }
 
         public static Task<Document> RefactorAsync(
@@ -35,12 +30,6 @@ namespace Roslynator.CSharp.Refactorings
             InterpolationSyntax interpolation,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (interpolation == null)
-                throw new ArgumentNullException(nameof(interpolation));
-
             var interpolatedString = (InterpolatedStringExpressionSyntax)interpolation.Parent;
 
             string s = interpolatedString.ToString();

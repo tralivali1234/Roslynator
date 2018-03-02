@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -13,9 +12,6 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static IEnumerable<AttributeListSyntax> SplitAttributes(AttributeListSyntax attributeList)
         {
-            if (attributeList == null)
-                throw new ArgumentNullException(nameof(attributeList));
-
             SeparatedSyntaxList<AttributeSyntax> attributes = attributeList.Attributes;
 
             for (int i = 0; i < attributes.Count; i++)
@@ -34,9 +30,6 @@ namespace Roslynator.CSharp.Refactorings
 
         public static AttributeListSyntax MergeAttributes(AttributeListSyntax[] lists)
         {
-            if (lists == null)
-                throw new ArgumentNullException(nameof(lists));
-
             AttributeListSyntax list = lists[0];
 
             for (int i = 1; i < lists.Length; i++)

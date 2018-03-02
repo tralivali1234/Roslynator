@@ -78,15 +78,10 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsAllowedTrivia(SyntaxTrivia trivia)
         {
-            switch (trivia.Kind())
-            {
-                case SyntaxKind.WhitespaceTrivia:
-                case SyntaxKind.EndOfLineTrivia:
-                case SyntaxKind.SingleLineCommentTrivia:
-                    return true;
-                default:
-                    return false;
-            }
+            return trivia.IsKind(
+                SyntaxKind.WhitespaceTrivia,
+                SyntaxKind.EndOfLineTrivia,
+                SyntaxKind.SingleLineCommentTrivia);
         }
     }
 }

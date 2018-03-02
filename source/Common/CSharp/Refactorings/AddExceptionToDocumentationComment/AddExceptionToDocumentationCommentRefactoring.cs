@@ -16,6 +16,8 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 {
     internal static class AddExceptionToDocumentationCommentRefactoring
     {
+        private static AddExceptionToDocumentationCommentAnalysis Fail { get; } = new AddExceptionToDocumentationCommentAnalysis();
+
         public static AddExceptionToDocumentationCommentAnalysis Analyze(
             ThrowStatementSyntax throwStatement,
             SemanticModel semanticModel,
@@ -29,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             }
             else
             {
-                return AddExceptionToDocumentationCommentAnalysis.NoSuccess;
+                return Fail;
             }
         }
 
@@ -46,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             }
             else
             {
-                return AddExceptionToDocumentationCommentAnalysis.NoSuccess;
+                return Fail;
             }
         }
 
@@ -56,26 +58,28 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if (semanticModel.GetTypeSymbol(expression, cancellationToken) is INamedTypeSymbol exceptionSymbol
-                && InheritsFromException(exceptionSymbol, semanticModel))
-            {
-                ISymbol declarationSymbol = GetDeclarationSymbol(node.SpanStart, semanticModel, cancellationToken);
+            if (!(semanticModel.GetTypeSymbol(expression, cancellationToken) is INamedTypeSymbol exceptionSymbol))
+                return Fail;
 
-                if (declarationSymbol?.GetSyntax(cancellationToken) is MemberDeclarationSyntax containingMember)
-                {
-                    DocumentationCommentTriviaSyntax comment = containingMember.GetSingleLineDocumentationComment();
+            if (!InheritsFromException(exceptionSymbol, semanticModel))
+                return Fail;
 
-                    if (comment != null
-                        && CanAddExceptionToComment(comment, exceptionSymbol, semanticModel, cancellationToken))
-                    {
-                        ThrowInfo throwInfo = ThrowInfo.Create(node, exceptionSymbol, declarationSymbol);
+            ISymbol declarationSymbol = GetDeclarationSymbol(node.SpanStart, semanticModel, cancellationToken);
 
-                        return new AddExceptionToDocumentationCommentAnalysis(throwInfo, comment.ParentTrivia);
-                    }
-                }
-            }
+            if (!(declarationSymbol?.GetSyntax(cancellationToken) is MemberDeclarationSyntax containingMember))
+                return Fail;
 
-            return AddExceptionToDocumentationCommentAnalysis.NoSuccess;
+            DocumentationCommentTriviaSyntax comment = containingMember.GetSingleLineDocumentationComment();
+
+            if (comment == null)
+                return Fail;
+
+            if (!CanAddExceptionToComment(comment, exceptionSymbol, semanticModel, cancellationToken))
+                return Fail;
+
+            ThrowInfo throwInfo = ThrowInfo.Create(node, exceptionSymbol, declarationSymbol);
+
+            return new AddExceptionToDocumentationCommentAnalysis(throwInfo, comment.ParentTrivia);
         }
 
         private static IEnumerable<ThrowInfo> GetOtherUndocumentedExceptions(
@@ -85,10 +89,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            foreach (SyntaxNode node in declaration.DescendantNodes(f => !f.IsKind(
-                SyntaxKind.AnonymousMethodExpression,
-                SyntaxKind.SimpleLambdaExpression,
-                SyntaxKind.ParenthesizedLambdaExpression)))
+            foreach (SyntaxNode node in declaration.DescendantNodes(f => !CSharpFacts.IsAnonymousFunctionExpression(f.Kind())))
             {
                 switch (node.Kind())
                 {
@@ -131,20 +132,24 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
         SemanticModel semanticModel,
         CancellationToken cancellationToken)
         {
-            if (expression != null
-                && semanticModel.GetTypeSymbol(expression, cancellationToken) is INamedTypeSymbol typeSymbol
-                && InheritsFromException(typeSymbol, semanticModel))
-            {
-                DocumentationCommentTriviaSyntax comment = declaration.GetSingleLineDocumentationComment();
+            if (expression == null)
+                return null;
 
-                if (comment != null
-                    && CanAddExceptionToComment(comment, typeSymbol, semanticModel, cancellationToken))
-                {
-                    return ThrowInfo.Create(node, typeSymbol, declarationSymbol);
-                }
-            }
+            if (!(semanticModel.GetTypeSymbol(expression, cancellationToken) is INamedTypeSymbol typeSymbol))
+                return null;
 
-            return null;
+            if (!InheritsFromException(typeSymbol, semanticModel))
+                return null;
+
+            DocumentationCommentTriviaSyntax comment = declaration.GetSingleLineDocumentationComment();
+
+            if (comment == null)
+                return null;
+
+            if (!CanAddExceptionToComment(comment, typeSymbol, semanticModel, cancellationToken))
+                return null;
+
+            return ThrowInfo.Create(node, typeSymbol, declarationSymbol);
         }
 
         private static bool CanAddExceptionToComment(
@@ -213,12 +218,8 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
         {
             XmlElementStartTagSyntax startTag = xmlElement.StartTag;
 
-            if (startTag != null)
-            {
-                return ContainsException(startTag.Attributes, exceptionSymbol, semanticModel, cancellationToken);
-            }
-
-            return false;
+            return startTag != null
+                && ContainsException(startTag.Attributes, exceptionSymbol, semanticModel, cancellationToken);
         }
 
         private static bool ContainsException(XmlEmptyElementSyntax xmlEmptyElement, INamedTypeSymbol exceptionSymbol, SemanticModel semanticModel, CancellationToken cancellationToken)
@@ -298,9 +299,10 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             return RefactorAsync(document, throwStatement, throwStatement.Expression, cancellationToken);
         }
 
+        //TODO: ?
         private static bool InheritsFromException(ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
-            return typeSymbol.IsClass()
+            return typeSymbol?.TypeKind == TypeKind.Class
                 && typeSymbol.BaseType?.IsObject() == false
                 && typeSymbol.InheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Exception));
         }
@@ -377,6 +379,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
             string indent = GetIndent(memberDeclaration.GetLeadingTrivia());
 
+            //TODO: StringBuildeCache
             var sb = new StringBuilder();
 
             foreach (ThrowInfo info in throwInfos)

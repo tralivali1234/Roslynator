@@ -118,7 +118,7 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        public static (SyntaxKind contentKind,string methodName,ImmutableArray<ArgumentSyntax> arguments)
+        public static (SyntaxKind contentKind, string methodName, ImmutableArray<ArgumentSyntax> arguments)
             ConvertInterpolatedStringToStringBuilderMethod(InterpolatedStringContentSyntax content, bool isVerbatim)
         {
             if (content == null)

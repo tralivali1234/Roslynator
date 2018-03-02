@@ -58,13 +58,7 @@ namespace Roslynator.CSharp.Refactorings
                 || IsRefactoringEnabled(id5);
         }
 
-        public bool IsAnyRefactoringEnabled(
-            string id,
-            string id2,
-            string id3,
-            string id4,
-            string id5,
-            string id6)
+        public bool IsAnyRefactoringEnabled(string id, string id2, string id3, string id4, string id5, string id6)
         {
             return IsRefactoringEnabled(id)
                 || IsRefactoringEnabled(id2)

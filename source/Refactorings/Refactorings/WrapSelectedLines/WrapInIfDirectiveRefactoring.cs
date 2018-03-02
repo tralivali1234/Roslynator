@@ -4,6 +4,12 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
 {
     internal class WrapInIfDirectiveRefactoring : WrapSelectedLinesRefactoring
     {
+        public static WrapInIfDirectiveRefactoring Instance { get; } = new WrapInIfDirectiveRefactoring();
+
+        private WrapInIfDirectiveRefactoring()
+        {
+        }
+
         public override string GetFirstLineText()
         {
             return "#if DEBUG";

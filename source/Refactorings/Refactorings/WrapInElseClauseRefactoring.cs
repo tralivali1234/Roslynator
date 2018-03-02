@@ -16,49 +16,51 @@ namespace Roslynator.CSharp.Refactorings
         {
             StatementSyntax lastStatement = selectedStatements.Last();
 
-            if (lastStatement.IsKind(SyntaxKind.ReturnStatement)
-                && selectedStatements.LastIndex == selectedStatements.UnderlyingList.IndexOf(lastStatement)
-                && selectedStatements.FirstIndex > 0)
+            if (!lastStatement.IsKind(SyntaxKind.ReturnStatement))
+                return;
+
+            if (selectedStatements.LastIndex != selectedStatements.UnderlyingList.IndexOf(lastStatement))
+                return;
+
+            if (selectedStatements.FirstIndex == 0)
+                return;
+
+            var returnStatement = (ReturnStatementSyntax)lastStatement;
+
+            ExpressionSyntax expression = returnStatement.Expression;
+
+            if (expression == null)
+                return;
+
+            StatementSyntax prevStatement = selectedStatements.UnderlyingList[selectedStatements.FirstIndex - 1];
+
+            if (!prevStatement.IsKind(SyntaxKind.IfStatement))
+                return;
+
+            var ifStatement = (IfStatementSyntax)prevStatement;
+
+            IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
+
+            foreach (IfStatementOrElseClause ifOrElse in ifStatementInfo)
             {
-                var returnStatement = (ReturnStatementSyntax)lastStatement;
+                if (ifOrElse.IsElse)
+                    return;
 
-                ExpressionSyntax expression = returnStatement.Expression;
-
-                if (expression != null)
-                {
-                    StatementSyntax prevStatement = selectedStatements.UnderlyingList[selectedStatements.FirstIndex - 1];
-
-                    if (prevStatement.IsKind(SyntaxKind.IfStatement))
-                    {
-                        var ifStatement = (IfStatementSyntax)prevStatement;
-
-                        IfStatementInfo ifStatementInfo = SyntaxInfo.IfStatementInfo(ifStatement);
-
-                        foreach (IfStatementOrElseClause ifOrElse in ifStatementInfo)
-                        {
-                            if (ifOrElse.IsElse)
-                                return;
-
-                            if (!IsLastStatementReturnStatement(ifOrElse))
-                                return;
-                        }
-
-                        context.RegisterRefactoring(
-                            "Wrap in else clause",
-                            cancellationToken => RefactorAsync(context.Document, ifStatementInfo, selectedStatements, cancellationToken));
-                    }
-                }
+                if (!IsLastStatementReturnStatement(ifOrElse))
+                    return;
             }
+
+            context.RegisterRefactoring(
+                "Wrap in else clause",
+                cancellationToken => RefactorAsync(context.Document, ifStatementInfo, selectedStatements, cancellationToken));
         }
 
         private static bool IsLastStatementReturnStatement(IfStatementSyntax ifStatement)
         {
             StatementSyntax statement = ifStatement.Statement;
 
-            if (statement.IsKind(SyntaxKind.Block))
+            if (statement is BlockSyntax block)
             {
-                var block = (BlockSyntax)statement;
-
                 return IsReturnStatementWithExpression(block.Statements.LastOrDefault());
             }
             else
@@ -69,14 +71,8 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsReturnStatementWithExpression(StatementSyntax statement)
         {
-            if (statement?.Kind() == SyntaxKind.ReturnStatement)
-            {
-                var returnStatement = (ReturnStatementSyntax)statement;
-
-                return returnStatement.Expression != null;
-            }
-
-            return false;
+            return statement is ReturnStatementSyntax returnStatement
+                && returnStatement.Expression != null;
         }
 
         private static Task<Document> RefactorAsync(
