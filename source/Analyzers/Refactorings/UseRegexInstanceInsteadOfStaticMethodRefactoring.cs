@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
@@ -18,26 +17,110 @@ namespace Roslynator.CSharp.Refactorings
     {
         internal static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
         {
-            switch (invocationInfo.NameText)
+            if (!ValidateMethodNameAndArgumentCount())
+                return;
+
+            SemanticModel semanticModel = context.SemanticModel;
+            CancellationToken cancellationToken = context.CancellationToken;
+
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
+
+            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol))
+                return;
+
+            if (methodSymbol.ContainingType?.Equals(MetadataNames.System_Text_RegularExpressions_Regex) != true)
+                return;
+
+            SeparatedSyntaxList<ArgumentSyntax> arguments = invocationInfo.Arguments;
+
+            if (!ValidateArgument(arguments[1]))
+                return;
+
+            if (methodSymbol.Name == "Replace")
             {
-                case "IsMatch":
-                case "Match":
-                case "Matches":
-                case "Replace":
-                case "Split":
-                    {
-                        IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, context.CancellationToken);
+                if (arguments.Count == 4
+                    && !ValidateArgument(arguments[3]))
+                {
+                    return;
+                }
+            }
+            else if (arguments.Count == 3
+                && !ValidateArgument(arguments[2]))
+            {
+                return;
+            }
 
-                        if (SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol)
-                            && methodSymbol.ContainingType?.Equals(context.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex)) == true)
+            context.ReportDiagnostic(DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod, invocationInfo.Name);
+
+            bool ValidateMethodNameAndArgumentCount()
+            {
+                switch (invocationInfo.NameText)
+                {
+                    case "IsMatch":
+                    case "Match":
+                    case "Matches":
+                    case "Split":
                         {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod,
-                                invocationInfo.Name);
-                        }
+                            int count = invocationInfo.Arguments.Count;
 
-                        break;
-                    }
+                            return count >= 2
+                                && count <= 3;
+                        }
+                    case "Replace":
+                        {
+                            int count = invocationInfo.Arguments.Count;
+
+                            return count >= 3
+                                && count <= 4;
+                        }
+                }
+
+                return false;
+            }
+
+            bool ValidateArgument(ArgumentSyntax argument)
+            {
+                ExpressionSyntax expression = argument.Expression;
+
+                if (expression == null)
+                    return false;
+
+                if (expression.WalkDownParentheses() is LiteralExpressionSyntax)
+                    return true;
+
+                if (!semanticModel.GetConstantValue(expression, cancellationToken).HasValue)
+                    return false;
+
+                ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
+
+                Debug.Assert(symbol != null);
+
+                if (symbol == null)
+                    return true;
+
+                switch (symbol.Kind)
+                {
+                    case SymbolKind.Field:
+                        {
+                            return ((IFieldSymbol)symbol).HasConstantValue;
+                        }
+                    case SymbolKind.Method:
+                        {
+                            if (((IMethodSymbol)symbol).MethodKind != MethodKind.BuiltinOperator)
+                                return false;
+
+                            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
+
+                            if (typeSymbol == null)
+                                return false;
+
+                            return typeSymbol.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_RegexOptions));
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
             }
         }
 
@@ -77,9 +160,7 @@ namespace Roslynator.CSharp.Refactorings
                     TypeSyntax regexType = semanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_Regex).ToMinimalTypeSyntax(semanticModel, typeDeclaration.SpanStart);
 
                     FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(
-                        (ShouldBeStatic(memberDeclaration, semanticModel, cancellationToken))
-                            ? Modifiers.PrivateStaticReadOnly()
-                            : Modifiers.PrivateReadOnly(),
+                        Modifiers.PrivateStaticReadOnly(),
                         regexType,
                         Identifier(fieldName),
                         EqualsValueClause(
@@ -96,18 +177,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return document;
-        }
-
-        private static bool ShouldBeStatic(MemberDeclarationSyntax memberDeclaration, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            if (memberDeclaration.IsKind(SyntaxKind.FieldDeclaration))
-            {
-                return true;
-            }
-            else
-            {
-                return semanticModel.GetDeclaredSymbol(memberDeclaration, cancellationToken)?.IsStatic == true;
-            }
         }
 
         private static ArgumentListPair RewriteArgumentLists(
