@@ -80,6 +80,7 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
 
         private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
         {
+            //TODO: UsingDirectivesInfo
             switch (node.Kind())
             {
                 case SyntaxKind.CompilationUnit:

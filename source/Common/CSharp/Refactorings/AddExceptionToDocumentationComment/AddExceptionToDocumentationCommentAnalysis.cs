@@ -6,15 +6,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 {
-    internal class AddExceptionToDocumentationCommentAnalysis
+    internal readonly struct AddExceptionToDocumentationCommentAnalysis
     {
         internal AddExceptionToDocumentationCommentAnalysis(ThrowInfo info, SyntaxTrivia documentationComment)
         {
             ThrowInfo = info;
             DocumentationComment = documentationComment;
         }
-
-        internal static AddExceptionToDocumentationCommentAnalysis NoSuccess { get; } = new AddExceptionToDocumentationCommentAnalysis(null, default(SyntaxTrivia));
 
         internal ThrowInfo ThrowInfo { get; }
 
@@ -45,9 +43,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
         public SyntaxTrivia DocumentationComment { get; }
 
-        public IParameterSymbol GetParameterSymbol(
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
+        public IParameterSymbol GetParameterSymbol(SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             return ThrowInfo?.GetParameterSymbol(semanticModel, cancellationToken);
         }

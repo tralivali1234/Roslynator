@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.CodeFixes
             if (!TryFindFirstAncestorOrSelf(root, context.Span, out MemberDeclarationSyntax memberDeclaration))
                 return;
 
-            string name = ExtractTypeDeclarationToNewDocumentRefactoring.GetIdentifier(memberDeclaration).ValueText;
+            string name = CSharpUtility.GetIdentifier(memberDeclaration).ValueText;
             string title = ExtractTypeDeclarationToNewDocumentRefactoring.GetTitle(name);
 
             CodeAction codeAction = CodeAction.Create(

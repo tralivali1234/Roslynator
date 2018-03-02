@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 {
@@ -14,36 +15,24 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
         {
         }
 
-        protected override IParameterSymbol GetParameterSymbolCore(
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
+        protected override IParameterSymbol GetParameterSymbolCore(SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             SyntaxNode parent = Node.Parent;
 
-            if (parent?.Kind() == SyntaxKind.CoalesceExpression)
-            {
-                parent = parent.Parent;
+            if (parent?.Kind() != SyntaxKind.CoalesceExpression)
+                return null;
 
-                if (parent?.Kind() == SyntaxKind.SimpleAssignmentExpression)
-                {
-                    var assignment = (AssignmentExpressionSyntax)parent;
+            SimpleAssignmentExpressionInfo simpleAssignment = SyntaxInfo.SimpleAssignmentExpressionInfo(parent.Parent);
 
-                    ExpressionSyntax left = assignment.Left;
+            ISymbol leftSymbol = semanticModel.GetSymbol(simpleAssignment.Left, cancellationToken);
 
-                    if (left != null)
-                    {
-                        ISymbol leftSymbol = semanticModel.GetSymbol(left, cancellationToken);
+            if (leftSymbol?.Kind != SymbolKind.Parameter)
+                return null;
 
-                        if (leftSymbol?.Kind == SymbolKind.Parameter
-                            && leftSymbol.ContainingSymbol?.Equals(DeclarationSymbol) == true)
-                        {
-                            return (IParameterSymbol)leftSymbol;
-                        }
-                    }
-                }
-            }
+            if (leftSymbol.ContainingSymbol?.Equals(DeclarationSymbol) != true)
+                return null;
 
-            return null;
+            return (IParameterSymbol)leftSymbol;
         }
     }
 }

@@ -183,7 +183,7 @@ namespace Roslynator.CSharp.Refactorings
             if (node == null)
                 return;
 
-            SyntaxToken identifier = GetIdentifier(node);
+            SyntaxToken identifier = CSharpUtility.GetIdentifier(node);
 
             Debug.Assert(!identifier.IsKind(SyntaxKind.None), node.ToString());
 
@@ -193,24 +193,6 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                DiagnosticDescriptors.StaticMemberInGenericTypeShouldUseTypeParameter,
                identifier);
-        }
-
-        private static SyntaxToken GetIdentifier(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.VariableDeclarator:
-                    return ((VariableDeclaratorSyntax)node).Identifier;
-                case SyntaxKind.MethodDeclaration:
-                    return ((MethodDeclarationSyntax)node).Identifier;
-                case SyntaxKind.PropertyDeclaration:
-                    return ((PropertyDeclarationSyntax)node).Identifier;
-                case SyntaxKind.EventDeclaration:
-                    return ((EventDeclarationSyntax)node).Identifier;
-            }
-
-            Debug.Fail(node.Kind().ToString());
-            return default(SyntaxToken);
         }
     }
 }

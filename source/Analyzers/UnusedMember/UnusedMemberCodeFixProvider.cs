@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
             Diagnostic diagnostic = context.Diagnostics[0];
 
             CodeAction codeAction = CodeAction.Create(
-                $"Remove '{UnusedMemberRefactoring.GetIdentifier(node).ValueText}'",
+                $"Remove '{CSharpUtility.GetIdentifier(node).ValueText}'",
                 cancellationToken => UnusedMemberRefactoring.RefactorAsync(context.Document, node, cancellationToken),
                 GetEquivalenceKey(diagnostic));
 

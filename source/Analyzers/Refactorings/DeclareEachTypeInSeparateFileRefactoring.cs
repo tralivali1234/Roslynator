@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, MemberDeclarationSyntax member)
         {
-            SyntaxToken token = ExtractTypeDeclarationToNewDocumentRefactoring.GetIdentifier(member);
+            SyntaxToken token = CSharpUtility.GetIdentifier(member);
 
             if (token == default(SyntaxToken))
                 return;

@@ -65,8 +65,6 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             }
         }
 
-        protected abstract IParameterSymbol GetParameterSymbolCore(
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken);
+        protected abstract IParameterSymbol GetParameterSymbolCore(SemanticModel semanticModel, CancellationToken cancellationToken);
     }
 }

@@ -409,5 +409,40 @@ namespace Roslynator.CSharp
                 .ConvertedType?
                 .SpecialType == SpecialType.System_String;
         }
+
+        public static SyntaxToken GetIdentifier(SyntaxNode node)
+        {
+            switch (node.Kind())
+            {
+                case SyntaxKind.ClassDeclaration:
+                    return ((ClassDeclarationSyntax)node).Identifier;
+                case SyntaxKind.StructDeclaration:
+                    return ((StructDeclarationSyntax)node).Identifier;
+                case SyntaxKind.InterfaceDeclaration:
+                    return ((InterfaceDeclarationSyntax)node).Identifier;
+                case SyntaxKind.EnumDeclaration:
+                    return ((EnumDeclarationSyntax)node).Identifier;
+                case SyntaxKind.DelegateDeclaration:
+                    return ((DelegateDeclarationSyntax)node).Identifier;
+                case SyntaxKind.MethodDeclaration:
+                    return ((MethodDeclarationSyntax)node).Identifier;
+                case SyntaxKind.ConstructorDeclaration:
+                    return ((ConstructorDeclarationSyntax)node).Identifier;
+                case SyntaxKind.PropertyDeclaration:
+                    return ((PropertyDeclarationSyntax)node).Identifier;
+                case SyntaxKind.IndexerDeclaration:
+                    return ((IndexerDeclarationSyntax)node).ThisKeyword;
+                case SyntaxKind.EventDeclaration:
+                    return ((EventDeclarationSyntax)node).Identifier;
+                case SyntaxKind.EventFieldDeclaration:
+                    return ((EventFieldDeclarationSyntax)node).Declaration?.Variables.FirstOrDefault()?.Identifier ?? default(SyntaxToken);
+                case SyntaxKind.FieldDeclaration:
+                    return ((FieldDeclarationSyntax)node).Declaration?.Variables.FirstOrDefault()?.Identifier ?? default(SyntaxToken);
+                case SyntaxKind.VariableDeclarator:
+                    return ((VariableDeclaratorSyntax)node).Identifier;
+            }
+
+            return default(SyntaxToken);
+        }
     }
 }

@@ -16,9 +16,6 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(ArrowExpressionClauseSyntax arrowExpressionClause)
         {
-            if (arrowExpressionClause == null)
-                throw new ArgumentNullException(nameof(arrowExpressionClause));
-
             SyntaxNode parent = arrowExpressionClause.Parent;
 
             return parent != null
@@ -30,12 +27,6 @@ namespace Roslynator.CSharp.Refactorings
             ArrowExpressionClauseSyntax arrowExpressionClause,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (arrowExpressionClause == null)
-                throw new ArgumentNullException(nameof(arrowExpressionClause));
-
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             SyntaxNode newNode = Refactor(arrowExpressionClause, semanticModel, cancellationToken).WithFormatterAnnotation();

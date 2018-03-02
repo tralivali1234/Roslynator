@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -23,12 +20,6 @@ namespace Roslynator.CSharp.Refactorings
             LockStatementSyntax lockStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (lockStatement == null)
-                throw new ArgumentNullException(nameof(lockStatement));
-
             MemberDeclarationSyntax containingMember = lockStatement.FirstAncestor<MemberDeclarationSyntax>();
 
             Debug.Assert(containingMember != null);
@@ -36,12 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             if (containingMember == null)
                 return document;
 
-            var containingType = (TypeDeclarationSyntax)containingMember
-                .Ancestors()
-                .FirstOrDefault(f => f.IsKind(
-                    SyntaxKind.ClassDeclaration,
-                    SyntaxKind.InterfaceDeclaration,
-                    SyntaxKind.StructDeclaration));
+            TypeDeclarationSyntax containingType = containingMember.FirstAncestor<TypeDeclarationSyntax>();
 
             Debug.Assert(containingType != null);
 

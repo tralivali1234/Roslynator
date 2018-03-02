@@ -24,12 +24,6 @@ namespace Roslynator.CSharp.Refactorings
             AssignmentExpressionSyntax assignmentExpression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (document == null)
-                throw new ArgumentNullException(nameof(document));
-
-            if (assignmentExpression == null)
-                throw new ArgumentNullException(nameof(assignmentExpression));
-
             ExpressionSyntax left = assignmentExpression.Left;
 
             AssignmentExpressionSyntax newNode = SimpleAssignmentExpression(
@@ -46,6 +40,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(assignmentExpression, newNode, cancellationToken);
         }
 
+        //TODO: CSharpFacts
         private static SyntaxKind GetBinaryExpressionKind(AssignmentExpressionSyntax assignmentExpression)
         {
             switch (assignmentExpression.Kind())

@@ -179,30 +179,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node, string declarationName)
         {
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnusedMemberDeclaration, GetIdentifier(node), declarationName);
-        }
-
-        internal static SyntaxToken GetIdentifier(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.DelegateDeclaration:
-                    return ((DelegateDeclarationSyntax)node).Identifier;
-                case SyntaxKind.EventDeclaration:
-                    return ((EventDeclarationSyntax)node).Identifier;
-                case SyntaxKind.EventFieldDeclaration:
-                    return ((EventFieldDeclarationSyntax)node).Declaration.Variables.First().Identifier;
-                case SyntaxKind.FieldDeclaration:
-                    return ((FieldDeclarationSyntax)node).Declaration.Variables.First().Identifier;
-                case SyntaxKind.VariableDeclarator:
-                    return ((VariableDeclaratorSyntax)node).Identifier;
-                case SyntaxKind.MethodDeclaration:
-                    return ((MethodDeclarationSyntax)node).Identifier;
-                case SyntaxKind.PropertyDeclaration:
-                    return ((PropertyDeclarationSyntax)node).Identifier;
-                default:
-                    throw new InvalidOperationException();
-            }
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnusedMemberDeclaration, CSharpUtility.GetIdentifier(node), declarationName);
         }
 
         public static Task<Document> RefactorAsync(

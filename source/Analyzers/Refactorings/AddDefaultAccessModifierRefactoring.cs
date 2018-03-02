@@ -208,60 +208,12 @@ namespace Roslynator.CSharp.Refactorings
             if (kind == SyntaxKind.ConversionOperatorDeclaration)
                 return ((ConversionOperatorDeclarationSyntax)node).Type?.GetLocation();
 
-            SyntaxToken token = GetToken(node);
+            SyntaxToken token = CSharpUtility.GetIdentifier(node);
 
             if (!token.IsKind(SyntaxKind.None))
                 return token.GetLocation();
 
             return null;
-        }
-
-        private static SyntaxToken GetToken(SyntaxNode declaration)
-        {
-            switch (declaration.Kind())
-            {
-                case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.ConstructorDeclaration:
-                    return ((ConstructorDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.DelegateDeclaration:
-                    return ((DelegateDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.EnumDeclaration:
-                    return ((EnumDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.EventDeclaration:
-                    return ((EventDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.IndexerDeclaration:
-                    return ((IndexerDeclarationSyntax)declaration).ThisKeyword;
-                case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.MethodDeclaration:
-                    return ((MethodDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.PropertyDeclaration:
-                    return ((PropertyDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)declaration).Identifier;
-                case SyntaxKind.FieldDeclaration:
-                    return GetToken(((FieldDeclarationSyntax)declaration).Declaration);
-                case SyntaxKind.EventFieldDeclaration:
-                    return GetToken(((EventFieldDeclarationSyntax)declaration).Declaration);
-            }
-
-            Debug.Fail(declaration.Kind().ToString());
-
-            return default(SyntaxToken);
-        }
-
-        private static SyntaxToken GetToken(VariableDeclarationSyntax variableDeclaration)
-        {
-            if (variableDeclaration != null)
-            {
-                SeparatedSyntaxList<VariableDeclaratorSyntax> variables = variableDeclaration.Variables;
-
-                if (variables.Any())
-                    return variables[0].Identifier;
-            }
-
-            return default(SyntaxToken);
         }
 
         public static Task<Document> RefactorAsync(
