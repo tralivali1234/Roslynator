@@ -13,34 +13,37 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, BinaryExpressionSyntax binaryExpression)
         {
-            if (CanRefactor(binaryExpression))
-            {
-                binaryExpression = GetBinaryExpression(binaryExpression, context.Span);
+            if (!CanRefactor(binaryExpression))
+                return;
 
-                if (binaryExpression != null)
-                {
-                    context.RegisterRefactoring(
-                        "Negate binary expression",
-                        cancellationToken => RefactorAsync(context.Document, binaryExpression, cancellationToken));
-                }
-            }
+            binaryExpression = GetBinaryExpression(binaryExpression, context.Span);
+
+            if (binaryExpression == null)
+                return;
+
+            context.RegisterRefactoring(
+                "Negate binary expression",
+                cancellationToken => RefactorAsync(context.Document, binaryExpression, cancellationToken));
         }
 
         private static bool CanRefactor(SyntaxNode node)
         {
-            if (node?.IsKind(
-                    SyntaxKind.LogicalAndExpression,
-                    SyntaxKind.LogicalOrExpression,
-                    SyntaxKind.BitwiseAndExpression,
-                    SyntaxKind.BitwiseOrExpression) == true)
-            {
-                var binaryExpression = (BinaryExpressionSyntax)node;
+            if (node == null)
+                return false;
 
-                return binaryExpression.Left?.IsMissing == false
-                    && binaryExpression.Right?.IsMissing == false;
+            if (!node.IsKind(
+                SyntaxKind.LogicalAndExpression,
+                SyntaxKind.LogicalOrExpression,
+                SyntaxKind.BitwiseAndExpression,
+                SyntaxKind.BitwiseOrExpression))
+            {
+                return false;
             }
 
-            return false;
+            var binaryExpression = (BinaryExpressionSyntax)node;
+
+            return binaryExpression.Left?.IsMissing == false
+                && binaryExpression.Right?.IsMissing == false;
         }
 
         private static BinaryExpressionSyntax GetBinaryExpression(BinaryExpressionSyntax binaryExpression, TextSpan span)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -18,35 +19,32 @@ namespace Roslynator.CSharp.Refactorings
         {
             AccessorDeclarationSyntax setter = property.Setter();
 
-            if (setter != null)
+            if (setter == null)
+                return false;
+
+            BlockSyntax body = setter.Body;
+
+            //TODO: BodyOrExpressionBodyInfo.Expression
+            if (body != null)
             {
-                BlockSyntax body = setter.Body;
-
-                if (body != null)
+                if (body.Statements.SingleOrDefault(shouldThrow: false) is ExpressionStatementSyntax expressionStatement)
                 {
-                    StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
+                    ExpressionSyntax expression = expressionStatement.Expression;
 
-                    if (statement?.Kind() == SyntaxKind.ExpressionStatement)
-                    {
-                        var expressionStatement = (ExpressionStatementSyntax)statement;
-
-                        ExpressionSyntax expression = expressionStatement.Expression;
-
-                        return expression != null
-                            && await CanRefactorAsync(context, property, expression).ConfigureAwait(false);
-                    }
+                    return expression != null
+                        && await CanRefactorAsync(context, property, expression).ConfigureAwait(false);
                 }
-                else
+            }
+            else
+            {
+                ArrowExpressionClauseSyntax expressionBody = setter.ExpressionBody;
+
+                if (expressionBody != null)
                 {
-                    ArrowExpressionClauseSyntax expressionBody = setter.ExpressionBody;
+                    ExpressionSyntax expression = expressionBody.Expression;
 
-                    if (expressionBody != null)
-                    {
-                        ExpressionSyntax expression = expressionBody.Expression;
-
-                        return expression != null
-                            && await CanRefactorAsync(context, property, expression).ConfigureAwait(false);
-                    }
+                    return expression != null
+                        && await CanRefactorAsync(context, property, expression).ConfigureAwait(false);
                 }
             }
 
@@ -58,31 +56,28 @@ namespace Roslynator.CSharp.Refactorings
             PropertyDeclarationSyntax property,
             ExpressionSyntax expression)
         {
-            if (expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
-            {
-                var assignment = (AssignmentExpressionSyntax)expression;
+            SimpleAssignmentExpressionInfo simpleAssignment = SyntaxInfo.SimpleAssignmentExpressionInfo(expression);
 
-                ExpressionSyntax left = assignment.Left;
-                ExpressionSyntax right = assignment.Right;
+            if (!simpleAssignment.Success)
+                return false;
 
-                if (left?.Kind() == SyntaxKind.IdentifierName
-                    && right?.Kind() == SyntaxKind.IdentifierName)
-                {
-                    var identifierName = (IdentifierNameSyntax)right;
+            if (simpleAssignment.Left.Kind() != SyntaxKind.IdentifierName)
+                return false;
 
-                    if (identifierName.Identifier.ValueText == "value")
-                    {
-                        SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (simpleAssignment.Right.Kind() != SyntaxKind.IdentifierName)
+                return false;
 
-                        return semanticModel
-                            .GetDeclaredSymbol(property, context.CancellationToken)?
-                            .ContainingType?
-                            .Implements(semanticModel.GetTypeByMetadataName(MetadataNames.System_ComponentModel_INotifyPropertyChanged), allInterfaces: true) == true;
-                    }
-                }
-            }
+            var identifierName = (IdentifierNameSyntax)simpleAssignment.Right;
 
-            return false;
+            if (identifierName.Identifier.ValueText != "value")
+                return false;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            return semanticModel
+                .GetDeclaredSymbol(property, context.CancellationToken)?
+                .ContainingType?
+                .Implements(semanticModel.GetTypeByMetadataName(MetadataNames.System_ComponentModel_INotifyPropertyChanged), allInterfaces: true) == true;
         }
 
         public static Task<Document> RefactorAsync(

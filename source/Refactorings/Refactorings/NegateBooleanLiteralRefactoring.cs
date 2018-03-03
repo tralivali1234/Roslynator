@@ -16,11 +16,8 @@ namespace Roslynator.CSharp.Refactorings
             LiteralExpressionSyntax literalExpression,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            LiteralExpressionSyntax newNode = (literalExpression.IsKind(SyntaxKind.TrueLiteralExpression))
-                ? FalseLiteralExpression()
-                : TrueLiteralExpression();
-
-            newNode = newNode.WithTriviaFrom(literalExpression);
+            LiteralExpressionSyntax newNode = BooleanLiteralExpression(!literalExpression.IsKind(SyntaxKind.TrueLiteralExpression))
+                .WithTriviaFrom(literalExpression);
 
             return document.ReplaceNodeAsync(literalExpression, newNode, cancellationToken);
         }

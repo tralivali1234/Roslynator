@@ -8,7 +8,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: pokr.
     internal static class PlusTokenRefactoring
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, SyntaxToken token)
@@ -27,6 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
                 StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(addExpresion, semanticModel, context.CancellationToken);
+
                 if (concatenationInfo.Success)
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.JoinStringExpressions))
