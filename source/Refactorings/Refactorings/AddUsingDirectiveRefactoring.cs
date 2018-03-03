@@ -21,7 +21,10 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxNode node = identifierName;
             SyntaxNode prevNode = null;
 
-            while (node?.IsParentKind(SyntaxKind.QualifiedName, SyntaxKind.AliasQualifiedName, SyntaxKind.SimpleMemberAccessExpression) == true)
+            while (node?.IsParentKind(
+                SyntaxKind.QualifiedName,
+                SyntaxKind.AliasQualifiedName,
+                SyntaxKind.SimpleMemberAccessExpression) == true)
             {
                 ISymbol symbol = semanticModel.GetSymbol(node, context.CancellationToken);
 

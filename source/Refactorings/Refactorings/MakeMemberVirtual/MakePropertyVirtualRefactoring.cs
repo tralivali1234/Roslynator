@@ -34,6 +34,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
             PropertyDeclarationSyntax propertyDeclaration,
             CancellationToken cancellationToken)
         {
+            //TODO: ModifierReplace
             PropertyDeclarationSyntax newNode = propertyDeclaration
                 .WithSemicolonToken(default(SyntaxToken))
                 .WithAccessorList(MakeMemberAbstractHelper.ExpandAccessorList(propertyDeclaration.AccessorList))

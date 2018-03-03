@@ -26,26 +26,14 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                             "Format arguments on separate lines",
-                            cancellationToken =>
-                            {
-                                return SyntaxFormatter.ToMultiLineAsync(
-                                    context.Document,
-                                    argumentList,
-                                    cancellationToken);
-                            });
+                            ct => SyntaxFormatter.ToMultiLineAsync(context.Document, argumentList, ct));
                     }
                 }
                 else
                 {
                     context.RegisterRefactoring(
                         "Format arguments on a single line",
-                        cancellationToken =>
-                        {
-                            return SyntaxFormatter.ToSingleLineAsync(
-                                context.Document,
-                                argumentList,
-                                cancellationToken);
-                        });
+                        ct => SyntaxFormatter.ToSingleLineAsync(context.Document, argumentList, ct));
                 }
             }
         }

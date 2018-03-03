@@ -23,32 +23,34 @@ namespace Roslynator.CSharp.Refactorings
         {
             INamedTypeSymbol enumSymbol = semanticModel.GetDeclaredSymbol(enumDeclaration, context.CancellationToken);
 
-            if (enumSymbol?.IsEnumWithFlags(semanticModel) == true)
-            {
-                object[] constantValues = selection
-                    .Select(f => semanticModel.GetDeclaredSymbol(f, context.CancellationToken))
-                    .Where(f => f.HasConstantValue)
-                    .Select(f => f.ConstantValue)
-                    .ToArray();
+            if (enumSymbol?.IsEnumWithFlags(semanticModel) != true)
+                return;
 
-                object combinedValue = GetCombinedValue(constantValues, enumSymbol);
+            object[] constantValues = selection
+                .Select(f => semanticModel.GetDeclaredSymbol(f, context.CancellationToken))
+                .Where(f => f.HasConstantValue)
+                .Select(f => f.ConstantValue)
+                .ToArray();
 
-                if (combinedValue != null
-                    && !IsValueDefined(enumSymbol, combinedValue))
-                {
-                    string name = NameGenerator.Default.EnsureUniqueMemberName(
-                        string.Concat(selection.Select(f => f.Identifier.ValueText)),
-                        enumSymbol);
+            object combinedValue = GetCombinedValue(constantValues, enumSymbol);
 
-                    EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.ToImmutableArray());
+            if (combinedValue == null)
+                return;
 
-                    int insertIndex = selection.LastIndex + 1;
+            if (IsValueDefined(enumSymbol, combinedValue))
+                return;
 
-                    context.RegisterRefactoring(
-                        $"Generate enum member '{name}'",
-                        cancellationToken => RefactorAsync(context.Document, enumDeclaration, newEnumMember, insertIndex, cancellationToken));
-                }
-            }
+            string name = NameGenerator.Default.EnsureUniqueMemberName(
+                string.Concat(selection.Select(f => f.Identifier.ValueText)),
+                enumSymbol);
+
+            EnumMemberDeclarationSyntax newEnumMember = CreateEnumMember(name, selection.ToImmutableArray());
+
+            int insertIndex = selection.LastIndex + 1;
+
+            context.RegisterRefactoring(
+                $"Generate enum member '{name}'",
+                cancellationToken => RefactorAsync(context.Document, enumDeclaration, newEnumMember, insertIndex, cancellationToken));
         }
 
         private static object GetCombinedValue(IEnumerable<object> constantValues, INamedTypeSymbol enumSymbol)

@@ -32,6 +32,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
             ExpressionSyntax expression)
         {
             var binaryExpression = (BinaryExpressionSyntax)expression.Parent;
+
             ExpressionSyntax left = binaryExpression.Left;
 
             if (expression == left)

@@ -513,14 +513,14 @@ namespace Roslynator.CSharp
         /// <summary>
         /// Creates a new <see cref="Syntax.LocalDeclarationStatementInfo"/> from the specified expression.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="value"></param>
         /// <param name="allowMissing"></param>
         /// <returns></returns>
         public static LocalDeclarationStatementInfo LocalDeclarationStatementInfo(
-            ExpressionSyntax expression,
+            ExpressionSyntax value,
             bool allowMissing = false)
         {
-            return Syntax.LocalDeclarationStatementInfo.Create(expression, allowMissing);
+            return Syntax.LocalDeclarationStatementInfo.Create(value, allowMissing);
         }
 
         /// <summary>

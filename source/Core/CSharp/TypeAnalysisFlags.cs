@@ -4,6 +4,7 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    //TODO: TypeAnalysis struct
     [Flags]
     internal enum TypeAnalysisFlags
     {

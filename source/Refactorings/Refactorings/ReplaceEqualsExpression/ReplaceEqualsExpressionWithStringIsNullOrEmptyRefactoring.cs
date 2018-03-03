@@ -4,6 +4,12 @@ namespace Roslynator.CSharp.Refactorings.ReplaceEqualsExpression
 {
     internal class ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring : ReplaceEqualsExpressionRefactoring
     {
+        private ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring()
+        {
+        }
+
+        public static ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring Instance { get; } = new ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring();
+
         public override string MethodName
         {
             get { return "IsNullOrEmpty"; }

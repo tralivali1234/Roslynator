@@ -18,8 +18,11 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, MethodDeclarationSyntax methodDeclaration)
         {
-            if (methodDeclaration.Span.Contains(context.Span))
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeMethodReturnTypeToVoid)
+                && methodDeclaration.Span.Contains(context.Span))
+            {
                 await ChangeMethodReturnTypeToVoidRefactoring.ComputeRefactoringAsync(context, methodDeclaration).ConfigureAwait(false);
+            }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddTypeParameter))
                 AddTypeParameterRefactoring.ComputeRefactoring(context, methodDeclaration);

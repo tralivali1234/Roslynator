@@ -561,5 +561,14 @@ namespace Roslynator.CSharp
 
             return null;
         }
+
+        //TODO: pub
+        internal static bool HasConstantValue(
+            this SemanticModel semanticModel,
+            ExpressionSyntax expression,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Microsoft.CodeAnalysis.CSharp.CSharpExtensions.GetConstantValue(semanticModel, expression, cancellationToken).HasValue;
+        }
     }
 }

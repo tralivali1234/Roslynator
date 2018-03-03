@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Syntax;
+using static Roslynator.CSharp.Refactorings.ChangeAccessibilityRefactoring;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -38,14 +39,14 @@ namespace Roslynator.CSharp.Refactorings
                         syntaxReferences,
                         f => (MemberDeclarationSyntax)f.GetSyntax(context.CancellationToken));
 
-                    foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.AvailableAccessibilities)
+                    foreach (Accessibility accessibility in AvailableAccessibilities)
                     {
                         if (accessibility != modifiersInfo.ExplicitAccessibility
                             && CSharpAccessibility.IsValidAccessibility(node, accessibility))
                         {
                             context.RegisterRefactoring(
-                                ChangeAccessibilityRefactoring.GetTitle(accessibility),
-                                cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Solution, memberDeclarations, accessibility, cancellationToken));
+                                GetTitle(accessibility),
+                                cancellationToken => RefactorAsync(context.Solution, memberDeclarations, accessibility, cancellationToken));
                         }
                     }
 
@@ -53,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            foreach (Accessibility accessibility in ChangeAccessibilityRefactoring.AvailableAccessibilities)
+            foreach (Accessibility accessibility in AvailableAccessibilities)
             {
                 if (accessibility == modifiersInfo.ExplicitAccessibility)
                     continue;
@@ -67,15 +68,15 @@ namespace Roslynator.CSharp.Refactorings
                     if (CSharpAccessibility.IsValidAccessibility(node, accessibility, ignoreOverride: true))
                     {
                         context.RegisterRefactoring(
-                            ChangeAccessibilityRefactoring.GetTitle(accessibility),
-                            cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Solution, symbol, accessibility, cancellationToken));
+                            GetTitle(accessibility),
+                            cancellationToken => RefactorAsync(context.Solution, symbol, accessibility, cancellationToken));
                     }
                 }
                 else if (CSharpAccessibility.IsValidAccessibility(node, accessibility))
                 {
                     context.RegisterRefactoring(
-                        ChangeAccessibilityRefactoring.GetTitle(accessibility),
-                        cancellationToken => ChangeAccessibilityRefactoring.RefactorAsync(context.Document, node, accessibility, cancellationToken));
+                        GetTitle(accessibility),
+                        cancellationToken => RefactorAsync(context.Document, node, accessibility, cancellationToken));
                 }
             }
 

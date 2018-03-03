@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (value == null)
                     return false;
 
-                if (!semanticModel.GetConstantValue(value, cancellationToken).HasValue)
+                if (!semanticModel.HasConstantValue(value, cancellationToken))
                     return false;
             }
 

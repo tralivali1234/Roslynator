@@ -82,6 +82,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
             IEnumerable<EnumMemberDeclarationSyntax> sorted = selectedMembers.OrderBy(f => f, comparer);
 
+            //TODO: ModifyRange
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> newMembers = members
                 .Take(firstIndex)
                 .Concat(sorted)

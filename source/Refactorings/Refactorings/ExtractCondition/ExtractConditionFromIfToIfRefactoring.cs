@@ -12,6 +12,12 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
     internal class ExtractConditionFromIfToIfRefactoring
         : ExtractConditionFromIfRefactoring
     {
+        private ExtractConditionFromIfToIfRefactoring()
+        {
+        }
+
+        public static ExtractConditionFromIfToIfRefactoring Instance { get; } = new ExtractConditionFromIfToIfRefactoring();
+
         public override string Title
         {
             get { return "Extract condition to if"; }

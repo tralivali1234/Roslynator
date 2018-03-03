@@ -17,9 +17,11 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
         }
 
         public ParameterSyntax Parameter { get; }
+
         public string ParameterName { get; }
 
         public abstract string Name { get; }
+
         public abstract SyntaxKind Kind { get; }
 
         public TypeSyntax Type

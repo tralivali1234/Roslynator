@@ -37,6 +37,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken);
         }
 
+        //TODO: mov Modifier
         internal static PropertyDeclarationSyntax ReplaceAbstractWithVirtual(PropertyDeclarationSyntax propertyDeclaration)
         {
             SyntaxTokenList modifiers = propertyDeclaration.Modifiers;
@@ -44,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings
             int index = modifiers.IndexOf(SyntaxKind.AbstractKeyword);
 
             if (index != -1)
-                propertyDeclaration = propertyDeclaration.WithModifiers(modifiers.ReplaceAt(index, CSharpFactory.VirtualKeyword().WithTriviaFrom(modifiers[index])));
+                propertyDeclaration = propertyDeclaration.WithModifiers(modifiers.ReplaceAt(index, VirtualKeyword().WithTriviaFrom(modifiers[index])));
 
             return propertyDeclaration;
         }

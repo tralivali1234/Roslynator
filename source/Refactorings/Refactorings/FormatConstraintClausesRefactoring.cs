@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -15,7 +14,12 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, TypeParameterConstraintClauseSyntax constraintClause)
         {
-            SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = constraintClause.GetContainingList();
+            GenericInfo genericInfo = SyntaxInfo.GenericInfo(constraintClause);
+
+            if (!genericInfo.Success)
+                return;
+
+            SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = genericInfo.ConstraintClauses;
 
             if (constraintClauses.IsSingleLine())
             {
@@ -25,11 +29,9 @@ namespace Roslynator.CSharp.Refactorings
                         "Format constraints on separate lines",
                         cancellationToken =>
                         {
-                            SyntaxNode parent = constraintClause.Parent;
+                            GenericInfo newInfo = ToMultiLine(genericInfo);
 
-                            SyntaxNode newNode = ToMultiLine(parent, constraintClauses);
-
-                            return context.Document.ReplaceNodeAsync(parent, newNode, cancellationToken);
+                            return context.Document.ReplaceNodeAsync(genericInfo.Declaration, newInfo.Declaration, cancellationToken);
                         });
                 }
             }
@@ -39,20 +41,22 @@ namespace Roslynator.CSharp.Refactorings
                     "Format constraints on a single line",
                     cancellationToken =>
                     {
-                        SyntaxNode parent = constraintClause.Parent;
+                        GenericInfo newInfo = ToSingleLine(genericInfo);
 
-                        SyntaxNode newNode = ToSingleLine(parent, constraintClauses);
-
-                        return context.Document.ReplaceNodeAsync(parent, newNode, cancellationToken);
+                        return context.Document.ReplaceNodeAsync(genericInfo.Declaration, newInfo.Declaration, cancellationToken);
                     });
             }
         }
 
-        private static SyntaxNode ToSingleLine(SyntaxNode node, SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
+        private static GenericInfo ToSingleLine(GenericInfo info)
         {
-            SyntaxToken previousToken = node.FindToken(constraintClauses.First().FullSpan.Start - 1);
+            SyntaxNode declaration = info.Declaration;
 
-            node = node.ReplaceToken(previousToken, previousToken.WithTrailingTrivia(TriviaList(ElasticSpace)));
+            SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = info.ConstraintClauses;
+
+            SyntaxToken previousToken = declaration.FindToken(constraintClauses.First().FullSpan.Start - 1);
+
+            declaration = declaration.ReplaceToken(previousToken, previousToken.WithTrailingTrivia(TriviaList(ElasticSpace)));
 
             int count = constraintClauses.Count;
 
@@ -72,19 +76,22 @@ namespace Roslynator.CSharp.Refactorings
                 constraintClauses = constraintClauses.ReplaceAt(i, newNode);
             }
 
-            return WithConstraintClauses(node, constraintClauses);
+            return SyntaxInfo.GenericInfo(declaration).WithConstraintClauses(constraintClauses);
         }
 
-        private static SyntaxNode ToMultiLine(SyntaxNode node, SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
+        private static GenericInfo ToMultiLine(GenericInfo info)
         {
+            SyntaxNode declaration = info.Declaration;
+            SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses = info.ConstraintClauses;
+
             TypeParameterConstraintClauseSyntax first = constraintClauses.First();
 
-            SyntaxToken previousToken = node.FindToken(first.FullSpan.Start - 1);
+            SyntaxToken previousToken = declaration.FindToken(first.FullSpan.Start - 1);
 
-            node = node.ReplaceToken(previousToken, previousToken.WithTrailingTrivia(TriviaList(NewLine())));
+            declaration = declaration.ReplaceToken(previousToken, previousToken.WithTrailingTrivia(TriviaList(NewLine())));
 
-            SyntaxTriviaList leadingTrivia = node
-                .FindToken(node.SpanStart)
+            SyntaxTriviaList leadingTrivia = declaration
+                .FindToken(declaration.SpanStart)
                 .LeadingTrivia;
 
             SyntaxTriviaList trivia = IncreaseIndentation(leadingTrivia.LastOrDefault());
@@ -101,30 +108,7 @@ namespace Roslynator.CSharp.Refactorings
                 constraintClauses = constraintClauses.ReplaceAt(i, newNode);
             }
 
-            return WithConstraintClauses(node, constraintClauses);
-        }
-
-        private static SyntaxNode WithConstraintClauses(SyntaxNode node, SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)node).WithConstraintClauses(constraintClauses);
-                case SyntaxKind.DelegateDeclaration:
-                    return ((DelegateDeclarationSyntax)node).WithConstraintClauses(constraintClauses);
-                case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)node).WithConstraintClauses(constraintClauses);
-                case SyntaxKind.LocalFunctionStatement:
-                    return ((LocalFunctionStatementSyntax)node).WithConstraintClauses(constraintClauses);
-                case SyntaxKind.MethodDeclaration:
-                    return ((MethodDeclarationSyntax)node).WithConstraintClauses(constraintClauses);
-                case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)node).WithConstraintClauses(constraintClauses);
-            }
-
-            Debug.Fail(node.Kind().ToString());
-
-            return node;
+            return SyntaxInfo.GenericInfo(declaration).WithConstraintClauses(constraintClauses);
         }
     }
 }

@@ -142,5 +142,12 @@ namespace Roslynator
             return span.IsEmpty
                 && token.Span.Contains(span);
         }
+
+        //TODO: new, IsEmptyAndContainedInAnySpan
+        public static bool IsEmptyAndContainedInSpan(this TextSpan span, SyntaxToken token1, SyntaxToken token2)
+        {
+            return IsEmptyAndContainedInSpan(span, token1)
+                || IsEmptyAndContainedInSpan(span, token2);
+        }
     }
 }

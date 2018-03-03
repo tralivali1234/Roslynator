@@ -69,6 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceMembersAsync(info, newMembers, cancellationToken).ConfigureAwait(false);
         }
 
+        //TODO: ext?
         private static bool IsReadOnlyAutoProperty(PropertyDeclarationSyntax propertyDeclaration)
         {
             AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
@@ -117,13 +118,8 @@ namespace Roslynator.CSharp.Refactorings
 
         private static FieldDeclarationSyntax CreateBackingField(PropertyDeclarationSyntax propertyDeclaration, string name)
         {
-            SyntaxTokenList modifiers = Modifiers.Private();
-
-            if (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
-                modifiers = modifiers.Add(StaticKeyword());
-
             return FieldDeclaration(
-                modifiers,
+                (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword)) ? Modifiers.PrivateStatic() : Modifiers.Private(),
                 propertyDeclaration.Type,
                 name,
                 propertyDeclaration.Initializer);

@@ -170,7 +170,7 @@ namespace Roslynator.CSharp
             }
             else if (IsConstructedFromNullableOfT(right, semanticModel, cancellationToken))
             {
-                if (semanticModel.GetConstantValue(left, cancellationToken).HasValue)
+                if (semanticModel.HasConstantValue(left, cancellationToken))
                 {
                     return NegateLessThanGreaterThan(binaryExpression, right, left, isLeft: false);
                 }

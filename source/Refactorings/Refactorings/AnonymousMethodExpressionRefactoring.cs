@@ -13,13 +13,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Use lambda expression instead of anonymous method",
-                    cancellationToken =>
-                    {
-                        return UseLambdaExpressionInsteadOfAnonymousMethodRefactoring.RefactorAsync(
-                            context.Document,
-                            anonymousMethod,
-                            cancellationToken);
-                    });
+                    ct => UseLambdaExpressionInsteadOfAnonymousMethodRefactoring.RefactorAsync(context.Document, anonymousMethod, ct));
             }
         }
     }

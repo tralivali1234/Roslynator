@@ -115,7 +115,7 @@ namespace Roslynator.CSharp.Refactorings
                 ExpressionSyntax right = equalsExpression.Right?.WalkDownParentheses();
 
                 if (IsFixableSwitchExpression(right, semanticModel, cancellationToken)
-                    && semanticModel.GetConstantValue(right).HasValue)
+                    && semanticModel.HasConstantValue(right))
                 {
                     return switchExpression == null
                         || CSharpFactory.AreEquivalent(left, switchExpression);

@@ -41,40 +41,40 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
         private static void ComputeRefactoring(RefactoringContext context, MemberDeclarationsSelection selectedMembers)
         {
-            if (selectedMembers.Count > 1)
+            if (selectedMembers.Count <= 1)
+                return;
+
+            ImmutableArray<MemberDeclarationSyntax> members = selectedMembers.ToImmutableArray();
+
+            SyntaxKind kind = GetSingleKindOrDefault(members);
+
+            if (kind != SyntaxKind.None)
             {
-                ImmutableArray<MemberDeclarationSyntax> members = selectedMembers.ToImmutableArray();
-
-                SyntaxKind kind = GetSingleKindOrDefault(members);
-
-                if (kind != SyntaxKind.None)
+                if (MemberDeclarationComparer.CanBeSortedByName(kind))
                 {
-                    if (MemberDeclarationComparer.CanBeSortedByName(kind))
-                    {
-                        ComputeRefactoring(
-                            context,
-                            MemberDeclarationSortMode.ByKindThenByName,
-                            "Sort members by name",
-                            selectedMembers,
-                            members);
-                    }
-                }
-                else
-                {
-                    ComputeRefactoring(
-                        context,
-                        MemberDeclarationSortMode.ByKind,
-                        "Sort members by kind",
-                        selectedMembers,
-                        members);
-
                     ComputeRefactoring(
                         context,
                         MemberDeclarationSortMode.ByKindThenByName,
-                        "Sort members by kind then by name",
+                        "Sort members by name",
                         selectedMembers,
                         members);
                 }
+            }
+            else
+            {
+                ComputeRefactoring(
+                    context,
+                    MemberDeclarationSortMode.ByKind,
+                    "Sort members by kind",
+                    selectedMembers,
+                    members);
+
+                ComputeRefactoring(
+                    context,
+                    MemberDeclarationSortMode.ByKindThenByName,
+                    "Sort members by kind then by name",
+                    selectedMembers,
+                    members);
             }
         }
 
@@ -105,6 +105,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
             SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
+            //TODO: ModifyRange
             SyntaxList<MemberDeclarationSyntax> newMembers = members
                 .Take(selectedMembers.FirstIndex)
                 .Concat(selectedMembers.OrderBy(f => f, comparer))

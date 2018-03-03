@@ -17,17 +17,15 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
 
         public static async Task<TextLineCollectionSelection> GetSelectedLinesAsync(RefactoringContext context)
         {
-            TextSpan span = context.Span;
+            if (!IsValidSpan(context.Root, context.Span))
+                return null;
 
-            if (IsValidSpan(context.Root, span))
-            {
-                SourceText sourceText = await context.Document.GetTextAsync(context.CancellationToken).ConfigureAwait(false);
+            SourceText sourceText = await context.Document.GetTextAsync(context.CancellationToken).ConfigureAwait(false);
 
-                if (TextLineCollectionSelection.TryCreate(sourceText.Lines, span, out TextLineCollectionSelection selectedLines))
-                    return selectedLines;
-            }
+            if (!TextLineCollectionSelection.TryCreate(sourceText.Lines, context.Span, out TextLineCollectionSelection selectedLines))
+                return null;
 
-            return null;
+            return selectedLines;
         }
 
         private static bool IsValidSpan(SyntaxNode root, TextSpan span)
@@ -37,12 +35,8 @@ namespace Roslynator.CSharp.Refactorings.WrapSelectedLines
                 int start = span.Start;
 
                 if (start == 0
-                    || root
-                        .FindTrivia(start - 1, findInsideTrivia: true)
-                        .IsEndOfLineTrivia()
-                    || root
-                        .FindToken(start - 1, findInsideTrivia: true)
-                        .IsKind(SyntaxKind.XmlTextLiteralNewLineToken))
+                    || root.FindTrivia(start - 1, findInsideTrivia: true).IsEndOfLineTrivia()
+                    || root.FindToken(start - 1, findInsideTrivia: true).IsKind(SyntaxKind.XmlTextLiteralNewLineToken))
                 {
                     if (!root.FindTrivia(span.End).IsKind(SyntaxKind.MultiLineCommentTrivia))
                         return true;

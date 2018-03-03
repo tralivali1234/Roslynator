@@ -21,23 +21,23 @@ namespace Roslynator.CSharp.Refactorings
         {
             IMethodSymbol methodSymbol = GetMethodSymbol(destinationType, methodName);
 
-            if (methodSymbol != null)
-            {
-                context.RegisterRefactoring(
-                    $"Call '{methodSymbol.Name}()'",
-                    cancellationToken => RefactorAsync(context.Document, expression, methodSymbol, cancellationToken));
-            }
+            if (methodSymbol == null)
+                return;
+
+            context.RegisterRefactoring(
+                $"Call '{methodSymbol.Name}()'",
+                cancellationToken => RefactorAsync(context.Document, expression, methodSymbol, cancellationToken));
         }
 
         private static IMethodSymbol GetMethodSymbol(ITypeSymbol destinationType, string methodName)
         {
             foreach (ISymbol symbol in destinationType.GetMembers(methodName))
             {
-                if (symbol.IsMethod())
+                if (symbol.Kind == SymbolKind.Method)
                 {
                     var methodSymbol = (IMethodSymbol)symbol;
 
-                    if (methodSymbol.IsPublic())
+                    if (methodSymbol.DeclaredAccessibility == Accessibility.Public)
                     {
                         if (methodSymbol.IsStatic)
                         {

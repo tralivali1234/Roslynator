@@ -11,6 +11,12 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
     internal class ExtractConditionFromWhileToNestedIfRefactoring
         : ExtractConditionRefactoring<WhileStatementSyntax>
     {
+        private ExtractConditionFromWhileToNestedIfRefactoring()
+        {
+        }
+
+        public static ExtractConditionFromWhileToNestedIfRefactoring Instance { get; } = new ExtractConditionFromWhileToNestedIfRefactoring();
+
         public override SyntaxKind StatementKind
         {
             get { return SyntaxKind.WhileStatement; }

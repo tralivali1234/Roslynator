@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (expression.WalkDownParentheses() is LiteralExpressionSyntax)
                     return true;
 
-                if (!semanticModel.GetConstantValue(expression, cancellationToken).HasValue)
+                if (!semanticModel.HasConstantValue(expression, cancellationToken))
                     return false;
 
                 ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);

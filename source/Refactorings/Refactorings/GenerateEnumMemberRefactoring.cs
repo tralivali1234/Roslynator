@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -56,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (ISymbol member in enumSymbol.GetMembers())
             {
-                if (member.IsField())
+                if (member.Kind == SymbolKind.Field)
                 {
                     var fieldSymbol = (IFieldSymbol)member;
 
@@ -87,13 +88,13 @@ namespace Roslynator.CSharp.Refactorings
             EqualsValueClauseSyntax equalsValue = null;
 
             if (value != null)
-                equalsValue = SyntaxFactory.EqualsValueClause(CSharpFactory.LiteralExpression(value));
+                equalsValue = EqualsValueClause(CSharpFactory.LiteralExpression(value));
 
             name = NameGenerator.Default.EnsureUniqueMemberName(name, enumSymbol);
 
-            SyntaxToken identifier = SyntaxFactory.Identifier(name).WithRenameAnnotation();
+            SyntaxToken identifier = Identifier(name).WithRenameAnnotation();
 
-            return SyntaxFactory.EnumMemberDeclaration(
+            return EnumMemberDeclaration(
                 default(SyntaxList<AttributeListSyntax>),
                 identifier,
                 equalsValue);

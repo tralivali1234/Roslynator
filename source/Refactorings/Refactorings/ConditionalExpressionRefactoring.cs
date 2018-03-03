@@ -17,25 +17,13 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                             "Format ?: on separate lines",
-                            cancellationToken =>
-                            {
-                                return SyntaxFormatter.ToMultiLineAsync(
-                                    context.Document,
-                                    conditionalExpression,
-                                    cancellationToken);
-                            });
+                            ct => SyntaxFormatter.ToMultiLineAsync(context.Document, conditionalExpression, ct));
                     }
                     else
                     {
                         context.RegisterRefactoring(
                             "Format ?: on a single line",
-                            cancellationToken =>
-                            {
-                                return SyntaxFormatter.ToSingleLineAsync(
-                                    context.Document,
-                                    conditionalExpression,
-                                    cancellationToken);
-                            });
+                            ct => SyntaxFormatter.ToSingleLineAsync(context.Document, conditionalExpression, ct));
                     }
                 }
 
@@ -45,19 +33,12 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.SwapExpressionsInConditionalExpression)
                 && (context.Span.IsBetweenSpans(conditionalExpression)
-                    || context.Span.IsEmptyAndContainedInSpan(conditionalExpression.QuestionToken)
-                    || context.Span.IsEmptyAndContainedInSpan(conditionalExpression.ColonToken))
+                    || context.Span.IsEmptyAndContainedInSpan(conditionalExpression.QuestionToken, conditionalExpression.ColonToken))
                 && SwapExpressionsInConditionalExpressionRefactoring.CanRefactor(conditionalExpression))
             {
                 context.RegisterRefactoring(
                     "Swap expressions in ?:",
-                    cancellationToken =>
-                    {
-                        return SwapExpressionsInConditionalExpressionRefactoring.RefactorAsync(
-                            context.Document,
-                            conditionalExpression,
-                            cancellationToken);
-                    });
+                    ct => SwapExpressionsInConditionalExpressionRefactoring.RefactorAsync(context.Document, conditionalExpression, ct));
             }
         }
     }
