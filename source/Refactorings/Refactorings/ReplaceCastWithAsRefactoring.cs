@@ -13,17 +13,17 @@ namespace Roslynator.CSharp.Refactorings
         {
             TypeSyntax type = castExpression.Type;
 
-            if (type?.IsMissing == false)
-            {
-                ExpressionSyntax expression = castExpression.Expression;
+            if (type?.IsMissing != false)
+                return;
 
-                if (expression?.IsMissing == false)
-                {
-                    context.RegisterRefactoring(
-                        "Replace cast with as",
-                        cancellationToken => RefactorAsync(context.Document, castExpression, cancellationToken));
-                }
-            }
+            ExpressionSyntax expression = castExpression.Expression;
+
+            if (expression?.IsMissing != false)
+                return;
+
+            context.RegisterRefactoring(
+                "Replace cast with as",
+                cancellationToken => RefactorAsync(context.Document, castExpression, cancellationToken));
         }
 
         private static Task<Document> RefactorAsync(

@@ -423,5 +423,56 @@ namespace Roslynator
                 && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
                 && methodSymbol.IsContainingType(SpecialType.System_String);
         }
+
+        //TODO: SupportsSwitchExpression
+        public static bool CanBeSwitchExpression(ITypeSymbol typeSymbol)
+        {
+            if (typeSymbol.Kind == SymbolKind.ErrorType)
+                return false;
+
+            if (typeSymbol.TypeKind == TypeKind.Enum)
+                return true;
+
+            switch (typeSymbol.SpecialType)
+            {
+                case SpecialType.System_Boolean:
+                case SpecialType.System_Char:
+                case SpecialType.System_SByte:
+                case SpecialType.System_Byte:
+                case SpecialType.System_Int16:
+                case SpecialType.System_UInt16:
+                case SpecialType.System_Int32:
+                case SpecialType.System_UInt32:
+                case SpecialType.System_Int64:
+                case SpecialType.System_UInt64:
+                case SpecialType.System_Single:
+                case SpecialType.System_Double:
+                case SpecialType.System_String:
+                    return true;
+            }
+
+            if ((typeSymbol is INamedTypeSymbol namedTypeSymbol)
+                && namedTypeSymbol.ConstructedFrom.SpecialType == SpecialType.System_Nullable_T)
+            {
+                switch (namedTypeSymbol.TypeArguments[0].SpecialType)
+                {
+                    case SpecialType.System_Boolean:
+                    case SpecialType.System_Char:
+                    case SpecialType.System_SByte:
+                    case SpecialType.System_Byte:
+                    case SpecialType.System_Int16:
+                    case SpecialType.System_UInt16:
+                    case SpecialType.System_Int32:
+                    case SpecialType.System_UInt32:
+                    case SpecialType.System_Int64:
+                    case SpecialType.System_UInt64:
+                    case SpecialType.System_Single:
+                    case SpecialType.System_Double:
+                        return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

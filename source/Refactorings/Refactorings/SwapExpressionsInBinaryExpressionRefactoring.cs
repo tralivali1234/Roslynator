@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.MultiplyExpression:
                     {
                         return binaryExpression.Left?.IsKind(kind) == false
-                            && IsNullOrTrueOrFalseLiteral(binaryExpression.Right);
+                            && IsNotNullLiteralOrBooleanLiteral(binaryExpression.Right);
                     }
                 case SyntaxKind.EqualsExpression:
                 case SyntaxKind.NotEqualsExpression:
@@ -43,14 +43,14 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.LessThanOrEqualExpression:
                     {
                         return binaryExpression?.IsMissing == false
-                            && IsNullOrTrueOrFalseLiteral(binaryExpression.Right);
+                            && IsNotNullLiteralOrBooleanLiteral(binaryExpression.Right);
                     }
-                default:
-                    return false;
             }
+
+            return false;
         }
 
-        private static bool IsNullOrTrueOrFalseLiteral(ExpressionSyntax expression)
+        private static bool IsNotNullLiteralOrBooleanLiteral(ExpressionSyntax expression)
         {
             return expression?.IsKind(
                 SyntaxKind.NullLiteralExpression,

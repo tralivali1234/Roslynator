@@ -8,6 +8,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: pokr.
     internal static class PlusTokenRefactoring
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, SyntaxToken token)

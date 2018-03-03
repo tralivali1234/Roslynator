@@ -25,9 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (block != null)
-            {
                 ComputeRefactoring(context, block);
-            }
         }
 
         private static void ComputeRefactoring(RefactoringContext context, BlockSyntax block)
@@ -100,16 +98,16 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool CanRefactor(RefactoringContext context, BlockSyntax block)
         {
-            if (context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(block)
-                && IsEmbeddableBlock(block))
-            {
-                StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(block.Statements[0]);
+            if (!context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(block))
+                return false;
 
-                return statement == null
-                    || !statement.FullSpan.Contains(context.Span);
-            }
+            if (!IsEmbeddableBlock(block))
+                return false;
 
-            return false;
+            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(block.Statements[0]);
+
+            return statement == null
+                || !statement.FullSpan.Contains(context.Span);
         }
 
         private static IfStatementSyntax GetTopmostIf(BlockSyntax block)

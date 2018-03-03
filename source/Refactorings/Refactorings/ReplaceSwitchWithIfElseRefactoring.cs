@@ -19,16 +19,6 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
-            if (!IsFixable(sections))
-                return;
-
-            context.RegisterRefactoring(
-                (sections.Count == 1) ? "Replace switch with if" : "Replace switch with if-else",
-                cancellationToken => RefactorAsync(context.Document, switchStatement, cancellationToken));
-        }
-
-        private static bool IsFixable(SyntaxList<SwitchSectionSyntax> sections)
-        {
             bool containsSectionWithoutDefault = false;
 
             foreach (SwitchSectionSyntax section in sections)
@@ -57,14 +47,14 @@ namespace Roslynator.CSharp.Refactorings
                         default:
                             {
                                 Debug.Fail(label.Kind().ToString());
-                                return false;
+                                return;
                             }
                     }
 
                     if (containsDefault)
                     {
                         if (containsPattern)
-                            return false;
+                            return;
                     }
                     else
                     {
@@ -73,7 +63,12 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            return containsSectionWithoutDefault;
+            if (!containsSectionWithoutDefault)
+                return;
+
+            context.RegisterRefactoring(
+                (sections.Count == 1) ? "Replace switch with if" : "Replace switch with if-else",
+                cancellationToken => RefactorAsync(context.Document, switchStatement, cancellationToken));
         }
 
         public static async Task<Document> RefactorAsync(
@@ -85,8 +80,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement = null;
             ElseClauseSyntax elseClause = null;
 
-            int defaultSectionIndex = sections
-                .IndexOf(section => section.Labels.Contains(SyntaxKind.DefaultSwitchLabel));
+            int defaultSectionIndex = sections.IndexOf(section => section.Labels.Contains(SyntaxKind.DefaultSwitchLabel));
 
             if (defaultSectionIndex != -1)
             {

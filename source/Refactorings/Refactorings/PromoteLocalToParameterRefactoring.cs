@@ -12,75 +12,69 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class PromoteLocalToParameterRefactoring
     {
-        public static async Task ComputeRefactoringAsync(RefactoringContext context, LocalDeclarationStatementSyntax localDeclaration)
+        public static void ComputeRefactoring(
+            RefactoringContext context,
+            LocalDeclarationStatementSyntax localDeclaration,
+            SemanticModel semanticModel)
         {
-            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (!(semanticModel.GetEnclosingSymbol(localDeclaration.SpanStart, context.CancellationToken) is IMethodSymbol methodSymbol))
+                return;
 
-            ISymbol symbol = semanticModel.GetEnclosingSymbol(localDeclaration.SpanStart, context.CancellationToken);
+            if (methodSymbol.IsImplicitlyDeclared)
+                return;
 
-            if (symbol?.IsImplicitlyDeclared == false
-                && symbol.Kind == SymbolKind.Method)
+            if (methodSymbol.MethodKind != MethodKind.Ordinary)
+                return;
+
+            if (methodSymbol.PartialImplementationPart != null)
+                methodSymbol = methodSymbol.PartialImplementationPart;
+
+            if (!(methodSymbol.GetSyntax(context.CancellationToken) is MethodDeclarationSyntax methodDeclaration))
+                return;
+
+            VariableDeclarationSyntax declaration = localDeclaration.Declaration;
+
+            if (declaration == null)
+                return;
+
+            VariableDeclaratorSyntax variable = declaration
+                .Variables
+                .FirstOrDefault(f => !f.IsMissing && f.Identifier.Span.Contains(context.Span));
+
+            if (variable == null)
+                return;
+
+            TypeSyntax type = declaration.Type;
+
+            if (type == null)
+                return;
+
+            if (type.IsVar)
             {
-                var methodsymbol = (IMethodSymbol)symbol;
+                ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
 
-                if (methodsymbol.MethodKind == MethodKind.Ordinary)
+                if (typeSymbol?.SupportsExplicitDeclaration() == true)
                 {
-                    if (methodsymbol.PartialImplementationPart != null)
-                        symbol = methodsymbol.PartialImplementationPart;
-
-                    SyntaxNode node = await symbol.GetSyntaxAsync(context.CancellationToken).ConfigureAwait(false);
-
-                    if (node is MethodDeclarationSyntax method)
-                    {
-                        VariableDeclarationSyntax declaration = localDeclaration.Declaration;
-
-                        if (declaration != null)
-                        {
-                            VariableDeclaratorSyntax variable = declaration
-                                .Variables
-                                .FirstOrDefault(f => !f.IsMissing && f.Identifier.Span.Contains(context.Span));
-
-                            if (variable != null)
-                            {
-                                TypeSyntax type = declaration.Type;
-
-                                if (type != null)
-                                {
-                                    if (type.IsVar)
-                                    {
-                                        ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
-
-                                        if (typeSymbol?.SupportsExplicitDeclaration() == true)
-                                        {
-                                            type = typeSymbol.ToTypeSyntax();
-                                        }
-                                        else
-                                        {
-                                            type = null;
-                                        }
-                                    }
-
-                                    if (type != null)
-                                    {
-                                        context.RegisterRefactoring(
-                                            $"Promote '{variable.Identifier.ValueText}' to parameter",
-                                            cancellationToken =>
-                                            {
-                                                return RefactorAsync(
-                                                    context.Document,
-                                                    method,
-                                                    localDeclaration,
-                                                    type.WithoutTrivia().WithSimplifierAnnotation(),
-                                                    variable,
-                                                    cancellationToken);
-                                            });
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    type = typeSymbol.ToTypeSyntax();
+                }
+                else
+                {
+                    return;
                 }
             }
+
+            context.RegisterRefactoring(
+                $"Promote '{variable.Identifier.ValueText}' to parameter",
+                cancellationToken =>
+                {
+                    return RefactorAsync(
+                        context.Document,
+                        methodDeclaration,
+                        localDeclaration,
+                        type.WithoutTrivia().WithSimplifierAnnotation(),
+                        variable,
+                        cancellationToken);
+                });
         }
 
         public static Task<Document> RefactorAsync(
@@ -100,8 +94,8 @@ namespace Roslynator.CSharp.Refactorings
             if (initializerValue != null)
             {
                 ExpressionStatementSyntax expressionStatement = SimpleAssignmentStatement(
-                        IdentifierName(identifier),
-                        initializerValue);
+                    IdentifierName(identifier),
+                    initializerValue);
 
                 expressionStatement = expressionStatement.WithFormatterAnnotation();
 

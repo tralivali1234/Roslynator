@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                 && context.SupportsCSharp6
                 && context.Span.End < literalExpression.Span.End)
             {
-                int startIndex = GetStartIndex(literalExpression, context.Span);
+                int startIndex = GetStartIndex(info, context.Span);
 
                 if (startIndex != -1)
                 {
@@ -83,13 +83,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             context.RegisterRefactoring(
                                 "Replace verbatim string literal with regular string literal",
-                                cancellationToken =>
-                                {
-                                    return ReplaceWithRegularStringLiteralAsync(
-                                        context.Document,
-                                        literalExpression,
-                                        cancellationToken);
-                                });
+                                ct => ReplaceWithRegularStringLiteralAsync(context.Document, literalExpression, ct));
                         }
 
                         if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceVerbatimStringLiteralWithRegularStringLiterals)
@@ -97,13 +91,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             context.RegisterRefactoring(
                                 "Replace verbatim string literal with regular string literals",
-                                cancellationToken =>
-                                {
-                                    return ReplaceWithRegularStringLiteralsAsync(
-                                        context.Document,
-                                        literalExpression,
-                                        cancellationToken);
-                                });
+                                ct => ReplaceWithRegularStringLiteralsAsync(context.Document, literalExpression, ct));
                         }
                     }
                 }
@@ -112,13 +100,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Replace regular string literal with verbatim string literal",
-                        cancellationToken =>
-                        {
-                            return ReplaceWithVerbatimStringLiteralAsync(
-                                context.Document,
-                                literalExpression,
-                                cancellationToken);
-                        });
+                        ct => ReplaceWithVerbatimStringLiteralAsync(context.Document, literalExpression, ct));
                 }
             }
 
@@ -127,32 +109,28 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Replace \"\" with 'string.Empty'",
-                    cancellationToken =>
-                    {
-                        return ReplaceWithStringEmptyAsync(
-                            context.Document,
-                            literalExpression,
-                            cancellationToken);
-                    });
+                    ct => ReplaceWithStringEmptyAsync(context.Document, literalExpression, ct));
             }
         }
 
-        private static int GetStartIndex(LiteralExpressionSyntax literalExpression, TextSpan span)
+        private static int GetStartIndex(StringLiteralExpressionInfo info, TextSpan span)
         {
-            int index = span.Start - literalExpression.Span.Start;
+            int spanStart = info.Expression.SpanStart;
 
-            string text = literalExpression.Token.Text;
+            int index = span.Start - spanStart;
 
-            if (text.StartsWith("@", StringComparison.Ordinal))
+            string text = info.Text;
+
+            if (info.IsVerbatim)
             {
                 if (index > 1
-                    && StringLiteralParser.CanExtractSpan(text, 2, text.Length - 3, span.Offset(-literalExpression.Span.Start), isVerbatim: true, isInterpolatedText: false))
+                    && StringLiteralParser.CanExtractSpan(text, 2, text.Length - 3, span.Offset(-spanStart), isVerbatim: true, isInterpolatedText: false))
                 {
                     return index;
                 }
             }
             else if (index > 0
-                && StringLiteralParser.CanExtractSpan(text, 1, text.Length - 2, span.Offset(-literalExpression.SpanStart), isVerbatim: false, isInterpolatedText: false))
+                && StringLiteralParser.CanExtractSpan(text, 1, text.Length - 2, span.Offset(-spanStart), isVerbatim: false, isInterpolatedText: false))
             {
                 return index;
             }

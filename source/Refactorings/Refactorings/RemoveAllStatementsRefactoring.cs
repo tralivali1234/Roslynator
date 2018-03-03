@@ -14,23 +14,12 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSyntax member)
         {
-            switch (member.Kind())
-            {
-                case SyntaxKind.MethodDeclaration:
-                case SyntaxKind.OperatorDeclaration:
-                case SyntaxKind.ConversionOperatorDeclaration:
-                case SyntaxKind.ConstructorDeclaration:
-                    {
-                        if (CanRefactor(member, context.Span))
-                        {
-                            context.RegisterRefactoring(
-                                "Remove all statements",
-                                cancellationToken => RefactorAsync(context.Document, member, cancellationToken));
-                        }
+            if (!CanRefactor(member, context.Span))
+                return;
 
-                        break;
-                    }
-            }
+            context.RegisterRefactoring(
+                "Remove all statements",
+                cancellationToken => RefactorAsync(context.Document, member, cancellationToken));
         }
 
         public static bool CanRefactor(MemberDeclarationSyntax member, TextSpan span)

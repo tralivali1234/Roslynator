@@ -25,11 +25,11 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     var interpolation = (InterpolationSyntax)content;
 
-                    if (interpolation.AlignmentClause != null
-                        || interpolation.FormatClause != null)
-                    {
+                    if (interpolation.AlignmentClause != null)
                         return;
-                    }
+
+                    if (interpolation.FormatClause != null)
+                        return;
                 }
             }
 

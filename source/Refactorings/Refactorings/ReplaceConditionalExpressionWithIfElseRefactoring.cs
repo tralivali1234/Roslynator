@@ -45,17 +45,14 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     TypeSyntax type = localDeclarationInfo.Type;
 
-                    if (type != null)
-                    {
-                        SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        if (!type.IsVar
-                            || semanticModel.GetTypeSymbol(type, context.CancellationToken)?.SupportsExplicitDeclaration() == true)
-                        {
-                            context.RegisterRefactoring(
-                                Title,
-                                cancellationToken => RefactorAsync(context.Document, localDeclarationInfo.Statement, conditionalExpression, semanticModel, cancellationToken));
-                        }
+                    if (!type.IsVar
+                        || semanticModel.GetTypeSymbol(type, context.CancellationToken)?.SupportsExplicitDeclaration() == true)
+                    {
+                        context.RegisterRefactoring(
+                            Title,
+                            cancellationToken => RefactorAsync(context.Document, localDeclarationInfo.Statement, conditionalExpression, semanticModel, cancellationToken));
                     }
                 }
             }

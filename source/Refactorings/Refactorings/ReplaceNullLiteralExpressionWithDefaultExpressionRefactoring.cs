@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,33 +13,22 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ExpressionSyntax expression)
         {
-            if (expression?.Kind() == SyntaxKind.NullLiteralExpression
-                && context.Span.IsContainedInSpanOrBetweenSpans(expression))
-            {
-                TextSpan span = context.Span;
+            if (expression?.Kind() != SyntaxKind.NullLiteralExpression)
+                return;
 
-                if ((span.IsEmpty && expression.Span.Contains(span))
-                    || span.IsBetweenSpans(expression))
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (!context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(expression))
+                return;
 
-                    ITypeSymbol typeSymbol = semanticModel.GetTypeInfo(expression, context.CancellationToken).ConvertedType;
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                    if (typeSymbol?.SupportsExplicitDeclaration() == true)
-                    {
-                        context.RegisterRefactoring(
-                            $"Replace 'null' with 'default({SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, expression.Span.Start, SymbolDisplayFormats.Default)})'",
-                            cancellationToken =>
-                            {
-                                return RefactorAsync(
-                                    context.Document,
-                                    expression,
-                                    typeSymbol,
-                                    cancellationToken);
-                            });
-                    }
-                }
-            }
+            ITypeSymbol typeSymbol = semanticModel.GetTypeInfo(expression, context.CancellationToken).ConvertedType;
+
+            if (typeSymbol?.SupportsExplicitDeclaration() != true)
+                return;
+
+            context.RegisterRefactoring(
+                $"Replace 'null' with 'default({SymbolDisplay.ToMinimalDisplayString(typeSymbol, semanticModel, expression.Span.Start, SymbolDisplayFormats.Default)})'",
+                cancellationToken => RefactorAsync(context.Document, expression, typeSymbol, cancellationToken));
         }
 
         public static async Task<Document> RefactorAsync(
@@ -52,8 +41,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeSyntax type = typeSymbol.ToMinimalTypeSyntax(semanticModel, expression.SpanStart);
 
-            DefaultExpressionSyntax defaultExpression = SyntaxFactory.DefaultExpression(type)
-                .WithTriviaFrom(expression);
+            DefaultExpressionSyntax defaultExpression = DefaultExpression(type).WithTriviaFrom(expression);
 
             return await document.ReplaceNodeAsync(expression, defaultExpression, cancellationToken).ConfigureAwait(false);
         }
