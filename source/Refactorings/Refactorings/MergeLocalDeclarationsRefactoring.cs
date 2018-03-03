@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -14,56 +12,50 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementsSelection selectedStatements)
         {
-            if (selectedStatements.Count > 1)
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (selectedStatements.Count <= 1)
+                return;
 
-                if (AreLocalDeclarations(selectedStatements, semanticModel, context.CancellationToken))
-                {
-                    context.RegisterRefactoring(
-                        "Merge local declarations",
-                        cancellationToken =>
-                        {
-                            return RefactorAsync(
-                                context.Document,
-                                selectedStatements,
-                                cancellationToken);
-                        });
-                }
-            }
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            if (!AreLocalDeclarations(selectedStatements, semanticModel, context.CancellationToken))
+                return;
+
+            context.RegisterRefactoring(
+                "Merge local declarations",
+                cancellationToken => RefactorAsync(context.Document, selectedStatements, cancellationToken));
         }
 
         private static bool AreLocalDeclarations(
-            IEnumerable<StatementSyntax> statements,
+            StatementsSelection statements,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
             ITypeSymbol prevTypeSymbol = null;
 
-            using (IEnumerator<StatementSyntax> en = statements.GetEnumerator())
+            for (int i = statements.FirstIndex; i <= statements.LastIndex; i++)
             {
-                while (en.MoveNext())
-                {
-                    if (!en.Current.IsKind(SyntaxKind.LocalDeclarationStatement))
-                        return false;
+                StatementSyntax statement = statements.UnderlyingList[i];
 
-                    var localDeclaration = (LocalDeclarationStatementSyntax)en.Current;
+                if (!(statement is LocalDeclarationStatementSyntax localDeclaration))
+                    return false;
 
-                    TypeSyntax type = localDeclaration.Declaration?.Type;
+                TypeSyntax type = localDeclaration.Declaration?.Type;
 
-                    if (type == null)
-                        return false;
+                if (type == null)
+                    return false;
 
-                    ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
+                ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
 
-                    if (typeSymbol == null || typeSymbol.IsErrorType())
-                        return false;
+                if (typeSymbol == null)
+                    return false;
 
-                    if (prevTypeSymbol != null && prevTypeSymbol != typeSymbol)
-                        return false;
+                if (typeSymbol.IsErrorType())
+                    return false;
 
-                    prevTypeSymbol = typeSymbol;
-                }
+                if (prevTypeSymbol != null && prevTypeSymbol != typeSymbol)
+                    return false;
+
+                prevTypeSymbol = typeSymbol;
             }
 
             return true;

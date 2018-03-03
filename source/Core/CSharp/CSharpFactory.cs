@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -2906,6 +2907,33 @@ namespace Roslynator.CSharp
         {
             return AreEquivalent(node1, node2, disregardTrivia: disregardTrivia, topLevel: topLevel)
                 && AreEquivalent(node1, node3, disregardTrivia: disregardTrivia, topLevel: topLevel);
+        }
+
+        //TODO: pub?
+        internal static bool AreEquivalent<TNode>(
+            IList<TNode> first,
+            IList<TNode> second,
+            bool disregardTrivia = true,
+            bool topLevel = false) where TNode : SyntaxNode
+        {
+            if (first == null)
+                throw new ArgumentNullException(nameof(first));
+
+            if (second == null)
+                throw new ArgumentNullException(nameof(second));
+
+            int count = first.Count;
+
+            if (count != second.Count)
+                return false;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!AreEquivalent(first[i], second[i], disregardTrivia: disregardTrivia, topLevel: topLevel))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

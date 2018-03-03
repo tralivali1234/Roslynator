@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,43 +12,26 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactorings(RefactoringContext context, StatementsSelection selectedStatements)
         {
-            using (IEnumerator<StatementSyntax> en = selectedStatements.GetEnumerator())
-            {
-                if (en.MoveNext()
-                    && en.Current.IsKind(SyntaxKind.ExpressionStatement))
-                {
-                    var statement = (ExpressionStatementSyntax)en.Current;
+            if (selectedStatements.Count != 2)
+                return;
 
-                    if (statement.Expression?.Kind() == SyntaxKind.SimpleAssignmentExpression
-                        && en.MoveNext()
-                        && en.Current.IsKind(SyntaxKind.ReturnStatement))
-                    {
-                        var returnStatement = (ReturnStatementSyntax)en.Current;
+            SimpleAssignmentStatementInfo simpleAssignment = SyntaxInfo.SimpleAssignmentStatementInfo(selectedStatements.First());
 
-                        if (returnStatement.Expression != null
-                            && !en.MoveNext())
-                        {
-                            var assignment = (AssignmentExpressionSyntax)statement.Expression;
+            if (!simpleAssignment.Success)
+                return;
 
-                            if (assignment.Left?.IsMissing == false
-                                && assignment.Right?.IsMissing == false
-                                && CSharpFactory.AreEquivalent(assignment.Left, returnStatement.Expression))
-                            {
-                                context.RegisterRefactoring(
-                                    "Merge statements",
-                                    cancellationToken =>
-                                    {
-                                        return RefactorAsync(
-                                            context.Document,
-                                            statement,
-                                            returnStatement,
-                                            cancellationToken);
-                                    });
-                            }
-                        }
-                    }
-                }
-            }
+            if (!(selectedStatements.Last() is ReturnStatementSyntax returnStatement))
+                return;
+
+            if (returnStatement.Expression == null)
+                return;
+
+            if (!CSharpFactory.AreEquivalent(simpleAssignment.Left, returnStatement.Expression))
+                return;
+
+            context.RegisterRefactoring(
+                "Merge statements",
+                ct => RefactorAsync(context.Document, simpleAssignment.Statement, returnStatement, ct));
         }
 
         public static Task<Document> RefactorAsync(

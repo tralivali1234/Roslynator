@@ -33,8 +33,8 @@ namespace Roslynator.CSharp.Refactorings
                     cancellationToken => ToStringLiteralAsync(context.Document, concatenationInfo, multiline: false, cancellationToken: cancellationToken));
 
                 if (concatenationInfo.BinaryExpression
-                        .DescendantTrivia(concatenationInfo.Span ?? concatenationInfo.BinaryExpression.Span)
-                        .Any(f => f.IsEndOfLineTrivia()))
+                    .DescendantTrivia(concatenationInfo.Span ?? concatenationInfo.BinaryExpression.Span)
+                    .Any(f => f.IsEndOfLineTrivia()))
                 {
                     context.RegisterRefactoring(
                         "Join string literals into multiline string literal",

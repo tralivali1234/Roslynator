@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            var classSymbol = semanticModel.GetSymbol(usingDirective.Name, cancellationToken) as INamedTypeSymbol;
+            var classSymbol = (INamedTypeSymbol)semanticModel.GetSymbol(usingDirective.Name, cancellationToken);
 
             SyntaxNode parent = usingDirective.Parent;
 
@@ -70,6 +70,7 @@ namespace Roslynator.CSharp.Refactorings
             return names;
         }
 
+        //TODO: UsingsInfo
         private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
         {
             switch (node.Kind())

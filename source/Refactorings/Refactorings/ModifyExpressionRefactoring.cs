@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: pokr.
     internal static class ModifyExpressionRefactoring
     {
         public static void ComputeRefactoring(
@@ -88,15 +87,19 @@ namespace Roslynator.CSharp.Refactorings
                 CallToString(context, expression, destinationType);
                 return true;
             }
-            else if (destinationType.IsArrayType())
+
+            switch (destinationType.Kind)
             {
-                CallToArray(context, expression, semanticModel);
-                return true;
-            }
-            else if (destinationType.IsNamedType())
-            {
-                CallToList(context, expression, (INamedTypeSymbol)destinationType, semanticModel);
-                return true;
+                case SymbolKind.ArrayType:
+                    {
+                        CallToArray(context, expression, semanticModel);
+                        return true;
+                    }
+                case SymbolKind.NamedType:
+                    {
+                        CallToList(context, expression, (INamedTypeSymbol)destinationType, semanticModel);
+                        return true;
+                    }
             }
 
             return false;
@@ -113,21 +116,22 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression,
             SemanticModel semanticModel)
         {
-            ITypeSymbol expressionType = semanticModel.GetTypeSymbol(expression, context.CancellationToken);
+            if (!(semanticModel.GetTypeSymbol(expression, context.CancellationToken) is INamedTypeSymbol typeSymbol))
+                return;
 
-            if (expressionType?.Kind == SymbolKind.NamedType)
+            INamedTypeSymbol constructedFrom = typeSymbol.ConstructedFrom;
+
+            //TODO: EqualsOrImplements
+            if (constructedFrom.SpecialType != SpecialType.System_Collections_Generic_IEnumerable_T
+                && !constructedFrom.Implements(SpecialType.System_Collections_Generic_IEnumerable_T, allInterfaces: true))
             {
-                INamedTypeSymbol constructedFrom = ((INamedTypeSymbol)expressionType).ConstructedFrom;
-
-                if (constructedFrom.SpecialType == SpecialType.System_Collections_Generic_IEnumerable_T
-                    || constructedFrom.Implements(SpecialType.System_Collections_Generic_IEnumerable_T, allInterfaces: true))
-                {
-                    INamedTypeSymbol enumerable = semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable);
-
-                    if (enumerable != null)
-                        CallToMethodRefactoring.ComputeRefactoring(context, expression, enumerable, "ToArray");
-                }
+                return;
             }
+
+            INamedTypeSymbol enumerable = semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable);
+
+            if (enumerable != null)
+                CallToMethodRefactoring.ComputeRefactoring(context, expression, enumerable, "ToArray");
         }
 
         private static void CallToList(
@@ -136,15 +140,13 @@ namespace Roslynator.CSharp.Refactorings
             INamedTypeSymbol destinationType,
             SemanticModel semanticModel)
         {
-            INamedTypeSymbol list = semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T);
+            if (!destinationType.ConstructedFrom.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
+                return;
 
-            if (list != null && destinationType.ConstructedFrom == list)
-            {
-                INamedTypeSymbol enumerable = semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable);
+            INamedTypeSymbol enumerable = semanticModel.GetTypeByMetadataName(MetadataNames.System_Linq_Enumerable);
 
-                if (enumerable != null)
-                    CallToMethodRefactoring.ComputeRefactoring(context, expression, enumerable, "ToList");
-            }
+            if (enumerable != null)
+                CallToMethodRefactoring.ComputeRefactoring(context, expression, enumerable, "ToList");
         }
 
         private static void RegisterAddCastExpressionRefactoring(

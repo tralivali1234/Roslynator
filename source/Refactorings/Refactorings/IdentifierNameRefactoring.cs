@@ -32,6 +32,7 @@ namespace Roslynator.CSharp.Refactorings
             RefactoringContext context,
             IdentifierNameSyntax identifierName)
         {
+            //TODO: pokr.
             if (!IsQualified(identifierName)
                 || IsQualifiedWithThis(identifierName))
             {

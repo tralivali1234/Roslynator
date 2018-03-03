@@ -11,7 +11,9 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, MemberDeclarationSyntax member)
         {
-            switch (member.Kind())
+            SyntaxKind kind = member.Kind();
+
+            switch (kind)
             {
                 case SyntaxKind.MethodDeclaration:
                 case SyntaxKind.IndexerDeclaration:
@@ -30,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
                                 RefactoringIdentifiers.RemoveMember,
                                 RefactoringIdentifiers.DuplicateMember,
                                 RefactoringIdentifiers.CommentOutMember)
-                            && BraceContainsSpan(context, member))
+                            && BraceContainsSpan(member, context.Span))
                         {
                             if (member.IsParentKind(
                                 SyntaxKind.NamespaceDeclaration,
@@ -76,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings
                 MemberDeclarationsRefactoring.ComputeRefactoring(context, member);
             }
 
-            switch (member.Kind())
+            switch (kind)
             {
                 case SyntaxKind.NamespaceDeclaration:
                     {
@@ -198,34 +200,34 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool BraceContainsSpan(RefactoringContext context, MemberDeclarationSyntax member)
+        private static bool BraceContainsSpan(MemberDeclarationSyntax member, TextSpan span)
         {
             switch (member.Kind())
             {
                 case SyntaxKind.MethodDeclaration:
-                    return ((MethodDeclarationSyntax)member).Body?.BraceContainsSpan(context.Span) == true;
+                    return ((MethodDeclarationSyntax)member).Body?.BraceContainsSpan(span) == true;
                 case SyntaxKind.IndexerDeclaration:
-                    return ((IndexerDeclarationSyntax)member).AccessorList?.BraceContainsSpan(context.Span) == true;
+                    return ((IndexerDeclarationSyntax)member).AccessorList?.BraceContainsSpan(span) == true;
                 case SyntaxKind.OperatorDeclaration:
-                    return ((OperatorDeclarationSyntax)member).Body?.BraceContainsSpan(context.Span) == true;
+                    return ((OperatorDeclarationSyntax)member).Body?.BraceContainsSpan(span) == true;
                 case SyntaxKind.ConversionOperatorDeclaration:
-                    return ((ConversionOperatorDeclarationSyntax)member).Body?.BraceContainsSpan(context.Span) == true;
+                    return ((ConversionOperatorDeclarationSyntax)member).Body?.BraceContainsSpan(span) == true;
                 case SyntaxKind.ConstructorDeclaration:
-                    return ((ConstructorDeclarationSyntax)member).Body?.BraceContainsSpan(context.Span) == true;
+                    return ((ConstructorDeclarationSyntax)member).Body?.BraceContainsSpan(span) == true;
                 case SyntaxKind.PropertyDeclaration:
-                    return ((PropertyDeclarationSyntax)member).AccessorList?.BraceContainsSpan(context.Span) == true;
+                    return ((PropertyDeclarationSyntax)member).AccessorList?.BraceContainsSpan(span) == true;
                 case SyntaxKind.EventDeclaration:
-                    return ((EventDeclarationSyntax)member).AccessorList?.BraceContainsSpan(context.Span) == true;
+                    return ((EventDeclarationSyntax)member).AccessorList?.BraceContainsSpan(span) == true;
                 case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)member).BraceContainsSpan(context.Span);
+                    return ((NamespaceDeclarationSyntax)member).BraceContainsSpan(span);
                 case SyntaxKind.ClassDeclaration:
-                    return ((ClassDeclarationSyntax)member).BraceContainsSpan(context.Span);
+                    return ((ClassDeclarationSyntax)member).BraceContainsSpan(span);
                 case SyntaxKind.StructDeclaration:
-                    return ((StructDeclarationSyntax)member).BraceContainsSpan(context.Span);
+                    return ((StructDeclarationSyntax)member).BraceContainsSpan(span);
                 case SyntaxKind.InterfaceDeclaration:
-                    return ((InterfaceDeclarationSyntax)member).BraceContainsSpan(context.Span);
+                    return ((InterfaceDeclarationSyntax)member).BraceContainsSpan(span);
                 case SyntaxKind.EnumDeclaration:
-                    return ((EnumDeclarationSyntax)member).BraceContainsSpan(context.Span);
+                    return ((EnumDeclarationSyntax)member).BraceContainsSpan(span);
             }
 
             return false;

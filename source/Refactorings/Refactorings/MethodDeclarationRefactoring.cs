@@ -87,46 +87,50 @@ namespace Roslynator.CSharp.Refactorings
         {
             TypeSyntax returnType = methodDeclaration.ReturnType;
 
-            if (returnType?.IsVoid() == false)
+            if (returnType?.IsVoid() != false)
+                return;
+
+            SyntaxToken identifier = methodDeclaration.Identifier;
+
+            if (!context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(identifier))
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, context.CancellationToken);
+
+            ITypeSymbol typeSymbol = GetType(returnType, semanticModel, context.CancellationToken);
+
+            if (typeSymbol == null)
+                return;
+
+            string newName = NameGenerator.CreateName(typeSymbol);
+
+            if (string.IsNullOrEmpty(newName))
+                return;
+
+            newName = "Get" + newName;
+
+            if (methodSymbol.IsAsync)
+                newName += "Async";
+
+            string oldName = identifier.ValueText;
+
+            if (string.Equals(oldName, newName, StringComparison.Ordinal))
+                return;
+
+            if (!await MemberNameGenerator.IsUniqueMemberNameAsync(
+                newName,
+                methodSymbol,
+                context.Solution,
+                cancellationToken: context.CancellationToken).ConfigureAwait(false))
             {
-                SyntaxToken identifier = methodDeclaration.Identifier;
-
-                if (context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(identifier))
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                    IMethodSymbol methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration, context.CancellationToken);
-
-                    ITypeSymbol typeSymbol = GetType(returnType, semanticModel, context.CancellationToken);
-
-                    if (typeSymbol != null)
-                    {
-                        string newName = NameGenerator.CreateName(typeSymbol);
-
-                        if (!string.IsNullOrEmpty(newName))
-                        {
-                            newName = "Get" + newName;
-
-                            if (methodSymbol.IsAsync)
-                                newName += "Async";
-
-                            string oldName = identifier.ValueText;
-
-                            if (!string.Equals(oldName, newName, StringComparison.Ordinal)
-                                && await MemberNameGenerator.IsUniqueMemberNameAsync(
-                                    newName,
-                                    methodSymbol,
-                                    context.Solution,
-                                    cancellationToken: context.CancellationToken).ConfigureAwait(false))
-                            {
-                                context.RegisterRefactoring(
-                                   $"Rename '{oldName}' to '{newName}'",
-                                   cancellationToken => Renamer.RenameSymbolAsync(context.Solution, methodSymbol, newName, default(OptionSet), cancellationToken));
-                            }
-                        }
-                    }
-                }
+                return;
             }
+
+            context.RegisterRefactoring(
+               $"Rename '{oldName}' to '{newName}'",
+               cancellationToken => Renamer.RenameSymbolAsync(context.Solution, methodSymbol, newName, default(OptionSet), cancellationToken));
         }
 
         private static ITypeSymbol GetType(
@@ -136,26 +140,26 @@ namespace Roslynator.CSharp.Refactorings
         {
             var returnTypeSymbol = semanticModel.GetTypeSymbol(returnType, cancellationToken) as INamedTypeSymbol;
 
-            if (returnTypeSymbol != null)
-            {
-                INamedTypeSymbol taskSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task);
+            if (returnTypeSymbol == null)
+                return null;
 
-                if (taskSymbol != null)
-                {
-                    if (returnTypeSymbol.Equals(taskSymbol))
-                        return null;
+            INamedTypeSymbol taskSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task);
 
-                    INamedTypeSymbol taskOfTSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T);
+            if (taskSymbol == null)
+                return null;
 
-                    if (taskOfTSymbol != null
-                        && returnTypeSymbol.ConstructedFrom.Equals(taskOfTSymbol))
-                    {
-                        return returnTypeSymbol.TypeArguments[0];
-                    }
-                }
-            }
+            if (returnTypeSymbol.Equals(taskSymbol))
+                return null;
 
-            return returnTypeSymbol;
+            INamedTypeSymbol taskOfTSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T);
+
+            if (taskOfTSymbol == null)
+                return null;
+
+            if (!returnTypeSymbol.ConstructedFrom.Equals(taskOfTSymbol))
+                return null;
+
+            return returnTypeSymbol.TypeArguments[0];
         }
     }
 }

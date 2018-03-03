@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -17,94 +18,100 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, MemberDeclarationSyntax declaration)
         {
-            if (context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceConstructor))
-            {
-                List<MemberDeclarationSyntax> members = await GetAssignableMembersAsync(context, declaration).ConfigureAwait(false);
+            if (!context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceConstructor))
+                return;
 
-                if (members?.Count > 0)
+            List<MemberDeclarationSyntax> members = null;
+
+            SyntaxKind kind = declaration.Kind();
+
+            if (kind.Is(SyntaxKind.PropertyDeclaration, SyntaxKind.FieldDeclaration))
+            {
+                if (context.Span.Contains(declaration.Span))
                 {
-                    context.RegisterRefactoring(
-                        "Introduce constructor",
-                        cancellationToken => RefactorAsync(context.Document, declaration, members, cancellationToken));
+                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+                    if (CanBeAssignedFromConstructor(declaration, context.Span, semanticModel, context.CancellationToken))
+                    {
+                        members = new List<MemberDeclarationSyntax>() { declaration };
+                    }
                 }
             }
-        }
-
-        private static async Task<List<MemberDeclarationSyntax>> GetAssignableMembersAsync(
-            RefactoringContext context,
-            MemberDeclarationSyntax declaration)
-        {
-            if (declaration.IsKind(SyntaxKind.PropertyDeclaration, SyntaxKind.FieldDeclaration))
+            else if (kind.Is(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration))
             {
-                if (await CanBeAssignedFromConstructorAsync(context, declaration).ConfigureAwait(false))
-                {
-                    return new List<MemberDeclarationSyntax>() { declaration };
-                }
-            }
-            else if (declaration.IsKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration))
-            {
-                List<MemberDeclarationSyntax> list = null;
+                SemanticModel semanticModel = null;
 
                 foreach (MemberDeclarationSyntax member in SyntaxInfo.MemberDeclarationsInfo(declaration).Members)
                 {
-                    if (await CanBeAssignedFromConstructorAsync(context, member).ConfigureAwait(false))
+                    if (context.Span.Contains(member.Span))
                     {
-                        (list ?? (list = new List<MemberDeclarationSyntax>())).Add(member);
+                        if (semanticModel == null)
+                            semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+                        if (CanBeAssignedFromConstructor(member, context.Span, semanticModel, context.CancellationToken))
+                        {
+                            (members ?? (members = new List<MemberDeclarationSyntax>())).Add(member);
+                        }
                     }
                 }
-
-                return list;
             }
 
-            return null;
+            if (members == null)
+                return;
+
+            context.RegisterRefactoring(
+                "Introduce constructor",
+                ct => RefactorAsync(context.Document, declaration, members, ct));
         }
 
-        private static async Task<bool> CanBeAssignedFromConstructorAsync(
-            RefactoringContext context,
-            MemberDeclarationSyntax declaration)
+        private static bool CanBeAssignedFromConstructor(
+            MemberDeclarationSyntax member,
+            TextSpan span,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
-            if (context.Span.Contains(declaration.Span))
+            switch (member.Kind())
             {
-                switch (declaration.Kind())
-                {
-                    case SyntaxKind.PropertyDeclaration:
-                        return await CanPropertyBeAssignedFromConstructorAsync(context, (PropertyDeclarationSyntax)declaration).ConfigureAwait(false);
-                    case SyntaxKind.FieldDeclaration:
-                        return await CanFieldBeAssignedFromConstructorAsync(context, (FieldDeclarationSyntax)declaration).ConfigureAwait(false);
-                }
+                case SyntaxKind.PropertyDeclaration:
+                    return CanPropertyBeAssignedFromConstructor((PropertyDeclarationSyntax)member, semanticModel, cancellationToken);
+                case SyntaxKind.FieldDeclaration:
+                    return CanFieldBeAssignedFromConstructor((FieldDeclarationSyntax)member, span, semanticModel, cancellationToken);
+                default:
+                    return false;
             }
-
-            return false;
         }
 
-        private static async Task<bool> CanPropertyBeAssignedFromConstructorAsync(
-            RefactoringContext context,
-            PropertyDeclarationSyntax propertyDeclaration)
+        private static bool CanPropertyBeAssignedFromConstructor(
+            PropertyDeclarationSyntax propertyDeclaration,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
-            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-            CancellationToken cancellationToken = context.CancellationToken;
-
             ISymbol symbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, cancellationToken);
 
-            if (symbol?.IsStatic == false
-                && propertyDeclaration.IsParentKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration))
+            if (symbol == null)
+                return false;
+
+            if (symbol.IsStatic)
+                return false;
+
+            if (!propertyDeclaration.IsParentKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration))
+                return false;
+
+            ArrowExpressionClauseSyntax expressionBody = propertyDeclaration.ExpressionBody;
+
+            if (expressionBody != null)
             {
-                ArrowExpressionClauseSyntax expressionBody = propertyDeclaration.ExpressionBody;
+                ExpressionSyntax expression = expressionBody?.Expression;
 
-                if (expressionBody != null)
-                {
-                    ExpressionSyntax expression = expressionBody?.Expression;
+                if (expression != null)
+                    return GetBackingFieldSymbol(expression, semanticModel, cancellationToken) != null;
+            }
+            else
+            {
+                AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
 
-                    if (expression != null)
-                        return GetBackingFieldSymbol(expression, semanticModel, cancellationToken) != null;
-                }
-                else
-                {
-                    AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
-
-                    if (getter != null)
-                        return CanPropertyBeAssignedFromConstructor(getter, semanticModel, cancellationToken);
-                }
+                if (getter != null)
+                    return CanPropertyBeAssignedFromConstructor(getter, semanticModel, cancellationToken);
             }
 
             return false;
@@ -119,81 +126,88 @@ namespace Roslynator.CSharp.Refactorings
 
             if (body != null)
             {
-                SyntaxList<StatementSyntax> statements = body.Statements;
+                StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                return statements.Count == 1
-                    && GetBackingFieldSymbol(statements[0], semanticModel, cancellationToken) != null;
+                if (statement != null)
+                    return GetBackingFieldSymbol(statement, semanticModel, cancellationToken) != null;
             }
             else
             {
-                ArrowExpressionClauseSyntax expressionBody = getter.ExpressionBody;
+                ExpressionSyntax expression = getter.ExpressionBody?.Expression;
 
-                if (expressionBody != null)
-                {
-                    ExpressionSyntax expression = expressionBody.Expression;
-
-                    return expression != null
-                        && GetBackingFieldSymbol(expression, semanticModel, cancellationToken) != null;
-                }
+                return expression != null
+                    && GetBackingFieldSymbol(expression, semanticModel, cancellationToken) != null;
             }
 
             return true;
         }
 
-        private static async Task<bool> CanFieldBeAssignedFromConstructorAsync(
-            RefactoringContext context,
-            FieldDeclarationSyntax fieldDeclaration)
+        private static bool CanFieldBeAssignedFromConstructor(
+            FieldDeclarationSyntax fieldDeclaration,
+            TextSpan span,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
             VariableDeclaratorSyntax variable = fieldDeclaration
                 .Declaration?
                 .Variables
                 .SingleOrDefault(shouldThrow: false);
 
-            if (variable != null)
+            if (variable == null)
+                return false;
+
+            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(fieldDeclaration));
+
+            if (!info.Success)
+                return false;
+
+            ISymbol symbol = semanticModel.GetDeclaredSymbol(variable, cancellationToken);
+
+            if (symbol == null)
+                return false;
+
+            if (symbol.IsStatic)
+                return false;
+
+            foreach (MemberDeclarationSyntax member in info.Members)
             {
-                MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(fieldDeclaration));
-
-                if (info.Success)
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                    ISymbol symbol = semanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
-
-                    return symbol?.IsStatic == false
-                        && !info.Members.Any(member => IsBackingField(member, symbol, context, semanticModel));
-                }
+                if (IsBackingField(member, symbol, span, semanticModel, cancellationToken))
+                    return false;
             }
 
-            return false;
+            return true;
         }
 
         private static bool IsBackingField(
             MemberDeclarationSyntax member,
             ISymbol symbol,
-            RefactoringContext context,
-            SemanticModel semanticModel)
+            TextSpan span,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
-            if (member.IsKind(SyntaxKind.PropertyDeclaration)
-                && context.Span.Contains(member.Span))
+            if (!member.IsKind(SyntaxKind.PropertyDeclaration))
+                return false;
+
+            if (!span.Contains(member.Span))
+                return false;
+
+            var propertyDeclaration = (PropertyDeclarationSyntax)member;
+
+            ArrowExpressionClauseSyntax expressionBody = propertyDeclaration.ExpressionBody;
+
+            if (expressionBody != null)
             {
-                var propertyDeclaration = (PropertyDeclarationSyntax)member;
+                ExpressionSyntax expression = expressionBody.Expression;
 
-                ArrowExpressionClauseSyntax expressionBody = propertyDeclaration.ExpressionBody;
+                return expression != null
+                    && symbol.Equals(GetBackingFieldSymbol(expression, semanticModel, cancellationToken));
+            }
+            else
+            {
+                AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
 
-                if (expressionBody != null)
-                {
-                    ExpressionSyntax expression = expressionBody.Expression;
-
-                    return expression != null
-                        && symbol.Equals(GetBackingFieldSymbol(expression, semanticModel, context.CancellationToken));
-                }
-                else
-                {
-                    AccessorDeclarationSyntax getter = propertyDeclaration.Getter();
-
-                    if (getter != null)
-                        return IsBackingField(getter, symbol, semanticModel, context.CancellationToken);
-                }
+                if (getter != null)
+                    return IsBackingField(getter, symbol, semanticModel, cancellationToken);
             }
 
             return false;
@@ -201,26 +215,21 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsBackingField(AccessorDeclarationSyntax getter, ISymbol symbol, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            BlockSyntax getterBody = getter.Body;
+            BlockSyntax body = getter.Body;
 
-            if (getterBody != null)
+            if (body != null)
             {
-                SyntaxList<StatementSyntax> statements = getterBody.Statements;
+                StatementSyntax statement = body.Statements.SingleOrDefault(shouldThrow: false);
 
-                return statements.Count == 1
-                    && symbol.Equals(GetBackingFieldSymbol(statements[0], semanticModel, cancellationToken));
+                if (statement != null)
+                    return symbol.Equals(GetBackingFieldSymbol(statement, semanticModel, cancellationToken));
             }
             else
             {
-                ArrowExpressionClauseSyntax getterExpressionBody = getter.ExpressionBody;
+                ExpressionSyntax expression = getter.ExpressionBody?.Expression;
 
-                if (getterExpressionBody != null)
-                {
-                    ExpressionSyntax expression = getterExpressionBody.Expression;
-
-                    return expression != null
-                        && symbol.Equals(GetBackingFieldSymbol(expression, semanticModel, cancellationToken));
-                }
+                return expression != null
+                    && symbol.Equals(GetBackingFieldSymbol(expression, semanticModel, cancellationToken));
             }
 
             return false;
@@ -231,12 +240,12 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (statement.IsKind(SyntaxKind.ReturnStatement))
+            if (statement is ReturnStatementSyntax returnStatement)
             {
-                var returnStatement = (ReturnStatementSyntax)statement;
+                ExpressionSyntax expression = returnStatement.Expression;
 
-                if (returnStatement.Expression != null)
-                    return GetBackingFieldSymbol(returnStatement.Expression, semanticModel, cancellationToken);
+                if (expression != null)
+                    return GetBackingFieldSymbol(expression, semanticModel, cancellationToken);
             }
 
             return null;
@@ -252,7 +261,7 @@ namespace Roslynator.CSharp.Refactorings
                 ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
 
                 if (symbol?.IsStatic == false
-                    && symbol.IsField())
+                    && symbol.Kind == SymbolKind.Field)
                 {
                     return symbol;
                 }
@@ -265,8 +274,6 @@ namespace Roslynator.CSharp.Refactorings
         {
             switch (expression.Kind())
             {
-                case SyntaxKind.IdentifierName:
-                    return true;
                 case SyntaxKind.SimpleMemberAccessExpression:
                     {
                         var memberAccess = (MemberAccessExpressionSyntax)expression;
@@ -274,6 +281,8 @@ namespace Roslynator.CSharp.Refactorings
                         return memberAccess.Expression.IsKind(SyntaxKind.ThisExpression)
                             && memberAccess.Name.IsKind(SyntaxKind.IdentifierName);
                     }
+                case SyntaxKind.IdentifierName:
+                    return true;
                 default:
                     return false;
             }
@@ -316,7 +325,7 @@ namespace Roslynator.CSharp.Refactorings
                     return declaration;
                 default:
                     {
-                        Debug.Assert(declaration.Parent is MemberDeclarationSyntax, "Parent is not MemberDeclarationSyntax");
+                        Debug.Assert(declaration.Parent is MemberDeclarationSyntax);
                         return declaration.Parent as MemberDeclarationSyntax;
                     }
             }

@@ -66,14 +66,14 @@ namespace Roslynator.CSharp.Refactorings
 
             if (addNameOf)
             {
-                sb.Append(
-                    CSharpFactory.NameOfExpression(
-                        StringLiteralParser.Parse(
-                            s,
-                            startIndex,
-                            span.Length,
-                            isVerbatim: interpolatedString.IsVerbatim(),
-                            isInterpolatedText: true)));
+                string identifier = StringLiteralParser.Parse(
+                    s,
+                    startIndex,
+                    span.Length,
+                    isVerbatim: interpolatedString.IsVerbatim(),
+                    isInterpolatedText: true);
+
+                sb.Append(CSharpFactory.NameOfExpression(identifier));
             }
 
             int closeBracePosition = sb.Length;
