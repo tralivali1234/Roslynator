@@ -86,49 +86,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.RenamePropertyAccordingToTypeName))
-            {
-                TypeSyntax type = propertyDeclaration.Type;
-
-                if (type != null)
-                {
-                    SyntaxToken identifier = propertyDeclaration.Identifier;
-
-                    if (context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(identifier))
-                    {
-                        SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                        ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
-
-                        if (typeSymbol?.IsErrorType() == false)
-                        {
-                            string newName = NameGenerator.CreateName(typeSymbol);
-
-                            if (!string.IsNullOrEmpty(newName))
-                            {
-                                string oldName = identifier.ValueText;
-
-                                newName = StringUtility.FirstCharToUpper(newName);
-
-                                if (!string.Equals(oldName, newName, StringComparison.Ordinal))
-                                {
-                                    ISymbol symbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
-
-                                    if (await MemberNameGenerator.IsUniqueMemberNameAsync(
-                                        newName,
-                                        symbol,
-                                        context.Solution,
-                                        cancellationToken: context.CancellationToken).ConfigureAwait(false))
-                                    {
-                                        context.RegisterRefactoring(
-                                            $"Rename '{oldName}' to '{newName}'",
-                                            cancellationToken => Renamer.RenameSymbolAsync(context.Solution, symbol, newName, default(OptionSet), cancellationToken));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                await RenamePropertyAccodingToTypeName(context, propertyDeclaration).ConfigureAwait(false);
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddMemberToInterface)
                 && context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(propertyDeclaration.Identifier))
@@ -137,6 +95,53 @@ namespace Roslynator.CSharp.Refactorings
 
                 AddMemberToInterfaceRefactoring.ComputeRefactoring(context, propertyDeclaration, semanticModel);
             }
+        }
+
+        private static async Task RenamePropertyAccodingToTypeName(RefactoringContext context, PropertyDeclarationSyntax propertyDeclaration)
+        {
+            TypeSyntax type = propertyDeclaration.Type;
+
+            if (type == null)
+                return;
+
+            SyntaxToken identifier = propertyDeclaration.Identifier;
+
+            if (!context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(identifier))
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
+
+            if (typeSymbol?.IsErrorType() != false)
+                return;
+
+            string newName = NameGenerator.CreateName(typeSymbol);
+
+            if (string.IsNullOrEmpty(newName))
+                return;
+
+            string oldName = identifier.ValueText;
+
+            newName = StringUtility.FirstCharToUpper(newName);
+
+            if (string.Equals(oldName, newName, StringComparison.Ordinal))
+                return;
+
+            ISymbol symbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
+
+            if (!await MemberNameGenerator.IsUniqueMemberNameAsync(
+                newName,
+                symbol,
+                context.Solution,
+                cancellationToken: context.CancellationToken).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            context.RegisterRefactoring(
+                $"Rename '{oldName}' to '{newName}'",
+                cancellationToken => Renamer.RenameSymbolAsync(context.Solution, symbol, newName, default(OptionSet), cancellationToken));
         }
     }
 }

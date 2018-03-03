@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.FormatParameterList)
-                    && (context.Span.IsEmpty || context.Span.IsBetweenSpans(parameterList)))
+                    && (context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(parameterList)))
                 {
                     if (parameterList.IsSingleLine())
                     {

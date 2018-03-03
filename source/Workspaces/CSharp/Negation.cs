@@ -138,6 +138,10 @@ namespace Roslynator.CSharp
 
                         return parenthesizedExpression.WithExpression(newExpression);
                     }
+                case SyntaxKind.AwaitExpression:
+                    {
+                        return DefaultNegate(expression);
+                    }
             }
 
             Debug.Fail($"Logical negation of unknown kind '{expression.Kind()}'");

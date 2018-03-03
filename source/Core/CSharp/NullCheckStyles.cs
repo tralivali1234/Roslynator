@@ -28,7 +28,7 @@ namespace Roslynator.CSharp
         NotEqualsToNull = 2,
 
         /// <summary>
-        /// Expressions that use equality/inequality operator.
+        /// Expression that use equality/inequality operator.
         /// </summary>
         ComparisonToNull = EqualsToNull | NotEqualsToNull,
 
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp
         NotIsNull = 8,
 
         /// <summary>
-        /// Expressions that use pattern syntax.
+        /// Expression that use pattern syntax.
         /// </summary>
         IsPattern = IsNull | NotIsNull,
 
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp
         NotHasValue = 16,
 
         /// <summary>
-        /// Expressions that checks whether an expression is null.
+        /// Expression that checks whether an expression is null.
         /// </summary>
         CheckingNull = EqualsToNull | IsNull | NotHasValue,
 
@@ -63,12 +63,12 @@ namespace Roslynator.CSharp
         HasValue = 32,
 
         /// <summary>
-        /// Expressions that checks whether an expression is not null.
+        /// Expression that checks whether an expression is not null.
         /// </summary>
         CheckingNotNull = NotEqualsToNull | NotIsNull | HasValue,
 
         /// <summary>
-        /// Expressions that use <see cref="Nullable{T}.HasValue"/>.
+        /// Expression that uses <see cref="Nullable{T}.HasValue"/>.
         /// </summary>
         HasValueProperty = HasValue | NotHasValue,
 

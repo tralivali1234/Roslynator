@@ -29,6 +29,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             string s = literalExpression.Token.Text;
 
+            //TODO: StringBuilderCache
             var sb = new StringBuilder();
 
             sb.Append('$');
@@ -123,6 +124,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static string CreateRegularStringLiteral(string text)
         {
+            //TODO: StringBuilderCache
             var sb = new StringBuilder();
 
             for (int i = 0; i < text.Length; i++)

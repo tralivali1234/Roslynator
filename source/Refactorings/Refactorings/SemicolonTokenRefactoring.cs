@@ -10,11 +10,11 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactorings(RefactoringContext context, SyntaxToken semicolonToken)
         {
-            if (!semicolonToken.IsKind(SyntaxKind.SemicolonToken)
-                || semicolonToken.IsMissing)
-            {
+            if (!semicolonToken.IsKind(SyntaxKind.SemicolonToken))
                 return;
-            }
+
+            if (semicolonToken.IsMissing)
+                return;
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandExpressionBody))
             {
@@ -30,6 +30,7 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
+        //TODO: ExpressionBodyInfo
         private static ArrowExpressionClauseSyntax GetArrowExpressionClause(SyntaxToken semicolonToken)
         {
             SyntaxNode parent = semicolonToken.Parent;

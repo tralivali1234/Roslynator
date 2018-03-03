@@ -14,10 +14,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static bool CanRemoveBraces(SwitchSectionSyntax section)
         {
-            SyntaxList<StatementSyntax> statements = section.Statements;
-
-            return statements.Count == 1
-                && statements[0].IsKind(SyntaxKind.Block);
+            return section.Statements.SingleOrDefault(shouldThrow: false)?.Kind() == SyntaxKind.Block;
         }
 
         public static Task<Document> RefactorAsync(

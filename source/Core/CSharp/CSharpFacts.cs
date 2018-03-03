@@ -755,5 +755,22 @@ namespace Roslynator.CSharp
                     return SyntaxKind.None;
             }
         }
+
+        internal static bool CanBeInitializerExpressionInForStatement(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.InvocationExpression:
+                case SyntaxKind.PreIncrementExpression:
+                case SyntaxKind.PreDecrementExpression:
+                case SyntaxKind.PostIncrementExpression:
+                case SyntaxKind.PostDecrementExpression:
+                case SyntaxKind.ObjectCreationExpression:
+                case SyntaxKind.AwaitExpression:
+                    return true;
+            }
+
+            return SyntaxFacts.IsAssignmentExpression(kind);
+        }
     }
 }

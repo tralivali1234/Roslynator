@@ -18,89 +18,91 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxToken identifier = classDeclaration.Identifier;
 
-            if (!identifier.IsMissing)
-            {
-                TextSpan span = identifier.Span;
+            if (identifier.IsMissing)
+                return;
 
-                BaseListSyntax baseList = classDeclaration.BaseList;
+            TextSpan span = identifier.Span;
 
-                if (baseList != null)
-                    span = TextSpan.FromBounds(span.Start, baseList.Span.End);
+            BaseListSyntax baseList = classDeclaration.BaseList;
 
-                TypeParameterListSyntax typeParameterList = classDeclaration.TypeParameterList;
+            if (baseList != null)
+                span = TextSpan.FromBounds(span.Start, baseList.Span.End);
 
-                if (typeParameterList != null)
-                    span = TextSpan.FromBounds(span.Start, typeParameterList.Span.End);
+            TypeParameterListSyntax typeParameterList = classDeclaration.TypeParameterList;
 
-                if (span.Contains(context.Span))
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (typeParameterList != null)
+                span = TextSpan.FromBounds(span.Start, typeParameterList.Span.End);
 
-                    INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken);
+            if (!span.Contains(context.Span))
+                return;
 
-                    if (classSymbol?.IsErrorType() == false
-                        && !classSymbol.IsStatic)
-                    {
-                        INamedTypeSymbol equatableSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_IEquatable_T);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        if (equatableSymbol != null)
-                        {
-                            equatableSymbol = equatableSymbol.Construct(classSymbol);
+            INamedTypeSymbol classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken);
 
-                            if (!classSymbol.Implements(equatableSymbol, allInterfaces: true))
-                            {
-                                context.RegisterRefactoring(
-                                    GetTitle(equatableSymbol, semanticModel, classDeclaration.SpanStart),
-                                    f => RefactorAsync(context.Document, classDeclaration, classSymbol, equatableSymbol, semanticModel, f));
-                            }
-                        }
-                    }
-                }
-            }
+            if (classSymbol?.IsErrorType() != false)
+                return;
+
+            if (classSymbol.IsStatic)
+                return;
+
+            INamedTypeSymbol equatableSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_IEquatable_T);
+
+            if (equatableSymbol == null)
+                return;
+
+            equatableSymbol = equatableSymbol.Construct(classSymbol);
+
+            if (classSymbol.Implements(equatableSymbol, allInterfaces: true))
+                return;
+
+            context.RegisterRefactoring(
+                GetTitle(equatableSymbol, semanticModel, classDeclaration.SpanStart),
+                f => RefactorAsync(context.Document, classDeclaration, classSymbol, equatableSymbol, semanticModel, f));
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, StructDeclarationSyntax structDeclaration)
         {
             SyntaxToken identifier = structDeclaration.Identifier;
 
-            if (!identifier.IsMissing)
-            {
-                TextSpan span = identifier.Span;
+            if (identifier.IsMissing)
+                return;
 
-                BaseListSyntax baseList = structDeclaration.BaseList;
+            TextSpan span = identifier.Span;
 
-                if (baseList != null)
-                    span = TextSpan.FromBounds(span.Start, baseList.Span.End);
+            BaseListSyntax baseList = structDeclaration.BaseList;
 
-                TypeParameterListSyntax typeParameterList = structDeclaration.TypeParameterList;
+            if (baseList != null)
+                span = TextSpan.FromBounds(span.Start, baseList.Span.End);
 
-                if (typeParameterList != null)
-                    span = TextSpan.FromBounds(span.Start, typeParameterList.Span.End);
+            TypeParameterListSyntax typeParameterList = structDeclaration.TypeParameterList;
 
-                if (span.Contains(context.Span))
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (typeParameterList != null)
+                span = TextSpan.FromBounds(span.Start, typeParameterList.Span.End);
 
-                    INamedTypeSymbol typeSymbol = semanticModel.GetDeclaredSymbol(structDeclaration, context.CancellationToken);
+            if (!span.Contains(context.Span))
+                return;
 
-                    if (typeSymbol?.IsErrorType() == false)
-                    {
-                        INamedTypeSymbol equatableSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_IEquatable_T);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        if (equatableSymbol != null)
-                        {
-                            equatableSymbol = equatableSymbol.Construct(typeSymbol);
+            INamedTypeSymbol typeSymbol = semanticModel.GetDeclaredSymbol(structDeclaration, context.CancellationToken);
 
-                            if (!typeSymbol.Implements(equatableSymbol, allInterfaces: true))
-                            {
-                                context.RegisterRefactoring(
-                                    GetTitle(equatableSymbol, semanticModel, structDeclaration.SpanStart),
-                                    f => RefactorAsync(context.Document, structDeclaration, typeSymbol, equatableSymbol, semanticModel, f));
-                            }
-                        }
-                    }
-                }
-            }
+            if (typeSymbol?.IsErrorType() != false)
+                return;
+
+            INamedTypeSymbol equatableSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_IEquatable_T);
+
+            if (equatableSymbol == null)
+                return;
+
+            equatableSymbol = equatableSymbol.Construct(typeSymbol);
+
+            if (typeSymbol.Implements(equatableSymbol, allInterfaces: true))
+                return;
+
+            context.RegisterRefactoring(
+                GetTitle(equatableSymbol, semanticModel, structDeclaration.SpanStart),
+                f => RefactorAsync(context.Document, structDeclaration, typeSymbol, equatableSymbol, semanticModel, f));
         }
 
         private static string GetTitle(INamedTypeSymbol equatableSymbol, SemanticModel semanticModel, int position)

@@ -13,22 +13,8 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static bool CanRefactor(InterpolatedStringExpressionSyntax interpolatedString)
         {
-            SyntaxList<InterpolatedStringContentSyntax> contents = interpolatedString.Contents;
-
-            if (contents.Count == 1)
-            {
-                InterpolatedStringContentSyntax content = contents[0];
-
-                if (content.IsKind(SyntaxKind.Interpolation))
-                {
-                    var interpolation = (InterpolationSyntax)content;
-
-                    if (interpolation?.IsMissing == false)
-                        return true;
-                }
-            }
-
-            return false;
+            return interpolatedString.Contents.SingleOrDefault(shouldThrow: false) is InterpolationSyntax interpolation
+                && interpolation?.IsMissing == false;
         }
 
         public static Task<Document> RefactorAsync(

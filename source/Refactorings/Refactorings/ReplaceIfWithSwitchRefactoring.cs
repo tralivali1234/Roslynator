@@ -34,12 +34,8 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            string title = (ifStatement.IsSimpleIf())
-                ? "Replace if with switch"
-                : "Replace if-else with switch";
-
             context.RegisterRefactoring(
-                title,
+                (ifStatement.IsSimpleIf()) ? "Replace if with switch" : "Replace if-else with switch",
                 cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
         }
 
@@ -142,52 +138,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            if (typeSymbol.Kind == SymbolKind.ErrorType)
-                return false;
-
-            if (typeSymbol.TypeKind == TypeKind.Enum)
-                return true;
-
-            switch (typeSymbol.SpecialType)
-            {
-                case SpecialType.System_Boolean:
-                case SpecialType.System_Char:
-                case SpecialType.System_SByte:
-                case SpecialType.System_Byte:
-                case SpecialType.System_Int16:
-                case SpecialType.System_UInt16:
-                case SpecialType.System_Int32:
-                case SpecialType.System_UInt32:
-                case SpecialType.System_Int64:
-                case SpecialType.System_UInt64:
-                case SpecialType.System_Single:
-                case SpecialType.System_Double:
-                case SpecialType.System_String:
-                    return true;
-            }
-
-            if ((typeSymbol is INamedTypeSymbol namedTypeSymbol)
-                && namedTypeSymbol.ConstructedFrom.SpecialType == SpecialType.System_Nullable_T)
-            {
-                switch (namedTypeSymbol.TypeArguments[0].SpecialType)
-                {
-                    case SpecialType.System_Boolean:
-                    case SpecialType.System_Char:
-                    case SpecialType.System_SByte:
-                    case SpecialType.System_Byte:
-                    case SpecialType.System_Int16:
-                    case SpecialType.System_UInt16:
-                    case SpecialType.System_Int32:
-                    case SpecialType.System_UInt32:
-                    case SpecialType.System_Int64:
-                    case SpecialType.System_UInt64:
-                    case SpecialType.System_Single:
-                    case SpecialType.System_Double:
-                        return true;
-                }
-            }
-
-            return false;
+            return SymbolUtility.CanBeSwitchExpression(typeSymbol);
         }
 
         private static Task<Document> RefactorAsync(
@@ -255,7 +206,7 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxList<StatementSyntax> statements = block.Statements;
 
                 if (statements.Any()
-                    && IsJumpStatement(statements.Last()))
+                    && IsJumpStatement(statements.Last().Kind()))
                 {
                     return SingletonList<StatementSyntax>(block);
                 }
@@ -264,7 +215,7 @@ namespace Roslynator.CSharp.Refactorings
                     return SingletonList<StatementSyntax>(block.AddStatements(BreakStatement()));
                 }
             }
-            else if (IsJumpStatement(statement))
+            else if (IsJumpStatement(statement.Kind()))
             {
                 return SingletonList(statement);
             }
@@ -272,15 +223,6 @@ namespace Roslynator.CSharp.Refactorings
             {
                 return SingletonList<StatementSyntax>(Block(statement, BreakStatement()));
             }
-        }
-
-        private static bool IsJumpStatement(StatementSyntax statement)
-        {
-            return statement.IsKind(
-                SyntaxKind.BreakStatement,
-                SyntaxKind.GotoCaseStatement,
-                SyntaxKind.ReturnStatement,
-                SyntaxKind.ThrowStatement);
         }
 
         private static List<SwitchLabelSyntax> CreateSwitchLabels(BinaryExpressionSyntax binaryExpression, List<SwitchLabelSyntax> labels)

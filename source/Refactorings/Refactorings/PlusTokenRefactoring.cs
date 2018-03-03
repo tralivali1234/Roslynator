@@ -26,6 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
                 StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(addExpresion, semanticModel, context.CancellationToken);
+
                 if (concatenationInfo.Success)
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.JoinStringExpressions))

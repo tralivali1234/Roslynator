@@ -9,6 +9,12 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
 {
     internal class WrapInIfStatementRefactoring : WrapStatementsRefactoring<IfStatementSyntax>
     {
+        public static WrapInIfStatementRefactoring Instance { get; } = new WrapInIfStatementRefactoring();
+
+        private WrapInIfStatementRefactoring()
+        {
+        }
+
         public const string Title = "Wrap in condition";
 
         public override IfStatementSyntax CreateStatement(ImmutableArray<StatementSyntax> statements)

@@ -7,14 +7,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: pokr
     internal static class SwapExpressionsInConditionalExpressionRefactoring
     {
         public static bool CanRefactor(ConditionalExpressionSyntax conditionalExpression)
         {
-            return conditionalExpression.Condition != null
-                && conditionalExpression.WhenTrue != null
-                && conditionalExpression.WhenFalse != null;
+            return SyntaxInfo.ConditionalExpressionInfo(conditionalExpression).Success;
         }
 
         public static async Task<Document> RefactorAsync(

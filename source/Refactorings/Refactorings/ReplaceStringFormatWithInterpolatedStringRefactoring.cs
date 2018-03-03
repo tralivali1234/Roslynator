@@ -121,13 +121,13 @@ namespace Roslynator.CSharp.Refactorings
             {
                 ExpressionSyntax expression = arguments[i].Expression;
 
-                if (expression.Kind() == SyntaxKind.StringLiteralExpression)
-                {
-                    var literalExpression = (LiteralExpressionSyntax)expression;
+                StringLiteralExpressionInfo info = SyntaxInfo.StringLiteralExpressionInfo(expression);
 
-                    if (isVerbatim == literalExpression.Token.Text.StartsWith("@", StringComparison.Ordinal)
-                        && literalExpression.GetLeadingTrivia().IsEmptyOrWhitespace()
-                        && literalExpression.GetTrailingTrivia().IsEmptyOrWhitespace())
+                if (info.Success)
+                {
+                    if (isVerbatim == info.IsVerbatim
+                        && info.Expression.GetLeadingTrivia().IsEmptyOrWhitespace()
+                        && info.Expression.GetTrailingTrivia().IsEmptyOrWhitespace())
                     {
                         result = true;
                     }
@@ -181,6 +181,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 sb.Append(text, pos, interpolation.SpanStart - pos);
 
+                //TODO: StringBuilderExtensions.AppendEscape
                 sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
 
                 pos = interpolation.Span.End;

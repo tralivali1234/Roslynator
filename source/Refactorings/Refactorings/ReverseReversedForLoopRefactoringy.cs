@@ -20,25 +20,21 @@ namespace Roslynator.CSharp.Refactorings
                 .Initializer?
                 .Value;
 
-            if (value?.Kind() == SyntaxKind.SubtractExpression
-                && ((BinaryExpressionSyntax)value).Right?.IsNumericLiteralExpression("1") == true)
-            {
-                ExpressionSyntax condition = forStatement.Condition;
+            if (value?.Kind() != SyntaxKind.SubtractExpression)
+                return false;
 
-                if (condition?.Kind() == SyntaxKind.GreaterThanOrEqualExpression
-                    && ((BinaryExpressionSyntax)condition).Right?.IsNumericLiteralExpression("0") == true)
-                {
-                    SeparatedSyntaxList<ExpressionSyntax> incrementors = forStatement.Incrementors;
+            if (((BinaryExpressionSyntax)value).Right?.IsNumericLiteralExpression("1") != true)
+                return false;
 
-                    if (incrementors.Count == 1
-                        && incrementors[0].IsKind(SyntaxKind.PostDecrementExpression))
-                    {
-                        return true;
-                    }
-                }
-            }
+            ExpressionSyntax condition = forStatement.Condition;
 
-            return false;
+            if (condition?.Kind() != SyntaxKind.GreaterThanOrEqualExpression)
+                return false;
+
+            if (((BinaryExpressionSyntax)condition).Right?.IsNumericLiteralExpression("0") != true)
+                return false;
+
+            return forStatement.Incrementors.SingleOrDefault(shouldThrow: false)?.Kind() == SyntaxKind.PostDecrementExpression;
         }
 
         public static Task<Document> RefactorAsync(

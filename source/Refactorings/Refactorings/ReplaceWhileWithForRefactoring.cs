@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
         {
-            if (!(selectedStatements.LastOrDefault() is WhileStatementSyntax whileStatement))
+            if (!(selectedStatements.Last() is WhileStatementSyntax whileStatement))
                 return;
 
             if (selectedStatements.Count == 1)
@@ -29,42 +29,37 @@ namespace Roslynator.CSharp.Refactorings
             }
             else
             {
-                switch (selectedStatements.First().Kind())
+                SyntaxKind kind = selectedStatements.First().Kind();
+
+                if (kind == SyntaxKind.LocalDeclarationStatement)
                 {
-                    case SyntaxKind.LocalDeclarationStatement:
-                        {
-                            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            if (VerifyLocalDeclarationStatements(selectedStatements, semanticModel, context.CancellationToken))
-                            {
-                                List<LocalDeclarationStatementSyntax> localDeclarations = selectedStatements
-                                    .Take(selectedStatements.Count - 1)
-                                    .Cast<LocalDeclarationStatementSyntax>()
-                                    .ToList();
+                    if (VerifyLocalDeclarationStatements(selectedStatements, semanticModel, context.CancellationToken))
+                    {
+                        List<LocalDeclarationStatementSyntax> localDeclarations = selectedStatements
+                            .Take(selectedStatements.Count - 1)
+                            .Cast<LocalDeclarationStatementSyntax>()
+                            .ToList();
 
-                                context.RegisterRefactoring(
-                                    Title,
-                                    cancellationToken => RefactorAsync(context.Document, whileStatement, localDeclarations, cancellationToken));
-                            }
+                        context.RegisterRefactoring(
+                            Title,
+                            cancellationToken => RefactorAsync(context.Document, whileStatement, localDeclarations, cancellationToken));
+                    }
+                }
+                else if (kind == SyntaxKind.ExpressionStatement)
+                {
+                    if (VerifyExpressionStatements(selectedStatements))
+                    {
+                        List<ExpressionStatementSyntax> expressionStatements = selectedStatements
+                            .Take(selectedStatements.Count - 1)
+                            .Cast<ExpressionStatementSyntax>()
+                            .ToList();
 
-                            break;
-                        }
-                    case SyntaxKind.ExpressionStatement:
-                        {
-                            if (VerifyExpressionStatements(selectedStatements))
-                            {
-                                List<ExpressionStatementSyntax> expressionStatements = selectedStatements
-                                    .Take(selectedStatements.Count - 1)
-                                    .Cast<ExpressionStatementSyntax>()
-                                    .ToList();
-
-                                context.RegisterRefactoring(
-                                    Title,
-                                    cancellationToken => RefactorAsync(context.Document, whileStatement, expressionStatements, cancellationToken));
-                            }
-
-                            break;
-                        }
+                        context.RegisterRefactoring(
+                            Title,
+                            cancellationToken => RefactorAsync(context.Document, whileStatement, expressionStatements, cancellationToken));
+                    }
                 }
             }
         }
@@ -132,29 +127,11 @@ namespace Roslynator.CSharp.Refactorings
                 if (!(statement is ExpressionStatementSyntax expressionStatement))
                     return false;
 
-                if (!CanBeInitializer(expressionStatement.Expression))
+                if (!CSharpFacts.CanBeInitializerExpressionInForStatement(expressionStatement.Expression.Kind()))
                     return false;
             }
 
             return true;
-
-            bool CanBeInitializer(ExpressionSyntax expression)
-            {
-                switch (expression.Kind())
-                {
-                    case SyntaxKind.SimpleAssignmentExpression:
-                    case SyntaxKind.InvocationExpression:
-                    case SyntaxKind.PreIncrementExpression:
-                    case SyntaxKind.PreDecrementExpression:
-                    case SyntaxKind.PostIncrementExpression:
-                    case SyntaxKind.PostDecrementExpression:
-                    case SyntaxKind.ObjectCreationExpression:
-                    case SyntaxKind.AwaitExpression:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
         }
 
         public static Task<Document> RefactorAsync(

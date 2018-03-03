@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -15,22 +16,17 @@ namespace Roslynator.CSharp.Refactorings
     {
         internal static void ComputeRefactoring(RefactoringContext context, IfStatementSyntax ifStatement)
         {
-            if (ifStatement.IsSimpleIf())
-            {
-                StatementSyntax statement = ifStatement.Statement;
+            SimpleIfStatementInfo simpleIf = SyntaxInfo.SimpleIfStatementInfo(ifStatement);
 
-                if (statement?.IsMissing == false)
-                {
-                    ExpressionSyntax condition = ifStatement.Condition;
+            if (!simpleIf.Success)
+                return;
 
-                    if (condition?.Kind() == SyntaxKind.LogicalOrExpression)
-                    {
-                        context.RegisterRefactoring(
-                            "Split if",
-                            cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
-                    }
-                }
-            }
+            if (simpleIf.Condition.Kind() != SyntaxKind.LogicalOrExpression)
+                return;
+
+            context.RegisterRefactoring(
+                "Split if",
+                cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
         }
 
         private static Task<Document> RefactorAsync(
