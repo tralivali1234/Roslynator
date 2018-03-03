@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
-    internal struct StringConcatenationAnalysis : IEquatable<StringConcatenationAnalysis>
+    internal readonly struct StringConcatenationAnalysis : IEquatable<StringConcatenationAnalysis>
     {
         private readonly Flags _flags;
 

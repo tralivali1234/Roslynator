@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveInterpolation)
-                && context.Span.IsContainedInAnySpan(interpolation.OpenBraceToken, interpolation.CloseBraceToken))
+                && context.Span.IsContainedInSpan(interpolation.OpenBraceToken, interpolation.CloseBraceToken))
             {
                 context.RegisterRefactoring("Remove interpolation",
                     cancellationToken => context.Document.RemoveNodeAsync(interpolation, SyntaxRemoveOptions.KeepUnbalancedDirectives, cancellationToken));

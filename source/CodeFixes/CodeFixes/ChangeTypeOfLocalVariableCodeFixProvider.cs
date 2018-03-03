@@ -79,7 +79,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void ComputeCodeFix(
+        private void ComputeCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             VariableDeclaratorSyntax variableDeclarator,

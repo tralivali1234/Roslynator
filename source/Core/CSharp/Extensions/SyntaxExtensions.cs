@@ -116,9 +116,19 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static bool ContainsYield(this BlockSyntax block)
+        internal static bool ContainsYieldReturn(this BlockSyntax block)
         {
-            return ContainsYieldWalker.ContainsYield(block);
+            return ContainsYieldWalker.ContainsYieldReturn(block);
+        }
+
+        internal static bool ContainsYieldBreak(this BlockSyntax block)
+        {
+            return ContainsYieldWalker.ContainsYieldBreak(block);
+        }
+
+        internal static bool ContainsYield(this BlockSyntax block, bool yieldReturn = true, bool yieldBreak = true)
+        {
+            return ContainsYieldWalker.ContainsYield(block, yieldReturn, yieldBreak);
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -690,7 +700,7 @@ namespace Roslynator.CSharp
         }
         #endregion ExpressionSyntax
 
-        //TODO: ?
+        //TODO: del
         #region FieldDeclarationSyntax
         /// <summary>
         /// Returns true if the specified field declaration is a const declaration.
@@ -3635,11 +3645,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsVoid(this TypeSyntax type)
         {
-            //TODO: throw?
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
-
-            return type.Kind() == SyntaxKind.PredefinedType
+            return type.IsKind(SyntaxKind.PredefinedType)
                 && ((PredefinedTypeSyntax)type).Keyword.IsKind(SyntaxKind.VoidKeyword);
         }
         #endregion TypeSyntax

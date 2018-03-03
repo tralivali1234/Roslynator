@@ -2909,7 +2909,7 @@ namespace Roslynator.CSharp
                 && AreEquivalent(node1, node3, disregardTrivia: disregardTrivia, topLevel: topLevel);
         }
 
-        //TODO: pub?
+        //XTODO: pub
         internal static bool AreEquivalent<TNode>(
             IList<TNode> first,
             IList<TNode> second,

@@ -92,7 +92,6 @@ namespace Roslynator.CSharp.Refactorings
                 cancellationToken);
         }
 
-        //TODO: AttributeListsInfo
         public static SyntaxList<AttributeListSyntax> GetAttributeLists(this SyntaxNode node)
         {
             if (node == null)

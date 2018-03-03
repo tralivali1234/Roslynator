@@ -31,8 +31,7 @@ namespace Roslynator.CSharp.Refactorings
             BlockSyntax body,
             SemanticModel semanticModel)
         {
-            //TODO: contains yield return
-            if (body?.ContainsYield() != true)
+            if (body?.ContainsYieldReturn() != true)
                 return;
 
             if (!(semanticModel.GetDeclaredSymbol(node, context.CancellationToken) is IMethodSymbol methodSymbol))

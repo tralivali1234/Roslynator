@@ -135,7 +135,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void MoveConstraint(
+        private void MoveConstraint(
             CodeFixContext context,
             Diagnostic diagnostic,
             TypeParameterConstraintInfo constraintInfo,
@@ -160,7 +160,7 @@ namespace Roslynator.CSharp.CodeFixes
             context.RegisterCodeFix(codeAction, diagnostic);
         }
 
-        private static void RemoveConstraint(
+        private void RemoveConstraint(
             CodeFixContext context,
             Diagnostic diagnostic,
             TypeParameterConstraintSyntax constraint)

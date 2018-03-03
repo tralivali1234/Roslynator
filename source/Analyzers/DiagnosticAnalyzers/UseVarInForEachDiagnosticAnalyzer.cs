@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var forEachStatement = (ForEachStatementSyntax)context.Node;
 
-            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(forEachStatement, context.SemanticModel);
+            TypeAnalysisFlags flags = TypeAnalyzer.AnalyzeType(forEachStatement, context.SemanticModel);
 
             if (flags.IsExplicit()
                 && flags.SupportsImplicit())

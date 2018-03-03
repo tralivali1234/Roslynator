@@ -73,7 +73,6 @@ namespace Roslynator.CSharp.Refactorings
 
             ITypeSymbol typeSymbol = null;
 
-            //TODO: <= ???
             for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
                 StatementSyntax statement = statements[i];
@@ -121,7 +120,6 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool VerifyExpressionStatements(StatementsSelection selectedStatements)
         {
-            //TODO: <= ???
             for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
             {
                 StatementSyntax statement = selectedStatements.UnderlyingList[i];

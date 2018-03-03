@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken);
 
-            if (SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, "ToString")
+            if (SymbolUtility.IsPublicInstanceNonGeneric(methodSymbol, "ToString")
                 && methodSymbol.ReturnType.SpecialType == SpecialType.System_String
                 && !methodSymbol.Parameters.Any())
             {

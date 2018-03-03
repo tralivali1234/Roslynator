@@ -181,7 +181,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 sb.Append(text, pos, interpolation.SpanStart - pos);
 
-                //TODO: StringBuilderExtensions.AppendEscape
+                //TODO: test
                 sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
 
                 pos = interpolation.Span.End;

@@ -116,7 +116,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static async Task ComputeCodeFixAsync(CodeFixContext context, Diagnostic diagnostic, ExpressionSyntax expression, SimpleNameSyntax simpleName)
+        private async Task ComputeCodeFixAsync(CodeFixContext context, Diagnostic diagnostic, ExpressionSyntax expression, SimpleNameSyntax simpleName)
         {
             switch (simpleName.Identifier.ValueText)
             {
@@ -137,7 +137,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void ComputeCodeFix(
+        private void ComputeCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             ExpressionSyntax expression,

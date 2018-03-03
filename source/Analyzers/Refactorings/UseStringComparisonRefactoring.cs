@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo2.InvocationExpression, cancellationToken);
 
-            if (!SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, name2))
+            if (!SymbolUtility.IsPublicInstanceNonGeneric(methodSymbol, name2))
                 return;
 
             if (!methodSymbol.IsContainingType(SpecialType.System_String))
@@ -152,7 +152,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(equalsInvocation.InvocationExpression, context.CancellationToken);
 
-            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Equals"))
+            if (!SymbolUtility.IsPublicStaticNonGeneric(methodSymbol, "Equals"))
                 return;
 
             if (!methodSymbol.IsContainingType(SpecialType.System_String))
@@ -269,7 +269,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            return SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol)
+            return SymbolUtility.IsPublicInstanceNonGeneric(methodSymbol)
                 && methodSymbol.IsContainingType(SpecialType.System_String)
                 && methodSymbol.IsReturnType(SpecialType.System_String)
                 && !methodSymbol.Parameters.Any();

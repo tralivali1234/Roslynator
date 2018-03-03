@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
+using Roslynator.Text;
 
 namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 {
@@ -379,8 +380,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
             string indent = GetIndent(memberDeclaration.GetLeadingTrivia());
 
-            //TODO: StringBuildeCache
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             foreach (ThrowInfo info in throwInfos)
             {
@@ -391,7 +391,9 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
                 AppendExceptionDocumentation(trivia, info.ExceptionSymbol, parameterSymbol, semanticModel, ref sb);
             }
 
-            var textChange = new TextChange(new TextSpan(trivia.FullSpan.End, 0), sb.ToString());
+            string newText = StringBuilderCache.GetStringAndFree(sb);
+
+            var textChange = new TextChange(new TextSpan(trivia.FullSpan.End, 0), newText);
 
             SourceText newSourceText = sourceText.WithChanges(textChange);
 

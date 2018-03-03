@@ -13,8 +13,7 @@ namespace Roslynator
             return new TextSpan(span.Start + value, span.Length);
         }
 
-        //TODO: new
-        public static bool IsContainedInAnySpan(this TextSpan span, SyntaxToken token1, SyntaxToken token2)
+        public static bool IsContainedInSpan(this TextSpan span, SyntaxToken token1, SyntaxToken token2)
         {
             return token1.Span.Contains(span) || token2.Span.Contains(span);
         }
@@ -143,7 +142,6 @@ namespace Roslynator
                 && token.Span.Contains(span);
         }
 
-        //TODO: new, IsEmptyAndContainedInAnySpan
         public static bool IsEmptyAndContainedInSpan(this TextSpan span, SyntaxToken token1, SyntaxToken token2)
         {
             return IsEmptyAndContainedInSpan(span, token1)

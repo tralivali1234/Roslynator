@@ -8,7 +8,15 @@ namespace Roslynator
 {
     internal static class SymbolUtility
     {
-        public static bool IsPublicStaticNonGenericMethod(IMethodSymbol methodSymbol, string name = null)
+        public static bool IsPublicStaticReadOnly(this IFieldSymbol fieldSymbol, string name = null)
+        {
+            return fieldSymbol?.DeclaredAccessibility == Accessibility.Public
+                && fieldSymbol.IsStatic
+                && fieldSymbol.IsReadOnly
+                && StringUtility.IsNullOrEquals(name, fieldSymbol.Name);
+        }
+
+        public static bool IsPublicStaticNonGeneric(IMethodSymbol methodSymbol, string name = null)
         {
             return methodSymbol?.DeclaredAccessibility == Accessibility.Public
                 && methodSymbol.IsStatic
@@ -16,12 +24,26 @@ namespace Roslynator
                 && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
-        public static bool IsPublicInstanceNonGenericMethod(IMethodSymbol methodSymbol, string name = null)
+        public static bool IsPublicInstanceNonGeneric(IMethodSymbol methodSymbol, string name = null)
         {
             return methodSymbol?.DeclaredAccessibility == Accessibility.Public
                 && !methodSymbol.IsStatic
                 && !methodSymbol.IsGenericMethod
                 && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
+        }
+
+        public static bool IsPublicInstance(IPropertySymbol propertySymbol, string name = null)
+        {
+            return propertySymbol?.DeclaredAccessibility == Accessibility.Public
+                && !propertySymbol.IsStatic
+                && StringUtility.IsNullOrEquals(name, propertySymbol.Name);
+        }
+
+        public static bool IsStringAdditionOperator(IMethodSymbol methodSymbol)
+        {
+            return methodSymbol?.MethodKind == MethodKind.BuiltinOperator
+                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
+                && methodSymbol.IsContainingType(SpecialType.System_String);
         }
 
         public static bool IsEventHandlerMethod(IMethodSymbol methodSymbol, INamedTypeSymbol eventArgsSymbol)
@@ -407,21 +429,6 @@ namespace Roslynator
             }
 
             return false;
-        }
-
-        public static bool IsPublicInstanceProperty(IPropertySymbol propertySymbol, string name = null)
-        {
-            return !propertySymbol.IsIndexer
-                && propertySymbol.DeclaredAccessibility == Accessibility.Public
-                && !propertySymbol.IsStatic
-                && StringUtility.IsNullOrEquals(name, propertySymbol.Name);
-        }
-
-        public static bool IsStringAdditionOperator(IMethodSymbol methodSymbol)
-        {
-            return methodSymbol?.MethodKind == MethodKind.BuiltinOperator
-                && methodSymbol.Name == WellKnownMemberNames.AdditionOperatorName
-                && methodSymbol.IsContainingType(SpecialType.System_String);
         }
 
         //TODO: SupportsSwitchExpression
