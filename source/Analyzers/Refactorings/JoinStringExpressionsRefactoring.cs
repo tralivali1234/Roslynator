@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (!analysis.ContainsUnspecifiedExpression
                 && (analysis.ContainsStringLiteral ^ analysis.ContainsInterpolatedString)
-                && (analysis.ContainsRegularExpression ^ analysis.ContainsVerbatimExpression)
+                && (analysis.ContainsNonVerbatimExpression ^ analysis.ContainsVerbatimExpression)
                 && (analysis.ContainsVerbatimExpression || addExpression.IsSingleLine(includeExteriorTrivia: false, cancellationToken: context.CancellationToken)))
             {
                 context.ReportDiagnostic(DiagnosticDescriptors.JoinStringExpressions, addExpression);

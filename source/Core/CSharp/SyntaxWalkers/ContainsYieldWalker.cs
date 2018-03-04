@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.SyntaxWalkers
 {
-    internal class ContainsYieldWalker : SkipNestedMethodWalker
+    internal class ContainsYieldWalker : SkipFunctionWalker
     {
         private bool _success;
 
@@ -140,7 +140,7 @@ namespace Roslynator.CSharp.SyntaxWalkers
             walker.VisitBlock(block);
 
             Debug.Assert(walker._success == block
-                .DescendantNodes(block.Span, node => !CSharpFacts.IsNestedMethod(node.Kind()))
+                .DescendantNodes(block.Span, node => !CSharpFacts.IsFunction(node.Kind()))
                 .Any(node =>
                 {
                     if (yieldReturn)

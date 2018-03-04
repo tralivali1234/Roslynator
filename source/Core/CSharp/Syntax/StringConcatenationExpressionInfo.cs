@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.Syntax
 
             sb.Append('$');
 
-            bool containsRegular = Analyze().ContainsRegularExpression;
+            bool containsRegular = Analyze().ContainsNonVerbatimExpression;
 
             if (!containsRegular)
                 sb.Append('@');
@@ -227,7 +227,7 @@ namespace Roslynator.CSharp.Syntax
 
             StringBuilder sb = StringBuilderCache.GetInstance();
 
-            if (!analysis.ContainsRegularExpression)
+            if (!analysis.ContainsNonVerbatimExpression)
                 sb.Append('@');
 
             sb.Append('"');
@@ -238,7 +238,7 @@ namespace Roslynator.CSharp.Syntax
 
                 if (literal.Success)
                 {
-                    if (analysis.ContainsRegularExpression && literal.IsVerbatim)
+                    if (analysis.ContainsNonVerbatimExpression && literal.IsVerbatim)
                     {
                         int startIndex = sb.Length;
                         sb.Append(literal.ValueText);

@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
-    //XTODO: pub
+    //XTODO: del
     /// <summary>
     /// A wrapper for either an <see cref="BlockSyntax"/> or an <see cref="ArrowExpressionClauseSyntax"/>.
     /// </summary>

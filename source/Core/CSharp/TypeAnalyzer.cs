@@ -57,7 +57,7 @@ namespace Roslynator.CSharp
             if (kind == SymbolKind.DynamicType)
                 return TypeAnalysisFlags.Dynamic;
 
-            var flags = TypeAnalysisFlags.ValidSymbol;
+            var flags = TypeAnalysisFlags.None;
 
             if (type.IsVar)
             {
@@ -122,7 +122,7 @@ namespace Roslynator.CSharp
             if (kind == SymbolKind.DynamicType)
                 return TypeAnalysisFlags.Dynamic;
 
-            var flags = TypeAnalysisFlags.ValidSymbol;
+            var flags = TypeAnalysisFlags.None;
 
             if (type.IsVar)
             {
@@ -200,7 +200,7 @@ namespace Roslynator.CSharp
             if (kind == SymbolKind.DynamicType)
                 return TypeAnalysisFlags.Dynamic;
 
-            var flags = TypeAnalysisFlags.ValidSymbol;
+            var flags = TypeAnalysisFlags.None;
 
             if (type.IsVar)
             {

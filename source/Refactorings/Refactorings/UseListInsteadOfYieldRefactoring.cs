@@ -143,7 +143,7 @@ namespace Roslynator.CSharp.Refactorings
             return false;
         }
 
-        private class YieldRewriter : SkipNestedMethodRewriter
+        private class YieldRewriter : SkipFunctionRewriter
         {
             private static readonly IdentifierNameSyntax _addName = IdentifierName("Add");
 

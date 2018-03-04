@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.SyntaxRewriters
 {
-    internal class SkipNestedMethodRewriter : CSharpSyntaxRewriter
+    internal class SkipFunctionRewriter : CSharpSyntaxRewriter
     {
         public override SyntaxNode VisitAnonymousMethodExpression(AnonymousMethodExpressionSyntax node)
         {

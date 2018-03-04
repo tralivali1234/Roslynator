@@ -524,13 +524,23 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(SyntaxNode node)
+        {
+            return Syntax.MemberDeclarationsInfo.Create(node);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified compilation unit.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(SyntaxNode declaration)
+        public static MemberDeclarationsInfo MemberDeclarationsInfo(CompilationUnitSyntax compilationUnit)
         {
-            return Syntax.MemberDeclarationsInfo.Create(declaration);
+            return Syntax.MemberDeclarationsInfo.Create(compilationUnit);
         }
 
         /// <summary>

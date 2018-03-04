@@ -79,7 +79,6 @@ namespace Roslynator.CSharp.Refactorings
                 Location.Create(invocationInfo.InvocationExpression.SyntaxTree, span));
         }
 
-        //XTODO: LambdaExpressionInfo
         private static SyntaxNode GetLambdaExpression(ExpressionSyntax expression)
         {
             CSharpSyntaxNode body = (expression as LambdaExpressionSyntax)?.Body;

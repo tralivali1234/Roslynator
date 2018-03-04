@@ -160,13 +160,12 @@ namespace Roslynator.CSharp
                 SyntaxKind.InterfaceDeclaration);
         }
 
-        //XTODO: IsFunction
         /// <summary>
         /// Returns true if a syntax of the specified kind if local function or anonymous function.
         /// </summary>
         /// <param name="kind"></param>
         /// <returns></returns>
-        public static bool IsNestedMethod(SyntaxKind kind)
+        public static bool IsFunction(SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.SimpleLambdaExpression,

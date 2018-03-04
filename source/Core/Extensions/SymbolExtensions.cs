@@ -999,19 +999,18 @@ namespace Roslynator
             return methodSymbol.MethodKind == MethodKind.ReducedExtension;
         }
 
-        //XTODO: IsOrdinaryExtensionMethod
         /// <summary>
-        /// Returns true if this method is an extension method that has not been reduced ("this" parameter has not been removed).
+        /// Returns true if this method is an ordinary extension method (i.e. "this" parameter has not been removed).
         /// </summary>
         /// <param name="methodSymbol"></param>
         /// <returns></returns>
-        public static bool IsNonReducedExtensionMethod(this IMethodSymbol methodSymbol)
+        public static bool IsOrdinaryExtensionMethod(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
                 throw new ArgumentNullException(nameof(methodSymbol));
 
             return methodSymbol.IsExtensionMethod
-                && methodSymbol.MethodKind != MethodKind.ReducedExtension;
+                && methodSymbol.MethodKind == MethodKind.Ordinary;
         }
 
         internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)

@@ -12,7 +12,6 @@ using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseCompoundAssignmentRefactoring
     {
         public static bool CanRefactor(AssignmentExpressionSyntax assignmentExpression)

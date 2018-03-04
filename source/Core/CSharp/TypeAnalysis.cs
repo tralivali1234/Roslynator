@@ -21,8 +21,6 @@ namespace Roslynator.CSharp
 
         public bool SupportsExplicit => Any(TypeAnalysisFlags.SupportsExplicit);
 
-        public bool IsValidSymbol => Any(TypeAnalysisFlags.ValidSymbol);
-
         public bool IsTypeObvious => Any(TypeAnalysisFlags.TypeObvious);
 
         internal TypeAnalysisFlags Flags { get; }
