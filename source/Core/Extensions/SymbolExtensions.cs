@@ -1365,16 +1365,6 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Returns true if the type is <see cref="char"/>.
-        /// </summary>
-        /// <param name="typeSymbol"></param>
-        /// <returns></returns>
-        public static bool IsChar(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.SpecialType == SpecialType.System_Char;
-        }
-
-        /// <summary>
         /// Gets a list of base types of this type.
         /// </summary>
         /// <param name="type"></param>
@@ -1435,7 +1425,6 @@ namespace Roslynator
             return false;
         }
 
-        //XTODO: pub
         internal static bool IsOrImplements(this ITypeSymbol typeSymbol, SpecialType interfaceType, bool allInterfaces = false)
         {
             if (typeSymbol == null)

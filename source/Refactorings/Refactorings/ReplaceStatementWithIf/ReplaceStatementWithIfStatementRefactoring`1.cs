@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings.ReplaceStatementWithIf
             if (expression == null)
                 return;
 
-            if (CSharpFacts.IsBooleanLiteralExpression(expression.Kind()))
+            if (CSharpFacts.IsBooleanExpression(expression.Kind()))
                 return;
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
@@ -33,14 +33,12 @@ namespace Roslynator.CSharp.Refactorings.ReplaceStatementWithIf
             if (semanticModel
                 .GetTypeInfo(expression, context.CancellationToken)
                 .ConvertedType?
-                .IsBoolean() != true)
+                .SpecialType == SpecialType.System_Boolean)
             {
-                return;
+                context.RegisterRefactoring(
+                    GetTitle(statement),
+                    cancellationToken => RefactorAsync(context.Document, statement, expression, cancellationToken));
             }
-
-            context.RegisterRefactoring(
-                GetTitle(statement),
-                cancellationToken => RefactorAsync(context.Document, statement, expression, cancellationToken));
         }
 
         private Task<Document> RefactorAsync(

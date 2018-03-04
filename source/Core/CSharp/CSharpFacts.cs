@@ -695,6 +695,28 @@ namespace Roslynator.CSharp
                 SyntaxKind.DefaultSwitchLabel);
         }
 
+        public static bool IsBooleanExpression(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.LogicalOrExpression:
+                case SyntaxKind.LogicalAndExpression:
+                case SyntaxKind.EqualsExpression:
+                case SyntaxKind.NotEqualsExpression:
+                case SyntaxKind.LessThanExpression:
+                case SyntaxKind.LessThanOrEqualExpression:
+                case SyntaxKind.GreaterThanExpression:
+                case SyntaxKind.GreaterThanOrEqualExpression:
+                case SyntaxKind.IsExpression:
+                case SyntaxKind.LogicalNotExpression:
+                case SyntaxKind.TrueLiteralExpression:
+                case SyntaxKind.FalseLiteralExpression:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         //XTODO: pub
         internal static SyntaxKind GetCompoundAssignmentKind(SyntaxKind binaryExpressionKind)
         {
