@@ -77,13 +77,6 @@ namespace Roslynator
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="baseName"></param>
-        /// <param name="typeSymbol"></param>
-        /// <param name="isCaseSensitive"></param>
-        /// <returns></returns>
         public string EnsureUniqueMemberName(
             string baseName,
             INamedTypeSymbol typeSymbol,

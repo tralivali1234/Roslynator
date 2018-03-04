@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Syntax
             BinaryExpressionSyntax binaryExpression = BinaryExpression;
             SyntaxKind kind = Kind;
 
-            //XTODO: test
+            //XTEST:
             Debug.Assert(Enumerate().Reverse().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
             binaryExpression = BinaryExpression;
 

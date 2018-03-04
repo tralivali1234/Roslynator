@@ -17,13 +17,8 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxToken semicolon = declaration.SemicolonToken;
 
-            if (semicolon.IsMissing)
-                return;
-
-            if (declaration.CloseBraceToken.IsMissing)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
+            if (!semicolon.IsMissing)
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
         }
 
         public static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
@@ -32,13 +27,8 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxToken semicolon = declaration.SemicolonToken;
 
-            if (semicolon.IsMissing)
-                return;
-
-            if (declaration.CloseBraceToken.IsMissing)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
+            if (!semicolon.IsMissing)
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
         }
 
         public static void AnalyzeInterfaceDeclaration(SyntaxNodeAnalysisContext context)
@@ -47,13 +37,8 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxToken semicolon = declaration.SemicolonToken;
 
-            if (semicolon.IsMissing)
-                return;
-
-            if (declaration.CloseBraceToken.IsMissing)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
+            if (!semicolon.IsMissing)
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
         }
 
         public static void AnalyzeStructDeclaration(SyntaxNodeAnalysisContext context)
@@ -62,13 +47,8 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxToken semicolon = declaration.SemicolonToken;
 
-            if (semicolon.IsMissing)
-                return;
-
-            if (declaration.CloseBraceToken.IsMissing)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
+            if (!semicolon.IsMissing)
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
         }
 
         public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
@@ -77,13 +57,8 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxToken semicolon = declaration.SemicolonToken;
 
-            if (semicolon.IsMissing)
-                return;
-
-            if (declaration.CloseBraceToken.IsMissing)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
+            if (!semicolon.IsMissing)
+                context.ReportDiagnostic(DiagnosticDescriptors.AvoidSemicolonAtEndOfDeclaration, semicolon);
         }
 
         public static Task<Document> RefactorAsync(

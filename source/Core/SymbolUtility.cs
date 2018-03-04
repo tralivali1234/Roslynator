@@ -8,7 +8,7 @@ namespace Roslynator
 {
     internal static class SymbolUtility
     {
-        public static bool IsPublicStaticReadOnly(this IFieldSymbol fieldSymbol, string name = null)
+        public static bool IsPublicStaticReadOnly(IFieldSymbol fieldSymbol, string name = null)
         {
             return fieldSymbol?.DeclaredAccessibility == Accessibility.Public
                 && fieldSymbol.IsStatic

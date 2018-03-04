@@ -536,7 +536,7 @@ namespace Roslynator.CSharp
         /// <summary>
         /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified compilation unit.
         /// </summary>
-        /// <param name="declaration"></param>
+        /// <param name="compilationUnit"></param>
         /// <returns></returns>
         public static MemberDeclarationsInfo MemberDeclarationsInfo(CompilationUnitSyntax compilationUnit)
         {
