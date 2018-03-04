@@ -13,34 +13,26 @@ namespace Roslynator.CSharp
             _flags = flags;
         }
 
-        public bool IsImplicit()
+        public bool IsImplicit => Any(TypeAnalysisFlags.Implicit);
+
+        public bool IsExplicit => Any(TypeAnalysisFlags.Explicit);
+
+        public bool SupportsImplicit => Any(TypeAnalysisFlags.SupportsImplicit);
+
+        public bool SupportsExplicit => Any(TypeAnalysisFlags.SupportsExplicit);
+
+        public bool IsValidSymbol => Any(TypeAnalysisFlags.ValidSymbol);
+
+        public bool IsTypeObvious => Any(TypeAnalysisFlags.TypeObvious);
+
+        public bool Any(TypeAnalysisFlags flags)
         {
-            return (_flags & TypeAnalysisFlags.Implicit) != 0;
+            return (_flags & flags) != 0;
         }
 
-        public bool IsExplicit()
+        public bool All(TypeAnalysisFlags flags)
         {
-            return (_flags & TypeAnalysisFlags.Explicit) != 0;
-        }
-
-        public bool SupportsImplicit()
-        {
-            return (_flags & TypeAnalysisFlags.SupportsImplicit) != 0;
-        }
-
-        public bool SupportsExplicit()
-        {
-            return (_flags & TypeAnalysisFlags.SupportsExplicit) != 0;
-        }
-
-        public bool IsValidSymbol()
-        {
-            return (_flags & TypeAnalysisFlags.ValidSymbol) != 0;
-        }
-
-        public bool IsTypeObvious()
-        {
-            return (_flags & TypeAnalysisFlags.TypeObvious) != 0;
+            return (_flags & flags) != flags;
         }
 
         public override bool Equals(object obj)
@@ -56,6 +48,16 @@ namespace Roslynator.CSharp
         public override int GetHashCode()
         {
             return _flags.GetHashCode();
+        }
+
+        public static implicit operator TypeAnalysis(TypeAnalysisFlags value)
+        {
+            return new TypeAnalysis(value);
+        }
+
+        public static implicit operator TypeAnalysisFlags(TypeAnalysis value)
+        {
+            return value._flags;
         }
 
         public static bool operator ==(TypeAnalysis analysis1, TypeAnalysis analysis2)

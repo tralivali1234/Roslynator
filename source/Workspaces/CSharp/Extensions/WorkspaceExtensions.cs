@@ -377,7 +377,7 @@ namespace Roslynator.CSharp
             SyntaxList<StatementSyntax> newStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return document.ReplaceNodeAsync(statementsInfo.Node, statementsInfo.WithStatements(newStatements).Node, cancellationToken);
+            return document.ReplaceNodeAsync(statementsInfo.Parent, statementsInfo.WithStatements(newStatements).Parent, cancellationToken);
         }
 
         internal static Task<Document> ReplaceMembersAsync(
@@ -387,8 +387,8 @@ namespace Roslynator.CSharp
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return document.ReplaceNodeAsync(
-                info.Declaration,
-                info.WithMembers(newMembers).Declaration,
+                info.Parent,
+                info.WithMembers(newMembers).Parent,
                 cancellationToken);
         }
 
@@ -399,8 +399,8 @@ namespace Roslynator.CSharp
             CancellationToken cancellationToken = default(CancellationToken))
         {
             return document.ReplaceNodeAsync(
-                info.Declaration,
-                info.WithMembers(newMembers).Declaration,
+                info.Parent,
+                info.WithMembers(newMembers).Parent,
                 cancellationToken);
         }
 

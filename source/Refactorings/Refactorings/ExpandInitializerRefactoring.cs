@@ -257,10 +257,10 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxNode newNode = statementsInfo
                 .WithStatements(newStatements.InsertRange(index + 1, expressions))
-                .Node
+                .Parent
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(statementsInfo.Node, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(statementsInfo.Parent, newNode, cancellationToken);
         }
 
         private static IEnumerable<ExpressionStatementSyntax> CreateExpressionStatements(

@@ -49,7 +49,6 @@ namespace Roslynator.CSharp.Refactorings
             if (variableDeclaration.IsParentKind(SyntaxKind.EventFieldDeclaration))
                 return;
 
-            //TODO: SingleVariableDeclarationInfo
             VariableDeclaratorSyntax variable = variableDeclaration.Variables.SingleOrDefault(shouldThrow: false);
 
             if (variable == null)

@@ -67,26 +67,17 @@ namespace Roslynator.CSharp.CodeFixes
             {
                 case SyntaxKind.AbstractKeyword:
                     {
-                        node = node
-                            .RemoveModifier(SyntaxKind.VirtualKeyword)
-                            .RemoveModifier(SyntaxKind.OverrideKeyword);
-
+                        node = node.RemoveModifiers(SyntaxKind.VirtualKeyword, SyntaxKind.OverrideKeyword);
                         break;
                     }
                 case SyntaxKind.VirtualKeyword:
                     {
-                        node = node
-                            .RemoveModifier(SyntaxKind.AbstractKeyword)
-                            .RemoveModifier(SyntaxKind.OverrideKeyword);
-
+                        node = node.RemoveModifiers(SyntaxKind.AbstractKeyword, SyntaxKind.OverrideKeyword);
                         break;
                     }
                 case SyntaxKind.OverrideKeyword:
                     {
-                        node = node
-                            .RemoveModifier(SyntaxKind.AbstractKeyword)
-                            .RemoveModifier(SyntaxKind.VirtualKeyword);
-
+                        node = node.RemoveModifiers(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword);
                         break;
                     }
                 case SyntaxKind.StaticKeyword:

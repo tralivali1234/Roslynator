@@ -138,7 +138,7 @@ namespace Roslynator.CSharp.Refactorings
             if (typeSymbol == null)
                 return false;
 
-            return SymbolUtility.CanBeSwitchExpression(typeSymbol);
+            return SymbolUtility.SupportsSwitchExpression(typeSymbol);
         }
 
         private static Task<Document> RefactorAsync(

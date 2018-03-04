@@ -1269,6 +1269,36 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(SyntaxNode node)
+        {
+            return Syntax.UsingDirectivesInfo.Create(node);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified compilation unit.
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(CompilationUnitSyntax compilationUnit)
+        {
+            return Syntax.UsingDirectivesInfo.Create(compilationUnit);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified declaration.
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(NamespaceDeclarationSyntax declaration)
+        {
+            return Syntax.UsingDirectivesInfo.Create(declaration);
+        }
+
+        /// <summary>
         /// Creates a new <see cref="Syntax.XmlElementInfo"/> from the specified xml node.
         /// </summary>
         /// <param name="xmlNode"></param>

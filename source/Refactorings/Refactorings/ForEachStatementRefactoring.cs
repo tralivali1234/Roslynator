@@ -58,12 +58,12 @@ namespace Roslynator.CSharp.Refactorings
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            TypeAnalysisFlags flags = TypeAnalyzer.AnalyzeType(forEachStatement, semanticModel);
+            TypeAnalysis analysis = TypeAnalyzer.AnalyzeType(forEachStatement, semanticModel);
 
-            if (flags.IsExplicit())
+            if (analysis.IsExplicit)
             {
-                if (flags.SupportsImplicit()
-                    && flags.IsValidSymbol()
+                if (analysis.SupportsImplicit
+                    && analysis.IsValidSymbol
                     && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeExplicitTypeToVar))
                 {
                     context.RegisterRefactoring(
@@ -71,8 +71,8 @@ namespace Roslynator.CSharp.Refactorings
                         cancellationToken => ChangeTypeRefactoring.ChangeTypeToVarAsync(context.Document, type, cancellationToken));
                 }
             }
-            else if (flags.SupportsExplicit()
-                && flags.IsValidSymbol()
+            else if (analysis.SupportsExplicit
+                && analysis.IsValidSymbol
                 && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeVarToExplicitType))
             {
                 ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);

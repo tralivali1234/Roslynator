@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var localSymbol = (ILocalSymbol)semanticModel.GetDeclaredSymbol(localInfo.Declarator, cancellationToken);
 
-            IdentifierNameSyntax identifierName = FindLastReference(localSymbol, statementsInfo.Node, semanticModel, cancellationToken);
+            IdentifierNameSyntax identifierName = FindLastReference(localSymbol, statementsInfo.Parent, semanticModel, cancellationToken);
 
             TextSpan span;
             if (identifierName == null)

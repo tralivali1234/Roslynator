@@ -37,9 +37,8 @@ namespace Roslynator.CSharp.Refactorings
 
             PropertyDeclarationSyntax newPropertyDeclaration = ExpandPropertyAndAddBackingField(propertyDeclaration, fieldName);
 
-            newPropertyDeclaration = ExpandPropertyRefactoring.ReplaceAbstractWithVirtual(newPropertyDeclaration);
-
             newPropertyDeclaration = newPropertyDeclaration
+                .WithModifiers(newPropertyDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
@@ -57,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
+                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Parent.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
 
                 members = newInfo.Members;
             }
@@ -69,7 +68,6 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceMembersAsync(info, newMembers, cancellationToken).ConfigureAwait(false);
         }
 
-        //TODO: ext?
         private static bool IsReadOnlyAutoProperty(PropertyDeclarationSyntax propertyDeclaration)
         {
             AccessorListSyntax accessorList = propertyDeclaration.AccessorList;

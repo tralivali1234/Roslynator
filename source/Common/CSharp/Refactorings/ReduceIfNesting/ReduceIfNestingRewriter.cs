@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
             public override SyntaxNode VisitIfStatement(IfStatementSyntax node)
             {
-                if (node.Parent == _statementsInfo.Node)
+                if (node.Parent == _statementsInfo.Parent)
                 {
                     return base.VisitIfStatement(node);
                 }
@@ -70,7 +70,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
             public override SyntaxNode VisitSwitchSection(SwitchSectionSyntax node)
             {
-                if (_statementsInfo.Node == null)
+                if (_statementsInfo.Parent == null)
                 {
                     return Rewrite(new StatementsInfo(node));
                 }
@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
             public override SyntaxNode VisitBlock(BlockSyntax node)
             {
-                if (_statementsInfo.Node == null
+                if (_statementsInfo.Parent == null
                     && node.IsParentKind(SyntaxKind.SwitchSection))
                 {
                     return Rewrite(new StatementsInfo(node));
@@ -183,7 +183,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                     .ReplaceAt(index, newIfStatement)
                     .InsertRange(index + 1, block.Statements.Select(f => f.WithFormatterAnnotation()));
 
-                return statementsInfo.WithStatements(newStatements).Node;
+                return statementsInfo.WithStatements(newStatements).Parent;
             }
         }
     }

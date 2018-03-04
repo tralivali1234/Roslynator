@@ -40,27 +40,27 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            TypeAnalysisFlags flags = TypeAnalyzer.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken);
+            TypeAnalysis analysis = TypeAnalyzer.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken);
 
-            if (flags.IsExplicit())
+            if (analysis.IsExplicit)
             {
-                if (flags.SupportsImplicit()
-                    && flags.IsTypeObvious())
+                if (analysis.SupportsImplicit
+                    && analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious,
                         variableDeclaration.Type);
                 }
             }
-            else if (flags.SupportsExplicit())
+            else if (analysis.SupportsExplicit)
             {
-                if (flags.IsTypeObvious())
+                if (analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
                         variableDeclaration.Type);
                 }
-                else if (flags.IsValidSymbol())
+                else if (analysis.IsValidSymbol)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
@@ -73,27 +73,27 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            TypeAnalysisFlags flags = TypeAnalyzer.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
+            TypeAnalysis analysis = TypeAnalyzer.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
 
-            if (flags.IsExplicit())
+            if (analysis.IsExplicit)
             {
-                if (flags.SupportsImplicit()
-                    && flags.IsTypeObvious())
+                if (analysis.SupportsImplicit
+                    && analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious,
                         declarationExpression.Type);
                 }
             }
-            else if (flags.SupportsExplicit())
+            else if (analysis.SupportsExplicit)
             {
-                if (flags.IsTypeObvious())
+                if (analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
                         declarationExpression.Type);
                 }
-                else if (flags.IsValidSymbol())
+                else if (analysis.IsValidSymbol)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,

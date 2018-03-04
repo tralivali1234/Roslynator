@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: opt
+    //XTODO: opt
     internal static class RemoveEmptyLinesRefactoring
     {
         public static async Task<bool> CanRefactorAsync(RefactoringContext context, SyntaxNode node)

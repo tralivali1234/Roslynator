@@ -70,12 +70,12 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(member);
 
-            MemberDeclarationSyntax newNode = info
+            SyntaxNode newNode = info
                 .WithMembers(default(SyntaxList<MemberDeclarationSyntax>))
-                .Declaration
+                .Parent
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(info.Declaration, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(info.Parent, newNode, cancellationToken);
         }
     }
 }

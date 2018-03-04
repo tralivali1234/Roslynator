@@ -33,7 +33,15 @@ namespace Roslynator.CSharp.Refactorings
             StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('$');
-            sb.Append(StringUtility.DoubleBraces(s.Substring(0, interpolationStartIndex)));
+
+            //TODO: test
+            int length = sb.Length;
+            sb.Append(s, 0, interpolationStartIndex);
+            sb.Replace("{", "{{", length);
+            sb.Replace("}", "}}", length);
+
+            //sb.Append(StringUtility.DoubleBraces(s.Substring(0, interpolationStartIndex)));
+
             sb.Append('{');
 
             if (addNameOf)
@@ -51,7 +59,17 @@ namespace Roslynator.CSharp.Refactorings
             int closeBracePosition = sb.Length;
 
             sb.Append('}');
-            sb.Append(StringUtility.DoubleBraces(s.Substring(interpolationStartIndex + interpolationLength)));
+
+            //TODO: test
+            length = sb.Length;
+
+            int startIndex = interpolationStartIndex + interpolationLength;
+            sb.Append(s, startIndex, s.Length - startIndex);
+
+            sb.Replace("{", "{{", length);
+            sb.Replace("}", "}}", length);
+
+            //sb.Append(StringUtility.DoubleBraces(s.Substring(interpolationStartIndex + interpolationLength)));
 
             ExpressionSyntax newNode = ParseExpression(StringBuilderCache.GetStringAndFree(sb)).WithTriviaFrom(literalExpression);
 

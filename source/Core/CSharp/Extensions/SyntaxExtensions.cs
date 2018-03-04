@@ -700,7 +700,6 @@ namespace Roslynator.CSharp
         }
         #endregion ExpressionSyntax
 
-        //TODO: del
         #region FieldDeclarationSyntax
         /// <summary>
         /// Returns true if the specified field declaration is a const declaration.
@@ -709,6 +708,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsConst(this FieldDeclarationSyntax fieldDeclaration)
         {
+            //TODO: null check?
             if (fieldDeclaration == null)
                 throw new ArgumentNullException(nameof(fieldDeclaration));
 
@@ -2736,10 +2736,14 @@ namespace Roslynator.CSharp
             return node.RemoveNode(statement);
         }
 
-        //TODO: RemoveModifiers
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode
         {
             return Modifier.Remove(node, modifierKind);
+        }
+
+        internal static TNode RemoveModifiers<TNode>(this TNode node, SyntaxKind modifierKind1, SyntaxKind modifierKind2) where TNode : SyntaxNode
+        {
+            return Modifier.Remove(Modifier.Remove(node, modifierKind1), modifierKind2);
         }
 
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxToken modifier) where TNode : SyntaxNode
@@ -3318,14 +3322,32 @@ namespace Roslynator.CSharp
             return default(SyntaxToken);
         }
 
-        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind tokenKind, SyntaxToken newToken)
+        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind kind, SyntaxToken newToken)
         {
-            int index = tokens.IndexOf(tokenKind);
+            int i = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (token.Kind() == kind)
+                    return tokens.ReplaceAt(i, newToken.WithTriviaFrom(token));
 
-            if (index == -1)
-                return tokens;
+                i++;
+            }
 
-            return tokens.ReplaceAt(index, newToken.WithTriviaFrom(tokens[index]));
+            return tokens;
+        }
+
+        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind kind, SyntaxKind newKind)
+        {
+            int i = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (token.Kind() == kind)
+                    return tokens.ReplaceAt(i, Token(newKind).WithTriviaFrom(token));
+
+                i++;
+            }
+
+            return tokens;
         }
         #endregion SyntaxTokenList
 

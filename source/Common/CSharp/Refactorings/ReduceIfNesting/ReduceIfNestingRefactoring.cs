@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             if (!statementsInfo.Success)
                 return Fail(ifStatement);
 
-            CSharpSyntaxNode node = statementsInfo.Node;
+            SyntaxNode node = statementsInfo.Parent;
             SyntaxNode parent = node.Parent;
             SyntaxKind parentKind = parent.Kind();
 
@@ -445,7 +445,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
         {
             StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
 
-            CSharpSyntaxNode node = statementsInfo.Node;
+            SyntaxNode node = statementsInfo.Parent;
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 

@@ -145,7 +145,6 @@ namespace Roslynator.CSharp.Syntax
             return new SingleLocalDeclarationStatementInfo(localDeclarationStatement, variableDeclaration, variableDeclarator);
         }
 
-        //TODO: check declaration.Type
         internal static SingleLocalDeclarationStatementInfo Create(ExpressionSyntax value)
         {
             SyntaxNode node = value?.WalkUpParentheses().Parent;

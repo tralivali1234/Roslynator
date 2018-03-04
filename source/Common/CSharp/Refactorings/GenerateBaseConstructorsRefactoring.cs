@@ -178,7 +178,6 @@ namespace Roslynator.CSharp.Refactorings
             return constructor.WithFormatterAnnotation();
         }
 
-        //TODO: mov
         private class ParametersComparer : EqualityComparer<IMethodSymbol>
         {
             public static ParametersComparer Instance { get; } = new ParametersComparer();
@@ -188,7 +187,10 @@ namespace Roslynator.CSharp.Refactorings
                 if (object.ReferenceEquals(x, y))
                     return true;
 
-                if (x == null || y == null)
+                if (x == null)
+                    return false;
+
+                if (y == null)
                     return false;
 
                 ImmutableArray<IParameterSymbol> parameters1 = x.Parameters;

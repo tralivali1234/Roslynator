@@ -32,6 +32,7 @@ namespace Roslynator
                 && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
+        //XTODO: Instance > NonStatic
         public static bool IsPublicInstance(IPropertySymbol propertySymbol, string name = null)
         {
             return propertySymbol?.DeclaredAccessibility == Accessibility.Public
@@ -431,8 +432,7 @@ namespace Roslynator
             return false;
         }
 
-        //TODO: SupportsSwitchExpression
-        public static bool CanBeSwitchExpression(ITypeSymbol typeSymbol)
+        public static bool SupportsSwitchExpression(ITypeSymbol typeSymbol)
         {
             if (typeSymbol.Kind == SymbolKind.ErrorType)
                 return false;

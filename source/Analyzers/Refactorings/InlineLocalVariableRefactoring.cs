@@ -301,7 +301,7 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxTriviaList leadingTrivia = localDeclaration.GetLeadingTrivia();
 
             IEnumerable<SyntaxTrivia> trivia = statementsInfo
-                .Node
+                .Parent
                 .DescendantTrivia(TextSpan.FromBounds(localDeclaration.SpanStart, nextStatement.Span.Start));
 
             if (!trivia.All(f => f.IsWhitespaceOrEndOfLineTrivia()))

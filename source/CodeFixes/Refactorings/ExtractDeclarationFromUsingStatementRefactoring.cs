@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
             newStatementsInfo = newStatementsInfo.WithStatements(newStatementsInfo.Statements.InsertRange(index, statements));
 
-            return document.ReplaceNodeAsync(statementsInfo.Node, newStatementsInfo.Node.WithFormatterAnnotation(), cancellationToken);
+            return document.ReplaceNodeAsync(statementsInfo.Parent, newStatementsInfo.Parent.WithFormatterAnnotation(), cancellationToken);
         }
 
         private static IEnumerable<StatementSyntax> GetStatements(UsingStatementSyntax usingStatement)

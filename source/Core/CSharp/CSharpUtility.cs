@@ -224,7 +224,7 @@ namespace Roslynator.CSharp
 
             foreach (SyntaxNode ancestor in node.Ancestors())
             {
-                foreach (UsingDirectiveSyntax usingDirective in GetUsings(ancestor))
+                foreach (UsingDirectiveSyntax usingDirective in SyntaxInfo.UsingDirectivesInfo(ancestor).Usings)
                 {
                     if (usingDirective.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
                     {
@@ -240,19 +240,6 @@ namespace Roslynator.CSharp
             }
 
             return false;
-        }
-
-        private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)node).Usings;
-                case SyntaxKind.CompilationUnit:
-                    return ((CompilationUnitSyntax)node).Usings;
-                default:
-                    return default(SyntaxList<UsingDirectiveSyntax>);
-            }
         }
 
         public static bool IsEmptyStringExpression(

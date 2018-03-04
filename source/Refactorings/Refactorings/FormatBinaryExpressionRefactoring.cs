@@ -55,7 +55,6 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxKind.BitwiseOrExpression);
         }
 
-        //TODO: 
         private static BinaryExpressionSyntax GetTopmostBinaryExpression(BinaryExpressionSyntax binaryExpression)
         {
             bool success = true;

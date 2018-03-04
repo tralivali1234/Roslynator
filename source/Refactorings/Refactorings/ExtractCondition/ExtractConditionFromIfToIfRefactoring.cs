@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
 
             SyntaxNode newNode = AddNextIf(statementsInfo, ifStatement, newIfStatement, expression);
 
-            return document.ReplaceNodeAsync(statementsInfo.Node, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(statementsInfo.Parent, newNode, cancellationToken);
         }
 
         public Task<Document> RefactorAsync(
@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
 
             SyntaxNode newNode = AddNextIf(statementsInfo, ifStatement, newIfStatement, expression);
 
-            return document.ReplaceNodeAsync(statementsInfo.Node, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(statementsInfo.Parent, newNode, cancellationToken);
         }
 
         private static SyntaxNode AddNextIf(
@@ -76,7 +76,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
                 .Replace(ifStatement, newIfStatement)
                 .Insert(index + 1, nextIfStatement);
 
-            return statementsInfo.WithStatements(newStatements).Node;
+            return statementsInfo.WithStatements(newStatements).Parent;
         }
     }
 }

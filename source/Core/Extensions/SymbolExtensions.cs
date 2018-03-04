@@ -1438,6 +1438,16 @@ namespace Roslynator
             return false;
         }
 
+        //XTODO: pub
+        internal static bool IsOrImplements(this ITypeSymbol typeSymbol, SpecialType interfaceType, bool allInterfaces = false)
+        {
+            if (typeSymbol == null)
+                throw new ArgumentNullException(nameof(typeSymbol));
+
+            return typeSymbol.SpecialType == interfaceType
+                || typeSymbol.Implements(interfaceType, allInterfaces: allInterfaces);
+        }
+
         /// <summary>
         /// Returns true if the type implements any of specified interfaces.
         /// </summary>

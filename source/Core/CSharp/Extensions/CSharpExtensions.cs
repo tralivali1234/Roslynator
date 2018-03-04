@@ -562,8 +562,7 @@ namespace Roslynator.CSharp
             return null;
         }
 
-        //TODO: pub
-        internal static bool HasConstantValue(
+        public static bool HasConstantValue(
             this SemanticModel semanticModel,
             ExpressionSyntax expression,
             CancellationToken cancellationToken = default(CancellationToken))

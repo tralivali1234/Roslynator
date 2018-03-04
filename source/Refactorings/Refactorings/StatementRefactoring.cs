@@ -198,7 +198,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 StatementsInfo newInfo = statementsInfo.WithStatements(newStatements);
 
-                return document.ReplaceNodeAsync(statementsInfo.Node, newInfo.Node, cancellationToken);
+                return document.ReplaceNodeAsync(statementsInfo.Parent, newInfo.Parent, cancellationToken);
             }
             else
             {

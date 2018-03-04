@@ -89,8 +89,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             FieldDeclarationSyntax newNode = fieldDeclaration
                 .InsertModifier(SyntaxKind.ConstKeyword, ModifierComparer.Instance)
-                .RemoveModifier(SyntaxKind.StaticKeyword)
-                .RemoveModifier(SyntaxKind.ReadOnlyKeyword);
+                .RemoveModifiers(SyntaxKind.StaticKeyword, SyntaxKind.ReadOnlyKeyword);
 
             return document.ReplaceNodeAsync(fieldDeclaration, newNode, cancellationToken);
         }

@@ -45,12 +45,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, declarationExpression.Type);
         }
 
-        private static bool IsFixable(TypeAnalysisFlags flags)
+        private static bool IsFixable(TypeAnalysis analysis)
         {
-            return flags.IsExplicit()
-                && flags.SupportsImplicit()
-                && flags.IsValidSymbol()
-                && !flags.IsTypeObvious();
+            return analysis.IsExplicit
+                && analysis.SupportsImplicit
+                && analysis.IsValidSymbol
+                && !analysis.IsTypeObvious;
         }
     }
 }

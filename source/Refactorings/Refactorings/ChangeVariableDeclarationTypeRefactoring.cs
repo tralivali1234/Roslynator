@@ -27,12 +27,12 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            TypeAnalysisFlags flags = TypeAnalyzer.AnalyzeType(variableDeclaration, semanticModel, context.CancellationToken);
+            TypeAnalysis analysis = TypeAnalyzer.AnalyzeType(variableDeclaration, semanticModel, context.CancellationToken);
 
-            if (flags.IsExplicit())
+            if (analysis.IsExplicit)
             {
-                if (flags.SupportsImplicit()
-                    && flags.IsValidSymbol()
+                if (analysis.SupportsImplicit
+                    && analysis.IsValidSymbol
                     && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeExplicitTypeToVar))
                 {
                     context.RegisterRefactoring(
@@ -46,9 +46,9 @@ namespace Roslynator.CSharp.Refactorings
                         });
                 }
             }
-            else if (flags.SupportsExplicit()
-                 && flags.IsValidSymbol()
-                 && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeVarToExplicitType))
+            else if (analysis.SupportsExplicit
+                && analysis.IsValidSymbol
+                && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeVarToExplicitType))
             {
                 ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(variableDeclaration.Type, context.CancellationToken);
 
