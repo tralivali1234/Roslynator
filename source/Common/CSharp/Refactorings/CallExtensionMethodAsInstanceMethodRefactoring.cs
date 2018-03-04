@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
             if (methodSymbol == null)
                 return Fail;
 
-            if (!methodSymbol.IsNonReducedExtensionMethod())
+            if (!methodSymbol.IsOrdinaryExtensionMethod())
                 return Fail;
 
             InvocationExpressionSyntax newInvocationExpression = GetNewInvocationForAnalysis(invocationExpression);

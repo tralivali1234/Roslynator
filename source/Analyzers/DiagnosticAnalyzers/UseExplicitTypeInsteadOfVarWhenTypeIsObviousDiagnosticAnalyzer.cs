@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class UseVarWhenTypeIsNotObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UseExplicitTypeInsteadOfVarWhenTypeIsObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -37,7 +37,9 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             if (IsFixable(analysis))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, variableDeclaration.Type);
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                    variableDeclaration.Type);
             }
         }
 
@@ -49,15 +51,17 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             if (IsFixable(analysis))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, declarationExpression.Type);
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                    declarationExpression.Type);
             }
         }
 
         private static bool IsFixable(TypeAnalysis analysis)
         {
-            return analysis.IsExplicit
-                && analysis.SupportsImplicit
-                && !analysis.IsTypeObvious;
+            return analysis.IsImplicit
+                && analysis.SupportsExplicit
+                && analysis.IsTypeObvious;
         }
     }
 }

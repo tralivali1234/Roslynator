@@ -428,6 +428,21 @@ namespace Roslynator.CSharp
                 .SpecialType == SpecialType.System_String;
         }
 
+        public static bool IsBooleanExpression(
+            ExpressionSyntax expression,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (expression == null)
+                return false;
+
+            return CSharpFacts.IsBooleanExpression(expression.WalkDownParentheses().Kind())
+                || semanticModel
+                    .GetTypeInfo(expression, cancellationToken)
+                    .ConvertedType?
+                    .SpecialType == SpecialType.System_Boolean;
+        }
+
         public static SyntaxToken GetIdentifier(SyntaxNode node)
         {
             switch (node.Kind())

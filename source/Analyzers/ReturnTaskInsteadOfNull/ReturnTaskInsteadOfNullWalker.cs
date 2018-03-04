@@ -7,7 +7,7 @@ using Roslynator.CSharp.SyntaxWalkers;
 
 namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 {
-    internal class ReturnTaskInsteadOfNullWalker : SkipNestedMethodWalker
+    internal class ReturnTaskInsteadOfNullWalker : SkipFunctionWalker
     {
         public List<ExpressionSyntax> Expressions { get; private set; }
 

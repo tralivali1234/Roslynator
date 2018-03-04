@@ -8,7 +8,7 @@ namespace Roslynator
 {
     internal static class SymbolUtility
     {
-        public static bool IsPublicStaticReadOnly(this IFieldSymbol fieldSymbol, string name = null)
+        public static bool IsPublicStaticReadOnly(IFieldSymbol fieldSymbol, string name = null)
         {
             return fieldSymbol?.DeclaredAccessibility == Accessibility.Public
                 && fieldSymbol.IsStatic
@@ -32,7 +32,6 @@ namespace Roslynator
                 && StringUtility.IsNullOrEquals(name, methodSymbol.Name);
         }
 
-        //XTODO: Instance > NonStatic
         public static bool IsPublicInstance(IPropertySymbol propertySymbol, string name = null)
         {
             return propertySymbol?.DeclaredAccessibility == Accessibility.Public
@@ -215,7 +214,7 @@ namespace Roslynator
 
                     return typeArguments.Length == 2
                         && typeArguments[0].Equals(parameter)
-                        && typeArguments[1].IsBoolean();
+                        && typeArguments[1].SpecialType == SpecialType.System_Boolean;
                 }
             }
 
@@ -249,7 +248,7 @@ namespace Roslynator
                     return typeArguments.Length == 3
                         && typeArguments[0].Equals(parameter1)
                         && typeArguments[1].Equals(parameter2)
-                        && typeArguments[2].IsBoolean();
+                        && typeArguments[2].SpecialType == SpecialType.System_Boolean;
                 }
             }
 

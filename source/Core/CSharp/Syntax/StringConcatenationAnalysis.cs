@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.Syntax
 
         public bool ContainsVerbatimInterpolatedString => (Flags & StringConcatenationFlags.ContainsVerbatimInterpolatedString) != 0;
 
-        public bool ContainsRegularExpression => (Flags & StringConcatenationFlags.ContainsRegularExpression) != 0;
+        public bool ContainsNonVerbatimExpression => (Flags & StringConcatenationFlags.ContainsNonVerbatimExpression) != 0;
 
         public bool ContainsVerbatimExpression => (Flags & StringConcatenationFlags.ContainsVerbatimExpression) != 0;
 
@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Syntax
             ContainsVerbatimStringLiteral = 4,
             ContainsStringLiteral = ContainsRegularStringLiteral | ContainsVerbatimStringLiteral,
             ContainsRegularInterpolatedString = 8,
-            ContainsRegularExpression = ContainsRegularStringLiteral | ContainsRegularInterpolatedString,
+            ContainsNonVerbatimExpression = ContainsRegularStringLiteral | ContainsRegularInterpolatedString,
             ContainsVerbatimInterpolatedString = 16,
             ContainsVerbatimExpression = ContainsVerbatimStringLiteral | ContainsVerbatimInterpolatedString,
             ContainsInterpolatedString = ContainsRegularInterpolatedString | ContainsVerbatimInterpolatedString,

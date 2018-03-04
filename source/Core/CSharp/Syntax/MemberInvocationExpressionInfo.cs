@@ -9,7 +9,6 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: OpenParenToken, CloseParenToken
     /// <summary>
     /// Provides information about invocation expression.
     /// </summary>

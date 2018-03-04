@@ -229,7 +229,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
                             if (typeSymbol != null)
                             {
-                                if (typeSymbol.IsBoolean())
+                                if (typeSymbol.SpecialType == SpecialType.System_Boolean)
                                 {
                                     return AnalysisResult.Boolean;
                                 }
@@ -247,7 +247,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                         if (semanticModel
                             .GetTypeInfo(expression, cancellationToken)
                             .ConvertedType?
-                            .IsBoolean() == true)
+                            .SpecialType == SpecialType.System_Boolean)
                         {
                             return AnalysisResult.Boolean;
                         }

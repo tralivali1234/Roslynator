@@ -999,19 +999,18 @@ namespace Roslynator
             return methodSymbol.MethodKind == MethodKind.ReducedExtension;
         }
 
-        //XTODO: IsOrdinaryExtensionMethod
         /// <summary>
-        /// Returns true if this method is an extension method that has not been reduced ("this" parameter has not been removed).
+        /// Returns true if this method is an ordinary extension method (i.e. "this" parameter has not been removed).
         /// </summary>
         /// <param name="methodSymbol"></param>
         /// <returns></returns>
-        public static bool IsNonReducedExtensionMethod(this IMethodSymbol methodSymbol)
+        public static bool IsOrdinaryExtensionMethod(this IMethodSymbol methodSymbol)
         {
             if (methodSymbol == null)
                 throw new ArgumentNullException(nameof(methodSymbol));
 
             return methodSymbol.IsExtensionMethod
-                && methodSymbol.MethodKind != MethodKind.ReducedExtension;
+                && methodSymbol.MethodKind == MethodKind.Ordinary;
         }
 
         internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)
@@ -1366,16 +1365,6 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Returns true if the type is <see cref="char"/>.
-        /// </summary>
-        /// <param name="typeSymbol"></param>
-        /// <returns></returns>
-        public static bool IsChar(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.SpecialType == SpecialType.System_Char;
-        }
-
-        /// <summary>
         /// Gets a list of base types of this type.
         /// </summary>
         /// <param name="type"></param>
@@ -1436,7 +1425,6 @@ namespace Roslynator
             return false;
         }
 
-        //XTODO: pub
         internal static bool IsOrImplements(this ITypeSymbol typeSymbol, SpecialType interfaceType, bool allInterfaces = false)
         {
             if (typeSymbol == null)

@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.SyntaxWalkers
 {
-    internal class SkipNestedMethodWalker : CSharpSyntaxWalker
+    internal class SkipFunctionWalker : CSharpSyntaxWalker
     {
         public override void VisitAnonymousMethodExpression(AnonymousMethodExpressionSyntax node)
         {

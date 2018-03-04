@@ -24,7 +24,6 @@ namespace Roslynator.CSharp.Refactorings
 
             BlockSyntax body = setter.Body;
 
-            //TODO: BodyOrExpressionBodyInfo.Expression
             if (body != null)
             {
                 if (body.Statements.SingleOrDefault(shouldThrow: false) is ExpressionStatementSyntax expressionStatement)

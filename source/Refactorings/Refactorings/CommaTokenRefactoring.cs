@@ -14,6 +14,7 @@ namespace Roslynator.CSharp.Refactorings
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, SyntaxToken commaToken)
         {
             if (commaToken.Kind() != SyntaxKind.CommaToken)
+                return;
 
             if (context.IsAnyRefactoringEnabled(
                     RefactoringIdentifiers.AddParameterNameToParameter,

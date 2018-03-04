@@ -51,8 +51,6 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeSyntax type = GetTypeOrReturnType(node);
 
-            Debug.Assert(type != null, node.ToString());
-
             if (type == null)
                 return;
 

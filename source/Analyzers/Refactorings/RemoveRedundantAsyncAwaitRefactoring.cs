@@ -219,7 +219,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool ContainsOtherAwaitOrReturnWithoutAwait(BlockSyntax body, HashSet<AwaitExpressionSyntax> awaitExpressions)
         {
-            foreach (SyntaxNode descendant in body.DescendantNodes(body.Span, f => !CSharpFacts.IsNestedMethod(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
+            foreach (SyntaxNode descendant in body.DescendantNodes(body.Span, f => !CSharpFacts.IsFunction(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
             {
                 switch (descendant.Kind())
                 {
@@ -526,7 +526,7 @@ namespace Roslynator.CSharp.Refactorings
         private static bool ContainsAwaitExpression(SyntaxNode node)
         {
             return node
-                .DescendantNodes(f => !CSharpFacts.IsNestedMethod(f.Kind()))
+                .DescendantNodes(f => !CSharpFacts.IsFunction(f.Kind()))
                 .Any(f => f.IsKind(SyntaxKind.AwaitExpression));
         }
 
@@ -534,7 +534,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             HashSet<AwaitExpressionSyntax> awaitExpressions = null;
 
-            foreach (SyntaxNode node in body.DescendantNodes(span, f => !CSharpFacts.IsNestedMethod(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
+            foreach (SyntaxNode node in body.DescendantNodes(span, f => !CSharpFacts.IsFunction(f.Kind()) && !f.IsKind(SyntaxKind.ReturnStatement)))
             {
                 SyntaxKind kind = node.Kind();
 

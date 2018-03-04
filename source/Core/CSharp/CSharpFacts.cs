@@ -160,13 +160,12 @@ namespace Roslynator.CSharp
                 SyntaxKind.InterfaceDeclaration);
         }
 
-        //XTODO: IsFunction
         /// <summary>
         /// Returns true if a syntax of the specified kind if local function or anonymous function.
         /// </summary>
         /// <param name="kind"></param>
         /// <returns></returns>
-        public static bool IsNestedMethod(SyntaxKind kind)
+        public static bool IsFunction(SyntaxKind kind)
         {
             return kind.Is(
                 SyntaxKind.SimpleLambdaExpression,
@@ -694,6 +693,28 @@ namespace Roslynator.CSharp
                 SyntaxKind.CasePatternSwitchLabel,
                 SyntaxKind.CaseSwitchLabel,
                 SyntaxKind.DefaultSwitchLabel);
+        }
+
+        public static bool IsBooleanExpression(SyntaxKind kind)
+        {
+            switch (kind)
+            {
+                case SyntaxKind.LogicalOrExpression:
+                case SyntaxKind.LogicalAndExpression:
+                case SyntaxKind.EqualsExpression:
+                case SyntaxKind.NotEqualsExpression:
+                case SyntaxKind.LessThanExpression:
+                case SyntaxKind.LessThanOrEqualExpression:
+                case SyntaxKind.GreaterThanExpression:
+                case SyntaxKind.GreaterThanOrEqualExpression:
+                case SyntaxKind.IsExpression:
+                case SyntaxKind.LogicalNotExpression:
+                case SyntaxKind.TrueLiteralExpression:
+                case SyntaxKind.FalseLiteralExpression:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         //XTODO: pub

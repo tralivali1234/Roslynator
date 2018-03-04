@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.Syntax
             IfStatement = ifStatement;
 
 #if DEBUG
-            //XTODO: test
+            //XTEST:
             Debug.Assert(System.Linq.Enumerable.SequenceEqual(GetChain(), this), nameof(IfStatementInfo));
 
             IEnumerable<IfStatementOrElseClause> GetChain()

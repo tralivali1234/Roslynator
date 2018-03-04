@@ -10,7 +10,6 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: OpenBraceToken, CloseBraceToken
     /// <summary>
     /// Provides information about a list of member declarations.
     /// </summary>
@@ -23,7 +22,6 @@ namespace Roslynator.CSharp.Syntax
 
         private static MemberDeclarationsInfo Default { get; } = new MemberDeclarationsInfo();
 
-        //XTODO: SyntaxNode
         /// <summary>
         /// The declaration that contains the members.
         /// </summary>
@@ -82,6 +80,14 @@ namespace Roslynator.CSharp.Syntax
             return Members.GetEnumerator();
         }
 
+        internal static MemberDeclarationsInfo Create(CompilationUnitSyntax compilationUnit)
+        {
+            if (compilationUnit == null)
+                return Default;
+
+            return new MemberDeclarationsInfo(compilationUnit.Members);
+        }
+
         internal static MemberDeclarationsInfo Create(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             if (namespaceDeclaration == null)
@@ -122,20 +128,25 @@ namespace Roslynator.CSharp.Syntax
             return new MemberDeclarationsInfo(interfaceDeclaration.Members);
         }
 
-        internal static MemberDeclarationsInfo Create(SyntaxNode declaration)
+        internal static MemberDeclarationsInfo Create(SyntaxNode node)
         {
-            switch (declaration?.Kind())
+            switch (node?.Kind())
             {
+                case SyntaxKind.CompilationUnit:
+                    {
+                        var compilationUnit = (CompilationUnitSyntax)node;
+                        return new MemberDeclarationsInfo(compilationUnit.Members);
+                    }
                 case SyntaxKind.NamespaceDeclaration:
                     {
-                        var namespaceDeclaration = (NamespaceDeclarationSyntax)declaration;
+                        var namespaceDeclaration = (NamespaceDeclarationSyntax)node;
                         return new MemberDeclarationsInfo(namespaceDeclaration.Members);
                     }
                 case SyntaxKind.ClassDeclaration:
                 case SyntaxKind.StructDeclaration:
                 case SyntaxKind.InterfaceDeclaration:
                     {
-                        var typeDeclaration = (TypeDeclarationSyntax)declaration;
+                        var typeDeclaration = (TypeDeclarationSyntax)node;
                         return new MemberDeclarationsInfo(typeDeclaration.Members);
                     }
             }
@@ -169,6 +180,12 @@ namespace Roslynator.CSharp.Syntax
 
             switch (Parent.Kind())
             {
+                case SyntaxKind.CompilationUnit:
+                    {
+                        var compilationUnit = (CompilationUnitSyntax)Parent;
+                        compilationUnit = compilationUnit.WithMembers(members);
+                        return new MemberDeclarationsInfo(compilationUnit.Members);
+                    }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
@@ -213,6 +230,12 @@ namespace Roslynator.CSharp.Syntax
 
             switch (Parent.Kind())
             {
+                case SyntaxKind.CompilationUnit:
+                    {
+                        var compilationUnit = (CompilationUnitSyntax)Parent;
+                        compilationUnit = compilationUnit.RemoveNode(node, options);
+                        return new MemberDeclarationsInfo(compilationUnit.Members);
+                    }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
@@ -257,6 +280,12 @@ namespace Roslynator.CSharp.Syntax
 
             switch (Parent.Kind())
             {
+                case SyntaxKind.CompilationUnit:
+                    {
+                        var compilationUnit = (CompilationUnitSyntax)Parent;
+                        compilationUnit = compilationUnit.ReplaceNode(oldNode, newNode);
+                        return new MemberDeclarationsInfo(compilationUnit.Members);
+                    }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;

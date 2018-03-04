@@ -19,7 +19,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 //XTODO: split
                 return ImmutableArray.Create(
                     DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
-                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
                     DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious);
             }
         }
@@ -54,13 +53,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
             else if (analysis.SupportsExplicit)
             {
-                if (analysis.IsTypeObvious)
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
-                        variableDeclaration.Type);
-                }
-                else if (analysis.IsValidSymbol)
+                if (!analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
@@ -87,13 +80,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             }
             else if (analysis.SupportsExplicit)
             {
-                if (analysis.IsTypeObvious)
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
-                        declarationExpression.Type);
-                }
-                else if (analysis.IsValidSymbol)
+                if (!analysis.IsTypeObvious)
                 {
                     context.ReportDiagnostic(
                         DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,

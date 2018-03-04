@@ -259,7 +259,7 @@ namespace Roslynator.CSharp.Refactorings
 
             bool IsLoopOrNestedMethod(SyntaxKind kind)
             {
-                return IsLoopStatement(kind) || IsNestedMethod(kind);
+                return IsLoopStatement(kind) || IsFunction(kind);
             }
 
             bool ShouldCheckBreakStatement()
@@ -271,7 +271,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     SyntaxKind kind = node.Kind();
 
-                    if (IsNestedMethod(kind))
+                    if (IsFunction(kind))
                         break;
 
                     if (IsLoopStatement(kind))

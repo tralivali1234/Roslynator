@@ -458,7 +458,7 @@ namespace Roslynator
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            //XTODO: optimize
+            //XTODO: perf
             return node.ContainsDirectives
                 && node.DescendantTrivia(span).Any(f => f.IsDirective);
         }

@@ -25,7 +25,6 @@ namespace Roslynator.CSharp.Refactorings
                 if (analysis.IsExplicit)
                 {
                     if (analysis.SupportsImplicit
-                        && analysis.IsValidSymbol
                         && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeExplicitTypeToVar))
                     {
                         context.RegisterRefactoring(
@@ -40,7 +39,6 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 }
                 else if (analysis.SupportsExplicit
-                    && analysis.IsValidSymbol
                     && context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeVarToExplicitType))
                 {
                     TypeSyntax type = declarationExpression.Type;
