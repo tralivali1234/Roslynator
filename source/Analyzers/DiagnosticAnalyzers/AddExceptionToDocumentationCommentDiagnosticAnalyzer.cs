@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment;
+using static Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment.AddExceptionToDocumentationCommentRefactoring;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
@@ -26,36 +27,40 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzeThrowStatement, SyntaxKind.ThrowStatement);
-            context.RegisterSyntaxNodeAction(AnalyzeThrowExpression, SyntaxKind.ThrowExpression);
+            context.RegisterCompilationStartAction(startContext =>
+            {
+                INamedTypeSymbol exceptionSymbol = startContext.Compilation.GetTypeByMetadataName(MetadataNames.System_Exception);
+
+                if (exceptionSymbol == null)
+                    return;
+
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeThrowStatement(f, exceptionSymbol), SyntaxKind.ThrowStatement);
+                startContext.RegisterSyntaxNodeAction(f => AnalyzeThrowExpression(f, exceptionSymbol), SyntaxKind.ThrowExpression);
+            });
         }
 
-        private static void AnalyzeThrowStatement(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeThrowStatement(SyntaxNodeAnalysisContext context, INamedTypeSymbol exceptionSymbol)
         {
             var throwStatement = (ThrowStatementSyntax)context.Node;
 
-            AddExceptionToDocumentationCommentAnalysis analysis = AddExceptionToDocumentationCommentRefactoring.Analyze(throwStatement, context.SemanticModel, context.CancellationToken);
+            AddExceptionToDocumentationCommentAnalysis analysis = Analyze(throwStatement, exceptionSymbol, context.SemanticModel, context.CancellationToken);
 
-            if (analysis.Success)
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AddExceptionToDocumentationComment,
-                    throwStatement);
-            }
+            if (!analysis.Success)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddExceptionToDocumentationComment, throwStatement);
         }
 
-        private static void AnalyzeThrowExpression(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeThrowExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol exceptionSymbol)
         {
             var throwExpression = (ThrowExpressionSyntax)context.Node;
 
-            AddExceptionToDocumentationCommentAnalysis analysis = AddExceptionToDocumentationCommentRefactoring.Analyze(throwExpression, context.SemanticModel, context.CancellationToken);
+            AddExceptionToDocumentationCommentAnalysis analysis = Analyze(throwExpression, exceptionSymbol, context.SemanticModel, context.CancellationToken);
 
-            if (analysis.Success)
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.AddExceptionToDocumentationComment,
-                    throwExpression);
-            }
+            if (!analysis.Success)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddExceptionToDocumentationComment, throwExpression);
         }
     }
 }

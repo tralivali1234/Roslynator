@@ -182,7 +182,6 @@ namespace Roslynator.CSharp.Refactorings
 
                 sb.Append(text, pos, interpolation.SpanStart - pos);
 
-                //TODO: test
                 int startIndex = sb.Length;
                 sb.Append(stringLiteral.InnerText);
                 sb.Replace("{", "{{", startIndex);

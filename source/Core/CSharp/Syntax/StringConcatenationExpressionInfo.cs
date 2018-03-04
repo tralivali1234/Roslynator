@@ -147,7 +147,6 @@ namespace Roslynator.CSharp.Syntax
                     if (containsRegular
                         && stringLiteral.IsVerbatim)
                     {
-                        //TODO: test
                         sb.Append(stringLiteral.ValueText);
                         sb.Replace(@"\", @"\\", startIndex);
                         sb.Replace("\"", @"\" + "\"", startIndex);
@@ -155,22 +154,12 @@ namespace Roslynator.CSharp.Syntax
                         sb.Replace("}", "}}", startIndex);
                         sb.Replace("\n", @"\n", startIndex);
                         sb.Replace("\r", @"\r", startIndex);
-
-                        //string s = stringLiteral.ValueText;
-                        //s = StringUtility.DoubleBackslash(s);
-                        //s = StringUtility.EscapeQuote(s);
-                        //s = StringUtility.DoubleBraces(s);
-                        //s = s.Replace("\n", @"\n");
-                        //s = s.Replace("\r", @"\r");
-                        //sb.Append(s);
                     }
                     else
                     {
                         sb.Append(stringLiteral.InnerText);
                         sb.Replace("{", "{{", startIndex);
                         sb.Replace("}", "}}", startIndex);
-
-                        //sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
                     }
                 }
                 else if (kind == SyntaxKind.InterpolatedStringExpression)
@@ -192,20 +181,12 @@ namespace Roslynator.CSharp.Syntax
                                     if (containsRegular
                                         && isVerbatimInterpolatedString)
                                     {
-                                        //TODO: test
                                         int startIndex = sb.Length;
                                         sb.Append(text.TextToken.ValueText);
                                         sb.Replace(@"\", @"\\", startIndex);
                                         sb.Replace("\"", @"\" + "\"", startIndex);
                                         sb.Replace("\n", @"\n", startIndex);
                                         sb.Replace("\r", @"\r", startIndex);
-
-                                        //string s = text.TextToken.ValueText;
-                                        //s = StringUtility.DoubleBackslash(s);
-                                        //s = StringUtility.EscapeQuote(s);
-                                        //s = s.Replace("\n", @"\n");
-                                        //s = s.Replace("\r", @"\r");
-                                        //sb.Append(s);
                                     }
                                     else
                                     {
@@ -259,20 +240,12 @@ namespace Roslynator.CSharp.Syntax
                 {
                     if (analysis.ContainsRegularExpression && literal.IsVerbatim)
                     {
-                        //TODO: test
                         int startIndex = sb.Length;
                         sb.Append(literal.ValueText);
                         sb.Replace(@"\", @"\\", startIndex);
                         sb.Replace("\"", @"\" + "\"", startIndex);
                         sb.Replace("\n", @"\n", startIndex);
                         sb.Replace("\r", @"\r", startIndex);
-
-                        //string s = literal.ValueText;
-                        //s = StringUtility.DoubleBackslash(s);
-                        //s = StringUtility.EscapeQuote(s);
-                        //s = s.Replace("\n", @"\n");
-                        //s = s.Replace("\r", @"\r");
-                        //sb.Append(s);
                     }
                     else
                     {
@@ -306,27 +279,23 @@ namespace Roslynator.CSharp.Syntax
                 {
                     var literal = (LiteralExpressionSyntax)expressions[i];
 
-                    //TODO: sb.Replace
-                    string s = StringUtility.DoubleQuote(literal.Token.ValueText);
+                    int length = sb.Length;
 
-                    int charCount = 0;
+                    sb.Append(literal.Token.ValueText);
 
-                    if (s.Length > 0
-                        && s[s.Length - 1] == '\n')
+                    sb.Replace("\"", "\"\"", length);
+
+                    if (sb.Length > length
+                        && sb[sb.Length - 1] == '\n')
                     {
-                        charCount = 1;
+                        sb.Remove(sb.Length - 1, 1);
 
-                        if (s.Length > 1
-                            && s[s.Length - 2] == '\r')
+                        if (sb.Length - length > 1
+                            && sb[sb.Length - 1] == '\r')
                         {
-                            charCount = 2;
+                            sb.Remove(sb.Length - 1, 1);
                         }
-                    }
 
-                    sb.Append(s, 0, s.Length - charCount);
-
-                    if (charCount > 0)
-                    {
                         sb.AppendLine();
                     }
                     else if (i < expressions.Length - 1)

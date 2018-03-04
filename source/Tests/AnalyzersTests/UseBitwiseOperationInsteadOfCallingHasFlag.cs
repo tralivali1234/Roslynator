@@ -2,17 +2,27 @@
 
 using System.Text.RegularExpressions;
 
+#pragma warning disable RCS1023, RCS1033, RCS1049
+
 namespace Roslynator.CSharp.Analyzers.Tests
 {
-    internal static class UseBitwiseOperationInsteadOfCallingHasFlag
+    internal class UseBitwiseOperationInsteadOfCallingHasFlag
     {
-        private static void Foo()
+        public void Do()
         {
-            RegexOptions options = RegexOptions.None;
+            RegexOptions options = RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase;
 
-            if (options.HasFlag(RegexOptions.IgnoreCase))
-            {
-            }
+            if (options.HasFlag(RegexOptions.IgnoreCase)) { }
+
+            if (!options.HasFlag(RegexOptions.IgnoreCase)) { }
+
+            if (options.HasFlag(RegexOptions.IgnoreCase) == true) { }
+
+            if (options.HasFlag(RegexOptions.IgnoreCase) == false) { }
+
+            if ( /**/ Options.HasFlag(RegexOptions.IgnoreCase /**/ ).Equals(true)) { }
         }
+
+        public RegexOptions Options { get; }
     }
 }

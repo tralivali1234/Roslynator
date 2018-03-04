@@ -700,6 +700,7 @@ namespace Roslynator.CSharp
         }
         #endregion ExpressionSyntax
 
+        //XTODO: 
         #region FieldDeclarationSyntax
         /// <summary>
         /// Returns true if the specified field declaration is a const declaration.
@@ -708,11 +709,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsConst(this FieldDeclarationSyntax fieldDeclaration)
         {
-            //TODO: null check?
-            if (fieldDeclaration == null)
-                throw new ArgumentNullException(nameof(fieldDeclaration));
-
-            return fieldDeclaration.Modifiers.Contains(SyntaxKind.ConstKeyword);
+            return fieldDeclaration?.Modifiers.Contains(SyntaxKind.ConstKeyword) == true;
         }
         #endregion FieldDeclarationSyntax
 

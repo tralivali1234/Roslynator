@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings
             AssignmentExpressionSyntax newNode = AssignmentExpression(
                 kind,
                 assignmentExpression.Left,
-                Token(operatorToken.LeadingTrivia, kind, operatorToken.TrailingTrivia.AddRange(trailingTrivia)),
+                Token(operatorToken.LeadingTrivia, GetCompoundAssignmentOperatorKind(kind), operatorToken.TrailingTrivia.AddRange(trailingTrivia)),
                 binaryExpression.Right);
 
             newNode = newNode.WithFormatterAnnotation();

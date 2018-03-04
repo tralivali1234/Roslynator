@@ -46,7 +46,6 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
         {
             IEnumerable<EnumMemberDeclarationSyntax> sorted = selectedMembers.OrderBy(f => f, EnumMemberDeclarationNameComparer.Instance);
 
-            //TODO: test
             SeparatedSyntaxList<EnumMemberDeclarationSyntax> newMembers = enumDeclaration
                 .Members
                 .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, sorted);

@@ -32,11 +32,6 @@ namespace Roslynator.CSharp.Refactorings
         {
             ITypeSymbol prevTypeSymbol = null;
 
-            //for (int i = statements.FirstIndex; i <= statements.LastIndex; i++)
-            //{
-            //}
-
-            //TODO: test
             for (int i = 0; i < statements.Count; i++)
             {
                 StatementSyntax statement = statements[i];

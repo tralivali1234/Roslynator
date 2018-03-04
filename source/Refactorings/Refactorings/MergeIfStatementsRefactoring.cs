@@ -20,9 +20,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             int count = 0;
 
-            for (int i = selectedStatements.FirstIndex; i <= selectedStatements.LastIndex; i++)
+            for (int i = 0; i < selectedStatements.Count; i++)
             {
-                if (!(selectedStatements.UnderlyingList[i] is IfStatementSyntax))
+                if (!(selectedStatements[i] is IfStatementSyntax))
                     return;
 
                 count++;

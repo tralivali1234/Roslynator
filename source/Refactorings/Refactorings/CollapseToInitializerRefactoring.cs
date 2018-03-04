@@ -66,9 +66,9 @@ namespace Roslynator.CSharp.Refactorings
             if (symbol?.IsErrorType() != false)
                 return;
 
-            for (int i = selectedStatements.FirstIndex + 1; i <= selectedStatements.LastIndex; i++)
+            for (int i = 1; i < selectedStatements.Count; i++)
             {
-                if (!IsValidAssignmentStatement(selectedStatements.UnderlyingList[i], symbol, semanticModel, context.CancellationToken))
+                if (!IsValidAssignmentStatement(selectedStatements[i], symbol, semanticModel, context.CancellationToken))
                     return;
             }
 

@@ -96,14 +96,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
 
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
-            //TODO: test
             SyntaxList<MemberDeclarationSyntax> newMembers = info
                 .Members
                 .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, sorted);
-                //.Take(selectedMembers.FirstIndex)
-                //.Concat(selectedMembers.OrderBy(f => f, comparer))
-                //.Concat(members.Skip(selectedMembers.LastIndex + 1))
-                //.ToSyntaxList();
 
             return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }

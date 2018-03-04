@@ -19,9 +19,6 @@ namespace Roslynator.CSharp.Refactorings
             if (!lastStatement.IsKind(SyntaxKind.ReturnStatement))
                 return;
 
-            if (selectedStatements.LastIndex != selectedStatements.UnderlyingList.IndexOf(lastStatement))
-                return;
-
             if (selectedStatements.FirstIndex == 0)
                 return;
 

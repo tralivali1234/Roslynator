@@ -582,7 +582,6 @@ namespace Roslynator
             return null;
         }
 
-        //TODO: pub
         internal static bool IsName(this ISymbol symbol, string name)
         {
             return StringUtility.Equals(symbol.Name, name);
@@ -1015,7 +1014,7 @@ namespace Roslynator
                 && methodSymbol.MethodKind != MethodKind.ReducedExtension;
         }
 
-        //TODO: pub
+        //XTODO: pub
         internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)
         {
             return methodSymbol?.ReturnType.SpecialType == specialType;

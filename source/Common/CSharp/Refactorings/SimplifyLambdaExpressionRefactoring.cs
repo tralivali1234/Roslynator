@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class SimplifyLambdaExpressionRefactoring
     {
         public static bool CanRefactor(LambdaExpressionSyntax lambda)

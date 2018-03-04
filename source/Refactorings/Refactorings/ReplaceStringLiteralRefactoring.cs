@@ -34,13 +34,10 @@ namespace Roslynator.CSharp.Refactorings
 
             sb.Append('$');
 
-            //TODO: test
             int length = sb.Length;
             sb.Append(s, 0, interpolationStartIndex);
             sb.Replace("{", "{{", length);
             sb.Replace("}", "}}", length);
-
-            //sb.Append(StringUtility.DoubleBraces(s.Substring(0, interpolationStartIndex)));
 
             sb.Append('{');
 
@@ -60,7 +57,6 @@ namespace Roslynator.CSharp.Refactorings
 
             sb.Append('}');
 
-            //TODO: test
             length = sb.Length;
 
             int startIndex = interpolationStartIndex + interpolationLength;
@@ -68,8 +64,6 @@ namespace Roslynator.CSharp.Refactorings
 
             sb.Replace("{", "{{", length);
             sb.Replace("}", "}}", length);
-
-            //sb.Append(StringUtility.DoubleBraces(s.Substring(interpolationStartIndex + interpolationLength)));
 
             ExpressionSyntax newNode = ParseExpression(StringBuilderCache.GetStringAndFree(sb)).WithTriviaFrom(literalExpression);
 

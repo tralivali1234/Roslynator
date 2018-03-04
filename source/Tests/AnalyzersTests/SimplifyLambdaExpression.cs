@@ -2,7 +2,7 @@
 
 using System;
 
-#pragma warning disable RCS1002, RCS1016, RCS1040, RCS1079, RCS1163
+#pragma warning disable RCS1002, RCS1016, RCS1040, RCS1079, RCS1163, RCS1207
 
 namespace Roslynator.CSharp.Analyzers.Tests
 {
