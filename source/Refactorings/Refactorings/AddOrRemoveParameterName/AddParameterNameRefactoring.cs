@@ -29,9 +29,9 @@ namespace Roslynator.CSharp.Refactorings.AddOrRemoveParameterName
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
+            for (int i = 0; i < selection.Count; i++)
             {
-                ArgumentSyntax argument = selection.UnderlyingList[i];
+                ArgumentSyntax argument = selection[i];
 
                 NameColonSyntax nameColon = argument.NameColon;
 

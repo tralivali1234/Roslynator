@@ -43,21 +43,13 @@ namespace Roslynator.CSharp.Refactorings
             SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
             if (!sections.Any())
-            {
                 return true;
-            }
-            else if (sections.Count == 1)
-            {
-                SwitchSectionSyntax section = sections[0];
-                SyntaxList<SwitchLabelSyntax> labels = section.Labels;
 
-                return labels.Count == 1
-                    && labels[0].IsKind(SyntaxKind.DefaultSwitchLabel);
-            }
-            else
-            {
-                return false;
-            }
+            return sections
+                .SingleOrDefault(shouldThrow: false)?
+                .Labels
+                .SingleOrDefault(shouldThrow: false)?
+                .Kind() == SyntaxKind.DefaultSwitchLabel;
         }
 
         public static async Task<Document> RefactorAsync(

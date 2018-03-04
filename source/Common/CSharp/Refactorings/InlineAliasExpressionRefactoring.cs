@@ -25,9 +25,7 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
 
             Debug.Assert(parent.IsKind(SyntaxKind.CompilationUnit, SyntaxKind.NamespaceDeclaration), "");
 
-            SyntaxList<UsingDirectiveSyntax> usings = GetUsings(parent);
-
-            int index = usings.IndexOf(usingDirective);
+            int index = SyntaxInfo.UsingDirectivesInfo(parent).IndexOf(usingDirective);
 
             List<IdentifierNameSyntax> names = CollectNames(parent, aliasSymbol, semanticModel, cancellationToken);
 
@@ -76,20 +74,6 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
             }
 
             return names;
-        }
-
-        private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
-        {
-            //TODO: UsingDirectivesInfo
-            switch (node.Kind())
-            {
-                case SyntaxKind.CompilationUnit:
-                    return ((CompilationUnitSyntax)node).Usings;
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)node).Usings;
-            }
-
-            return default(SyntaxList<UsingDirectiveSyntax>);
         }
 
         private static SyntaxNode RemoveUsingDirective(SyntaxNode node, int index)

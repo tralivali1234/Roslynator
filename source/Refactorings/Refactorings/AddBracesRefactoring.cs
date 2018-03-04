@@ -33,13 +33,7 @@ namespace Roslynator.CSharp.Refactorings
                     {
                         context.RegisterRefactoring(
                             "Add braces to if-else",
-                            cancellationToken =>
-                            {
-                                return AddBracesToIfElseRefactoring.RefactorAsync(
-                                    context.Document,
-                                    topmostIf,
-                                    cancellationToken);
-                            });
+                            ct => AddBracesToIfElseRefactoring.RefactorAsync(context.Document, topmostIf, ct));
                     }
                 }
             }

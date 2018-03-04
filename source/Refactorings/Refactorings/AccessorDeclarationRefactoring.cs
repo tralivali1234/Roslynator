@@ -24,19 +24,18 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             context.RegisterRefactoring(
                                 "Format braces on separate lines",
-                                cancellationToken => SyntaxFormatter.ToMultiLineAsync(context.Document, accessor, cancellationToken));
+                                ct => SyntaxFormatter.ToMultiLineAsync(context.Document, accessor, ct));
                         }
                     }
                     else
                     {
                         SyntaxList<StatementSyntax> statements = body.Statements;
 
-                        if (statements.Count == 1
-                            && statements[0].IsSingleLine())
+                        if (body.Statements.SingleOrDefault(shouldThrow: false)?.IsSingleLine() == true)
                         {
                             context.RegisterRefactoring(
                                 "Format braces on a single line",
-                                cancellationToken => SyntaxFormatter.ToSingleLineAsync(context.Document, accessor, cancellationToken));
+                                ct => SyntaxFormatter.ToSingleLineAsync(context.Document, accessor, ct));
                         }
                     }
                 }
@@ -49,21 +48,16 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SyntaxNode node = accessor;
 
-                if (accessor.Parent is AccessorListSyntax accessorList)
+                if (accessor.Parent is AccessorListSyntax accessorList
+                    && accessorList.Accessors.SingleOrDefault(shouldThrow: false)?.Kind() == SyntaxKind.GetAccessorDeclaration
+                    && (accessorList.Parent is MemberDeclarationSyntax parent))
                 {
-                    SyntaxList<AccessorDeclarationSyntax> accessors = accessorList.Accessors;
-
-                    if (accessors.Count == 1
-                        && accessors.First().IsKind(SyntaxKind.GetAccessorDeclaration)
-                        && (accessorList.Parent is MemberDeclarationSyntax parent))
-                    {
-                        node = parent;
-                    }
+                    node = parent;
                 }
 
                 context.RegisterRefactoring(
                     "Use expression-bodied member",
-                    cancellationToken => UseExpressionBodiedMemberRefactoring.RefactorAsync(context.Document, node, cancellationToken));
+                    ct => UseExpressionBodiedMemberRefactoring.RefactorAsync(context.Document, node, ct));
             }
         }
     }

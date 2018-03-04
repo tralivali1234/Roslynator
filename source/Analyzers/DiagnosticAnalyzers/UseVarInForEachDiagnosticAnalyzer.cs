@@ -31,10 +31,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var forEachStatement = (ForEachStatementSyntax)context.Node;
 
-            TypeAnalysisFlags flags = TypeAnalysis.AnalyzeType(forEachStatement, context.SemanticModel);
+            TypeAnalysis analysis = TypeAnalyzer.AnalyzeType(forEachStatement, context.SemanticModel);
 
-            if (flags.IsExplicit()
-                && flags.SupportsImplicit())
+            if (analysis.IsExplicit
+                && analysis.SupportsImplicit)
             {
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeInForEach, forEachStatement.Type);
             }

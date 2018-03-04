@@ -16,9 +16,9 @@ namespace Roslynator.CSharp.Refactorings
         {
             int count = 0;
 
-            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
+            for (int i = 0; i < selection.Count; i++)
             {
-                if (selection.UnderlyingList[i].EqualsValue?.Value != null)
+                if (selection[i].EqualsValue?.Value != null)
                 {
                     count++;
 

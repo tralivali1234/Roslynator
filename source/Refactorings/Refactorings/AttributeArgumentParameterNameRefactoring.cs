@@ -20,45 +20,38 @@ namespace Roslynator.CSharp.Refactorings
 
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, AttributeArgumentListSyntax argumentList)
         {
-            if (context.IsAnyRefactoringEnabled(
-                    RefactoringIdentifiers.AddParameterNameToArgument,
-                    RefactoringIdentifiers.RemoveParameterNameFromArgument)
-                && !context.Span.IsEmpty)
+            if (!context.IsAnyRefactoringEnabled(
+                RefactoringIdentifiers.AddParameterNameToArgument,
+                RefactoringIdentifiers.RemoveParameterNameFromArgument))
             {
-                List<AttributeArgumentSyntax> arguments = null;
-
-                foreach (AttributeArgumentSyntax argument in argumentList.Arguments)
-                {
-                    if (argument.Expression != null
-                        && context.Span.Contains(argument.Expression.Span))
-                    {
-                        (arguments ?? (arguments = new List<AttributeArgumentSyntax>())).Add(argument);
-                    }
-                }
-
-                if (arguments?.Count > 0)
-                    await AddOrRemoveParameterNameAsync(context, argumentList, arguments.ToArray()).ConfigureAwait(false);
+                return;
             }
-        }
 
-        private static async Task AddOrRemoveParameterNameAsync(
-            RefactoringContext context,
-            AttributeArgumentListSyntax argumentList,
-            AttributeArgumentSyntax[] arguments)
-        {
+            if (context.Span.IsEmpty)
+                return;
+
+            List<AttributeArgumentSyntax> list = null;
+
+            foreach (AttributeArgumentSyntax argument in argumentList.Arguments)
+            {
+                if (argument.Expression != null
+                    && context.Span.Contains(argument.Expression.Span))
+                {
+                    (list ?? (list = new List<AttributeArgumentSyntax>())).Add(argument);
+                }
+            }
+
+            if (list == null)
+                return;
+
+            AttributeArgumentSyntax[] arguments = list.ToArray();
+
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddParameterNameToArgument)
                 && await CanAddParameterNameAsync(context, arguments).ConfigureAwait(false))
             {
                 context.RegisterRefactoring(
                     "Add parameter name",
-                    cancellationToken =>
-                    {
-                        return AddParameterNameToArgumentsAsync(
-                            context.Document,
-                            argumentList,
-                            arguments,
-                            cancellationToken);
-                    });
+                    ct => AddParameterNameToArgumentsAsync(context.Document, argumentList, arguments, ct));
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveParameterNameFromArgument)
@@ -66,14 +59,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Remove parameter name",
-                    cancellationToken =>
-                    {
-                        return RemoveParameterNameFromArgumentsAsync(
-                            context.Document,
-                            argumentList,
-                            arguments,
-                            cancellationToken);
-                    });
+                    ct => RemoveParameterNameFromArgumentsAsync(context.Document, argumentList, arguments, ct));
             }
         }
 

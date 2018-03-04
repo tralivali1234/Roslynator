@@ -69,13 +69,11 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
-
             ITypeSymbol typeSymbol = null;
 
-            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
+            for (int i = 0; i < selectedStatements.Count - 1; i++)
             {
-                StatementSyntax statement = statements[i];
+                StatementSyntax statement = selectedStatements[i];
 
                 if (!(statement is LocalDeclarationStatementSyntax localDeclaration))
                     return false;
@@ -101,6 +99,8 @@ namespace Roslynator.CSharp.Refactorings
                         return false;
                     }
 
+                    SyntaxList<StatementSyntax> statements = selectedStatements.UnderlyingList;
+
                     for (int j = selectedStatements.LastIndex + 1; j < statements.Count; j++)
                     {
                         foreach (SyntaxNode node in statements[j].DescendantNodes())
@@ -120,9 +120,9 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool VerifyExpressionStatements(StatementsSelection selectedStatements)
         {
-            for (int i = selectedStatements.FirstIndex; i < selectedStatements.LastIndex; i++)
+            for (int i = 0; i < selectedStatements.Count - 1; i++)
             {
-                StatementSyntax statement = selectedStatements.UnderlyingList[i];
+                StatementSyntax statement = selectedStatements[i];
 
                 if (!(statement is ExpressionStatementSyntax expressionStatement))
                     return false;

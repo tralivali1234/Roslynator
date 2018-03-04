@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static bool RegisterCodeFix(
+        private bool RegisterCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             BinaryExpressionSyntax binaryExpression,
@@ -120,7 +120,7 @@ namespace Roslynator.CSharp.CodeFixes
             return true;
         }
 
-        private static bool RegisterCodeFix(
+        private bool RegisterCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             MemberInvocationExpressionInfo invocationInfo,

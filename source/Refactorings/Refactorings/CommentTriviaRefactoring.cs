@@ -36,7 +36,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveAllCommentsExceptDocumentationComments)
-                    && (kind == SyntaxKind.SingleLineCommentTrivia || kind == SyntaxKind.MultiLineCommentTrivia))
+                    && kind.Is(SyntaxKind.SingleLineCommentTrivia, SyntaxKind.MultiLineCommentTrivia))
                 {
                     context.RegisterRefactoring(
                         "Remove all comments (except documentation comments)",

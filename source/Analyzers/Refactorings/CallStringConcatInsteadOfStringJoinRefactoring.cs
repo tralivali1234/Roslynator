@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
 
-            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Join"))
+            if (!SymbolUtility.IsPublicStaticNonGeneric(methodSymbol, "Join"))
                 return;
 
             if (methodSymbol.ContainingType?.SpecialType != SpecialType.System_String)

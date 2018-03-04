@@ -108,7 +108,6 @@ namespace Roslynator
             return list.IndexOf(node) != -1;
         }
 
-        //TODO: pub?
         internal static TNode SingleOrDefault<TNode>(this SeparatedSyntaxList<TNode> list, bool shouldThrow) where TNode : SyntaxNode
         {
             return (shouldThrow) ? list.SingleOrDefault() : (list.Count == 1) ? list[0] : default(TNode);

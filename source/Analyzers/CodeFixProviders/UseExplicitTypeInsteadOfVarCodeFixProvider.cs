@@ -61,7 +61,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void RegisterCodeFix(CodeFixContext context, TypeSyntax type, ITypeSymbol typeSymbol, SemanticModel semanticModel)
+        private void RegisterCodeFix(CodeFixContext context, TypeSyntax type, ITypeSymbol typeSymbol, SemanticModel semanticModel)
         {
             foreach (Diagnostic diagnostic in context.Diagnostics)
             {

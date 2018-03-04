@@ -15,8 +15,11 @@ namespace Roslynator.CSharp.Refactorings.NodeInList
         }
 
         public TSyntax Node { get; }
+
         public TSyntax NewNode { get; }
+
         public SyntaxToken TokenBefore { get; }
+
         public SyntaxToken TokenAfter { get; }
 
         private static TSyntax SetTrivia(TSyntax newNode, SyntaxToken tokenBefore, SyntaxToken tokenAfter)

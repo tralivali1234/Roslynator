@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -37,14 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
             context.RegisterRefactoring(
                 "Comment out statement",
-                cancellationToken =>
-                {
-                    return RefactorAsync(
-                        context.Document,
-                        fileSpan.StartLine(),
-                        fileSpan.EndLine(),
-                        cancellationToken);
-                });
+                ct => RefactorAsync(context.Document, fileSpan.StartLine(), fileSpan.EndLine(), ct));
         }
 
         private static async Task<Document> RefactorAsync(
@@ -99,7 +93,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static string CommentOutLines(SourceText sourceText, int startLine, int endLine, int minIndentLength)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             for (int i = startLine; i <= endLine; i++)
             {
@@ -120,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
                 sb.Append(sourceText.GetSubText(TextSpan.FromBounds(textLine.Span.End, textLine.SpanIncludingLineBreak.End)));
             }
 
-            return sb.ToString();
+            return StringBuilderCache.GetStringAndFree(sb);
         }
 
         private static FileLinePositionSpan GetFileLinePositionSpan(SyntaxNode node, CancellationToken cancellationToken)

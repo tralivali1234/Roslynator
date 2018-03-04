@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            if (IsFixable(TypeAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken)))
+            if (IsFixable(TypeAnalyzer.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken)))
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, variableDeclaration.Type);
         }
 
@@ -41,16 +41,16 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            if (IsFixable(TypeAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken)))
+            if (IsFixable(TypeAnalyzer.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken)))
                 context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, declarationExpression.Type);
         }
 
-        private static bool IsFixable(TypeAnalysisFlags flags)
+        private static bool IsFixable(TypeAnalysis analysis)
         {
-            return flags.IsExplicit()
-                && flags.SupportsImplicit()
-                && flags.IsValidSymbol()
-                && !flags.IsTypeObvious();
+            return analysis.IsExplicit
+                && analysis.SupportsImplicit
+                && analysis.IsValidSymbol
+                && !analysis.IsTypeObvious;
         }
     }
 }

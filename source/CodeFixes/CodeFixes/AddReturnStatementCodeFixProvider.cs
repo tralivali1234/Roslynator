@@ -120,7 +120,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void ComputeCodeFix(
+        private void ComputeCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             TypeSyntax type,
@@ -136,7 +136,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static void ComputeCodeFix(
+        private void ComputeCodeFix(
             CodeFixContext context,
             Diagnostic diagnostic,
             ITypeSymbol typeSymbol,

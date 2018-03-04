@@ -46,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
             if (assignmentInfo.Right.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression))
                 return false;
 
-            if (!CanBeEqualToNull(assignmentInfo.Right))
+            if (CannotBeEqualToNull(assignmentInfo.Right))
                 return false;
 
             if (NullCheckExists(expression, assignmentInfo.Statement))
@@ -85,7 +85,7 @@ namespace Roslynator.CSharp.Refactorings
             if (value?.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression) != false)
                 return false;
 
-            if (!CanBeEqualToNull(value))
+            if (!CannotBeEqualToNull(value))
                 return false;
 
             IdentifierNameSyntax identifierName = IdentifierName(localInfo.Identifier);
@@ -138,9 +138,9 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool CanBeEqualToNull(ExpressionSyntax expression)
+        private static bool CannotBeEqualToNull(ExpressionSyntax expression)
         {
-            switch (expression?.Kind())
+            switch (expression.Kind())
             {
                 case SyntaxKind.AnonymousObjectCreationExpression:
                 case SyntaxKind.ArrayCreationExpression:
@@ -152,9 +152,9 @@ namespace Roslynator.CSharp.Refactorings
                 case SyntaxKind.NumericLiteralExpression:
                 case SyntaxKind.StringLiteralExpression:
                 case SyntaxKind.TrueLiteralExpression:
-                    return false;
-                default:
                     return true;
+                default:
+                    return false;
             }
         }
 
@@ -196,7 +196,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(nextStatement is IfStatementSyntax ifStatement))
                 return false;
 
-            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, allowedStyles: NullCheckStyles.NotEqualsToNull);
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, NullCheckStyles.NotEqualsToNull);
 
             if (!nullCheck.Success)
                 return false;
@@ -347,10 +347,8 @@ namespace Roslynator.CSharp.Refactorings
         {
             for (int i = statementIndex; i <= lastStatementIndex; i++)
             {
-                if (statements[i].IsKind(SyntaxKind.LocalDeclarationStatement))
+                if (statements[i] is LocalDeclarationStatementSyntax localDeclaration)
                 {
-                    var localDeclaration = (LocalDeclarationStatementSyntax)statements[i];
-
                     VariableDeclarationSyntax declaration = localDeclaration.Declaration;
 
                     if (declaration != null)

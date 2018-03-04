@@ -189,7 +189,7 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax newExpressionStatement = expressionStatement.ReplaceNode(expression, newExpression);
 
-            IEnumerable<SyntaxTrivia> trivia = statementsInfo.Node.DescendantTrivia(TextSpan.FromBounds(ifStatement.FullSpan.Start, expressionStatement.FullSpan.Start));
+            IEnumerable<SyntaxTrivia> trivia = statementsInfo.Parent.DescendantTrivia(TextSpan.FromBounds(ifStatement.FullSpan.Start, expressionStatement.FullSpan.Start));
 
             if (trivia.Any(f => !f.IsWhitespaceOrEndOfLineTrivia()))
                 newExpressionStatement = newExpressionStatement.PrependToLeadingTrivia(trivia);
@@ -306,7 +306,7 @@ namespace Roslynator.CSharp.Refactorings
 
             StatementSyntax newStatement = statement.ReplaceNode(expression, newNode);
 
-            IEnumerable<SyntaxTrivia> trivia = statementsInfo.Node.DescendantTrivia(TextSpan.FromBounds(statement.Span.End, ifStatement.Span.End));
+            IEnumerable<SyntaxTrivia> trivia = statementsInfo.Parent.DescendantTrivia(TextSpan.FromBounds(statement.Span.End, ifStatement.Span.End));
 
             if (!trivia.All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {

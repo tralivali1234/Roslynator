@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         public async Task ComputeRefactoringsAsync(RefactoringContext context, TNode node)
         {
-            if (!CheckNode(node, context.Span))
+            if (!ValidateNode(node, context.Span))
                 return;
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             }
         }
 
-        protected abstract bool CheckNode(TNode node, TextSpan span);
+        protected abstract bool ValidateNode(TNode node, TextSpan span);
 
         protected abstract Task<TDeclaration> GetMemberDeclarationAsync(TSymbol symbol, CancellationToken cancellationToken);
 

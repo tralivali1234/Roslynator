@@ -13,20 +13,17 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberAbstract
     {
         public static void ComputeRefactoring(RefactoringContext context, MethodDeclarationSyntax methodDeclaration)
         {
-            if (!CanRefactor(methodDeclaration))
+            SyntaxTokenList modifiers = methodDeclaration.Modifiers;
+
+            if (modifiers.ContainsAny(SyntaxKind.AbstractKeyword, SyntaxKind.StaticKeyword))
+                return;
+
+            if ((methodDeclaration.Parent as ClassDeclarationSyntax)?.Modifiers.Contains(SyntaxKind.AbstractKeyword) != true)
                 return;
 
             context.RegisterRefactoring(
                 "Make method abstract",
                 cancellationToken => RefactorAsync(context.Document, methodDeclaration, cancellationToken));
-        }
-
-        public static bool CanRefactor(MethodDeclarationSyntax methodDeclaration)
-        {
-            SyntaxTokenList modifiers = methodDeclaration.Modifiers;
-
-            return !modifiers.ContainsAny(SyntaxKind.AbstractKeyword, SyntaxKind.StaticKeyword)
-                && (methodDeclaration.Parent as ClassDeclarationSyntax)?.Modifiers.Contains(SyntaxKind.AbstractKeyword) == true;
         }
 
         public static Task<Document> RefactorAsync(

@@ -42,22 +42,24 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
 
         public static void ComputeRefactoring(RefactoringContext context, ParameterSyntax parameter)
         {
-            if (parameter.Identifier.Span.Contains(context.Span)
-                && IsValid(parameter))
-            {
-                if (context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceAndInitializeProperty))
-                {
-                    var propertyInfo = new IntroduceAndInitializePropertyInfo(parameter, context.SupportsCSharp6);
-                    var refactoring = new IntroduceAndInitializePropertyRefactoring(propertyInfo);
-                    refactoring.RegisterRefactoring(context);
-                }
+            if (!parameter.Identifier.Span.Contains(context.Span))
+                return;
 
-                if (context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceAndInitializeField))
-                {
-                    var fieldInfo = new IntroduceAndInitializeFieldInfo(parameter, context.Settings.PrefixFieldIdentifierWithUnderscore);
-                    var refactoring = new IntroduceAndInitializeFieldRefactoring(fieldInfo);
-                    refactoring.RegisterRefactoring(context);
-                }
+            if (!IsValid(parameter))
+                return;
+
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceAndInitializeProperty))
+            {
+                var propertyInfo = new IntroduceAndInitializePropertyInfo(parameter, context.SupportsCSharp6);
+                var refactoring = new IntroduceAndInitializePropertyRefactoring(propertyInfo);
+                refactoring.RegisterRefactoring(context);
+            }
+
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.IntroduceAndInitializeField))
+            {
+                var fieldInfo = new IntroduceAndInitializeFieldInfo(parameter, context.Settings.PrefixFieldIdentifierWithUnderscore);
+                var refactoring = new IntroduceAndInitializeFieldRefactoring(fieldInfo);
+                refactoring.RegisterRefactoring(context);
             }
         }
 
@@ -156,21 +158,21 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
 
         private static bool IsValid(ParameterSyntax parameter)
         {
-            if (parameter.Type != null
-                && !parameter.Identifier.IsMissing)
-            {
-                SyntaxNode parent = parameter.Parent;
+            if (parameter.Type == null)
+                return false;
 
-                if (parent?.Kind() == SyntaxKind.ParameterList)
-                {
-                    parent = parent.Parent;
+            if (parameter.Identifier.IsMissing)
+                return false;
 
-                    return parent?.Kind() == SyntaxKind.ConstructorDeclaration
-                        && !((ConstructorDeclarationSyntax)parent).Modifiers.Contains(SyntaxKind.StaticKeyword);
-                }
-            }
+            SyntaxNode parent = parameter.Parent;
 
-            return false;
+            if (parent?.Kind() != SyntaxKind.ParameterList)
+                return false;
+
+            parent = parent.Parent;
+
+            return parent?.Kind() == SyntaxKind.ConstructorDeclaration
+                && !((ConstructorDeclarationSyntax)parent).Modifiers.Contains(SyntaxKind.StaticKeyword);
         }
     }
 }

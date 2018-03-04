@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpTypeFactory;
@@ -17,68 +18,57 @@ namespace Roslynator.CSharp.Refactorings.ReplaceEqualsExpression
 
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, BinaryExpressionSyntax binaryExpression)
         {
-            if (binaryExpression.IsKind(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression))
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(binaryExpression, NullCheckStyles.ComparisonToNull);
+
+            if (!nullCheck.Success)
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            if (semanticModel
+                .GetTypeInfo(nullCheck.Expression, context.CancellationToken)
+                .ConvertedType?
+                .SpecialType != SpecialType.System_String)
             {
-                ExpressionSyntax left = binaryExpression.Left;
-
-                if (left?.IsKind(SyntaxKind.NullLiteralExpression) == false)
-                {
-                    ExpressionSyntax right = binaryExpression.Right;
-
-                    if (right?.Kind() == SyntaxKind.NullLiteralExpression)
-                    {
-                        SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                        ITypeSymbol leftSymbol = semanticModel.GetTypeInfo(left, context.CancellationToken).ConvertedType;
-
-                        if (leftSymbol?.SpecialType == SpecialType.System_String)
-                        {
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceEqualsExpressionWithStringIsNullOrEmpty))
-                            {
-                                var refactoring = new ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring();
-                                refactoring.RegisterRefactoring(context, binaryExpression, left);
-                            }
-
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceEqualsExpressionWithStringIsNullOrWhiteSpace))
-                            {
-                                var refactoring = new ReplaceEqualsExpressionWithStringIsNullOrWhiteSpaceRefactoring();
-                                refactoring.RegisterRefactoring(context, binaryExpression, left);
-                            }
-                        }
-                    }
-                }
+                return;
             }
+
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceEqualsExpressionWithStringIsNullOrEmpty))
+                ReplaceEqualsExpressionWithStringIsNullOrEmptyRefactoring.Instance.RegisterRefactoring(context, nullCheck);
+
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceEqualsExpressionWithStringIsNullOrWhiteSpace))
+                ReplaceEqualsExpressionWithStringIsNullOrWhiteSpaceRefactoring.Instance.RegisterRefactoring(context, nullCheck);
         }
 
-        private void RegisterRefactoring(RefactoringContext context, BinaryExpressionSyntax binaryExpression, ExpressionSyntax left)
+        private void RegisterRefactoring(RefactoringContext context, NullCheckExpressionInfo nullCheck)
         {
-            string title = (binaryExpression.IsKind(SyntaxKind.EqualsExpression))
-                ? $"Replace '{binaryExpression}' with 'string.{MethodName}({left})'"
-                : $"Replace '{binaryExpression}' with '!string.{MethodName}({left})'";
+            string title = (nullCheck.Style == NullCheckStyles.EqualsToNull)
+                ? $"Replace '{nullCheck.ContainingExpression}' with 'string.{MethodName}({nullCheck.Expression})'"
+                : $"Replace '{nullCheck.ContainingExpression}' with '!string.{MethodName}({nullCheck.Expression})'";
 
             context.RegisterRefactoring(
                 title,
-                cancellationToken => RefactorAsync(context.Document, binaryExpression, cancellationToken));
+                cancellationToken => RefactorAsync(context.Document, nullCheck, cancellationToken));
         }
 
         private Task<Document> RefactorAsync(
             Document document,
-            BinaryExpressionSyntax binaryExpression,
+            NullCheckExpressionInfo nullCheck,
             CancellationToken cancellationToken)
         {
             ExpressionSyntax newNode = SimpleMemberInvocationExpression(
                 StringType(),
                 IdentifierName(MethodName),
-                Argument(binaryExpression.Left));
+                Argument(nullCheck.Expression));
 
-            if (binaryExpression.OperatorToken.IsKind(SyntaxKind.ExclamationEqualsToken))
+            if (nullCheck.Style == NullCheckStyles.NotEqualsToNull)
                 newNode = LogicalNotExpression(newNode);
 
             newNode = newNode
-                .WithTriviaFrom(binaryExpression)
+                .WithTriviaFrom(nullCheck.ContainingExpression)
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(binaryExpression, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(nullCheck.ContainingExpression, newNode, cancellationToken);
         }
     }
 }

@@ -20,7 +20,6 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(block != null);
 
-            Node = block;
             IsBlock = true;
             Statements = block.Statements;
         }
@@ -29,18 +28,19 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(switchSection != null);
 
-            Node = switchSection;
             IsBlock = false;
             Statements = switchSection.Statements;
         }
 
         private static StatementsInfo Default { get; } = new StatementsInfo();
 
-        //XTODO: Parent
         /// <summary>
         /// The node that contains the statements. It can be either a <see cref="BlockSyntax"/> or a <see cref="SwitchSectionSyntax"/>.
         /// </summary>
-        public CSharpSyntaxNode Node { get; }
+        public SyntaxNode Parent
+        {
+            get { return Statements.FirstOrDefault()?.Parent; }
+        }
 
         /// <summary>
         /// The list of statements.
@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public BlockSyntax Block
         {
-            get { return (IsBlock) ? (BlockSyntax)Node : null; }
+            get { return (IsBlock) ? (BlockSyntax)Parent : null; }
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public SwitchSectionSyntax SwitchSection
         {
-            get { return (IsSwitchSection) ? (SwitchSectionSyntax)Node : null; }
+            get { return (IsSwitchSection) ? (SwitchSectionSyntax)Parent : null; }
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public bool Success
         {
-            get { return Node != null; }
+            get { return Parent != null; }
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Roslynator.CSharp.Syntax
 
         internal static StatementsInfo Create(StatementsSelection selectedStatements)
         {
-            return Create(selectedStatements?.UnderlyingList.FirstOrDefault());
+            return Create(selectedStatements?.First());
         }
 
         /// <summary>
@@ -408,7 +408,7 @@ namespace Roslynator.CSharp.Syntax
 
         private void ThrowInvalidOperationIfNotInitialized()
         {
-            if (Node == null)
+            if (Parent == null)
                 throw new InvalidOperationException($"{nameof(StatementsInfo)} is not initalized.");
         }
 
@@ -418,7 +418,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns></returns>
         public override string ToString()
         {
-            return Node?.ToString() ?? "";
+            return Parent?.ToString() ?? "";
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(StatementsInfo other)
         {
-            return EqualityComparer<CSharpSyntaxNode>.Default.Equals(Node, other.Node);
+            return EqualityComparer<SyntaxNode>.Default.Equals(Parent, other.Parent);
         }
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public override int GetHashCode()
         {
-            return EqualityComparer<CSharpSyntaxNode>.Default.GetHashCode(Node);
+            return EqualityComparer<SyntaxNode>.Default.GetHashCode(Parent);
         }
 
         public static bool operator ==(StatementsInfo info1, StatementsInfo info2)

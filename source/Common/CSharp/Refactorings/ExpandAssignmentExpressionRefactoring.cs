@@ -40,7 +40,6 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(assignmentExpression, newNode, cancellationToken);
         }
 
-        //TODO: CSharpFacts
         private static SyntaxKind GetBinaryExpressionKind(AssignmentExpressionSyntax assignmentExpression)
         {
             switch (assignmentExpression.Kind())

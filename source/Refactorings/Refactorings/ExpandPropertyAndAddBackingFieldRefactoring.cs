@@ -37,9 +37,8 @@ namespace Roslynator.CSharp.Refactorings
 
             PropertyDeclarationSyntax newPropertyDeclaration = ExpandPropertyAndAddBackingField(propertyDeclaration, fieldName);
 
-            newPropertyDeclaration = ExpandPropertyRefactoring.ReplaceAbstractWithVirtual(newPropertyDeclaration);
-
             newPropertyDeclaration = newPropertyDeclaration
+                .WithModifiers(newPropertyDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
@@ -57,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Declaration.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
+                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Parent.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
 
                 members = newInfo.Members;
             }
@@ -117,13 +116,8 @@ namespace Roslynator.CSharp.Refactorings
 
         private static FieldDeclarationSyntax CreateBackingField(PropertyDeclarationSyntax propertyDeclaration, string name)
         {
-            SyntaxTokenList modifiers = Modifiers.Private();
-
-            if (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword))
-                modifiers = modifiers.Add(StaticKeyword());
-
             return FieldDeclaration(
-                modifiers,
+                (propertyDeclaration.Modifiers.Contains(SyntaxKind.StaticKeyword)) ? Modifiers.PrivateStatic() : Modifiers.Private(),
                 propertyDeclaration.Type,
                 name,
                 propertyDeclaration.Initializer);

@@ -148,6 +148,8 @@ namespace Roslynator.CSharp.CodeFixes
                 {
                     ExpressionSyntax newNode = typeSymbol.GetDefaultValueSyntax(semanticModel, expression.SpanStart);
 
+                    newNode = newNode.WithTriviaFrom(expression);
+
                     return document.ReplaceNodeAsync(expression, newNode, cancellationToken);
                 },
                 EquivalenceKey.Create(diagnostic, additionalKey));

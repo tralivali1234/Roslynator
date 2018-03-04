@@ -90,7 +90,8 @@ namespace Roslynator.CSharp.Refactorings
                 return string.Equals(memberAccess.Name.Identifier.ValueText, "Length", StringComparison.Ordinal)
                     && right.Right.IsNumericLiteralExpression("0")
                     && semanticModel.GetSymbol(memberAccess, cancellationToken) is IPropertySymbol propertySymbol
-                    && SymbolUtility.IsPublicInstanceProperty(propertySymbol, "Length")
+                    && !propertySymbol.IsIndexer
+                    && SymbolUtility.IsPublicInstance(propertySymbol, "Length")
                     && propertySymbol.Type.SpecialType == SpecialType.System_Int32
                     && propertySymbol.ContainingType?.SpecialType == SpecialType.System_String
                     && CSharpFactory.AreEquivalent(expression, memberAccess.Expression)

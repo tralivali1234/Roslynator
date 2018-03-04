@@ -116,9 +116,19 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static bool ContainsYield(this BlockSyntax block)
+        internal static bool ContainsYieldReturn(this BlockSyntax block)
         {
-            return ContainsYieldWalker.ContainsYield(block);
+            return ContainsYieldWalker.ContainsYieldReturn(block);
+        }
+
+        internal static bool ContainsYieldBreak(this BlockSyntax block)
+        {
+            return ContainsYieldWalker.ContainsYieldBreak(block);
+        }
+
+        internal static bool ContainsYield(this BlockSyntax block, bool yieldReturn = true, bool yieldBreak = true)
+        {
+            return ContainsYieldWalker.ContainsYield(block, yieldReturn, yieldBreak);
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -690,6 +700,7 @@ namespace Roslynator.CSharp
         }
         #endregion ExpressionSyntax
 
+        //XTODO: 
         #region FieldDeclarationSyntax
         /// <summary>
         /// Returns true if the specified field declaration is a const declaration.
@@ -698,10 +709,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsConst(this FieldDeclarationSyntax fieldDeclaration)
         {
-            if (fieldDeclaration == null)
-                throw new ArgumentNullException(nameof(fieldDeclaration));
-
-            return fieldDeclaration.Modifiers.Contains(SyntaxKind.ConstKeyword);
+            return fieldDeclaration?.Modifiers.Contains(SyntaxKind.ConstKeyword) == true;
         }
         #endregion FieldDeclarationSyntax
 
@@ -1620,7 +1628,7 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
-        internal static SyntaxList<TNode> ReplaceRangeAt<TNode>(
+        internal static SeparatedSyntaxList<TNode> ReplaceRangeAt<TNode>(
             this SeparatedSyntaxList<TNode> list,
             int startIndex,
             int count,
@@ -1635,7 +1643,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentOutOfRangeException(nameof(count), count, "");
             }
 
-            return List(ReplaceRange());
+            return SeparatedList(ReplaceRange());
 
             IEnumerable<TNode> ReplaceRange()
             {
@@ -2725,10 +2733,14 @@ namespace Roslynator.CSharp
             return node.RemoveNode(statement);
         }
 
-        //TODO: RemoveModifiers
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxKind modifierKind) where TNode : SyntaxNode
         {
             return Modifier.Remove(node, modifierKind);
+        }
+
+        internal static TNode RemoveModifiers<TNode>(this TNode node, SyntaxKind modifierKind1, SyntaxKind modifierKind2) where TNode : SyntaxNode
+        {
+            return Modifier.Remove(Modifier.Remove(node, modifierKind1), modifierKind2);
         }
 
         internal static TNode RemoveModifier<TNode>(this TNode node, SyntaxToken modifier) where TNode : SyntaxNode
@@ -3307,14 +3319,32 @@ namespace Roslynator.CSharp
             return default(SyntaxToken);
         }
 
-        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind tokenKind, SyntaxToken newToken)
+        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind kind, SyntaxToken newToken)
         {
-            int index = tokens.IndexOf(tokenKind);
+            int i = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (token.Kind() == kind)
+                    return tokens.ReplaceAt(i, newToken.WithTriviaFrom(token));
 
-            if (index == -1)
-                return tokens;
+                i++;
+            }
 
-            return tokens.ReplaceAt(index, newToken.WithTriviaFrom(tokens[index]));
+            return tokens;
+        }
+
+        internal static SyntaxTokenList Replace(this SyntaxTokenList tokens, SyntaxKind kind, SyntaxKind newKind)
+        {
+            int i = 0;
+            foreach (SyntaxToken token in tokens)
+            {
+                if (token.Kind() == kind)
+                    return tokens.ReplaceAt(i, Token(newKind).WithTriviaFrom(token));
+
+                i++;
+            }
+
+            return tokens;
         }
         #endregion SyntaxTokenList
 
@@ -3634,11 +3664,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsVoid(this TypeSyntax type)
         {
-            //TODO: throw?
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
-
-            return type.Kind() == SyntaxKind.PredefinedType
+            return type.IsKind(SyntaxKind.PredefinedType)
                 && ((PredefinedTypeSyntax)type).Keyword.IsKind(SyntaxKind.VoidKeyword);
         }
         #endregion TypeSyntax

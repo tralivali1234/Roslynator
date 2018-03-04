@@ -11,7 +11,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class UseBitwiseOperationInsteadOfCallingHasFlagRefactoring
     {
         public const string Title = "Use bitwise operation instead of calling 'HasFlag'";

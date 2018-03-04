@@ -4,6 +4,7 @@ using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp
 {
@@ -34,7 +35,7 @@ namespace Roslynator.CSharp
             }
             else
             {
-                throw new ArgumentException("Node must be if statement or else clause.", nameof(node));
+                throw new ArgumentException("Node must be either an if statement or an else clause.", nameof(node));
             }
         }
 
@@ -95,9 +96,13 @@ namespace Roslynator.CSharp
         {
             get
             {
-                var self = this;
+                if (_ifStatement != null)
+                    return _ifStatement.Statement;
 
-                return (self.IsIf) ? self.AsIf().Statement : self.AsElse().Statement;
+                if (_elseClause != null)
+                    return _elseClause.Statement;
+
+                return null;
             }
         }
 
@@ -107,6 +112,34 @@ namespace Roslynator.CSharp
         public SyntaxNode Parent
         {
             get { return _ifStatement?.Parent ?? _elseClause?.Parent; }
+        }
+
+        public TextSpan Span
+        {
+            get
+            {
+                if (_ifStatement != null)
+                    return _ifStatement.Span;
+
+                if (_elseClause != null)
+                    return _elseClause.Span;
+
+                return default(TextSpan);
+            }
+        }
+
+        public TextSpan FullSpan
+        {
+            get
+            {
+                if (_ifStatement != null)
+                    return _ifStatement.FullSpan;
+
+                if (_elseClause != null)
+                    return _elseClause.FullSpan;
+
+                return default(TextSpan);
+            }
         }
 
         /// <summary>

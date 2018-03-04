@@ -19,73 +19,76 @@ namespace Roslynator.CSharp.Refactorings
 
             TypeSyntax type = declaration?.Type;
 
-            if (type?.IsVar == false)
-            {
-                VariableDeclaratorSyntax declarator = declaration.Variables.FirstOrDefault();
+            if (type?.IsVar != false)
+                return;
 
-                if (declarator != null
-                    && context.Span.Start >= type.Span.Start)
-                {
-                    SyntaxTriviaList triviaList = type.GetTrailingTrivia();
+            VariableDeclaratorSyntax declarator = declaration.Variables.FirstOrDefault();
 
-                    if (triviaList.Any())
-                    {
-                        SyntaxTrivia trivia = triviaList
-                            .SkipWhile(f => f.IsWhitespaceTrivia())
-                            .FirstOrDefault();
+            if (declarator == null)
+                return;
 
-                        if (trivia.IsEndOfLineTrivia()
-                            && context.Span.End <= trivia.Span.Start)
-                        {
-                            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (context.Span.Start < type.Span.Start)
+                return;
 
-                            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
+            SyntaxTriviaList triviaList = type.GetTrailingTrivia();
 
-                            string name = NameGenerator.Default.CreateUniqueLocalName(
-                                typeSymbol,
-                                semanticModel,
-                                declarator.SpanStart,
-                                cancellationToken: context.CancellationToken);
+            if (!triviaList.Any())
+                return;
 
-                            if (name != null)
-                            {
-                                context.RegisterRefactoring(
-                                    $"Add identifier '{name}'",
-                                    c => RefactorAsync(context.Document, type, name, c));
-                            }
-                        }
-                    }
-                }
-            }
+            SyntaxTrivia trivia = triviaList
+                .SkipWhile(f => f.IsWhitespaceTrivia())
+                .FirstOrDefault();
+
+            if (!trivia.IsEndOfLineTrivia())
+                return;
+
+            if (context.Span.End > trivia.Span.Start)
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, context.CancellationToken);
+
+            string name = NameGenerator.Default.CreateUniqueLocalName(
+                typeSymbol,
+                semanticModel,
+                declarator.SpanStart,
+                cancellationToken: context.CancellationToken);
+
+            if (name == null)
+                return;
+
+            context.RegisterRefactoring(
+                $"Add identifier '{name}'",
+                c => RefactorAsync(context.Document, type, name, c));
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ExpressionStatementSyntax expressionStatement)
         {
-            if (expressionStatement.Expression is TypeSyntax expression)
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (!(expressionStatement.Expression is TypeSyntax expression))
+                return;
 
-                ISymbol symbol = semanticModel.GetSymbol(expression, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (symbol == null
-                    || symbol.IsNamedType())
-                {
-                    ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, context.CancellationToken);
+            ISymbol symbol = semanticModel.GetSymbol(expression, context.CancellationToken);
 
-                    string name = NameGenerator.Default.CreateUniqueLocalName(
-                        typeSymbol,
-                        semanticModel,
-                        expression.SpanStart,
-                        cancellationToken: context.CancellationToken);
+            if (symbol?.IsNamedType() == false)
+                return;
 
-                    if (name != null)
-                    {
-                        context.RegisterRefactoring(
-                            $"Add identifier '{name}'",
-                            c => RefactorAsync(context.Document, expressionStatement, name, c));
-                    }
-                }
-            }
+            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, context.CancellationToken);
+
+            string name = NameGenerator.Default.CreateUniqueLocalName(
+                typeSymbol,
+                semanticModel,
+                expression.SpanStart,
+                cancellationToken: context.CancellationToken);
+
+            if (name == null)
+                return;
+
+            context.RegisterRefactoring(
+                $"Add identifier '{name}'",
+                c => RefactorAsync(context.Document, expressionStatement, name, c));
         }
 
         private static Task<Document> RefactorAsync(

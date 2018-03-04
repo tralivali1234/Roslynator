@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -20,14 +21,18 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ParameterSyntax parameter)
         {
-            if (parameter.Identifier.Span.Contains(context.Span)
-                && IsValid(parameter))
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (!parameter.Identifier.Span.Contains(context.Span))
+                return;
 
-                if (CanRefactor(parameter, semanticModel, context.CancellationToken))
-                    RegisterRefactoring(context, parameter);
-            }
+            if (!IsValid(parameter))
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            if (!CanRefactor(parameter, semanticModel, context.CancellationToken))
+                return;
+
+            RegisterRefactoring(context, parameter);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ParameterListSyntax parameterList)
@@ -202,65 +207,60 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (statement.IsKind(SyntaxKind.IfStatement))
-            {
-                var ifStatement = (IfStatementSyntax)statement;
+            if (!(statement is IfStatementSyntax ifStatement))
+                return false;
 
-                var binaryExpression = ifStatement.Condition as BinaryExpressionSyntax;
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(ifStatement.Condition, NullCheckStyles.EqualsToNull | NullCheckStyles.IsNull);
 
-                if (binaryExpression?.Right?.Kind() == SyntaxKind.NullLiteralExpression)
-                {
-                    ExpressionSyntax left = binaryExpression.Left;
+            if (!nullCheck.Success)
+                return false;
 
-                    if (left.IsKind(SyntaxKind.IdentifierName))
-                    {
-                        var throwStatement = ifStatement.SingleNonBlockStatementOrDefault() as ThrowStatementSyntax;
+            if (nullCheck.Expression.Kind() != SyntaxKind.IdentifierName)
+                return false;
 
-                        if (throwStatement?.Expression?.Kind() == SyntaxKind.ObjectCreationExpression)
-                        {
-                            var objectCreation = (ObjectCreationExpressionSyntax)throwStatement.Expression;
+            var throwStatement = ifStatement.SingleNonBlockStatementOrDefault() as ThrowStatementSyntax;
 
-                            INamedTypeSymbol exceptionType = semanticModel.GetTypeByMetadataName(MetadataNames.System_ArgumentNullException);
+            if (throwStatement?.Expression?.Kind() != SyntaxKind.ObjectCreationExpression)
+                return false;
 
-                            ISymbol type = semanticModel.GetSymbol(objectCreation.Type, cancellationToken);
+            var objectCreation = (ObjectCreationExpressionSyntax)throwStatement.Expression;
 
-                            return type?.Equals(exceptionType) == true;
-                        }
-                    }
-                }
-            }
+            INamedTypeSymbol exceptionType = semanticModel.GetTypeByMetadataName(MetadataNames.System_ArgumentNullException);
 
-            return false;
+            ISymbol type = semanticModel.GetSymbol(objectCreation.Type, cancellationToken);
+
+            return type?.Equals(exceptionType) == true;
         }
 
         private static BlockSyntax GetBody(ParameterSyntax parameter)
         {
             SyntaxNode parent = parameter.Parent;
 
-            if (parent?.Kind() == SyntaxKind.ParameterList)
+            if (parent?.Kind() != SyntaxKind.ParameterList)
+                return null;
+
+            parent = parent.Parent;
+
+            Debug.Assert(parent != null);
+
+            if (parent == null)
+                return null;
+
+            switch (parent.Kind())
             {
-                parent = parent.Parent;
-
-                switch (parent?.Kind())
-                {
-                    case SyntaxKind.MethodDeclaration:
-                        return ((MethodDeclarationSyntax)parent).Body;
-                    case SyntaxKind.ConstructorDeclaration:
-                        return ((ConstructorDeclarationSyntax)parent).Body;
-                    default:
-                        {
-                            Debug.Assert(parent?.IsKind(
-                                SyntaxKind.ParenthesizedLambdaExpression,
-                                SyntaxKind.AnonymousMethodExpression,
-                                SyntaxKind.LocalFunctionStatement,
-                                SyntaxKind.DelegateDeclaration,
-                                SyntaxKind.OperatorDeclaration,
-                                SyntaxKind.ConversionOperatorDeclaration) != false, parent?.Kind().ToString());
-
-                            break;
-                        }
-                }
+                case SyntaxKind.MethodDeclaration:
+                    return ((MethodDeclarationSyntax)parent).Body;
+                case SyntaxKind.ConstructorDeclaration:
+                    return ((ConstructorDeclarationSyntax)parent).Body;
             }
+
+            Debug.Assert(parent.IsKind(
+                SyntaxKind.ParenthesizedLambdaExpression,
+                SyntaxKind.AnonymousMethodExpression,
+                SyntaxKind.LocalFunctionStatement,
+                SyntaxKind.DelegateDeclaration,
+                SyntaxKind.OperatorDeclaration,
+                SyntaxKind.ConversionOperatorDeclaration), parent.Kind().ToString());
 
             return null;
         }

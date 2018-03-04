@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
             PropertyDeclarationSyntax newNode = propertyDeclaration
                 .WithSemicolonToken(default(SyntaxToken))
                 .WithAccessorList(MakeMemberAbstractHelper.ExpandAccessorList(propertyDeclaration.AccessorList))
-                .WithModifiers(propertyDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, VirtualKeyword()))
+                .WithModifiers(propertyDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 

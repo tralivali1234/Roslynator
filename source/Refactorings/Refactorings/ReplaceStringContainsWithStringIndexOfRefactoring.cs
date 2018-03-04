@@ -10,7 +10,6 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: CallContainsInsteadOfIndexOf
     internal static class ReplaceStringContainsWithStringIndexOfRefactoring
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, InvocationExpressionSyntax invocation)
@@ -19,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, context.CancellationToken);
 
-            if (SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, "Contains")
+            if (SymbolUtility.IsPublicInstanceNonGeneric(methodSymbol, "Contains")
                 && methodSymbol.IsContainingType(SpecialType.System_String)
                 && methodSymbol.HasSingleParameter(SpecialType.System_String))
             {

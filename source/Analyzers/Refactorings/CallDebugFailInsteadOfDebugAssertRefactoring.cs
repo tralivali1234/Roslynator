@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = context.SemanticModel.GetMethodSymbol(invocation, context.CancellationToken);
 
-            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol, "Assert"))
+            if (!SymbolUtility.IsPublicStaticNonGeneric(methodSymbol, "Assert"))
                 return;
 
             if (methodSymbol.ContainingType?.Equals(debugSymbol) != true)
@@ -87,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
                 foreach (ISymbol symbol in methodSymbol.ContainingType.GetMembers("Fail"))
                 {
                     if (symbol is IMethodSymbol failMethodSymbol
-                        && SymbolUtility.IsPublicStaticNonGenericMethod(failMethodSymbol)
+                        && SymbolUtility.IsPublicStaticNonGeneric(failMethodSymbol)
                         && failMethodSymbol.ReturnsVoid)
                     {
                         ImmutableArray<IParameterSymbol> failParameters = failMethodSymbol.Parameters;

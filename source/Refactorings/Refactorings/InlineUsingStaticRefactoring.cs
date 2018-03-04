@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -24,11 +25,9 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxNode parent = usingDirective.Parent;
 
-            Debug.Assert(parent.IsKind(SyntaxKind.CompilationUnit, SyntaxKind.NamespaceDeclaration), "");
+            Debug.Assert(parent.IsKind(SyntaxKind.CompilationUnit, SyntaxKind.NamespaceDeclaration));
 
-            SyntaxList<UsingDirectiveSyntax> usings = GetUsings(parent);
-
-            int index = usings.IndexOf(usingDirective);
+            int index = SyntaxInfo.UsingDirectivesInfo(parent).IndexOf(usingDirective);
 
             List<SimpleNameSyntax> names = CollectNames(parent, classSymbol, semanticModel, cancellationToken);
 
@@ -68,20 +67,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return names;
-        }
-
-        //TODO: UsingsInfo
-        private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.CompilationUnit:
-                    return ((CompilationUnitSyntax)node).Usings;
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)node).Usings;
-            }
-
-            return default(SyntaxList<UsingDirectiveSyntax>);
         }
 
         private static SyntaxNode RemoveUsingDirective(SyntaxNode node, int index)

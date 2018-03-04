@@ -688,7 +688,6 @@ namespace Roslynator.CSharp
             return false;
         }
 
-        //XTODO: new
         public static bool IsSwitchLabel(SyntaxKind kind)
         {
             return kind.Is(
@@ -697,7 +696,7 @@ namespace Roslynator.CSharp
                 SyntaxKind.DefaultSwitchLabel);
         }
 
-        //TODO: pub
+        //XTODO: pub
         internal static SyntaxKind GetCompoundAssignmentKind(SyntaxKind binaryExpressionKind)
         {
             switch (binaryExpressionKind)

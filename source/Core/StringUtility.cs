@@ -157,9 +157,6 @@ namespace Roslynator
 
         public static string DoubleBraces(string value)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
             return value
                 .Replace("{", "{{")
                 .Replace("}", "}}");
@@ -167,9 +164,6 @@ namespace Roslynator
 
         public static string DoubleBackslash(string value)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
             return value.Replace(@"\", @"\\");
         }
 
@@ -180,9 +174,6 @@ namespace Roslynator
 
         public static string DoubleQuote(string value)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
             return value.Replace("\"", "\"\"");
         }
 

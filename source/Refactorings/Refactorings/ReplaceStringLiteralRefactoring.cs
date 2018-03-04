@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpTypeFactory;
@@ -29,11 +30,15 @@ namespace Roslynator.CSharp.Refactorings
         {
             string s = literalExpression.Token.Text;
 
-            //TODO: StringBuilderCache
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             sb.Append('$');
-            sb.Append(StringUtility.DoubleBraces(s.Substring(0, interpolationStartIndex)));
+
+            int length = sb.Length;
+            sb.Append(s, 0, interpolationStartIndex);
+            sb.Replace("{", "{{", length);
+            sb.Replace("}", "}}", length);
+
             sb.Append('{');
 
             if (addNameOf)
@@ -51,9 +56,16 @@ namespace Roslynator.CSharp.Refactorings
             int closeBracePosition = sb.Length;
 
             sb.Append('}');
-            sb.Append(StringUtility.DoubleBraces(s.Substring(interpolationStartIndex + interpolationLength)));
 
-            ExpressionSyntax newNode = ParseExpression(sb.ToString()).WithTriviaFrom(literalExpression);
+            length = sb.Length;
+
+            int startIndex = interpolationStartIndex + interpolationLength;
+            sb.Append(s, startIndex, s.Length - startIndex);
+
+            sb.Replace("{", "{{", length);
+            sb.Replace("}", "}}", length);
+
+            ExpressionSyntax newNode = ParseExpression(StringBuilderCache.GetStringAndFree(sb)).WithTriviaFrom(literalExpression);
 
             SyntaxToken closeBrace = newNode.FindToken(closeBracePosition);
 
@@ -124,8 +136,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static string CreateRegularStringLiteral(string text)
         {
-            //TODO: StringBuilderCache
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             for (int i = 0; i < text.Length; i++)
             {
@@ -161,14 +172,14 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            return sb.ToString();
+            return StringBuilderCache.GetStringAndFree(sb);
         }
 
         private static List<string> CreateRegularStringLiterals(string text)
         {
             var values = new List<string>();
 
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             for (int i = 0; i < text.Length; i++)
             {
@@ -212,7 +223,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
 
-            values.Add(sb.ToString());
+            values.Add(StringBuilderCache.GetStringAndFree(sb));
 
             return values;
         }

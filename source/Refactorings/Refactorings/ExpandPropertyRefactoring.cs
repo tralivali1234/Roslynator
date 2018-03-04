@@ -28,25 +28,12 @@ namespace Roslynator.CSharp.Refactorings
         {
             PropertyDeclarationSyntax newNode = ExpandProperty(propertyDeclaration);
 
-            newNode = ReplaceAbstractWithVirtual(newNode);
-
             newNode = newNode
+                .WithModifiers(newNode.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken);
-        }
-
-        internal static PropertyDeclarationSyntax ReplaceAbstractWithVirtual(PropertyDeclarationSyntax propertyDeclaration)
-        {
-            SyntaxTokenList modifiers = propertyDeclaration.Modifiers;
-
-            int index = modifiers.IndexOf(SyntaxKind.AbstractKeyword);
-
-            if (index != -1)
-                propertyDeclaration = propertyDeclaration.WithModifiers(modifiers.ReplaceAt(index, CSharpFactory.VirtualKeyword().WithTriviaFrom(modifiers[index])));
-
-            return propertyDeclaration;
         }
 
         private static PropertyDeclarationSyntax ExpandProperty(PropertyDeclarationSyntax propertyDeclaration)

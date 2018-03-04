@@ -13,80 +13,92 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, MethodDeclarationSyntax methodDeclaration)
         {
-            if (!methodDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (methodDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(methodDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, methodDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(methodDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, methodDeclaration, data);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, PropertyDeclarationSyntax propertyDeclaration)
         {
-            if (!propertyDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (propertyDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(propertyDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, propertyDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(propertyDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, propertyDeclaration, data);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, IndexerDeclarationSyntax indexerDeclaration)
         {
-            if (!indexerDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (indexerDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(indexerDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, indexerDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(indexerDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, indexerDeclaration, data);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, EventDeclarationSyntax eventDeclaration)
         {
-            if (!eventDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (eventDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, eventDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, eventDeclaration, data);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, EventFieldDeclarationSyntax eventFieldDeclaration)
         {
-            if (!eventFieldDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (eventFieldDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventFieldDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, eventFieldDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(eventFieldDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, eventFieldDeclaration, data);
         }
 
         public static async Task ComputeRefactoringAsync(RefactoringContext context, ConstructorDeclarationSyntax constructorDeclaration)
         {
-            if (!constructorDeclaration.HasDocumentationComment())
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (constructorDeclaration.HasDocumentationComment())
+                return;
 
-                DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(constructorDeclaration, semanticModel, context.CancellationToken);
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (data.Success)
-                    RegisterRefactoring(context, constructorDeclaration, data);
-            }
+            DocumentationCommentData data = DocumentationCommentGenerator.GenerateFromBase(constructorDeclaration, semanticModel, context.CancellationToken);
+
+            if (!data.Success)
+                return;
+
+            RegisterRefactoring(context, constructorDeclaration, data);
         }
 
         private static void RegisterRefactoring(RefactoringContext context, MemberDeclarationSyntax memberDeclaration, DocumentationCommentData data)

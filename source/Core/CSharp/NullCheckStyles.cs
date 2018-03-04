@@ -28,7 +28,7 @@ namespace Roslynator.CSharp
         NotEqualsToNull = 2,
 
         /// <summary>
-        /// Expression that use equality/inequality operator.
+        /// Expression that uses equality/inequality operator.
         /// </summary>
         ComparisonToNull = EqualsToNull | NotEqualsToNull,
 
@@ -43,7 +43,7 @@ namespace Roslynator.CSharp
         NotIsNull = 8,
 
         /// <summary>
-        /// Expression that use pattern syntax.
+        /// Expression that uses pattern syntax.
         /// </summary>
         IsPattern = IsNull | NotIsNull,
 

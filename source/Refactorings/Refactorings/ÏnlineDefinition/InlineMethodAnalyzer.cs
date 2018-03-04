@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         public static InlineMethodAnalyzer Instance { get; } = new InlineMethodAnalyzer();
 
-        protected override bool CheckNode(InvocationExpressionSyntax node, TextSpan span)
+        protected override bool ValidateNode(InvocationExpressionSyntax node, TextSpan span)
         {
             ExpressionSyntax expression = node.Expression;
 

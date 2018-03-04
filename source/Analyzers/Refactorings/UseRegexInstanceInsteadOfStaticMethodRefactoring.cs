@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
 
-            if (!SymbolUtility.IsPublicStaticNonGenericMethod(methodSymbol))
+            if (!SymbolUtility.IsPublicStaticNonGeneric(methodSymbol))
                 return;
 
             if (methodSymbol.ContainingType?.Equals(MetadataNames.System_Text_RegularExpressions_Regex) != true)
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (expression.WalkDownParentheses() is LiteralExpressionSyntax)
                     return true;
 
-                if (!semanticModel.GetConstantValue(expression, cancellationToken).HasValue)
+                if (!semanticModel.HasConstantValue(expression, cancellationToken))
                     return false;
 
                 ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);

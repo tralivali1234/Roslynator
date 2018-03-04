@@ -12,31 +12,32 @@ namespace Roslynator.CSharp.Refactorings
         {
             binaryExpression = GetBinaryExpression(binaryExpression, context.Span);
 
-            if (binaryExpression != null
-                && IsFormattableKind(binaryExpression.Kind()))
+            if (binaryExpression == null)
+                return;
+
+            if (!IsFormattableKind(binaryExpression.Kind()))
+                return;
+
+            if (binaryExpression.IsSingleLine())
             {
-                if (binaryExpression.IsSingleLine())
-                {
-                    context.RegisterRefactoring(
-                        "Format binary expression on multiple lines",
-                        cancellationToken => SyntaxFormatter.ToMultiLineAsync(context.Document, binaryExpression, cancellationToken));
-                }
-                else
-                {
-                    context.RegisterRefactoring(
-                        "Format binary expression on a single line",
-                        cancellationToken => SyntaxFormatter.ToSingleLineAsync(context.Document, binaryExpression, cancellationToken));
-                }
+                context.RegisterRefactoring(
+                    "Format binary expression on multiple lines",
+                    cancellationToken => SyntaxFormatter.ToMultiLineAsync(context.Document, binaryExpression, cancellationToken));
+            }
+            else
+            {
+                context.RegisterRefactoring(
+                    "Format binary expression on a single line",
+                    cancellationToken => SyntaxFormatter.ToSingleLineAsync(context.Document, binaryExpression, cancellationToken));
             }
         }
 
         private static BinaryExpressionSyntax GetBinaryExpression(BinaryExpressionSyntax binaryExpression, TextSpan span)
         {
             if (span.IsEmpty)
-            {
                 return GetTopmostBinaryExpression(binaryExpression);
-            }
-            else if (span.IsBetweenSpans(binaryExpression)
+
+            if (span.IsBetweenSpans(binaryExpression)
                 && binaryExpression == GetTopmostBinaryExpression(binaryExpression))
             {
                 return binaryExpression;
@@ -47,16 +48,11 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsFormattableKind(SyntaxKind kind)
         {
-            switch (kind)
-            {
-                case SyntaxKind.LogicalAndExpression:
-                case SyntaxKind.LogicalOrExpression:
-                case SyntaxKind.BitwiseAndExpression:
-                case SyntaxKind.BitwiseOrExpression:
-                    return true;
-                default:
-                    return false;
-            }
+            return kind.Is(
+                SyntaxKind.LogicalAndExpression,
+                SyntaxKind.LogicalOrExpression,
+                SyntaxKind.BitwiseAndExpression,
+                SyntaxKind.BitwiseOrExpression);
         }
 
         private static BinaryExpressionSyntax GetTopmostBinaryExpression(BinaryExpressionSyntax binaryExpression)

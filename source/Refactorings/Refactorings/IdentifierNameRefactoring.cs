@@ -32,43 +32,52 @@ namespace Roslynator.CSharp.Refactorings
             RefactoringContext context,
             IdentifierNameSyntax identifierName)
         {
-            //TODO: pokr.
-            if (!IsQualified(identifierName)
-                || IsQualifiedWithThis(identifierName))
+            if (IsQualified(identifierName)
+                && !IsQualifiedWithThis(identifierName))
             {
-                PropertyDeclarationSyntax propertyDeclaration = identifierName.FirstAncestor<PropertyDeclarationSyntax>();
-
-                if (propertyDeclaration != null)
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                    var fieldSymbol = semanticModel.GetSymbol(identifierName, context.CancellationToken) as IFieldSymbol;
-
-                    if (fieldSymbol?.DeclaredAccessibility == Accessibility.Private)
-                    {
-                        IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
-
-                        if (propertySymbol != null
-                            && fieldSymbol.IsStatic == propertySymbol.IsStatic
-                            && fieldSymbol.ContainingType == propertySymbol.ContainingType)
-                        {
-                            string newName = StringUtility.ToCamelCase(propertySymbol.Name, context.Settings.PrefixFieldIdentifierWithUnderscore);
-
-                            if (!string.Equals(fieldSymbol.Name, newName, StringComparison.Ordinal)
-                                && await MemberNameGenerator.IsUniqueMemberNameAsync(
-                                    newName,
-                                    fieldSymbol,
-                                    context.Solution,
-                                    cancellationToken: context.CancellationToken).ConfigureAwait(false))
-                            {
-                                context.RegisterRefactoring(
-                                    $"Rename '{fieldSymbol.Name}' to '{newName}'",
-                                    cancellationToken => Renamer.RenameSymbolAsync(context.Solution, fieldSymbol, newName, default(OptionSet), cancellationToken));
-                            }
-                        }
-                    }
-                }
+                return;
             }
+
+            PropertyDeclarationSyntax propertyDeclaration = identifierName.FirstAncestor<PropertyDeclarationSyntax>();
+
+            if (propertyDeclaration == null)
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            var fieldSymbol = semanticModel.GetSymbol(identifierName, context.CancellationToken) as IFieldSymbol;
+
+            if (fieldSymbol?.DeclaredAccessibility != Accessibility.Private)
+                return;
+
+            IPropertySymbol propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclaration, context.CancellationToken);
+
+            if (propertySymbol == null)
+                return;
+
+            if (fieldSymbol.IsStatic != propertySymbol.IsStatic)
+                return;
+
+            if (fieldSymbol.ContainingType != propertySymbol.ContainingType)
+                return;
+
+            string newName = StringUtility.ToCamelCase(propertySymbol.Name, context.Settings.PrefixFieldIdentifierWithUnderscore);
+
+            if (string.Equals(fieldSymbol.Name, newName, StringComparison.Ordinal))
+                return;
+
+            if (!await MemberNameGenerator.IsUniqueMemberNameAsync(
+                newName,
+                fieldSymbol,
+                context.Solution,
+                cancellationToken: context.CancellationToken).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            context.RegisterRefactoring(
+                $"Rename '{fieldSymbol.Name}' to '{newName}'",
+                cancellationToken => Renamer.RenameSymbolAsync(context.Solution, fieldSymbol, newName, default(OptionSet), cancellationToken));
         }
 
         private static bool IsQualified(SimpleNameSyntax identifierName)

@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             {
                 StatementsInfo newInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
 
-                return Document.ReplaceNodeAsync(statementsInfo.Node, newInfo.Node, cancellationToken);
+                return Document.ReplaceNodeAsync(statementsInfo.Parent, newInfo.Parent, cancellationToken);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                 {
                     StatementsInfo newStatementsInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
 
-                    editor.ReplaceNode(statementsInfo.Node, newStatementsInfo.Node);
+                    editor.ReplaceNode(statementsInfo.Parent, newStatementsInfo.Parent);
                 }
                 else
                 {

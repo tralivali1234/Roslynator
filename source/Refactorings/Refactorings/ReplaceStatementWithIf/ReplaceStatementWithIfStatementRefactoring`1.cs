@@ -22,21 +22,25 @@ namespace Roslynator.CSharp.Refactorings.ReplaceStatementWithIf
         {
             ExpressionSyntax expression = GetExpression(statement);
 
-            if (expression != null
-                && !CSharpFacts.IsBooleanLiteralExpression(expression.Kind()))
-            {
-                SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (expression == null)
+                return;
 
-                if (semanticModel
-                    .GetTypeInfo(expression, context.CancellationToken)
-                    .ConvertedType?
-                    .IsBoolean() == true)
-                {
-                    context.RegisterRefactoring(
-                        GetTitle(statement),
-                        cancellationToken => RefactorAsync(context.Document, statement, expression, cancellationToken));
-                }
+            if (CSharpFacts.IsBooleanLiteralExpression(expression.Kind()))
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            if (semanticModel
+                .GetTypeInfo(expression, context.CancellationToken)
+                .ConvertedType?
+                .IsBoolean() != true)
+            {
+                return;
             }
+
+            context.RegisterRefactoring(
+                GetTitle(statement),
+                cancellationToken => RefactorAsync(context.Document, statement, expression, cancellationToken));
         }
 
         private Task<Document> RefactorAsync(

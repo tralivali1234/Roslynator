@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
                 RefactoringIdentifiers.WrapInRegion,
                 RefactoringIdentifiers.WrapInIfDirective))
             {
-                //TODO: perf?
+                //XTODO: opt
                 TextLineCollectionSelection selectedLines = await SelectedLinesRefactoring.GetSelectedLinesAsync(context).ConfigureAwait(false);
 
                 if (selectedLines != null)

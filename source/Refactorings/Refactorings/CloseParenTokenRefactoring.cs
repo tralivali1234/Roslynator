@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, SyntaxToken closeParen)
         {
-            if (!closeParen.IsKind(SyntaxKind.CloseParenToken))
+            if (closeParen.Kind() != SyntaxKind.CloseParenToken)
                 return;
 
             if (context.IsAnyRefactoringEnabled(

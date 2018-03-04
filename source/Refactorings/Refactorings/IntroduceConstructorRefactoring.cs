@@ -296,14 +296,14 @@ namespace Roslynator.CSharp.Refactorings
         {
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(declaration));
 
-            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.Insert(CreateConstructor(GetConstructorIdentifierText(info.Declaration), assignableMembers));
+            SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.Insert(CreateConstructor(GetConstructorIdentifierText(info.Parent), assignableMembers));
 
-            MemberDeclarationSyntax newNode = info.WithMembers(newMembers).Declaration.WithFormatterAnnotation();
+            SyntaxNode newNode = info.WithMembers(newMembers).Parent.WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(info.Declaration, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(info.Parent, newNode, cancellationToken);
         }
 
-        private static string GetConstructorIdentifierText(MemberDeclarationSyntax declaration)
+        private static string GetConstructorIdentifierText(SyntaxNode declaration)
         {
             switch (declaration.Kind())
             {

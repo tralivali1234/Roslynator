@@ -7,7 +7,7 @@ namespace Roslynator
 {
     internal static class EquivalenceKey
     {
-        private const string Prefix = "Roslynator";
+        private const string Prefix = "Roslynator" + Separator;
 
         private const string Separator = ".";
 
@@ -23,17 +23,21 @@ namespace Roslynator
             if (additionalKey1 != null)
             {
                 if (additionalKey2 != null)
-                    return Prefix + Separator + key + Separator + additionalKey1 + Separator + additionalKey2;
-
-                return Prefix + Separator + key + Separator + additionalKey1;
+                {
+                    return Prefix + key + Separator + additionalKey1 + Separator + additionalKey2;
+                }
+                else
+                {
+                    return Prefix + key + Separator + additionalKey1;
+                }
             }
             else if (additionalKey2 != null)
             {
-                return Prefix + Separator + key + Separator + additionalKey2;
+                return Prefix + key + Separator + additionalKey2;
             }
             else
             {
-                return Prefix + Separator + key;
+                return Prefix + key;
             }
         }
     }

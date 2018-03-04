@@ -27,14 +27,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Split attributes",
-                        cancellationToken =>
-                        {
-                            return SplitAsync(
-                                context.Document,
-                                member,
-                                selectedAttributeLists.ToArray(),
-                                cancellationToken);
-                        });
+                        ct => SplitAsync(context.Document, member, selectedAttributeLists.ToArray(), ct));
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.MergeAttributes)
@@ -42,14 +35,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     context.RegisterRefactoring(
                         "Merge attributes",
-                        cancellationToken =>
-                        {
-                            return MergeAsync(
-                                context.Document,
-                                member,
-                                selectedAttributeLists.ToArray(),
-                                cancellationToken);
-                        });
+                        ct => MergeAsync(context.Document, member, selectedAttributeLists.ToArray(), ct));
                 }
             }
         }
@@ -76,7 +62,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return document.ReplaceNodeAsync(
                 member,
-                member.SetAttributeLists(newLists.ToSyntaxList()),
+                member.WithAttributeLists(newLists.ToSyntaxList()),
                 cancellationToken);
         }
 
@@ -102,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return document.ReplaceNodeAsync(
                 member,
-                member.SetAttributeLists(newLists.ToSyntaxList()),
+                member.WithAttributeLists(newLists.ToSyntaxList()),
                 cancellationToken);
         }
 
@@ -164,7 +150,7 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static CSharpSyntaxNode SetAttributeLists(this CSharpSyntaxNode node, SyntaxList<AttributeListSyntax> attributeLists)
+        public static CSharpSyntaxNode WithAttributeLists(this CSharpSyntaxNode node, SyntaxList<AttributeListSyntax> attributeLists)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));

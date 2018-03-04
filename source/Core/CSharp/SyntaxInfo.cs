@@ -513,14 +513,14 @@ namespace Roslynator.CSharp
         /// <summary>
         /// Creates a new <see cref="Syntax.LocalDeclarationStatementInfo"/> from the specified expression.
         /// </summary>
-        /// <param name="expression"></param>
+        /// <param name="value"></param>
         /// <param name="allowMissing"></param>
         /// <returns></returns>
         public static LocalDeclarationStatementInfo LocalDeclarationStatementInfo(
-            ExpressionSyntax expression,
+            ExpressionSyntax value,
             bool allowMissing = false)
         {
-            return Syntax.LocalDeclarationStatementInfo.Create(expression, allowMissing);
+            return Syntax.LocalDeclarationStatementInfo.Create(value, allowMissing);
         }
 
         /// <summary>
@@ -1266,6 +1266,36 @@ namespace Roslynator.CSharp
         public static TypeParameterInfo TypeParameterInfo(TypeParameterSyntax typeParameter)
         {
             return Syntax.TypeParameterInfo.Create(typeParameter);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified node.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(SyntaxNode node)
+        {
+            return Syntax.UsingDirectivesInfo.Create(node);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified compilation unit.
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(CompilationUnitSyntax compilationUnit)
+        {
+            return Syntax.UsingDirectivesInfo.Create(compilationUnit);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified declaration.
+        /// </summary>
+        /// <param name="declaration"></param>
+        /// <returns></returns>
+        public static UsingDirectivesInfo UsingDirectivesInfo(NamespaceDeclarationSyntax declaration)
+        {
+            return Syntax.UsingDirectivesInfo.Create(declaration);
         }
 
         /// <summary>

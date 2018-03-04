@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.Syntax;
+using Roslynator.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -146,7 +147,7 @@ namespace Roslynator.CSharp.Refactorings
             InterpolatedStringExpressionSyntax interpolatedString,
             string text)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = StringBuilderCache.GetInstance();
 
             int pos = 0;
 
@@ -181,15 +182,17 @@ namespace Roslynator.CSharp.Refactorings
 
                 sb.Append(text, pos, interpolation.SpanStart - pos);
 
-                //TODO: StringBuilderExtensions.AppendEscape
-                sb.Append(StringUtility.DoubleBraces(stringLiteral.InnerText));
+                int startIndex = sb.Length;
+                sb.Append(stringLiteral.InnerText);
+                sb.Replace("{", "{{", startIndex);
+                sb.Replace("}", "}}", startIndex);
 
                 pos = interpolation.Span.End;
             }
 
             sb.Append(text, pos, text.Length - pos);
 
-            return (InterpolatedStringExpressionSyntax)ParseExpression(sb.ToString());
+            return (InterpolatedStringExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
         private static IEnumerable<ExpressionSyntax> GetInterpolationExpressions(

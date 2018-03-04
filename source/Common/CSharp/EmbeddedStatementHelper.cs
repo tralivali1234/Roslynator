@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    //TODO: EmbeddedStatement
     internal static class EmbeddedStatementHelper
     {
+        //XTODO: extension method IfStatementSyntax.EmbeddedStatement
         public static StatementSyntax GetEmbeddedStatement(IfStatementSyntax ifStatement)
         {
             return NullIfBlock(ifStatement.Statement);

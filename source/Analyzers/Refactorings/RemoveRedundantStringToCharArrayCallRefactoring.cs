@@ -50,7 +50,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocation, cancellationToken);
 
-            if (!SymbolUtility.IsPublicInstanceNonGenericMethod(methodSymbol, "ToCharArray"))
+            if (!SymbolUtility.IsPublicInstanceNonGeneric(methodSymbol, "ToCharArray"))
                 return false;
 
             if (methodSymbol.ContainingType?.SpecialType != SpecialType.System_String)

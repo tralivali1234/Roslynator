@@ -192,7 +192,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             ExpressionSyntax newInvocationExpression = SyntaxFactory.ParseExpression(sb.ToString());
 
             SyntaxTriviaList trailingTrivia = statementsInfo
-                .Node
+                .Parent
                 .DescendantTrivia(TextSpan.FromBounds(invocationExpression.Span.End, lastStatement.Span.End))
                 .ToSyntaxTriviaList()
                 .EmptyIfWhitespace()

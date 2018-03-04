@@ -176,11 +176,13 @@ namespace Roslynator.CSharp.Refactorings
 
         private static void RegisterRefactoring(RefactoringContext context, SyntaxNode node)
         {
-            context.RegisterRefactoring("Add type parameter", c => RefactorAsync(context.Document, node, ConstraintKind.None, c));
-            context.RegisterRefactoring("Add type parameter with type constraint", c => RefactorAsync(context.Document, node, ConstraintKind.Type, c));
-            //context.RegisterRefactoring("Add type parameter with 'class' constraint", c => RefactorAsync(context.Document, node, ConstraintKind.Class, c));
-            //context.RegisterRefactoring("Add type parameter with 'struct' constraint", c => RefactorAsync(context.Document, node, ConstraintKind.Struct, c));
-            //context.RegisterRefactoring("Add type parameter with 'new()' constraint", c => RefactorAsync(context.Document, node, ConstraintKind.Constructor, c));
+            context.RegisterRefactoring(
+                "Add type parameter",
+                ct => RefactorAsync(context.Document, node, ConstraintKind.None, ct));
+
+            context.RegisterRefactoring(
+                "Add type parameter with type constraint",
+                ct => RefactorAsync(context.Document, node, ConstraintKind.Type, ct));
         }
 
         private static async Task<Document> RefactorAsync(

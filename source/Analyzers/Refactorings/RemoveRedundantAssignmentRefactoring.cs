@@ -92,7 +92,7 @@ namespace Roslynator.CSharp.Refactorings
             var returnStatement = (ReturnStatementSyntax)statement.NextStatement();
 
             IEnumerable<SyntaxTrivia> trivia = statementsInfo
-                .Node
+                .Parent
                 .DescendantTrivia(TextSpan.FromBounds(statement.SpanStart, returnStatement.SpanStart))
                 .Where(f => !f.IsWhitespaceOrEndOfLineTrivia());
 

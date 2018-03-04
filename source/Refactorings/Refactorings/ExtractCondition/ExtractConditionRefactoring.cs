@@ -15,54 +15,57 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
 
             SyntaxKind kind = binaryExpression.Kind();
 
-            if (kind == SyntaxKind.LogicalAndExpression
-                || kind == SyntaxKind.LogicalOrExpression)
+            if (!kind.Is(SyntaxKind.LogicalAndExpression, SyntaxKind.LogicalOrExpression))
+                return;
+
+            BinaryExpressionSyntax condition = GetCondition(binaryExpression);
+
+            if (condition == null)
+                return;
+
+            SyntaxNode parent = condition.Parent;
+
+            switch (parent?.Kind())
             {
-                BinaryExpressionSyntax condition = GetCondition(binaryExpression);
-
-                if (condition != null)
-                {
-                    SyntaxNode parent = condition.Parent;
-
-                    switch (parent?.Kind())
+                case SyntaxKind.IfStatement:
                     {
-                        case SyntaxKind.IfStatement:
-                            {
-                                if (kind == SyntaxKind.LogicalAndExpression)
-                                {
-                                    var refactoring = new ExtractConditionFromIfToNestedIfRefactoring();
-                                    context.RegisterRefactoring(
-                                        refactoring.Title,
-                                        cancellationToken => refactoring.RefactorAsync(context.Document, (IfStatementSyntax)parent, condition, binaryExpressionSelection, cancellationToken));
-                                }
-                                else if (kind == SyntaxKind.LogicalOrExpression)
-                                {
-                                    StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
-                                    if (statementsInfo.Success)
-                                    {
-                                        var refactoring = new ExtractConditionFromIfToIfRefactoring();
-                                        context.RegisterRefactoring(
-                                            refactoring.Title,
-                                            cancellationToken => refactoring.RefactorAsync(context.Document, statementsInfo, condition, binaryExpressionSelection, cancellationToken));
-                                    }
-                                }
+                        if (kind == SyntaxKind.LogicalAndExpression)
+                        {
+                            ExtractConditionFromIfToNestedIfRefactoring refactoring = ExtractConditionFromIfToNestedIfRefactoring.Instance;
 
-                                break;
-                            }
-                        case SyntaxKind.WhileStatement:
-                            {
-                                if (kind == SyntaxKind.LogicalAndExpression)
-                                {
-                                    var refactoring = new ExtractConditionFromWhileToNestedIfRefactoring();
-                                    context.RegisterRefactoring(
-                                        refactoring.Title,
-                                        cancellationToken => refactoring.RefactorAsync(context.Document, (WhileStatementSyntax)parent, condition, binaryExpressionSelection, cancellationToken));
-                                }
+                            context.RegisterRefactoring(
+                                refactoring.Title,
+                                cancellationToken => refactoring.RefactorAsync(context.Document, (IfStatementSyntax)parent, condition, binaryExpressionSelection, cancellationToken));
+                        }
+                        else if (kind == SyntaxKind.LogicalOrExpression)
+                        {
+                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
 
-                                break;
+                            if (statementsInfo.Success)
+                            {
+                                ExtractConditionFromIfToIfRefactoring refactoring = ExtractConditionFromIfToIfRefactoring.Instance;
+
+                                context.RegisterRefactoring(
+                                    refactoring.Title,
+                                    cancellationToken => refactoring.RefactorAsync(context.Document, statementsInfo, condition, binaryExpressionSelection, cancellationToken));
                             }
+                        }
+
+                        break;
                     }
-                }
+                case SyntaxKind.WhileStatement:
+                    {
+                        if (kind == SyntaxKind.LogicalAndExpression)
+                        {
+                            ExtractConditionFromWhileToNestedIfRefactoring refactoring = ExtractConditionFromWhileToNestedIfRefactoring.Instance;
+
+                            context.RegisterRefactoring(
+                                refactoring.Title,
+                                cancellationToken => refactoring.RefactorAsync(context.Document, (WhileStatementSyntax)parent, condition, binaryExpressionSelection, cancellationToken));
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -70,63 +73,67 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
         {
             SyntaxNode parent = expression.Parent;
 
-            if (parent != null)
+            if (parent == null)
+                return;
+
+            SyntaxKind kind = parent.Kind();
+
+            if (!kind.Is(SyntaxKind.LogicalAndExpression, SyntaxKind.LogicalOrExpression))
+                return;
+
+            BinaryExpressionSyntax binaryExpression = GetCondition((BinaryExpressionSyntax)parent);
+
+            if (binaryExpression == null)
+                return;
+
+            parent = binaryExpression.Parent;
+
+            switch (parent?.Kind())
             {
-                SyntaxKind kind = parent.Kind();
-
-                if (kind == SyntaxKind.LogicalAndExpression
-                    || kind == SyntaxKind.LogicalOrExpression)
-                {
-                    BinaryExpressionSyntax binaryExpression = GetCondition((BinaryExpressionSyntax)parent);
-
-                    if (binaryExpression != null)
+                case SyntaxKind.IfStatement:
                     {
-                        parent = binaryExpression.Parent;
-
-                        switch (parent?.Kind())
+                        if (kind == SyntaxKind.LogicalAndExpression)
                         {
-                            case SyntaxKind.IfStatement:
-                                {
-                                    if (kind == SyntaxKind.LogicalAndExpression)
-                                    {
-                                        var refactoring = new ExtractConditionFromIfToNestedIfRefactoring();
-                                        context.RegisterRefactoring(
-                                            refactoring.Title,
-                                            cancellationToken => refactoring.RefactorAsync(context.Document, binaryExpression, expression, cancellationToken));
-                                    }
-                                    else if (kind == SyntaxKind.LogicalOrExpression)
-                                    {
-                                        StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
-                                        if (statementsInfo.Success)
-                                        {
-                                            var refactoring = new ExtractConditionFromIfToIfRefactoring();
-                                            context.RegisterRefactoring(
-                                                refactoring.Title,
-                                                cancellationToken => refactoring.RefactorAsync(context.Document, statementsInfo, binaryExpression, expression, cancellationToken));
-                                        }
-                                    }
+                            ExtractConditionFromIfToNestedIfRefactoring refactoring = ExtractConditionFromIfToNestedIfRefactoring.Instance;
 
-                                    break;
-                                }
-                            case SyntaxKind.WhileStatement:
-                                {
-                                    if (kind == SyntaxKind.LogicalAndExpression)
-                                    {
-                                        StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
-                                        if (statementsInfo.Success)
-                                        {
-                                            var refactoring = new ExtractConditionFromWhileToNestedIfRefactoring();
-                                            context.RegisterRefactoring(
-                                                refactoring.Title,
-                                                cancellationToken => refactoring.RefactorAsync(context.Document, (WhileStatementSyntax)parent, binaryExpression, expression, cancellationToken));
-                                        }
-                                    }
-
-                                    break;
-                                }
+                            context.RegisterRefactoring(
+                                refactoring.Title,
+                                cancellationToken => refactoring.RefactorAsync(context.Document, binaryExpression, expression, cancellationToken));
                         }
+                        else if (kind == SyntaxKind.LogicalOrExpression)
+                        {
+                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
+
+                            if (statementsInfo.Success)
+                            {
+                                ExtractConditionFromIfToIfRefactoring refactoring = ExtractConditionFromIfToIfRefactoring.Instance;
+
+                                context.RegisterRefactoring(
+                                    refactoring.Title,
+                                    cancellationToken => refactoring.RefactorAsync(context.Document, statementsInfo, binaryExpression, expression, cancellationToken));
+                            }
+                        }
+
+                        break;
                     }
-                }
+                case SyntaxKind.WhileStatement:
+                    {
+                        if (kind == SyntaxKind.LogicalAndExpression)
+                        {
+                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
+
+                            if (statementsInfo.Success)
+                            {
+                                ExtractConditionFromWhileToNestedIfRefactoring refactoring = ExtractConditionFromWhileToNestedIfRefactoring.Instance;
+
+                                context.RegisterRefactoring(
+                                    refactoring.Title,
+                                    cancellationToken => refactoring.RefactorAsync(context.Document, (WhileStatementSyntax)parent, binaryExpression, expression, cancellationToken));
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 

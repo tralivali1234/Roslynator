@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -17,28 +18,22 @@ namespace Roslynator.CSharp.Refactorings
             {
                 context.RegisterRefactoring(
                     "Expand assignment",
-                    cancellationToken =>
-                    {
-                        return ExpandAssignmentExpressionRefactoring.RefactorAsync(
-                            context.Document,
-                            assignmentExpression,
-                            cancellationToken);
-                    });
+                    ct => ExpandAssignmentExpressionRefactoring.RefactorAsync(context.Document, assignmentExpression, ct));
             }
 
             if (context.IsAnyRefactoringEnabled(RefactoringIdentifiers.AddCastExpression, RefactoringIdentifiers.CallToMethod)
                 && assignmentExpression.IsKind(SyntaxKind.SimpleAssignmentExpression))
             {
-                ExpressionSyntax left = assignmentExpression.Left;
-                ExpressionSyntax right = assignmentExpression.Right;
+                SimpleAssignmentExpressionInfo simpleAssignment = SyntaxInfo.SimpleAssignmentExpressionInfo(assignmentExpression);
 
-                if (left?.IsMissing == false
-                    && right?.IsMissing == false
+                ExpressionSyntax right = simpleAssignment.Right;
+
+                if (simpleAssignment.Success
                     && right.Span.Contains(context.Span))
                 {
                     SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                    ITypeSymbol leftSymbol = semanticModel.GetTypeSymbol(left, context.CancellationToken);
+                    ITypeSymbol leftSymbol = semanticModel.GetTypeSymbol(simpleAssignment.Left, context.CancellationToken);
 
                     if (leftSymbol?.IsErrorType() == false)
                     {

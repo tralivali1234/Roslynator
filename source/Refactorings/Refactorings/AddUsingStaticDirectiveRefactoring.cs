@@ -12,35 +12,36 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, MemberAccessExpressionSyntax memberAccess)
         {
-            if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddUsingStaticDirective)
-                && memberAccess.Expression?.IsMissing == false
-                && memberAccess.Name?.IsMissing == false)
-            {
-                memberAccess = GetTopmostMemberAccessExpression(memberAccess);
+            if (memberAccess.Expression?.IsMissing != false)
+                return;
 
-                if (context.Span.IsBetweenSpans(memberAccess.Expression))
-                {
-                    SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+            if (memberAccess.Name?.IsMissing != false)
+                return;
 
-                    var typeSymbol = semanticModel.GetSymbol(memberAccess.Expression, context.CancellationToken) as INamedTypeSymbol;
+            memberAccess = GetTopmostMemberAccessExpression(memberAccess);
 
-                    if (typeSymbol?.IsClass() == true
-                        && typeSymbol.IsStatic
-                        && (typeSymbol.DeclaredAccessibility == Accessibility.Public || typeSymbol.DeclaredAccessibility == Accessibility.Internal)
-                        && !CSharpUtility.IsStaticClassInScope(memberAccess, typeSymbol, semanticModel, context.CancellationToken))
-                    {
-                        context.RegisterRefactoring($"using static {typeSymbol};",
-                            cancellationToken =>
-                            {
-                                return RefactorAsync(
-                                    context.Document,
-                                    typeSymbol.ToString(),
-                                    memberAccess,
-                                    cancellationToken);
-                            });
-                    }
-                }
-            }
+            if (!context.Span.IsBetweenSpans(memberAccess.Expression))
+                return;
+
+            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+            var typeSymbol = semanticModel.GetSymbol(memberAccess.Expression, context.CancellationToken) as INamedTypeSymbol;
+
+            if (typeSymbol?.TypeKind != TypeKind.Class)
+                return;
+
+            if (!typeSymbol.IsStatic)
+                return;
+
+            if (!typeSymbol.DeclaredAccessibility.Is(Accessibility.Public, Accessibility.Internal))
+                return;
+
+            if (CSharpUtility.IsStaticClassInScope(memberAccess, typeSymbol, semanticModel, context.CancellationToken))
+                return;
+
+            context.RegisterRefactoring(
+                $"using static {typeSymbol};",
+                ct => RefactorAsync(context.Document, typeSymbol.ToString(), memberAccess, ct));
         }
 
         private static async Task<Document> RefactorAsync(

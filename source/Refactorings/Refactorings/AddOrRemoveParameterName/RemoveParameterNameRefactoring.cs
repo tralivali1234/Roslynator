@@ -25,9 +25,9 @@ namespace Roslynator.CSharp.Refactorings.AddOrRemoveParameterName
 
         private static bool CanRefactor(SeparatedSyntaxListSelection<ArgumentSyntax> selection)
         {
-            for (int i = selection.FirstIndex; i <= selection.LastIndex; i++)
+            for (int i = 0; i < selection.Count; i++)
             {
-                NameColonSyntax nameColon = selection.UnderlyingList[i].NameColon;
+                NameColonSyntax nameColon = selection[i].NameColon;
 
                 if (nameColon?.IsMissing == false)
                     return true;

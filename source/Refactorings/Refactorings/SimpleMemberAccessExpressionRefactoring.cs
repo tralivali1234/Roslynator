@@ -11,7 +11,8 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringAsync(RefactoringContext context, MemberAccessExpressionSyntax memberAccess)
         {
-            await AddUsingStaticDirectiveRefactoring.ComputeRefactoringsAsync(context, memberAccess).ConfigureAwait(false);
+            if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddUsingStaticDirective))
+                await AddUsingStaticDirectiveRefactoring.ComputeRefactoringsAsync(context, memberAccess).ConfigureAwait(false);
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.FormatExpressionChain))
                 await FormatExpressionChainRefactoring.ComputeRefactoringsAsync(context, memberAccess).ConfigureAwait(false);

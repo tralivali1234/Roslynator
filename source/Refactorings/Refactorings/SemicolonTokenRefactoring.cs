@@ -30,7 +30,6 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        //TODO: ExpressionBodyInfo
         private static ArrowExpressionClauseSyntax GetArrowExpressionClause(SyntaxToken semicolonToken)
         {
             SyntaxNode parent = semicolonToken.Parent;

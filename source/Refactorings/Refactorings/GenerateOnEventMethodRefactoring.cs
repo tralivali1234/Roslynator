@@ -21,53 +21,57 @@ namespace Roslynator.CSharp.Refactorings
 
             VariableDeclarationSyntax variableDeclaration = eventFieldDeclaration.Declaration;
 
-            if (variableDeclaration != null)
+            if (variableDeclaration == null)
+                return;
+
+            foreach (VariableDeclaratorSyntax variableDeclarator in variableDeclaration.Variables)
             {
-                foreach (VariableDeclaratorSyntax variableDeclarator in variableDeclaration.Variables)
+                if (!context.Span.IsContainedInSpanOrBetweenSpans(variableDeclarator.Identifier))
+                    continue;
+
+                semanticModel = semanticModel ?? await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+                var eventSymbol = semanticModel.GetDeclaredSymbol(variableDeclarator, context.CancellationToken) as IEventSymbol;
+
+                if (eventSymbol?.IsStatic != false)
+                    continue;
+
+                INamedTypeSymbol containingType = eventSymbol.ContainingType;
+
+                if (containingType?.IsInterface() != false)
+                    continue;
+
+                if (!(eventSymbol.Type is INamedTypeSymbol eventHandlerType))
+                    continue;
+
+                ITypeSymbol eventArgsSymbol = GetEventArgsSymbol(eventHandlerType, semanticModel);
+
+                if (eventArgsSymbol == null)
+                    continue;
+
+                string methodName = "On" + eventSymbol.Name;
+
+                if (containingType.ContainsMember<IMethodSymbol>(
+                    $"On{eventSymbol.Name}",
+                    methodSymbol => eventArgsSymbol.Equals(methodSymbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type)))
                 {
-                    if (context.Span.IsContainedInSpanOrBetweenSpans(variableDeclarator.Identifier))
-                    {
-                        semanticModel = semanticModel ?? await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                        var eventSymbol = semanticModel.GetDeclaredSymbol(variableDeclarator, context.CancellationToken) as IEventSymbol;
-
-                        if (eventSymbol?.IsStatic == false)
-                        {
-                            INamedTypeSymbol containingType = eventSymbol.ContainingType;
-
-                            if (containingType?.IsInterface() == false
-                                && (eventSymbol.Type is INamedTypeSymbol eventHandlerType))
-                            {
-                                ITypeSymbol eventArgsSymbol = GetEventArgsSymbol(eventHandlerType, semanticModel);
-
-                                if (eventArgsSymbol != null)
-                                {
-                                    string methodName = "On" + eventSymbol.Name;
-
-                                    if (!containingType.ContainsMember<IMethodSymbol>(
-                                        $"On{eventSymbol.Name}",
-                                        methodSymbol => eventArgsSymbol.Equals(methodSymbol.Parameters.SingleOrDefault(shouldThrow: false)?.Type)))
-                                    {
-                                        methodName = NameGenerator.Default.EnsureUniqueMemberName(methodName, containingType);
-
-                                        context.RegisterRefactoring(
-                                            $"Generate '{methodName}' method",
-                                            cancellationToken =>
-                                            {
-                                                return RefactorAsync(
-                                                    context.Document,
-                                                    eventFieldDeclaration,
-                                                    eventSymbol,
-                                                    eventArgsSymbol,
-                                                    context.SupportsCSharp6,
-                                                    cancellationToken);
-                                            });
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    continue;
                 }
+
+                methodName = NameGenerator.Default.EnsureUniqueMemberName(methodName, containingType);
+
+                context.RegisterRefactoring(
+                    $"Generate '{methodName}' method",
+                    cancellationToken =>
+                    {
+                        return RefactorAsync(
+                            context.Document,
+                            eventFieldDeclaration,
+                            eventSymbol,
+                            eventArgsSymbol,
+                            context.SupportsCSharp6,
+                            cancellationToken);
+                    });
             }
         }
 
@@ -76,13 +80,10 @@ namespace Roslynator.CSharp.Refactorings
             ImmutableArray<ITypeSymbol> typeArguments = eventHandlerType.TypeArguments;
 
             if (typeArguments.Length == 0)
-            {
                 return semanticModel.GetTypeByMetadataName(MetadataNames.System_EventArgs);
-            }
-            else if (typeArguments.Length == 1)
-            {
+
+            if (typeArguments.Length == 1)
                 return typeArguments[0];
-            }
 
             return null;
         }

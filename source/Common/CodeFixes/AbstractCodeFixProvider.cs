@@ -8,7 +8,6 @@ using Roslynator.Diagnostics;
 
 namespace Roslynator.CodeFixes
 {
-    //TODO: 
     public abstract class AbstractCodeFixProvider : CodeFixProvider
     {
         public override FixAllProvider GetFixAllProvider()
@@ -16,12 +15,12 @@ namespace Roslynator.CodeFixes
             return WellKnownFixAllProviders.BatchFixer;
         }
 
-        protected static string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey1 = null, string additionalKey2 = null)
+        protected virtual string GetEquivalenceKey(Diagnostic diagnostic, string additionalKey1 = null, string additionalKey2 = null)
         {
             return EquivalenceKey.Create(diagnostic, additionalKey1, additionalKey2);
         }
 
-        protected static string GetEquivalenceKey(string key, string additionalKey1 = null, string additionalKey2 = null)
+        protected virtual string GetEquivalenceKey(string key, string additionalKey1 = null, string additionalKey2 = null)
         {
             return EquivalenceKey.Create(key, additionalKey1, additionalKey2);
         }

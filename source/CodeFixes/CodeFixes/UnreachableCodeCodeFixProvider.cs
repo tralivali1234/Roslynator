@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.CodeFixes
             }
         }
 
-        private static CodeAction CreateCodeActionForIfElse(Document document, Diagnostic diagnostic, SyntaxNode node)
+        private CodeAction CreateCodeActionForIfElse(Document document, Diagnostic diagnostic, SyntaxNode node)
         {
             switch (node?.Kind())
             {
@@ -173,7 +173,7 @@ namespace Roslynator.CSharp.CodeFixes
             return null;
         }
 
-        private static CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, IfStatementSyntax ifStatement, SyntaxList<StatementSyntax> statements)
+        private CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, IfStatementSyntax ifStatement, SyntaxList<StatementSyntax> statements)
         {
             return CodeAction.Create(
                 Title,
@@ -198,7 +198,7 @@ namespace Roslynator.CSharp.CodeFixes
                 GetEquivalenceKey(diagnostic));
         }
 
-        private static CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, IfStatementSyntax ifStatement, StatementSyntax statement)
+        private CodeAction CreateCodeAction(Document document, Diagnostic diagnostic, IfStatementSyntax ifStatement, StatementSyntax statement)
         {
             return CodeAction.Create(
                 Title,

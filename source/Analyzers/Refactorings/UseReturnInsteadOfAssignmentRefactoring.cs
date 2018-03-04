@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
 
-            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken))
+            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Parent, semanticModel, cancellationToken))
                 return;
 
             //XTODO: test
@@ -109,7 +109,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
 
-            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Node, semanticModel, cancellationToken))
+            if (!IsLocalDeclaredInScopeOrNonRefOrOutParameterOfEnclosingSymbol(symbol, statementsInfo.Parent, semanticModel, cancellationToken))
                 return;
 
             if (!switchStatement
@@ -313,7 +313,7 @@ namespace Roslynator.CSharp.Refactorings
                             semanticModel,
                             cancellationToken).ConfigureAwait(false);
 
-                        return await document.ReplaceNodeAsync(statementsInfo.Node, newStatementsInfo.Node, cancellationToken).ConfigureAwait(false);
+                        return await document.ReplaceNodeAsync(statementsInfo.Parent, newStatementsInfo.Parent, cancellationToken).ConfigureAwait(false);
                     }
                 case SyntaxKind.SwitchStatement:
                     {
@@ -337,7 +337,7 @@ namespace Roslynator.CSharp.Refactorings
                             semanticModel,
                             cancellationToken).ConfigureAwait(false);
 
-                        return await document.ReplaceNodeAsync(statementsInfo.Node, newStatementsInfo.Node, cancellationToken).ConfigureAwait(false);
+                        return await document.ReplaceNodeAsync(statementsInfo.Parent, newStatementsInfo.Parent, cancellationToken).ConfigureAwait(false);
                     }
             }
 

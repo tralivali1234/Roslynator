@@ -9,11 +9,11 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
 {
     internal class WrapInIfStatementRefactoring : WrapStatementsRefactoring<IfStatementSyntax>
     {
-        public static WrapInIfStatementRefactoring Instance { get; } = new WrapInIfStatementRefactoring();
-
         private WrapInIfStatementRefactoring()
         {
         }
+
+        public static WrapInIfStatementRefactoring Instance { get; } = new WrapInIfStatementRefactoring();
 
         public const string Title = "Wrap in condition";
 
@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
                 ParseExpression(""),
                 CloseParenToken().WithNavigationAnnotation(),
                 Block(statements),
-                @else: null);
+                default(ElseClauseSyntax));
         }
     }
 }

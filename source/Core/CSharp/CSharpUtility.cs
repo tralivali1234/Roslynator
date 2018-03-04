@@ -224,7 +224,7 @@ namespace Roslynator.CSharp
 
             foreach (SyntaxNode ancestor in node.Ancestors())
             {
-                foreach (UsingDirectiveSyntax usingDirective in GetUsings(ancestor))
+                foreach (UsingDirectiveSyntax usingDirective in SyntaxInfo.UsingDirectivesInfo(ancestor).Usings)
                 {
                     if (usingDirective.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
                     {
@@ -240,19 +240,6 @@ namespace Roslynator.CSharp
             }
 
             return false;
-        }
-
-        private static SyntaxList<UsingDirectiveSyntax> GetUsings(SyntaxNode node)
-        {
-            switch (node.Kind())
-            {
-                case SyntaxKind.NamespaceDeclaration:
-                    return ((NamespaceDeclarationSyntax)node).Usings;
-                case SyntaxKind.CompilationUnit:
-                    return ((CompilationUnitSyntax)node).Usings;
-                default:
-                    return default(SyntaxList<UsingDirectiveSyntax>);
-            }
         }
 
         public static bool IsEmptyStringExpression(
@@ -390,6 +377,37 @@ namespace Roslynator.CSharp
         {
             return addExpression.Kind() == SyntaxKind.AddExpression
                 && SymbolUtility.IsStringAdditionOperator(semanticModel.GetMethodSymbol(addExpression, cancellationToken));
+        }
+
+        public static bool IsStringLiteralConcatenation(BinaryExpressionSyntax binaryExpression)
+        {
+            if (binaryExpression?.Kind() != SyntaxKind.AddExpression)
+                return false;
+
+            while (true)
+            {
+                if (binaryExpression.Right?.WalkDownParentheses().Kind() != SyntaxKind.StringLiteralExpression)
+                    return false;
+
+                ExpressionSyntax left = binaryExpression.Left?.WalkDownParentheses();
+
+                switch (left?.Kind())
+                {
+                    case SyntaxKind.StringLiteralExpression:
+                        {
+                            return true;
+                        }
+                    case SyntaxKind.AddExpression:
+                        {
+                            binaryExpression = (BinaryExpressionSyntax)left;
+                            break;
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+            }
         }
 
         public static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)

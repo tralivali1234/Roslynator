@@ -11,11 +11,11 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
     {
         public const string Title = "Wrap in try-catch";
 
-        public static WrapInTryCatchRefactoring Instance { get; } = new WrapInTryCatchRefactoring();
-
         private WrapInTryCatchRefactoring()
         {
         }
+
+        public static WrapInTryCatchRefactoring Instance { get; } = new WrapInTryCatchRefactoring();
 
         public override TryStatementSyntax CreateStatement(ImmutableArray<StatementSyntax> statements)
         {
@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
                     CatchDeclaration(
                         ParseName(MetadataNames.System_Exception).WithSimplifierAnnotation(),
                         Identifier("ex")),
-                    null,
+                    default(CatchFilterClauseSyntax),
                     Block()));
         }
     }

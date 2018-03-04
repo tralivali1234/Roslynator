@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CodeRefactorings;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //XTODO: RoslynatorCodeRefactoringProvider
     [ExportCodeRefactoringProvider(LanguageNames.CSharp, Name = "RoslynatorCodeRefactoringProvider")]
     public class DefaultCodeRefactoringProvider : CodeRefactoringProvider
     {

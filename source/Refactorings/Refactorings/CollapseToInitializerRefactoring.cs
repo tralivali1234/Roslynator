@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -13,69 +14,67 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementsSelection selectedStatements)
         {
-            if (selectedStatements.Count > 1)
+            if (selectedStatements.Count <= 1)
+                return;
+
+            StatementSyntax firstStatement = selectedStatements.First();
+
+            SemanticModel semanticModel = null;
+            ISymbol symbol = null;
+            ObjectCreationExpressionSyntax objectCreation = null;
+
+            SyntaxKind kind = firstStatement.Kind();
+
+            if (kind == SyntaxKind.LocalDeclarationStatement)
             {
-                StatementSyntax firstStatement = selectedStatements.First();
+                var localDeclaration = (LocalDeclarationStatementSyntax)firstStatement;
 
-                SemanticModel semanticModel = null;
-                ISymbol symbol = null;
-                ObjectCreationExpressionSyntax objectCreation = null;
+                VariableDeclaratorSyntax variable = localDeclaration
+                    .Declaration?
+                    .Variables
+                    .SingleOrDefault(shouldThrow: false);
 
-                SyntaxKind kind = firstStatement.Kind();
+                objectCreation = variable?.Initializer?.Value as ObjectCreationExpressionSyntax;
 
-                if (kind == SyntaxKind.LocalDeclarationStatement)
+                if (objectCreation != null)
                 {
-                    var localDeclaration = (LocalDeclarationStatementSyntax)firstStatement;
+                    semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                    VariableDeclaratorSyntax variable = localDeclaration
-                        .Declaration?
-                        .Variables
-                        .SingleOrDefault(shouldThrow: false);
+                    symbol = semanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
+                }
+            }
+            else if (kind == SyntaxKind.ExpressionStatement)
+            {
+                var expressionStatement = (ExpressionStatementSyntax)firstStatement;
 
-                    objectCreation = variable?.Initializer?.Value as ObjectCreationExpressionSyntax;
+                if (expressionStatement.Expression is AssignmentExpressionSyntax assignment)
+                {
+                    objectCreation = assignment.Right as ObjectCreationExpressionSyntax;
 
                     if (objectCreation != null)
                     {
                         semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                        symbol = semanticModel.GetDeclaredSymbol(variable, context.CancellationToken);
+                        symbol = semanticModel.GetSymbol(assignment.Left, context.CancellationToken);
                     }
-                }
-                else if (kind == SyntaxKind.ExpressionStatement)
-                {
-                    var expressionStatement = (ExpressionStatementSyntax)firstStatement;
-
-                    if (expressionStatement.Expression is AssignmentExpressionSyntax assignment)
-                    {
-                        objectCreation = assignment.Right as ObjectCreationExpressionSyntax;
-
-                        if (objectCreation != null)
-                        {
-                            semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
-
-                            symbol = semanticModel.GetSymbol(assignment.Left, context.CancellationToken);
-                        }
-                    }
-                }
-
-                if (objectCreation != null
-                    && symbol?.IsErrorType() == false
-                    && selectedStatements
-                        .Skip(1)
-                        .All(f => IsValidAssignmentStatement(f, symbol, semanticModel, context.CancellationToken)))
-                {
-                    context.RegisterRefactoring(
-                        "Collapse to initializer",
-                        cancellationToken =>
-                        {
-                            return RefactorAsync(
-                                context.Document,
-                                objectCreation,
-                                selectedStatements,
-                                cancellationToken);
-                        });
                 }
             }
+
+            if (objectCreation == null)
+                return;
+
+            if (symbol?.IsErrorType() != false)
+                return;
+
+            for (int i = 1; i < selectedStatements.Count; i++)
+            {
+                if (!IsValidAssignmentStatement(selectedStatements[i], symbol, semanticModel, context.CancellationToken))
+                    return;
+            }
+
+            context.RegisterRefactoring(
+                "Collapse to initializer",
+                ct => RefactorAsync(context.Document, objectCreation, selectedStatements, ct));
         }
 
         public static bool IsValidAssignmentStatement(
@@ -84,33 +83,24 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            if (statement.IsKind(SyntaxKind.ExpressionStatement))
-            {
-                var expressionStatement = (ExpressionStatementSyntax)statement;
+            SimpleAssignmentStatementInfo simpleAssignment = SyntaxInfo.SimpleAssignmentStatementInfo(statement);
 
-                if (expressionStatement.Expression?.Kind() == SyntaxKind.SimpleAssignmentExpression)
-                {
-                    var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
+            if (!simpleAssignment.Success)
+                return false;
 
-                    if (assignment.Left?.Kind() == SyntaxKind.SimpleMemberAccessExpression)
-                    {
-                        var memberAccess = (MemberAccessExpressionSyntax)assignment.Left;
+            ExpressionSyntax left = simpleAssignment.Left;
 
-                        ISymbol expressionSymbol = semanticModel
-                            .GetSymbol(memberAccess.Expression, cancellationToken);
+            if (left.Kind() != SyntaxKind.SimpleMemberAccessExpression)
+                return false;
 
-                        if (symbol.Equals(expressionSymbol))
-                        {
-                            ISymbol leftSymbol = semanticModel.GetSymbol(assignment.Left, cancellationToken);
+            var memberAccess = (MemberAccessExpressionSyntax)left;
 
-                            if (leftSymbol?.Kind == SymbolKind.Property)
-                                return true;
-                        }
-                    }
-                }
-            }
+            ISymbol expressionSymbol = semanticModel.GetSymbol(memberAccess.Expression, cancellationToken);
 
-            return false;
+            if (!symbol.Equals(expressionSymbol))
+                return false;
+
+            return semanticModel.GetSymbol(left, cancellationToken)?.Kind == SymbolKind.Property;
         }
 
         public static Task<Document> RefactorAsync(

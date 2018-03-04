@@ -3,6 +3,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -11,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, FieldDeclarationSyntax fieldDeclaration)
         {
-            if (fieldDeclaration.IsConst())
+            if (fieldDeclaration.Modifiers.Contains(SyntaxKind.ConstKeyword))
             {
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceConstantWithField)
                     && fieldDeclaration.Span.Contains(context.Span))

@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
             IndexerDeclarationSyntax newNode = indexerDeclaration
                 .WithSemicolonToken(default(SyntaxToken))
                 .WithAccessorList(MakeMemberAbstractHelper.ExpandAccessorList(indexerDeclaration.AccessorList))
-                .WithModifiers(indexerDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, VirtualKeyword()))
+                .WithModifiers(indexerDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithTriviaFrom(indexerDeclaration)
                 .WithFormatterAnnotation();
 

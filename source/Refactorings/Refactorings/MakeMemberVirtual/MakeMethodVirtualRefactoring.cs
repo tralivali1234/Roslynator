@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberVirtual
             body = body.WithFormatterAnnotation();
 
             MethodDeclarationSyntax newNode = methodDeclaration
-                .WithModifiers(methodDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, VirtualKeyword()))
+                .WithModifiers(methodDeclaration.Modifiers.Replace(SyntaxKind.AbstractKeyword, SyntaxKind.VirtualKeyword))
                 .WithBody(body)
                 .WithSemicolonToken(default(SyntaxToken))
                 .WithTrailingTrivia(methodDeclaration.GetTrailingTrivia());

@@ -1,231 +1,75 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Threading;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Diagnostics;
 
 namespace Roslynator.CSharp
 {
-    internal static class TypeAnalysis
+    [DebuggerDisplay("{Flags}")]
+    internal readonly struct TypeAnalysis : IEquatable<TypeAnalysis>
     {
-        public static TypeAnalysisFlags AnalyzeType(
-            VariableDeclarationSyntax variableDeclaration,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
+        internal TypeAnalysis(TypeAnalysisFlags flags)
         {
-            if (variableDeclaration == null)
-                throw new ArgumentNullException(nameof(variableDeclaration));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            TypeSyntax type = variableDeclaration.Type;
-
-            if (type != null)
-            {
-                SeparatedSyntaxList<VariableDeclaratorSyntax> variables = variableDeclaration.Variables;
-
-                if (variables.Count > 0
-                    && !variableDeclaration.IsParentKind(SyntaxKind.FieldDeclaration, SyntaxKind.EventFieldDeclaration))
-                {
-                    ExpressionSyntax expression = variables[0].Initializer?.Value;
-
-                    if (expression != null)
-                    {
-                        ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(type, cancellationToken);
-
-                        if (typeSymbol?.IsErrorType() == false)
-                        {
-                            TypeAnalysisFlags flags;
-
-                            if (typeSymbol.IsDynamicType())
-                            {
-                                flags = TypeAnalysisFlags.Dynamic;
-                            }
-                            else
-                            {
-                                flags = TypeAnalysisFlags.ValidSymbol;
-
-                                if (type.IsVar)
-                                {
-                                    flags |= TypeAnalysisFlags.Implicit;
-
-                                    if (typeSymbol.SupportsExplicitDeclaration())
-                                        flags |= TypeAnalysisFlags.SupportsExplicit;
-                                }
-                                else
-                                {
-                                    flags |= TypeAnalysisFlags.Explicit;
-
-                                    if (variables.Count == 1
-                                        && !IsLocalConstDeclaration(variableDeclaration)
-                                        && !expression.IsKind(SyntaxKind.NullLiteralExpression)
-                                        && typeSymbol.Equals(semanticModel.GetTypeSymbol(expression, cancellationToken)))
-                                    {
-                                        flags |= TypeAnalysisFlags.SupportsImplicit;
-                                    }
-                                }
-
-                                if (IsTypeObvious(expression, semanticModel, cancellationToken))
-                                    flags |= TypeAnalysisFlags.TypeObvious;
-                            }
-
-                            return flags;
-                        }
-                    }
-                }
-            }
-
-            return TypeAnalysisFlags.None;
+            Flags = flags;
         }
 
-        public static TypeAnalysisFlags AnalyzeType(
-            DeclarationExpressionSyntax declarationExpression,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public bool IsImplicit => Any(TypeAnalysisFlags.Implicit);
+
+        public bool IsExplicit => Any(TypeAnalysisFlags.Explicit);
+
+        public bool SupportsImplicit => Any(TypeAnalysisFlags.SupportsImplicit);
+
+        public bool SupportsExplicit => Any(TypeAnalysisFlags.SupportsExplicit);
+
+        public bool IsValidSymbol => Any(TypeAnalysisFlags.ValidSymbol);
+
+        public bool IsTypeObvious => Any(TypeAnalysisFlags.TypeObvious);
+
+        internal TypeAnalysisFlags Flags { get; }
+
+        public bool Any(TypeAnalysisFlags flags)
         {
-            if (declarationExpression == null)
-                throw new ArgumentNullException(nameof(declarationExpression));
-
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
-
-            TypeSyntax type = declarationExpression.Type;
-
-            if (type != null)
-            {
-                VariableDesignationSyntax designation = declarationExpression.Designation;
-
-                if (designation?.Kind() == SyntaxKind.SingleVariableDesignation)
-                {
-                    var symbol = semanticModel.GetDeclaredSymbol((SingleVariableDesignationSyntax)designation, cancellationToken) as ILocalSymbol;
-
-                    if (symbol?.IsErrorType() == false)
-                    {
-                        ITypeSymbol typeSymbol = symbol.Type;
-
-                        if (typeSymbol?.IsErrorType() == false)
-                        {
-                            TypeAnalysisFlags flags;
-
-                            if (typeSymbol.IsDynamicType())
-                            {
-                                flags = TypeAnalysisFlags.Dynamic;
-                            }
-                            else
-                            {
-                                flags = TypeAnalysisFlags.ValidSymbol;
-
-                                if (type.IsVar)
-                                {
-                                    flags |= TypeAnalysisFlags.Implicit;
-
-                                    if (symbol.Type.SupportsExplicitDeclaration())
-                                        flags |= TypeAnalysisFlags.SupportsExplicit;
-                                }
-                                else
-                                {
-                                    flags |= TypeAnalysisFlags.Explicit;
-                                    flags |= TypeAnalysisFlags.SupportsImplicit;
-                                }
-                            }
-
-                            return flags;
-                        }
-                    }
-                }
-            }
-
-            return TypeAnalysisFlags.None;
+            return (Flags & flags) != 0;
         }
 
-        private static bool IsLocalConstDeclaration(VariableDeclarationSyntax variableDeclaration)
+        public bool All(TypeAnalysisFlags flags)
         {
-            SyntaxNode parent = variableDeclaration.Parent;
-
-            return parent?.Kind() == SyntaxKind.LocalDeclarationStatement
-                && ((LocalDeclarationStatementSyntax)parent).IsConst;
+            return (Flags & flags) != flags;
         }
 
-        private static bool IsTypeObvious(
-            ExpressionSyntax expression,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
+        public override bool Equals(object obj)
         {
-            switch (expression.Kind())
-            {
-                case SyntaxKind.ObjectCreationExpression:
-                case SyntaxKind.ArrayCreationExpression:
-                case SyntaxKind.CastExpression:
-                case SyntaxKind.AsExpression:
-                case SyntaxKind.ThisExpression:
-                case SyntaxKind.DefaultExpression:
-                    {
-                        return true;
-                    }
-                case SyntaxKind.SimpleMemberAccessExpression:
-                    {
-                        ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-                        return symbol?.Kind == SymbolKind.Field
-                            && symbol.ContainingType?.TypeKind == TypeKind.Enum;
-                    }
-            }
-
-            return false;
+            return obj is TypeAnalysis other && Equals(other);
         }
 
-        public static TypeAnalysisFlags AnalyzeType(ForEachStatementSyntax forEachStatement, SemanticModel semanticModel)
+        public bool Equals(TypeAnalysis other)
         {
-            if (forEachStatement == null)
-                throw new ArgumentNullException(nameof(forEachStatement));
+            return Flags == other.Flags;
+        }
 
-            if (semanticModel == null)
-                throw new ArgumentNullException(nameof(semanticModel));
+        public override int GetHashCode()
+        {
+            return Flags.GetHashCode();
+        }
 
-            TypeSyntax type = forEachStatement.Type;
+        public static implicit operator TypeAnalysis(TypeAnalysisFlags value)
+        {
+            return new TypeAnalysis(value);
+        }
 
-            if (type != null)
-            {
-                ForEachStatementInfo info = semanticModel.GetForEachStatementInfo(forEachStatement);
+        public static implicit operator TypeAnalysisFlags(TypeAnalysis value)
+        {
+            return value.Flags;
+        }
 
-                ITypeSymbol typeSymbol = info.ElementType;
+        public static bool operator ==(TypeAnalysis analysis1, TypeAnalysis analysis2)
+        {
+            return analysis1.Equals(analysis2);
+        }
 
-                if (typeSymbol?.IsErrorType() == false)
-                {
-                    TypeAnalysisFlags flags;
-
-                    if (typeSymbol.IsDynamicType())
-                    {
-                        flags = TypeAnalysisFlags.Dynamic;
-                    }
-                    else
-                    {
-                        flags = TypeAnalysisFlags.ValidSymbol;
-
-                        if (type.IsVar)
-                        {
-                            flags |= TypeAnalysisFlags.Implicit;
-
-                            if (typeSymbol.SupportsExplicitDeclaration())
-                                flags |= TypeAnalysisFlags.SupportsExplicit;
-                        }
-                        else
-                        {
-                            flags |= TypeAnalysisFlags.Explicit;
-
-                            if (info.ElementConversion.IsIdentity)
-                                flags |= TypeAnalysisFlags.SupportsImplicit;
-                        }
-                    }
-
-                    return flags;
-                }
-            }
-
-            return TypeAnalysisFlags.None;
+        public static bool operator !=(TypeAnalysis analysis1, TypeAnalysis analysis2)
+        {
+            return !(analysis1 == analysis2);
         }
     }
 }

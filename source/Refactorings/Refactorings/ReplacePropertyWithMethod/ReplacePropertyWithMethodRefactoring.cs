@@ -38,33 +38,17 @@ namespace Roslynator.CSharp.Refactorings.ReplacePropertyWithMethod
 
         public static bool CanRefactor(RefactoringContext context, PropertyDeclarationSyntax propertyDeclaration)
         {
-            AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
+            AccessorDeclarationSyntax accessor = propertyDeclaration.AccessorList?.Accessors.SingleOrDefault(shouldThrow: false);
 
-            if (accessorList != null)
-            {
-                SyntaxList<AccessorDeclarationSyntax> accessors = accessorList.Accessors;
+            if (accessor?.Kind() != SyntaxKind.GetAccessorDeclaration)
+                return false;
 
-                if (accessors.Count == 1)
-                {
-                    AccessorDeclarationSyntax accessor = accessors.First();
+            if (accessor.BodyOrExpressionBody() != null)
+                return true;
 
-                    if (accessor.IsKind(SyntaxKind.GetAccessorDeclaration))
-                    {
-                        if (accessor.BodyOrExpressionBody() != null)
-                        {
-                            return true;
-                        }
-                        else if (context.SupportsCSharp6
-                            && accessor.IsAutoImplemented()
-                            && propertyDeclaration.Initializer?.Value != null)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
+            return context.SupportsCSharp6
+                && accessor.IsAutoImplemented()
+                && propertyDeclaration.Initializer?.Value != null;
         }
 
         public static async Task<Solution> RefactorAsync(

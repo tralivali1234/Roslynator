@@ -138,7 +138,7 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
                     }
             }
 
-            return semanticModel.GetConstantValue(expression, cancellationToken).HasValue;
+            return semanticModel.HasConstantValue(expression, cancellationToken);
         }
 
         public static async Task<Document> RefactorAsync(

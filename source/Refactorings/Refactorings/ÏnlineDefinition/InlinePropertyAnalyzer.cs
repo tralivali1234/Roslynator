@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
     {
         public static InlinePropertyAnalyzer Instance { get; } = new InlinePropertyAnalyzer();
 
-        protected override bool CheckNode(IdentifierNameSyntax node, TextSpan span)
+        protected override bool ValidateNode(IdentifierNameSyntax node, TextSpan span)
         {
             SyntaxNode parent = node.Parent;
 

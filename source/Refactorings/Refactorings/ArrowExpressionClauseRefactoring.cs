@@ -15,8 +15,7 @@ namespace Roslynator.CSharp.Refactorings
                 await ReturnExpressionRefactoring.ComputeRefactoringsAsync(context, expression).ConfigureAwait(false);
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandExpressionBody)
-                && (context.Span.IsEmptyAndContainedInSpan(arrowExpressionClause)
-                    || context.Span.IsBetweenSpans(expression))
+                && (context.Span.IsEmptyAndContainedInSpan(arrowExpressionClause) || context.Span.IsBetweenSpans(expression))
                 && ExpandExpressionBodyRefactoring.CanRefactor(arrowExpressionClause))
             {
                 context.RegisterRefactoring(
