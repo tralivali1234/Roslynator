@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
+    //XTODO: implement IList<T>
     /// <summary>
     /// Represents consecutive sequence of selected items in a collection.
     /// </summary>
@@ -63,21 +64,20 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Gets the selected item at the specified index in the underlying list.
+        /// Gets the selected item at the specified index.
         /// </summary>
-        /// <returns>The item at the specified index in the underlying list.</returns>
+        /// <returns>The item at the specified index.</returns>
         /// <param name="index">The zero-based index of the item to get. </param>
         public T this[int index]
         {
             get
             {
-                if (index < FirstIndex
-                    || index > LastIndex)
+                if (index < 0 || index >= Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(index), index, "");
                 }
 
-                return Items[index];
+                return Items[index + FirstIndex];
             }
         }
 

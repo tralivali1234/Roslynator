@@ -49,7 +49,7 @@ namespace Roslynator
             return default(T);
         }
 
-        public static bool IsSorted<T>(this IList<T> values, IComparer<T> comparer)
+        public static bool IsSorted<T>(this IReadOnlyList<T> values, IComparer<T> comparer)
         {
             int count = values.Count;
 

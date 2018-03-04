@@ -1631,7 +1631,7 @@ namespace Roslynator.CSharp
             return tree.IsMultiLineSpan(span, cancellationToken);
         }
 
-        internal static SyntaxList<TNode> ReplaceRangeAt<TNode>(
+        internal static SeparatedSyntaxList<TNode> ReplaceRangeAt<TNode>(
             this SeparatedSyntaxList<TNode> list,
             int startIndex,
             int count,
@@ -1646,7 +1646,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentOutOfRangeException(nameof(count), count, "");
             }
 
-            return List(ReplaceRange());
+            return SeparatedList(ReplaceRange());
 
             IEnumerable<TNode> ReplaceRange()
             {

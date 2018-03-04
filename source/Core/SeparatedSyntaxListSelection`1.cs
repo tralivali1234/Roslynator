@@ -13,6 +13,8 @@ namespace Roslynator
     /// <typeparam name="TNode"></typeparam>
     public class SeparatedSyntaxListSelection<TNode> : Selection<TNode> where TNode : SyntaxNode
     {
+        internal int Length;
+
         private SeparatedSyntaxListSelection(SeparatedSyntaxList<TNode> list, TextSpan span, SelectionResult result)
             : this(list, span, result.FirstIndex, result.LastIndex)
         {

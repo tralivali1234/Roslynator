@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,9 +43,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             if (selectedMembers.Count <= 1)
                 return;
 
-            ImmutableArray<MemberDeclarationSyntax> members = selectedMembers.ToImmutableArray();
-
-            SyntaxKind kind = GetSingleKindOrDefault(members);
+            SyntaxKind kind = GetSingleKindOrDefault(selectedMembers);
 
             if (kind != SyntaxKind.None)
             {
@@ -56,8 +53,7 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
                         context,
                         MemberDeclarationSortMode.ByKindThenByName,
                         "Sort members by name",
-                        selectedMembers,
-                        members);
+                        selectedMembers);
                 }
             }
             else
@@ -66,15 +62,13 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
                     context,
                     MemberDeclarationSortMode.ByKind,
                     "Sort members by kind",
-                    selectedMembers,
-                    members);
+                    selectedMembers);
 
                 ComputeRefactoring(
                     context,
                     MemberDeclarationSortMode.ByKindThenByName,
                     "Sort members by kind then by name",
-                    selectedMembers,
-                    members);
+                    selectedMembers);
             }
         }
 
@@ -82,10 +76,9 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             RefactoringContext context,
             MemberDeclarationSortMode sortMode,
             string title,
-            MemberDeclarationsSelection selectedMembers,
-            ImmutableArray<MemberDeclarationSyntax> members)
+            MemberDeclarationsSelection selectedMembers)
         {
-            if (members.IsSorted(MemberDeclarationComparer.GetInstance(sortMode)))
+            if (selectedMembers.IsSorted(MemberDeclarationComparer.GetInstance(sortMode)))
                 return;
 
             context.RegisterRefactoring(
@@ -99,18 +92,18 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             MemberDeclarationSortMode sortMode,
             CancellationToken cancellationToken)
         {
-            MemberDeclarationComparer comparer = MemberDeclarationComparer.GetInstance(sortMode);
+            IEnumerable<MemberDeclarationSyntax> sorted = selectedMembers.OrderBy(f => f, MemberDeclarationComparer.GetInstance(sortMode));
 
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
-            SyntaxList<MemberDeclarationSyntax> members = info.Members;
-
-            //TODO: ModifyRange
-            SyntaxList<MemberDeclarationSyntax> newMembers = members
-                .Take(selectedMembers.FirstIndex)
-                .Concat(selectedMembers.OrderBy(f => f, comparer))
-                .Concat(members.Skip(selectedMembers.LastIndex + 1))
-                .ToSyntaxList();
+            //TODO: test
+            SyntaxList<MemberDeclarationSyntax> newMembers = info
+                .Members
+                .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, sorted);
+                //.Take(selectedMembers.FirstIndex)
+                //.Concat(selectedMembers.OrderBy(f => f, comparer))
+                //.Concat(members.Skip(selectedMembers.LastIndex + 1))
+                //.ToSyntaxList();
 
             return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
@@ -135,11 +128,11 @@ namespace Roslynator.CSharp.Refactorings.SortMemberDeclarations
             return document;
         }
 
-        private static SyntaxKind GetSingleKindOrDefault(ImmutableArray<MemberDeclarationSyntax> members)
+        private static SyntaxKind GetSingleKindOrDefault(IReadOnlyList<MemberDeclarationSyntax> members)
         {
             SyntaxKind kind = members[0].Kind();
 
-            for (int i = 1; i < members.Length; i++)
+            for (int i = 1; i < members.Count; i++)
             {
                 if (members[i].Kind() != kind)
                     return SyntaxKind.None;
