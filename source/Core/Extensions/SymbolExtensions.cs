@@ -1014,7 +1014,6 @@ namespace Roslynator
                 && methodSymbol.MethodKind != MethodKind.ReducedExtension;
         }
 
-        //XTODO: pub
         internal static bool IsReturnType(this IMethodSymbol methodSymbol, SpecialType specialType)
         {
             return methodSymbol?.ReturnType.SpecialType == specialType;

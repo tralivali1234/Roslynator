@@ -15,6 +15,9 @@ namespace Roslynator.CSharp.Refactorings
             if (expression is LiteralExpressionSyntax)
                 return;
 
+            if (CSharpUtility.IsStringLiteralConcatenation(expression as BinaryExpressionSyntax))
+                return;
+
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
             Optional<object> optional = semanticModel.GetConstantValue(expression, context.CancellationToken);

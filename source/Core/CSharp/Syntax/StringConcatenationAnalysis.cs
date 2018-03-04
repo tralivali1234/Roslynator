@@ -1,23 +1,45 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
+    [DebuggerDisplay("{Flags}")]
     internal readonly struct StringConcatenationAnalysis : IEquatable<StringConcatenationAnalysis>
     {
-        private readonly Flags _flags;
-
-        private StringConcatenationAnalysis(Flags flags)
+        private StringConcatenationAnalysis(StringConcatenationFlags flags)
         {
-            _flags = flags;
+            Flags = flags;
         }
+
+        private StringConcatenationFlags Flags { get; }
+
+        public bool ContainsUnspecifiedExpression => (Flags & StringConcatenationFlags.ContainsUnspecifiedExpression) != 0;
+
+        public bool ContainsNonStringLiteral => (Flags & StringConcatenationFlags.ContainsNonStringLiteral) != 0;
+
+        public bool ContainsStringLiteral => (Flags & StringConcatenationFlags.ContainsStringLiteral) != 0;
+
+        public bool ContainsRegularStringLiteral => (Flags & StringConcatenationFlags.ContainsRegularStringLiteral) != 0;
+
+        public bool ContainsVerbatimStringLiteral => (Flags & StringConcatenationFlags.ContainsVerbatimStringLiteral) != 0;
+
+        public bool ContainsInterpolatedString => (Flags & StringConcatenationFlags.ContainsInterpolatedString) != 0;
+
+        public bool ContainsRegularInterpolatedString => (Flags & StringConcatenationFlags.ContainsRegularInterpolatedString) != 0;
+
+        public bool ContainsVerbatimInterpolatedString => (Flags & StringConcatenationFlags.ContainsVerbatimInterpolatedString) != 0;
+
+        public bool ContainsRegularExpression => (Flags & StringConcatenationFlags.ContainsRegularExpression) != 0;
+
+        public bool ContainsVerbatimExpression => (Flags & StringConcatenationFlags.ContainsVerbatimExpression) != 0;
 
         public static StringConcatenationAnalysis Create(StringConcatenationExpressionInfo stringConcatenation)
         {
-            var flags = Flags.None;
+            var flags = StringConcatenationFlags.None;
 
             foreach (ExpressionSyntax expression in stringConcatenation.Expressions())
             {
@@ -27,52 +49,32 @@ namespace Roslynator.CSharp.Syntax
                 {
                     if (stringLiteral.IsVerbatim)
                     {
-                        flags |= Flags.ContainsVerbatimStringLiteral;
+                        flags |= StringConcatenationFlags.ContainsVerbatimStringLiteral;
                     }
                     else
                     {
-                        flags |= Flags.ContainsRegularStringLiteral;
+                        flags |= StringConcatenationFlags.ContainsRegularStringLiteral;
                     }
                 }
                 else if (expression.Kind() == SyntaxKind.InterpolatedStringExpression)
                 {
                     if (((InterpolatedStringExpressionSyntax)expression).IsVerbatim())
                     {
-                        flags |= Flags.ContainsVerbatimInterpolatedString;
+                        flags |= StringConcatenationFlags.ContainsVerbatimInterpolatedString;
                     }
                     else
                     {
-                        flags |= Flags.ContainsRegularInterpolatedString;
+                        flags |= StringConcatenationFlags.ContainsRegularInterpolatedString;
                     }
                 }
                 else
                 {
-                    flags |= Flags.ContainsUnspecifiedExpression;
+                    flags |= StringConcatenationFlags.ContainsUnspecifiedExpression;
                 }
             }
 
             return new StringConcatenationAnalysis(flags);
         }
-
-        public bool ContainsUnspecifiedExpression => (_flags & Flags.ContainsUnspecifiedExpression) != 0;
-
-        public bool ContainsNonStringLiteral => (_flags & Flags.ContainsNonStringLiteral) != 0;
-
-        public bool ContainsStringLiteral => (_flags & Flags.ContainsStringLiteral) != 0;
-
-        public bool ContainsRegularStringLiteral => (_flags & Flags.ContainsRegularStringLiteral) != 0;
-
-        public bool ContainsVerbatimStringLiteral => (_flags & Flags.ContainsVerbatimStringLiteral) != 0;
-
-        public bool ContainsInterpolatedString => (_flags & Flags.ContainsInterpolatedString) != 0;
-
-        public bool ContainsRegularInterpolatedString => (_flags & Flags.ContainsRegularInterpolatedString) != 0;
-
-        public bool ContainsVerbatimInterpolatedString => (_flags & Flags.ContainsVerbatimInterpolatedString) != 0;
-
-        public bool ContainsRegularExpression => (_flags & Flags.ContainsRegularExpression) != 0;
-
-        public bool ContainsVerbatimExpression => (_flags & Flags.ContainsVerbatimExpression) != 0;
 
         public override bool Equals(object obj)
         {
@@ -81,12 +83,12 @@ namespace Roslynator.CSharp.Syntax
 
         public bool Equals(StringConcatenationAnalysis other)
         {
-            return _flags == other._flags;
+            return Flags == other.Flags;
         }
 
         public override int GetHashCode()
         {
-            return _flags.GetHashCode();
+            return Flags.GetHashCode();
         }
 
         public static bool operator ==(StringConcatenationAnalysis analysis1, StringConcatenationAnalysis analysis2)
@@ -100,7 +102,7 @@ namespace Roslynator.CSharp.Syntax
         }
 
         [Flags]
-        private enum Flags
+        private enum StringConcatenationFlags
         {
             None = 0,
             ContainsUnspecifiedExpression = 1,

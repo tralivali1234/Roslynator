@@ -1,16 +1,16 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Diagnostics;
 
 namespace Roslynator.CSharp
 {
+    [DebuggerDisplay("{Flags}")]
     internal readonly struct TypeAnalysis : IEquatable<TypeAnalysis>
     {
-        private readonly TypeAnalysisFlags _flags;
-
         internal TypeAnalysis(TypeAnalysisFlags flags)
         {
-            _flags = flags;
+            Flags = flags;
         }
 
         public bool IsImplicit => Any(TypeAnalysisFlags.Implicit);
@@ -25,14 +25,16 @@ namespace Roslynator.CSharp
 
         public bool IsTypeObvious => Any(TypeAnalysisFlags.TypeObvious);
 
+        internal TypeAnalysisFlags Flags { get; }
+
         public bool Any(TypeAnalysisFlags flags)
         {
-            return (_flags & flags) != 0;
+            return (Flags & flags) != 0;
         }
 
         public bool All(TypeAnalysisFlags flags)
         {
-            return (_flags & flags) != flags;
+            return (Flags & flags) != flags;
         }
 
         public override bool Equals(object obj)
@@ -42,12 +44,12 @@ namespace Roslynator.CSharp
 
         public bool Equals(TypeAnalysis other)
         {
-            return _flags == other._flags;
+            return Flags == other.Flags;
         }
 
         public override int GetHashCode()
         {
-            return _flags.GetHashCode();
+            return Flags.GetHashCode();
         }
 
         public static implicit operator TypeAnalysis(TypeAnalysisFlags value)
@@ -57,7 +59,7 @@ namespace Roslynator.CSharp
 
         public static implicit operator TypeAnalysisFlags(TypeAnalysis value)
         {
-            return value._flags;
+            return value.Flags;
         }
 
         public static bool operator ==(TypeAnalysis analysis1, TypeAnalysis analysis2)

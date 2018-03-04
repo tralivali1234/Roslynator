@@ -379,6 +379,37 @@ namespace Roslynator.CSharp
                 && SymbolUtility.IsStringAdditionOperator(semanticModel.GetMethodSymbol(addExpression, cancellationToken));
         }
 
+        public static bool IsStringLiteralConcatenation(BinaryExpressionSyntax binaryExpression)
+        {
+            if (binaryExpression?.Kind() != SyntaxKind.AddExpression)
+                return false;
+
+            while (true)
+            {
+                if (binaryExpression.Right?.WalkDownParentheses().Kind() != SyntaxKind.StringLiteralExpression)
+                    return false;
+
+                ExpressionSyntax left = binaryExpression.Left?.WalkDownParentheses();
+
+                switch (left?.Kind())
+                {
+                    case SyntaxKind.StringLiteralExpression:
+                        {
+                            return true;
+                        }
+                    case SyntaxKind.AddExpression:
+                        {
+                            binaryExpression = (BinaryExpressionSyntax)left;
+                            break;
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+            }
+        }
+
         public static bool IsStringExpression(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             if (expression == null)
