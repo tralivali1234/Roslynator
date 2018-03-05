@@ -39,17 +39,6 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static bool ContainsMultiLine(StringConcatenationExpressionInfo concatenationInfo, CancellationToken cancellationToken)
-        {
-            foreach (ExpressionSyntax expression in concatenationInfo.Expressions())
-            {
-                if (expression.IsMultiLine(includeExteriorTrivia: false, cancellationToken: cancellationToken))
-                    return true;
-            }
-
-            return false;
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             BinaryExpressionSyntax binaryExpression,
@@ -66,9 +55,9 @@ namespace Roslynator.CSharp.Refactorings
             if (analysis.ContainsStringLiteral)
             {
                 if (analysis.ContainsVerbatimExpression
-                    && ContainsMultiLine(concatenationInfo, cancellationToken))
+                    && concatenationInfo.ContainsMultiLineExpression())
                 {
-                    newNode = concatenationInfo.ToMultilineStringLiteral();
+                    newNode = concatenationInfo.ToMultiLineStringLiteral();
                 }
                 else
                 {

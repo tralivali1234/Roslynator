@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings
             CancellationToken cancellationToken = default(CancellationToken))
         {
             ExpressionSyntax newExpression = (multiline)
-                ? concatenationInfo.ToMultilineStringLiteral()
+                ? concatenationInfo.ToMultiLineStringLiteral()
                 : concatenationInfo.ToStringLiteral();
 
             return RefactorAsync(document, concatenationInfo, newExpression, cancellationToken);

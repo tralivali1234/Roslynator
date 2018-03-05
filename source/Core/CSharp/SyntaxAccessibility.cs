@@ -12,7 +12,7 @@ namespace Roslynator.CSharp
     /// <summary>
     /// A set of static methods that are related to C# accessibility.
     /// </summary>
-    public static class CSharpAccessibility
+    public static class SyntaxAccessibility
     {
         /// <summary>
         /// Returns a default accessibility of the specified declaration.

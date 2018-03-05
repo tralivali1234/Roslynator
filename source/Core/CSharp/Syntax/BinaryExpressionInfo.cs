@@ -60,8 +60,7 @@ namespace Roslynator.CSharp.Syntax
             get { return BinaryExpression != null; }
         }
 
-        //XTODO: pub
-        internal IEnumerable<ExpressionSyntax> Expressions(bool leftToRight = false)
+        public IEnumerable<ExpressionSyntax> Expressions(bool leftToRight = false)
         {
             ThrowInvalidOperationIfNotInitialized();
 
@@ -71,7 +70,6 @@ namespace Roslynator.CSharp.Syntax
             //XTEST:
             Debug.Assert(Enumerate().Reverse().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
             binaryExpression = BinaryExpression;
-
             Debug.Assert(EnumerateLeftToRight().SequenceEqual(BinaryExpressionChainInfo.Create(binaryExpression)));
             binaryExpression = BinaryExpression;
 

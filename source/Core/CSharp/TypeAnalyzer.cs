@@ -187,8 +187,6 @@ namespace Roslynator.CSharp
 
             ITypeSymbol typeSymbol = info.ElementType;
 
-            Debug.Assert(typeSymbol != null);
-
             if (typeSymbol == null)
                 return TypeAnalysisFlags.None;
 

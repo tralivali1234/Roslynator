@@ -12,11 +12,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: pub
-    internal readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
+    public readonly struct StringConcatenationExpressionInfo : IEquatable<StringConcatenationExpressionInfo>
     {
         private StringConcatenationExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
@@ -28,9 +28,10 @@ namespace Roslynator.CSharp.Syntax
 
         private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
 
+        //TODO: AddExpression
         public BinaryExpressionSyntax BinaryExpression { get; }
 
-        public TextSpan? Span { get; }
+        internal TextSpan? Span { get; }
 
         public bool Success
         {
@@ -40,6 +41,18 @@ namespace Roslynator.CSharp.Syntax
         internal StringConcatenationAnalysis Analyze()
         {
             return StringConcatenationAnalysis.Create(this);
+        }
+
+        internal static StringConcatenationExpressionInfo Create(
+            SyntaxNode node,
+            SemanticModel semanticModel,
+            bool walkDownParentheses = true,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Create(
+                Walk(node, walkDownParentheses) as BinaryExpressionSyntax,
+                semanticModel,
+                cancellationToken);
         }
 
         internal static StringConcatenationExpressionInfo Create(
@@ -112,11 +125,20 @@ namespace Roslynator.CSharp.Syntax
             }
         }
 
-        internal IEnumerable<ExpressionSyntax> Expressions(bool leftToRight = false)
+        public IEnumerable<ExpressionSyntax> Expressions(bool leftToRight = false)
         {
-            ThrowInvalidOperationIfNotInitialized();
-
             return BinaryExpressionInfo.Create(BinaryExpression).Expressions(leftToRight);
+        }
+
+        internal bool ContainsMultiLineExpression()
+        {
+            foreach (ExpressionSyntax expression in Expressions())
+            {
+                if (expression.IsMultiLine(includeExteriorTrivia: false))
+                    return true;
+            }
+
+            return false;
         }
 
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
@@ -222,8 +244,7 @@ namespace Roslynator.CSharp.Syntax
 
             StringConcatenationAnalysis analysis = Analyze();
 
-            if (analysis.ContainsNonStringLiteral)
-                throw new InvalidOperationException();
+            ThrowIfContainsNonStringLiteralExpression(analysis);
 
             StringBuilder sb = StringBuilderCache.GetInstance();
 
@@ -259,12 +280,11 @@ namespace Roslynator.CSharp.Syntax
             return (LiteralExpressionSyntax)ParseExpression(StringBuilderCache.GetStringAndFree(sb));
         }
 
-        public LiteralExpressionSyntax ToMultilineStringLiteral()
+        public LiteralExpressionSyntax ToMultiLineStringLiteral()
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (Analyze().ContainsNonStringLiteral)
-                throw new InvalidOperationException();
+            ThrowIfContainsNonStringLiteralExpression(Analyze());
 
             StringBuilder sb = StringBuilderCache.GetInstance();
 
@@ -324,6 +344,12 @@ namespace Roslynator.CSharp.Syntax
         {
             if (BinaryExpression == null)
                 throw new InvalidOperationException($"{nameof(StringConcatenationExpressionInfo)} is not initalized.");
+        }
+
+        private static void ThrowIfContainsNonStringLiteralExpression(StringConcatenationAnalysis analysis)
+        {
+            if (analysis.ContainsNonStringLiteral)
+                throw new InvalidOperationException("String concatenation contains an expression that is not a string literal.");
         }
 
         public override bool Equals(object obj)

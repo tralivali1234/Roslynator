@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis;
 
 namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
 {
@@ -17,9 +18,13 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
                 return false;
             }
 
+            //TODO: test
+            if (object.ReferenceEquals(block.Statements.SingleOrDefault(shouldThrow: false), statement))
+                return false;
+
             TextSpan span = TextSpan.FromBounds(block.SpanStart, statement.FullSpan.Start);
 
-            return block.ContainsYield();
+            return block.ContainsYield(span);
         }
     }
 }

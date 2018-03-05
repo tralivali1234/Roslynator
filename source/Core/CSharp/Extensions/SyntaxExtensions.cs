@@ -116,19 +116,19 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static bool ContainsYieldReturn(this BlockSyntax block)
+        internal static bool ContainsYieldReturn(this BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYieldWalker.ContainsYieldReturn(block);
+            return ContainsYieldWalker.ContainsYieldReturn(block, span);
         }
 
-        internal static bool ContainsYieldBreak(this BlockSyntax block)
+        internal static bool ContainsYieldBreak(this BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYieldWalker.ContainsYieldBreak(block);
+            return ContainsYieldWalker.ContainsYieldBreak(block, span);
         }
 
-        internal static bool ContainsYield(this BlockSyntax block, bool yieldReturn = true, bool yieldBreak = true)
+        internal static bool ContainsYield(this BlockSyntax block, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
-            return ContainsYieldWalker.ContainsYield(block, yieldReturn, yieldBreak);
+            return ContainsYieldWalker.ContainsYield(block, span, yieldReturn, yieldBreak);
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -1888,6 +1888,22 @@ namespace Roslynator.CSharp
         }
         #endregion SwitchSectionSyntax
 
+        #region SwitchStatementSyntax
+        public static SwitchSectionSyntax DefaultSection(this SwitchStatementSyntax switchStatement)
+        {
+            if (switchStatement == null)
+                throw new ArgumentNullException(nameof(switchStatement));
+
+            foreach (SwitchSectionSyntax section in switchStatement.Sections)
+            {
+                if (section.Labels.Any(SyntaxKind.DefaultSwitchLabel))
+                    return section;
+            }
+
+            return null;
+        }
+        #endregion SwitchStatementSyntax
+
         #region SyntaxList<T>
         /// <summary>
         /// Searches for a node of the specified kind and returns the zero-based index of the last occurrence within the entire <see cref="SyntaxList{TNode}"/>.
@@ -2274,7 +2290,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind)
         {
-            return node?.Parent?.IsKind(kind) == true;
+            return node?.Parent?.Kind() == kind;
         }
 
         /// <summary>

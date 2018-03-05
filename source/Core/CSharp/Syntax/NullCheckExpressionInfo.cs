@@ -27,13 +27,11 @@ namespace Roslynator.CSharp.Syntax
 
         private static NullCheckExpressionInfo Default { get; } = new NullCheckExpressionInfo();
 
-        //XTODO: rename FullExpression, NullCheckExpression
         /// <summary>
         /// The null check expression, e.g. "x == null".
         /// </summary>
         public ExpressionSyntax ContainingExpression { get; }
 
-        //XTODO: EvaluatedExpression
         /// <summary>
         /// The expression that is evaluated whether is (not) null. for example "x" in "x == null".
         /// </summary>

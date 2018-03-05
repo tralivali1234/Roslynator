@@ -717,7 +717,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //XTODO: pub
         internal static SyntaxKind GetCompoundAssignmentKind(SyntaxKind binaryExpressionKind)
         {
             switch (binaryExpressionKind)

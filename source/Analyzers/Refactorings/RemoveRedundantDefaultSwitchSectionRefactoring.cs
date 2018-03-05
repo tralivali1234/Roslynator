@@ -20,9 +20,7 @@ namespace Roslynator.CSharp.Refactorings
             if (switchStatement.ContainsDiagnostics)
                 return;
 
-            SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
-
-            SwitchSectionSyntax defaultSection = FindDefaultSection(sections);
+            SwitchSectionSyntax defaultSection = switchStatement.DefaultSection();
 
             if (defaultSection == null)
                 return;
@@ -30,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!ContainsOnlyBreakStatement(defaultSection))
                 return;
 
-            if (switchStatement.DescendantNodes(sections.Span).Any(f => f.IsKind(SyntaxKind.GotoDefaultStatement)))
+            if (switchStatement.DescendantNodes(switchStatement.Sections.Span).Any(f => f.IsKind(SyntaxKind.GotoDefaultStatement)))
                 return;
 
             if (!defaultSection
@@ -41,18 +39,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDefaultSwitchSection, defaultSection);
-        }
-
-        //XTODO: extension
-        private static SwitchSectionSyntax FindDefaultSection(SyntaxList<SwitchSectionSyntax> sections)
-        {
-            foreach (SwitchSectionSyntax section in sections)
-            {
-                if (section.Labels.Any(SyntaxKind.DefaultSwitchLabel))
-                    return section;
-            }
-
-            return null;
         }
 
         private static bool ContainsOnlyBreakStatement(SwitchSectionSyntax switchSection)

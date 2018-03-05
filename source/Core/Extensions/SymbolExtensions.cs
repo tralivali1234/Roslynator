@@ -1323,27 +1323,6 @@ namespace Roslynator
             return typeSymbol?.SpecialType == SpecialType.System_Void;
         }
 
-        //XTODO: IsInt32
-        /// <summary>
-        /// Returns true if the type is <see cref="int"/>.
-        /// </summary>
-        /// <param name="typeSymbol"></param>
-        /// <returns></returns>
-        public static bool IsInt(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.SpecialType == SpecialType.System_Int32;
-        }
-
-        /// <summary>
-        /// Returns true if the type is <see cref="bool"/>.
-        /// </summary>
-        /// <param name="typeSymbol"></param>
-        /// <returns></returns>
-        public static bool IsBoolean(this ITypeSymbol typeSymbol)
-        {
-            return typeSymbol?.SpecialType == SpecialType.System_Boolean;
-        }
-
         /// <summary>
         /// Returns true if the type is <see cref="string"/>.
         /// </summary>

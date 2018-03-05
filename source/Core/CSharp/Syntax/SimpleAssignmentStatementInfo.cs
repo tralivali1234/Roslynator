@@ -33,7 +33,6 @@ namespace Roslynator.CSharp.Syntax
 
         private static SimpleAssignmentStatementInfo Default { get; } = new SimpleAssignmentStatementInfo();
 
-        //XTODO: Expression
         /// <summary>
         /// The simple assignment expression.
         /// </summary>

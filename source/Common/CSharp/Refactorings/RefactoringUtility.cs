@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -184,6 +185,28 @@ namespace Roslynator.CSharp
                         throw new ArgumentException("", nameof(content));
                     }
             }
+        }
+
+        //TODO: test
+        public static ExpressionSyntax RemoveInvocation(InvocationExpressionSyntax invocation)
+        {
+            var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
+
+            ArgumentListSyntax argumentList = invocation.ArgumentList;
+
+            SyntaxToken closeParen = argumentList.CloseParenToken;
+
+            ExpressionSyntax newExpression = memberAccess.Expression
+                .AppendToTrailingTrivia(
+                    memberAccess.OperatorToken.GetAllTrivia()
+                        .Concat(memberAccess.Name.GetLeadingAndTrailingTrivia())
+                        .Concat(argumentList.OpenParenToken.GetAllTrivia())
+                        .Concat(closeParen.LeadingTrivia)
+                        .ToSyntaxTriviaList()
+                        .EmptyIfWhitespace()
+                        .AddRange(closeParen.TrailingTrivia));
+
+            return newExpression.WithFormatterAnnotation();
         }
     }
 }
