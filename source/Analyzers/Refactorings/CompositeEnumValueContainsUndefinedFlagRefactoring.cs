@@ -14,7 +14,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //XTODO: refactor
+    //XPERF:
     internal static class CompositeEnumValueContainsUndefinedFlagRefactoring
     {
         public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol flagsAttribute)

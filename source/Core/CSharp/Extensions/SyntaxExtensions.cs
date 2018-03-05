@@ -1888,6 +1888,22 @@ namespace Roslynator.CSharp
         }
         #endregion SwitchSectionSyntax
 
+        #region SwitchStatementSyntax
+        public static SwitchSectionSyntax DefaultSection(this SwitchStatementSyntax switchStatement)
+        {
+            if (switchStatement == null)
+                throw new ArgumentNullException(nameof(switchStatement));
+
+            foreach (SwitchSectionSyntax section in switchStatement.Sections)
+            {
+                if (section.Labels.Any(SyntaxKind.DefaultSwitchLabel))
+                    return section;
+            }
+
+            return null;
+        }
+        #endregion SwitchStatementSyntax
+
         #region SyntaxList<T>
         /// <summary>
         /// Searches for a node of the specified kind and returns the zero-based index of the last occurrence within the entire <see cref="SyntaxList{TNode}"/>.
