@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using static Roslynator.CSharp.EmbeddedStatementAnalysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -23,7 +24,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(ifStatement))
+            if (!FormattingSupportsEmbeddedStatement(ifStatement))
                 return;
 
             Analyze(context, block);
@@ -38,7 +39,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(forEachStatement))
+            if (!FormattingSupportsEmbeddedStatement(forEachStatement))
                 return;
 
             Analyze(context, block);
@@ -53,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(forStatement))
+            if (!FormattingSupportsEmbeddedStatement(forStatement))
                 return;
 
             Analyze(context, block);
@@ -68,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(usingStatement))
+            if (!FormattingSupportsEmbeddedStatement(usingStatement))
                 return;
 
             Analyze(context, block);
@@ -83,7 +84,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(whileStatement))
+            if (!FormattingSupportsEmbeddedStatement(whileStatement))
                 return;
 
             Analyze(context, block);
@@ -98,7 +99,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(doStatement))
+            if (!FormattingSupportsEmbeddedStatement(doStatement))
                 return;
 
             Analyze(context, block);
@@ -113,7 +114,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(lockStatement))
+            if (!FormattingSupportsEmbeddedStatement(lockStatement))
                 return;
 
             Analyze(context, block);
@@ -128,7 +129,7 @@ namespace Roslynator.CSharp.Refactorings
             if (block == null)
                 return;
 
-            if (!EmbeddedStatementHelper.FormattingSupportsEmbeddedStatement(fixedStatement))
+            if (!FormattingSupportsEmbeddedStatement(fixedStatement))
                 return;
 
             Analyze(context, block);

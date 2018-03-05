@@ -13,7 +13,12 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void AnalyzeMethod(SymbolAnalysisContext context)
         {
-            Analyze(context, context.Symbol);
+            ISymbol symbol = context.Symbol;
+
+            if (((IMethodSymbol)symbol).MethodKind != MethodKind.Ordinary)
+                return;
+
+            Analyze(context, symbol);
         }
 
         public static void AnalyzeProperty(SymbolAnalysisContext context)

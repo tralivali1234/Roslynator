@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.EmbeddedStatementHelper;
+using static Roslynator.CSharp.EmbeddedStatementAnalysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!ifStatement.IsSimpleIf())
                 return;
 
-            StatementSyntax statement = GetEmbeddedStatement(ifStatement);
+            StatementSyntax statement = ifStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var forEachStatement = (CommonForEachStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(forEachStatement);
+            StatementSyntax statement = forEachStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var forStatement = (ForStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(forStatement);
+            StatementSyntax statement = forStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var usingStatement = (UsingStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(usingStatement, allowUsingStatement: false);
+            StatementSyntax statement = usingStatement.EmbeddedStatement(allowUsingStatement: false);
 
             if (statement == null)
                 return;
@@ -79,7 +79,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var whileStatement = (WhileStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(whileStatement);
+            StatementSyntax statement = whileStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var doStatement = (DoStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(doStatement);
+            StatementSyntax statement = doStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -109,7 +109,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var lockStatement = (LockStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(lockStatement);
+            StatementSyntax statement = lockStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -124,7 +124,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var fixedStatement = (FixedStatementSyntax)context.Node;
 
-            StatementSyntax statement = GetEmbeddedStatement(fixedStatement);
+            StatementSyntax statement = fixedStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;

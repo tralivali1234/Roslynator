@@ -28,7 +28,6 @@ namespace Roslynator.CSharp.Syntax
 
         private static StringConcatenationExpressionInfo Default { get; } = new StringConcatenationExpressionInfo();
 
-        //TODO: AddExpression
         public BinaryExpressionSyntax BinaryExpression { get; }
 
         internal TextSpan? Span { get; }

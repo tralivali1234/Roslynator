@@ -113,6 +113,32 @@ namespace Roslynator
             return (shouldThrow) ? list.SingleOrDefault() : (list.Count == 1) ? list[0] : default(TNode);
         }
 
+        internal static TNode SingleOrDefault<TNode>(this SeparatedSyntaxList<TNode> list, Func<TNode, bool> predicate, bool shouldThrow) where TNode : SyntaxNode
+        {
+            if (shouldThrow)
+                return list.SingleOrDefault(predicate);
+
+            SeparatedSyntaxList<TNode>.Enumerator en = list.GetEnumerator();
+
+            while (en.MoveNext())
+            {
+                TNode result = en.Current;
+
+                if (predicate(result))
+                {
+                    while (en.MoveNext())
+                    {
+                        if (predicate(en.Current))
+                            return default(TNode);
+                    }
+
+                    return result;
+                }
+            }
+
+            return default(TNode);
+        }
+
         internal static TNode LastButOne<TNode>(this SeparatedSyntaxList<TNode> list) where TNode : SyntaxNode
         {
             return list[list.Count - 2];
@@ -221,6 +247,32 @@ namespace Roslynator
         internal static TNode SingleOrDefault<TNode>(this SyntaxList<TNode> list, bool shouldThrow) where TNode : SyntaxNode
         {
             return (shouldThrow) ? list.SingleOrDefault() : ((list.Count == 1) ? list[0] : default(TNode));
+        }
+
+        internal static TNode SingleOrDefault<TNode>(this SyntaxList<TNode> list, Func<TNode, bool> predicate, bool shouldThrow) where TNode : SyntaxNode
+        {
+            if (shouldThrow)
+                return list.SingleOrDefault(predicate);
+
+            SyntaxList<TNode>.Enumerator en = list.GetEnumerator();
+
+            while (en.MoveNext())
+            {
+                TNode result = en.Current;
+
+                if (predicate(result))
+                {
+                    while (en.MoveNext())
+                    {
+                        if (predicate(en.Current))
+                            return default(TNode);
+                    }
+
+                    return result;
+                }
+            }
+
+            return default(TNode);
         }
 
         internal static bool SpanContainsDirectives<TNode>(this SyntaxList<TNode> list) where TNode : SyntaxNode

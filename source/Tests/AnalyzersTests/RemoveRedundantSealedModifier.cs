@@ -10,15 +10,52 @@ namespace Roslynator.CSharp.Analyzers.Tests
 {
     public static class RemoveRedundantSealedModifier
     {
-        public sealed class ObjectCollection : Collection<object>
+        public sealed class SealedFoo : Base
         {
-            public ObjectCollection(IList<object> list) : base(list)
+            public sealed override void FooMethod()
             {
             }
 
-            public sealed override string ToString()
+            public sealed override string FooProperty => null;
+
+            public sealed override string this[int index] => null;
+        }
+
+        //n
+
+        public class Foo : Base
+        {
+            public sealed override void FooMethod()
             {
-                return null;
+            }
+
+            public sealed override string FooProperty => null;
+
+            public sealed override string this[int index] => null;
+        }
+
+        public sealed class SealedFoo2 : Base
+        {
+            public override void FooMethod()
+            {
+            }
+
+            public override string FooProperty => null;
+
+            public override string this[int index] => null;
+        }
+
+        public class Base
+        {
+            public virtual void FooMethod()
+            {
+            }
+
+            public virtual string FooProperty { get; }
+
+            public virtual string this[int index]
+            {
+                get { return null; }
             }
         }
     }

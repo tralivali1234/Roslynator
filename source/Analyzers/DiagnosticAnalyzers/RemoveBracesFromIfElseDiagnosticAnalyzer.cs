@@ -49,7 +49,6 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveBracesFromIfElse, ifStatement);
 
-            //TODO: test
             foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
                 if (ifOrElse.Statement is BlockSyntax block)

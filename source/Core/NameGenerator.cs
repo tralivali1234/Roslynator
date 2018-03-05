@@ -10,7 +10,6 @@ using Roslynator.Helpers;
 
 namespace Roslynator
 {
-    //XTODO: rename
     /// <summary>
     /// Provides methods to obtain an unique identifier.
     /// </summary>
@@ -203,7 +202,6 @@ namespace Roslynator
             return true;
         }
 
-        //XTODO: 
         /// <summary>
         /// Creates a syntax identifier from the specified type symbol.
         /// </summary>
