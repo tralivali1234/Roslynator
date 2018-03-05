@@ -62,7 +62,6 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        //XTODO: opt
         private static bool CanRefactor(
             ExpressionSyntax left,
             BinaryExpressionSyntax right,

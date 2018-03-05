@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (analysis.ContainsVerbatimExpression
                     && concatenationInfo.ContainsMultiLineExpression())
                 {
-                    newNode = concatenationInfo.ToMultilineStringLiteral();
+                    newNode = concatenationInfo.ToMultiLineStringLiteral();
                 }
                 else
                 {

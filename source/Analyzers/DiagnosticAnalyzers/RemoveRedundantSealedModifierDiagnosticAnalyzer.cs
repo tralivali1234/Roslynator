@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using static Roslynator.CSharp.Refactorings.RemoveRedundantSealedModifierRefactoring;
 
@@ -25,8 +24,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
-            context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+            context.RegisterSymbolAction(AnalyzeMethod, SymbolKind.Method);
+            context.RegisterSymbolAction(AnalyzeProperty, SymbolKind.Property);
         }
     }
 }

@@ -30,46 +30,41 @@ namespace Roslynator.CSharp.Refactorings
 
                 SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
-                switch (BracesAnalysis.AnalyzeBraces(switchSection))
+                BracesAnalysis analysis = BracesAnalysis.AnalyzeBraces(switchSection);
+
+                if (analysis.AddBraces)
                 {
-                    case BracesAnalysisResult.AddBraces:
-                        {
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBracesToSwitchSection))
-                            {
-                                context.RegisterRefactoring(
-                                    AddBracesToSwitchSectionRefactoring.Title,
-                                    cancellationToken => AddBracesToSwitchSectionRefactoring.RefactorAsync(context.Document, switchSection, cancellationToken));
-                            }
+                    if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBracesToSwitchSection))
+                    {
+                        context.RegisterRefactoring(
+                            AddBracesToSwitchSectionRefactoring.Title,
+                            cancellationToken => AddBracesToSwitchSectionRefactoring.RefactorAsync(context.Document, switchSection, cancellationToken));
+                    }
 
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBracesToSwitchSections)
-                                && sections.Any(f => f != switchSection && AddBracesToSwitchSectionRefactoring.CanAddBraces(f)))
-                            {
-                                context.RegisterRefactoring(
-                                    AddBracesToSwitchSectionsRefactoring.Title,
-                                    cancellationToken => AddBracesToSwitchSectionsRefactoring.RefactorAsync(context.Document, switchStatement, null, cancellationToken));
-                            }
+                    if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBracesToSwitchSections)
+                        && sections.Any(f => f != switchSection && AddBracesToSwitchSectionRefactoring.CanAddBraces(f)))
+                    {
+                        context.RegisterRefactoring(
+                            AddBracesToSwitchSectionsRefactoring.Title,
+                            cancellationToken => AddBracesToSwitchSectionsRefactoring.RefactorAsync(context.Document, switchStatement, null, cancellationToken));
+                    }
+                }
+                else if (analysis.RemoveBraces)
+                {
+                    if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveBracesFromSwitchSection))
+                    {
+                        context.RegisterRefactoring(
+                            RemoveBracesFromSwitchSectionRefactoring.Title,
+                            cancellationToken => RemoveBracesFromSwitchSectionRefactoring.RefactorAsync(context.Document, switchSection, cancellationToken));
+                    }
 
-                            break;
-                        }
-                    case BracesAnalysisResult.RemoveBraces:
-                        {
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveBracesFromSwitchSection))
-                            {
-                                context.RegisterRefactoring(
-                                    RemoveBracesFromSwitchSectionRefactoring.Title,
-                                    cancellationToken => RemoveBracesFromSwitchSectionRefactoring.RefactorAsync(context.Document, switchSection, cancellationToken));
-                            }
-
-                            if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveBracesFromSwitchSections)
-                                && sections.Any(f => f != switchSection && RemoveBracesFromSwitchSectionRefactoring.CanRemoveBraces(f)))
-                            {
-                                context.RegisterRefactoring(
-                                    RemoveBracesFromSwitchSectionsRefactoring.Title,
-                                    cancellationToken => RemoveBracesFromSwitchSectionsRefactoring.RefactorAsync(context.Document, switchStatement, null, cancellationToken));
-                            }
-
-                            break;
-                        }
+                    if (context.IsRefactoringEnabled(RefactoringIdentifiers.RemoveBracesFromSwitchSections)
+                        && sections.Any(f => f != switchSection && RemoveBracesFromSwitchSectionRefactoring.CanRemoveBraces(f)))
+                    {
+                        context.RegisterRefactoring(
+                            RemoveBracesFromSwitchSectionsRefactoring.Title,
+                            cancellationToken => RemoveBracesFromSwitchSectionsRefactoring.RefactorAsync(context.Document, switchStatement, null, cancellationToken));
+                    }
                 }
             }
         }

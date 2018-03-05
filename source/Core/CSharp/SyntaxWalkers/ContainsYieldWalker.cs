@@ -6,15 +6,18 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.SyntaxWalkers
 {
     internal class ContainsYieldWalker : SkipFunctionWalker
     {
         private bool _success;
+        private readonly TextSpan? _span;
 
-        protected ContainsYieldWalker()
+        protected ContainsYieldWalker(TextSpan? span = null)
         {
+            _span = span;
         }
 
         public virtual bool IsSearchingForYieldReturn
@@ -27,63 +30,63 @@ namespace Roslynator.CSharp.SyntaxWalkers
             get { return true; }
         }
 
-        private static ContainsYieldWalker Create(bool yieldReturn = true, bool yieldBreak = true)
+        private static ContainsYieldWalker Create(TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
             if (yieldReturn)
             {
                 if (yieldBreak)
                 {
-                    return new ContainsYieldWalker();
+                    return new ContainsYieldWalker(span);
                 }
                 else
                 {
-                    return new ContainsYieldReturnWalker();
+                    return new ContainsYieldReturnWalker(span);
                 }
             }
             else if (yieldBreak)
             {
-                return new ContainsYieldBreakWalker();
+                return new ContainsYieldBreakWalker(span);
             }
 
             throw new InvalidOperationException();
         }
 
-        public static bool ContainsYieldReturn(SyntaxNode node)
+        public static bool ContainsYieldReturn(SyntaxNode node, TextSpan? span = null)
         {
-            return ContainsYield(node, yieldReturn: true, yieldBreak: false);
+            return ContainsYield(node, span, yieldReturn: true, yieldBreak: false);
         }
 
-        public static bool ContainsYieldBreak(SyntaxNode node)
+        public static bool ContainsYieldBreak(SyntaxNode node, TextSpan? span = null)
         {
-            return ContainsYield(node, yieldReturn: false, yieldBreak: true);
+            return ContainsYield(node, span, yieldReturn: false, yieldBreak: true);
         }
 
-        public static bool ContainsYield(SyntaxNode node, bool yieldReturn = true, bool yieldBreak = true)
+        public static bool ContainsYield(SyntaxNode node, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
             if (node.Kind() == SyntaxKind.LocalFunctionStatement)
-                return ContainsYield((LocalFunctionStatementSyntax)node, yieldReturn, yieldBreak);
+                return ContainsYield((LocalFunctionStatementSyntax)node, span, yieldReturn, yieldBreak);
 
-            ContainsYieldWalker walker = Create(yieldReturn, yieldBreak);
+            ContainsYieldWalker walker = Create(span, yieldReturn, yieldBreak);
 
             walker.Visit(node);
 
             return walker._success;
         }
 
-        public static bool ContainsYieldReturn(MethodDeclarationSyntax methodDeclaration)
+        public static bool ContainsYieldReturn(MethodDeclarationSyntax methodDeclaration, TextSpan? span = null)
         {
-            return ContainsYield(methodDeclaration, yieldReturn: true, yieldBreak: false);
+            return ContainsYield(methodDeclaration, span, yieldReturn: true, yieldBreak: false);
         }
 
-        public static bool ContainsYieldBreak(MethodDeclarationSyntax methodDeclaration)
+        public static bool ContainsYieldBreak(MethodDeclarationSyntax methodDeclaration, TextSpan? span = null)
         {
-            return ContainsYield(methodDeclaration, yieldReturn: false, yieldBreak: true);
+            return ContainsYield(methodDeclaration, span, yieldReturn: false, yieldBreak: true);
         }
 
-        public static bool ContainsYield(MethodDeclarationSyntax methodDeclaration, bool yieldReturn = true, bool yieldBreak = true)
+        public static bool ContainsYield(MethodDeclarationSyntax methodDeclaration, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
             if (methodDeclaration == null)
                 throw new ArgumentNullException(nameof(methodDeclaration));
@@ -91,20 +94,20 @@ namespace Roslynator.CSharp.SyntaxWalkers
             BlockSyntax block = methodDeclaration.Body;
 
             return block != null
-                && ContainsYieldCore(block, yieldReturn, yieldBreak);
+                && ContainsYieldCore(block, span, yieldReturn, yieldBreak);
         }
 
-        public static bool ContainsYieldReturn(LocalFunctionStatementSyntax localFunctionStatement)
+        public static bool ContainsYieldReturn(LocalFunctionStatementSyntax localFunctionStatement, TextSpan? span = null)
         {
-            return ContainsYield(localFunctionStatement, yieldReturn: true, yieldBreak: false);
+            return ContainsYield(localFunctionStatement, span, yieldReturn: true, yieldBreak: false);
         }
 
-        public static bool ContainsYieldBreak(LocalFunctionStatementSyntax localFunctionStatement)
+        public static bool ContainsYieldBreak(LocalFunctionStatementSyntax localFunctionStatement, TextSpan? span = null)
         {
-            return ContainsYield(localFunctionStatement, yieldReturn: false, yieldBreak: true);
+            return ContainsYield(localFunctionStatement, span, yieldReturn: false, yieldBreak: true);
         }
 
-        public static bool ContainsYield(LocalFunctionStatementSyntax localFunctionStatement, bool yieldReturn = true, bool yieldBreak = true)
+        public static bool ContainsYield(LocalFunctionStatementSyntax localFunctionStatement, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
             if (localFunctionStatement == null)
                 throw new ArgumentNullException(nameof(localFunctionStatement));
@@ -112,51 +115,55 @@ namespace Roslynator.CSharp.SyntaxWalkers
             BlockSyntax block = localFunctionStatement.Body;
 
             return block != null
-                && ContainsYieldCore(block, yieldReturn, yieldBreak);
+                && ContainsYieldCore(block, span, yieldReturn, yieldBreak);
         }
 
-        public static bool ContainsYieldReturn(BlockSyntax block)
+        public static bool ContainsYieldReturn(BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYield(block, yieldReturn: true, yieldBreak: false);
+            return ContainsYield(block, span, yieldReturn: true, yieldBreak: false);
         }
 
-        public static bool ContainsYieldBreak(BlockSyntax block)
+        public static bool ContainsYieldBreak(BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYield(block, yieldReturn: false, yieldBreak: true);
+            return ContainsYield(block, span, yieldReturn: false, yieldBreak: true);
         }
 
-        public static bool ContainsYield(BlockSyntax block, bool yieldReturn = true, bool yieldBreak = true)
+        public static bool ContainsYield(BlockSyntax block, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
             if (block == null)
                 throw new ArgumentNullException(nameof(block));
 
-            return ContainsYieldCore(block, yieldReturn, yieldBreak);
+            return ContainsYieldCore(block, span, yieldReturn, yieldBreak);
         }
 
-        private static bool ContainsYieldCore(BlockSyntax block, bool yieldReturn, bool yieldBreak)
+        private static bool ContainsYieldCore(BlockSyntax block, TextSpan? span, bool yieldReturn, bool yieldBreak)
         {
-            ContainsYieldWalker walker = Create(yieldReturn, yieldBreak);
+            ContainsYieldWalker walker = Create(span, yieldReturn, yieldBreak);
 
             walker.VisitBlock(block);
 
+            //XTEST: 
             Debug.Assert(walker._success == block
                 .DescendantNodes(block.Span, node => !CSharpFacts.IsFunction(node.Kind()))
                 .Any(node =>
                 {
-                    if (yieldReturn)
+                    if (span == null || span.Value.Contains(node.FullSpan))
                     {
-                        if (yieldBreak)
+                        if (yieldReturn)
                         {
-                            return node.IsKind(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);
+                            if (yieldBreak)
+                            {
+                                return node.IsKind(SyntaxKind.YieldReturnStatement, SyntaxKind.YieldBreakStatement);
+                            }
+                            else
+                            {
+                                return node.IsKind(SyntaxKind.YieldReturnStatement);
+                            }
                         }
-                        else
+                        else if (yieldBreak)
                         {
-                            return node.IsKind(SyntaxKind.YieldReturnStatement);
+                            return node.IsKind(SyntaxKind.YieldBreakStatement);
                         }
-                    }
-                    else if (yieldBreak)
-                    {
-                        return node.IsKind(SyntaxKind.YieldBreakStatement);
                     }
 
                     return false;
@@ -172,12 +179,22 @@ namespace Roslynator.CSharp.SyntaxWalkers
             if (kind == SyntaxKind.YieldReturnStatement)
             {
                 if (IsSearchingForYieldReturn)
-                    _success = true;
+                {
+                    if (_span == null || _span.Value.Contains(node.FullSpan))
+                    {
+                        _success = true;
+                    }
+                }
             }
             else if (kind == SyntaxKind.YieldBreakStatement)
             {
                 if (IsSearchingForYieldBreak)
-                    _success = true;
+                {
+                    if (_span == null || _span.Value.Contains(node.FullSpan))
+                    {
+                        _success = true;
+                    }
+                }
             }
         }
 
@@ -882,6 +899,30 @@ namespace Roslynator.CSharp.SyntaxWalkers
 
         public override void VisitXmlTextAttribute(XmlTextAttributeSyntax node)
         {
+        }
+
+        private sealed class ContainsYieldBreakWalker : ContainsYieldWalker
+        {
+            internal ContainsYieldBreakWalker(TextSpan? span = null) : base(span)
+            {
+            }
+
+            public override bool IsSearchingForYieldReturn
+            {
+                get { return false; }
+            }
+        }
+
+        private sealed class ContainsYieldReturnWalker : ContainsYieldWalker
+        {
+            internal ContainsYieldReturnWalker(TextSpan? span = null) : base(span)
+            {
+            }
+
+            public override bool IsSearchingForYieldBreak
+            {
+                get { return false; }
+            }
         }
     }
 }

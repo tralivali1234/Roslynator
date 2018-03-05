@@ -1,37 +1,56 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp
 {
-    internal static class BracesAnalysis
+    [DebuggerDisplay("{Flags}")]
+    internal readonly struct BracesAnalysis : IEquatable<BracesAnalysis>
     {
-        public static BracesAnalysisResult AnalyzeBraces(SwitchSectionSyntax switchSection)
+        private BracesAnalysis(BracesAnalysisFlags flags)
+        {
+            Flags = flags;
+        }
+
+        public bool AddBraces => Any(BracesAnalysisFlags.AddBraces);
+
+        public bool RemoveBraces => Any(BracesAnalysisFlags.RemoveBraces);
+
+        internal BracesAnalysisFlags Flags { get; }
+
+        public bool Any(BracesAnalysisFlags flags)
+        {
+            return (Flags & flags) != 0;
+        }
+
+        public bool All(BracesAnalysisFlags flags)
+        {
+            return (Flags & flags) != flags;
+        }
+
+        public static BracesAnalysis AnalyzeBraces(SwitchSectionSyntax switchSection)
         {
             SyntaxList<StatementSyntax> statements = switchSection.Statements;
 
-            if (statements.Count > 1)
-            {
-                return BracesAnalysisResult.AddBraces;
-            }
-            else if (statements.Count == 1)
-            {
-                if (statements[0].IsKind(SyntaxKind.Block))
-                {
-                    return BracesAnalysisResult.RemoveBraces;
-                }
-                else
-                {
-                    return BracesAnalysisResult.AddBraces;
-                }
-            }
+            int count = statements.Count;
 
-            return BracesAnalysisResult.None;
+            if (count == 0)
+                return BracesAnalysisFlags.None;
+
+            if (count > 1)
+                return BracesAnalysisFlags.AddBraces;
+
+            if (statements[0].Kind() == SyntaxKind.Block)
+                return BracesAnalysisFlags.RemoveBraces;
+
+            return BracesAnalysisFlags.AddBraces;
         }
 
-        public static BracesAnalysisResult AnalyzeBraces(IfStatementSyntax ifStatement)
+        public static BracesAnalysis AnalyzeBraces(IfStatementSyntax ifStatement)
         {
             bool anyHasEmbedded = false;
             bool anyHasBlock = false;
@@ -45,18 +64,29 @@ namespace Roslynator.CSharp
 
                 StatementSyntax statement = ifOrElse.Statement;
 
-                if (!anyHasEmbedded && !statement.IsKind(SyntaxKind.Block))
-                    anyHasEmbedded = true;
-
-                if (!anyHasBlock && statement.IsKind(SyntaxKind.Block))
-                    anyHasBlock = true;
-
-                if (allSupportsEmbedded && !SupportsEmbedded(statement))
-                    allSupportsEmbedded = false;
-
-                if (cnt > 1 && anyHasEmbedded && !allSupportsEmbedded)
+                if (!anyHasEmbedded
+                    && statement.Kind() != SyntaxKind.Block)
                 {
-                    return BracesAnalysisResult.AddBraces;
+                    anyHasEmbedded = true;
+                }
+
+                if (!anyHasBlock
+                    && statement.Kind() == SyntaxKind.Block)
+                {
+                    anyHasBlock = true;
+                }
+
+                if (allSupportsEmbedded
+                    && !SupportsEmbedded(statement))
+                {
+                    allSupportsEmbedded = false;
+                }
+
+                if (cnt > 1
+                    && anyHasEmbedded
+                    && !allSupportsEmbedded)
+                {
+                    return BracesAnalysisFlags.AddBraces;
                 }
             }
 
@@ -66,37 +96,80 @@ namespace Roslynator.CSharp
             {
                 if (anyHasEmbedded)
                 {
-                    return BracesAnalysisResult.AddBraces | BracesAnalysisResult.RemoveBraces;
+                    return BracesAnalysisFlags.AddBraces | BracesAnalysisFlags.RemoveBraces;
                 }
                 else
                 {
-                    return BracesAnalysisResult.RemoveBraces;
+                    return BracesAnalysisFlags.RemoveBraces;
                 }
             }
 
-            return BracesAnalysisResult.None;
+            return BracesAnalysisFlags.None;
+
+            bool SupportsEmbedded(StatementSyntax statement)
+            {
+                if (statement.IsParentKind(SyntaxKind.IfStatement)
+                    && ((IfStatementSyntax)statement.Parent).Condition?.IsMultiLine() == true)
+                {
+                    return false;
+                }
+
+                if (statement.Kind() == SyntaxKind.Block)
+                {
+                    var block = (BlockSyntax)statement;
+
+                    statement = block.Statements.SingleOrDefault(shouldThrow: false);
+
+                    if (statement == null)
+                        return false;
+                }
+
+                return !statement.IsKind(SyntaxKind.LocalDeclarationStatement, SyntaxKind.LabeledStatement)
+                    && statement.IsSingleLine();
+            }
         }
 
-        private static bool SupportsEmbedded(StatementSyntax statement)
+        public override bool Equals(object obj)
         {
-            if (statement.IsParentKind(SyntaxKind.IfStatement)
-                && ((IfStatementSyntax)statement.Parent).Condition?.IsMultiLine() == true)
-            {
-                return false;
-            }
+            return obj is BracesAnalysis other && Equals(other);
+        }
 
-            if (statement.IsKind(SyntaxKind.Block))
-            {
-                var block = (BlockSyntax)statement;
+        public bool Equals(BracesAnalysis other)
+        {
+            return Flags == other.Flags;
+        }
 
-                if (block.Statements.Count != 1)
-                    return false;
+        public override int GetHashCode()
+        {
+            return Flags.GetHashCode();
+        }
 
-                statement = block.Statements[0];
-            }
+        public static implicit operator BracesAnalysis(BracesAnalysisFlags value)
+        {
+            return new BracesAnalysis(value);
+        }
 
-            return !statement.IsKind(SyntaxKind.LocalDeclarationStatement, SyntaxKind.LabeledStatement)
-                && statement.IsSingleLine();
+        public static implicit operator BracesAnalysisFlags(BracesAnalysis value)
+        {
+            return value.Flags;
+        }
+
+        public static bool operator ==(BracesAnalysis analysis1, BracesAnalysis analysis2)
+        {
+            return analysis1.Equals(analysis2);
+        }
+
+        public static bool operator !=(BracesAnalysis analysis1, BracesAnalysis analysis2)
+        {
+            return !(analysis1 == analysis2);
+        }
+
+        [Flags]
+        internal enum BracesAnalysisFlags
+        {
+            None = 0,
+            AddBraces = 1,
+            RemoveBraces = 2,
         }
     }
 }

@@ -1,45 +1,53 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //XTODO: AnalyzeMethodSymbol, AnalyzePropertySymbol
+    //TODO: test
     internal static class RemoveRedundantSealedModifierRefactoring
     {
-        public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeMethod(SymbolAnalysisContext context)
         {
-            Analyze(context, (PropertyDeclarationSyntax)context.Node);
+            Analyze(context, context.Symbol);
         }
 
-        public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeProperty(SymbolAnalysisContext context)
         {
-            Analyze(context, (MethodDeclarationSyntax)context.Node);
+            Analyze(context, context.Symbol);
         }
 
-        private static void Analyze(SyntaxNodeAnalysisContext context, MemberDeclarationSyntax declaration)
+        private static void Analyze(SymbolAnalysisContext context, ISymbol symbol)
         {
-            ISymbol symbol = context.SemanticModel.GetDeclaredSymbol(declaration, context.CancellationToken);
-
-            INamedTypeSymbol containingType = symbol?.ContainingType;
-
-            if (containingType?.TypeKind != TypeKind.Class)
+            if (symbol.IsImplicitlyDeclared)
                 return;
 
-            if (!containingType.IsSealed)
+            if (!symbol.IsSealed)
                 return;
 
-            SyntaxToken sealedKeyword = SyntaxInfo.ModifiersInfo(declaration).Modifiers.Find(SyntaxKind.SealedKeyword);
-
-            if (sealedKeyword.Kind() != SyntaxKind.SealedKeyword)
+            if (symbol.ContainingType?.IsSealed != true)
                 return;
 
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.RemoveRedundantSealedModifier,
-                Location.Create(declaration.SyntaxTree, sealedKeyword.Span));
+            Debug.Assert(symbol.ContainingType.TypeKind == TypeKind.Class, symbol.ContainingType.TypeKind.ToString());
+
+            SyntaxNode node = symbol.GetSyntax(context.CancellationToken);
+
+            Debug.Assert(node.IsKind(SyntaxKind.MethodDeclaration, SyntaxKind.PropertyDeclaration, SyntaxKind.IndexerDeclaration), node.Kind().ToString());
+
+            ModifiersInfo info = SyntaxInfo.ModifiersInfo(node);
+
+            Debug.Assert(info.IsSealed, info.Modifiers.ToString());
+
+            if (!info.IsSealed)
+                return;
+
+            SyntaxToken sealedKeyword = info.Modifiers.Find(SyntaxKind.SealedKeyword);
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantSealedModifier, sealedKeyword);
         }
     }
 }

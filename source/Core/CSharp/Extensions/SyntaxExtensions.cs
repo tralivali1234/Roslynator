@@ -116,19 +116,19 @@ namespace Roslynator.CSharp
             }
         }
 
-        internal static bool ContainsYieldReturn(this BlockSyntax block)
+        internal static bool ContainsYieldReturn(this BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYieldWalker.ContainsYieldReturn(block);
+            return ContainsYieldWalker.ContainsYieldReturn(block, span);
         }
 
-        internal static bool ContainsYieldBreak(this BlockSyntax block)
+        internal static bool ContainsYieldBreak(this BlockSyntax block, TextSpan? span = null)
         {
-            return ContainsYieldWalker.ContainsYieldBreak(block);
+            return ContainsYieldWalker.ContainsYieldBreak(block, span);
         }
 
-        internal static bool ContainsYield(this BlockSyntax block, bool yieldReturn = true, bool yieldBreak = true)
+        internal static bool ContainsYield(this BlockSyntax block, TextSpan? span = null, bool yieldReturn = true, bool yieldBreak = true)
         {
-            return ContainsYieldWalker.ContainsYield(block, yieldReturn, yieldBreak);
+            return ContainsYieldWalker.ContainsYield(block, span, yieldReturn, yieldBreak);
         }
 
         internal static StatementSyntax LastStatementOrDefault(this BlockSyntax block, bool skipLocalFunction = false)
@@ -2274,7 +2274,7 @@ namespace Roslynator.CSharp
         /// <returns></returns>
         public static bool IsParentKind(this SyntaxNode node, SyntaxKind kind)
         {
-            return node?.Parent?.IsKind(kind) == true;
+            return node?.Parent?.Kind() == kind;
         }
 
         /// <summary>

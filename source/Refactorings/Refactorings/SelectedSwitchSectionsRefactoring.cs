@@ -33,18 +33,15 @@ namespace Roslynator.CSharp.Refactorings
                         break;
                     }
 
-                    switch (BracesAnalysis.AnalyzeBraces(section))
+                    BracesAnalysis analysis = BracesAnalysis.AnalyzeBraces(section);
+
+                    if (analysis.AddBraces)
                     {
-                        case BracesAnalysisResult.AddBraces:
-                            {
-                                addBraces.Add(section);
-                                break;
-                            }
-                        case BracesAnalysisResult.RemoveBraces:
-                            {
-                                removeBraces.Add(section);
-                                break;
-                            }
+                        addBraces.Add(section);
+                    }
+                    else if (analysis.RemoveBraces)
+                    {
+                        removeBraces.Add(section);
                     }
                 }
 

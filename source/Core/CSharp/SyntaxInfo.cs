@@ -1229,7 +1229,16 @@ namespace Roslynator.CSharp
             return Syntax.StatementsInfo.Create(selectedStatements);
         }
 
-        internal static StringConcatenationExpressionInfo StringConcatenationExpressionInfo(
+        public static StringConcatenationExpressionInfo StringConcatenationExpressionInfo(
+            SyntaxNode node,
+            SemanticModel semanticModel,
+            bool walkDownParentheses = true,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Syntax.StringConcatenationExpressionInfo.Create(node, semanticModel, walkDownParentheses, cancellationToken);
+        }
+
+        public static StringConcatenationExpressionInfo StringConcatenationExpressionInfo(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))

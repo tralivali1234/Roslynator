@@ -6,20 +6,17 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class BracesDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class RemoveBracesFromIfElseDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
             {
-                //XTODO: split?
                 return ImmutableArray.Create(
-                    DiagnosticDescriptors.AddBracesToIfElseWhenExpressionSpansOverMultipleLines,
                     DiagnosticDescriptors.RemoveBracesFromIfElse,
                     DiagnosticDescriptors.RemoveBracesFromIfElseFadeOut);
             }
@@ -39,26 +36,24 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (!ifStatement.IsParentKind(SyntaxKind.ElseClause)
-                && ifStatement.Else != null)
+            if (ifStatement.IsParentKind(SyntaxKind.ElseClause))
+                return;
+
+            if (ifStatement.Else == null)
+                return;
+
+            BracesAnalysis analysis = BracesAnalysis.AnalyzeBraces(ifStatement);
+
+            if (!analysis.RemoveBraces)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveBracesFromIfElse, ifStatement);
+
+            //TODO: test
+            foreach (IfStatementOrElseClause ifOrElse in SyntaxInfo.IfStatementInfo(ifStatement))
             {
-                BracesAnalysisResult result = BracesAnalysis.AnalyzeBraces(ifStatement);
-
-                if ((result & BracesAnalysisResult.AddBraces) != 0)
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.AddBracesToIfElseWhenExpressionSpansOverMultipleLines, ifStatement);
-                }
-
-                if ((result & BracesAnalysisResult.RemoveBraces) != 0)
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveBracesFromIfElse, ifStatement);
-
-                    foreach (SyntaxNode node in ifStatement.DescendantNodes())
-                    {
-                        if (node.IsKind(SyntaxKind.Block))
-                            context.ReportBraces(DiagnosticDescriptors.RemoveBracesFromIfElseFadeOut, (BlockSyntax)node);
-                    }
-                }
+                if (ifOrElse.Statement is BlockSyntax block)
+                    context.ReportBraces(DiagnosticDescriptors.RemoveBracesFromIfElseFadeOut, block);
             }
         }
     }

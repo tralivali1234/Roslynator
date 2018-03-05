@@ -9,7 +9,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator
 {
-    //XTODO: implement IList<T>
     /// <summary>
     /// Represents consecutive sequence of selected items in a collection.
     /// </summary>
