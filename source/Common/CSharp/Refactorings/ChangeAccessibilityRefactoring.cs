@@ -41,11 +41,11 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                Accessibility accessibility = CSharpAccessibility.GetExplicitAccessibility(member);
+                Accessibility accessibility = SyntaxAccessibility.GetExplicitAccessibility(member);
 
                 if (accessibility == Accessibility.NotApplicable)
                 {
-                    accessibility = CSharpAccessibility.GetDefaultExplicitAccessibility(member);
+                    accessibility = SyntaxAccessibility.GetDefaultExplicitAccessibility(member);
 
                     if (accessibility == Accessibility.NotApplicable)
                         return Accessibilities.None;
@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings
                 foreach (Accessibility accessibility2 in AvailableAccessibilities)
                 {
                     if (accessibility != accessibility2
-                        && !CSharpAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
+                        && !SyntaxAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
                     {
                         valid &= ~accessibility2.GetAccessibilities();
                     }
@@ -151,7 +151,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SyntaxList<MemberDeclarationSyntax> newMembers = selectedMembers
                 .UnderlyingList
-                .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, selectedMembers.Select(f => CSharpAccessibility.WithExplicitAccessibility(f, newAccessibility)));
+                .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, selectedMembers.Select(f => SyntaxAccessibility.WithExplicitAccessibility(f, newAccessibility)));
 
             MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
 
@@ -203,7 +203,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return await solution.ReplaceNodesAsync(
                 members,
-                (node, _) => CSharpAccessibility.WithExplicitAccessibility(node, newAccessibility),
+                (node, _) => SyntaxAccessibility.WithExplicitAccessibility(node, newAccessibility),
                 cancellationToken).ConfigureAwait(false);
         }
 
@@ -213,7 +213,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
-            SyntaxNode newNode = CSharpAccessibility.WithExplicitAccessibility(node, newAccessibility);
+            SyntaxNode newNode = SyntaxAccessibility.WithExplicitAccessibility(node, newAccessibility);
 
             return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }

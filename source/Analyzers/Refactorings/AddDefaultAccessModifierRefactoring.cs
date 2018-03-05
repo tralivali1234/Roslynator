@@ -146,7 +146,7 @@ namespace Roslynator.CSharp.Refactorings
                         {
                             if (accessibility == Accessibility.NotApplicable)
                             {
-                                return CSharpAccessibility.GetDefaultExplicitAccessibility(declaration);
+                                return SyntaxAccessibility.GetDefaultExplicitAccessibility(declaration);
                             }
                             else
                             {
@@ -157,7 +157,7 @@ namespace Roslynator.CSharp.Refactorings
                 }
                 else
                 {
-                    return CSharpAccessibility.GetDefaultExplicitAccessibility(declaration);
+                    return SyntaxAccessibility.GetDefaultExplicitAccessibility(declaration);
                 }
             }
 
@@ -178,7 +178,7 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     if (syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax declaration2)
                     {
-                        Accessibility accessibility2 = CSharpAccessibility.GetExplicitAccessibility(declaration2);
+                        Accessibility accessibility2 = SyntaxAccessibility.GetExplicitAccessibility(declaration2);
 
                         if (accessibility2 != Accessibility.NotApplicable)
                         {
@@ -222,7 +222,7 @@ namespace Roslynator.CSharp.Refactorings
             Accessibility accessibility,
             CancellationToken cancellationToken)
         {
-            MemberDeclarationSyntax newNode = CSharpAccessibility.WithExplicitAccessibility(memberDeclaration, accessibility);
+            MemberDeclarationSyntax newNode = SyntaxAccessibility.WithExplicitAccessibility(memberDeclaration, accessibility);
 
             return document.ReplaceNodeAsync(memberDeclaration, newNode, cancellationToken);
         }

@@ -119,6 +119,17 @@ namespace Roslynator.CSharp.Syntax
             return BinaryExpressionInfo.Create(BinaryExpression).Expressions(leftToRight);
         }
 
+        internal bool ContainsMultiLineExpression()
+        {
+            foreach (ExpressionSyntax expression in Expressions())
+            {
+                if (expression.IsMultiLine(includeExteriorTrivia: false))
+                    return true;
+            }
+
+            return false;
+        }
+
         public InterpolatedStringExpressionSyntax ToInterpolatedString()
         {
             ThrowInvalidOperationIfNotInitialized();

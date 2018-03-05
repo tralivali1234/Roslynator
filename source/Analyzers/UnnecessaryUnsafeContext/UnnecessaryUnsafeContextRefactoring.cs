@@ -225,8 +225,6 @@ namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
         {
             SyntaxNode parent = memberDeclaration.Parent;
 
-            Debug.Assert(parent.IsKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration, SyntaxKind.InterfaceDeclaration), parent.Kind().ToString());
-
             while (parent.IsKind(SyntaxKind.ClassDeclaration, SyntaxKind.StructDeclaration, SyntaxKind.InterfaceDeclaration))
             {
                 if (((TypeDeclarationSyntax)parent).Modifiers.Contains(SyntaxKind.UnsafeKeyword))

@@ -37,7 +37,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         public Accessibility ExplicitAccessibility
         {
-            get { return CSharpAccessibility.GetExplicitAccessibility(Modifiers); }
+            get { return SyntaxAccessibility.GetExplicitAccessibility(Modifiers); }
         }
 
         /// <summary>
