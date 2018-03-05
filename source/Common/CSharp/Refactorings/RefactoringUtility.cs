@@ -187,7 +187,6 @@ namespace Roslynator.CSharp
             }
         }
 
-        //TODO: test
         public static ExpressionSyntax RemoveInvocation(InvocationExpressionSyntax invocation)
         {
             var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;

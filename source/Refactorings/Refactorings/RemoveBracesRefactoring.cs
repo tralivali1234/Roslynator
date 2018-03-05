@@ -104,10 +104,38 @@ namespace Roslynator.CSharp.Refactorings
             if (!IsEmbeddableBlock(block))
                 return false;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(block.Statements[0]);
+            StatementSyntax statement = GetEmbeddedStatement(block.Statements[0]);
 
             return statement == null
                 || !statement.FullSpan.Contains(context.Span);
+        }
+
+        private static StatementSyntax GetEmbeddedStatement(SyntaxNode node)
+        {
+            switch (node.Kind())
+            {
+                case SyntaxKind.IfStatement:
+                    return ((IfStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.ForEachStatement:
+                case SyntaxKind.ForEachVariableStatement:
+                    return ((CommonForEachStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.ForStatement:
+                    return ((ForStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.WhileStatement:
+                    return ((WhileStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.DoStatement:
+                    return ((DoStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.LockStatement:
+                    return ((LockStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.FixedStatement:
+                    return ((FixedStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.UsingStatement:
+                    return ((UsingStatementSyntax)node).EmbeddedStatement();
+                case SyntaxKind.ElseClause:
+                    return ((ElseClauseSyntax)node).EmbeddedStatement();
+            }
+
+            return null;
         }
 
         private static IfStatementSyntax GetTopmostIf(BlockSyntax block)

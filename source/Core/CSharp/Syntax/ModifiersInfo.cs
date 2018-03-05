@@ -494,7 +494,7 @@ namespace Roslynator.CSharp.Syntax
             throw new InvalidOperationException();
         }
 
-        //XTODO: GetKind
+        //TODO: GetKind
         /// <summary>
         /// Gets the modifier kind.
         /// </summary>

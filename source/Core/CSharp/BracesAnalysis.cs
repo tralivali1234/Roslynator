@@ -163,13 +163,5 @@ namespace Roslynator.CSharp
         {
             return !(analysis1 == analysis2);
         }
-
-        [Flags]
-        internal enum BracesAnalysisFlags
-        {
-            None = 0,
-            AddBraces = 1,
-            RemoveBraces = 2,
-        }
     }
 }

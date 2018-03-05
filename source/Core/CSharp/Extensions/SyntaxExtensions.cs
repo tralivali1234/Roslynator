@@ -285,6 +285,13 @@ namespace Roslynator.CSharp
 
             return TextSpan.FromBounds(forEachStatement.OpenParenToken.Span.Start, forEachStatement.CloseParenToken.Span.End);
         }
+
+        internal static StatementSyntax EmbeddedStatement(this CommonForEachStatementSyntax forEachStatement)
+        {
+            StatementSyntax statement = forEachStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
+        }
         #endregion CommonForEachStatementSyntax
 
         #region CompilationUnitSyntax
@@ -538,6 +545,15 @@ namespace Roslynator.CSharp
         }
         #endregion DocumentationCommentTriviaSyntax
 
+        #region DoStatementSyntax
+        internal static StatementSyntax EmbeddedStatement(this DoStatementSyntax doStatement)
+        {
+            StatementSyntax statement = doStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
+        }
+        #endregion DoStatementSyntax
+
         #region ElseClauseSyntax
         internal static StatementSyntax SingleNonBlockStatementOrDefault(this ElseClauseSyntax elseClause)
         {
@@ -571,6 +587,27 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(elseClause));
 
             return elseClause.Statement?.Kind() == SyntaxKind.IfStatement;
+        }
+
+        internal static StatementSyntax EmbeddedStatement(this ElseClauseSyntax elseClause, bool allowIfStatement = true)
+        {
+            StatementSyntax statement = elseClause.Statement;
+
+            if (statement == null)
+                return null;
+
+            SyntaxKind kind = statement.Kind();
+
+            if (kind == SyntaxKind.Block)
+                return null;
+
+            if (!allowIfStatement
+                && kind == SyntaxKind.IfStatement)
+            {
+                return null;
+            }
+
+            return statement;
         }
         #endregion ElseClauseSyntax
 
@@ -715,6 +752,15 @@ namespace Roslynator.CSharp
         }
         #endregion FieldDeclarationSyntax
 
+        #region FixedStatementSyntax
+        internal static StatementSyntax EmbeddedStatement(this FixedStatementSyntax fixedStatement)
+        {
+            StatementSyntax statement = fixedStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
+        }
+        #endregion FixedStatementSyntax
+
         #region ForStatementSyntax
         /// <summary>
         /// Absolute span of the parentheses, not including the leading and trailing trivia.
@@ -727,6 +773,13 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(forStatement));
 
             return TextSpan.FromBounds(forStatement.OpenParenToken.Span.Start, forStatement.CloseParenToken.Span.End);
+        }
+
+        internal static StatementSyntax EmbeddedStatement(this ForStatementSyntax forStatement)
+        {
+            StatementSyntax statement = forStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
         }
         #endregion ForStatementSyntax
 
@@ -829,6 +882,13 @@ namespace Roslynator.CSharp
             }
 
             return null;
+        }
+
+        internal static StatementSyntax EmbeddedStatement(this IfStatementSyntax ifStatement)
+        {
+            StatementSyntax statement = ifStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
         }
         #endregion IfStatementSyntax
 
@@ -1108,6 +1168,15 @@ namespace Roslynator.CSharp
             return localFunctionStatement.Body?.ContainsYield() == true;
         }
         #endregion LocalFunctionStatementSyntax
+
+        #region LockStatementSyntax
+        internal static StatementSyntax EmbeddedStatement(this LockStatementSyntax lockStatement)
+        {
+            StatementSyntax statement = lockStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
+        }
+        #endregion LockStatementSyntax
 
         #region MemberDeclarationSyntax
         /// <summary>
@@ -2018,6 +2087,13 @@ namespace Roslynator.CSharp
                 GetEndIndex(list.Last(), includeExteriorTrivia, trim));
 
             return tree.IsMultiLineSpan(span, cancellationToken);
+        }
+
+        internal static StatementSyntax SingleOrDefault(this SyntaxList<StatementSyntax> statements, bool ignoreLocalFunctions, bool shouldThrow)
+        {
+            return (ignoreLocalFunctions)
+                ? statements.SingleOrDefault(statement => statement.Kind() != SyntaxKind.LocalFunctionStatement, shouldThrow: shouldThrow)
+                : statements.SingleOrDefault(shouldThrow: shouldThrow);
         }
 
         /// <summary>
@@ -3700,7 +3776,37 @@ namespace Roslynator.CSharp
 
             return usingStatement.Declaration ?? (CSharpSyntaxNode)usingStatement.Expression;
         }
+
+        internal static StatementSyntax EmbeddedStatement(this UsingStatementSyntax usingStatement, bool allowUsingStatement = true)
+        {
+            StatementSyntax statement = usingStatement.Statement;
+
+            if (statement == null)
+                return null;
+
+            SyntaxKind kind = statement.Kind();
+
+            if (kind == SyntaxKind.Block)
+                return null;
+
+            if (!allowUsingStatement
+                && kind == SyntaxKind.UsingStatement)
+            {
+                return null;
+            }
+
+            return statement;
+        }
         #endregion UsingStatementSyntax
+
+        #region WhileStatementSyntax
+        internal static StatementSyntax EmbeddedStatement(this WhileStatementSyntax whileStatement)
+        {
+            StatementSyntax statement = whileStatement.Statement;
+
+            return (statement?.Kind() == SyntaxKind.Block) ? null : statement;
+        }
+        #endregion WhileStatementSyntax
 
         #region XmlElementSyntax
         internal static bool IsLocalName(this XmlElementSyntax xmlElement, string localName, StringComparison comparison = StringComparison.Ordinal)

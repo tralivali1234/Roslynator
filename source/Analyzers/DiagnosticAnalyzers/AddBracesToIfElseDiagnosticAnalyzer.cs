@@ -36,7 +36,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (ifStatement.IsSimpleIf())
                 return;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(ifStatement);
+            StatementSyntax statement = ifStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var elseClause = (ElseClauseSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(elseClause, allowIfStatement: false);
+            StatementSyntax statement = elseClause.EmbeddedStatement(allowIfStatement: false);
 
             if (statement == null)
                 return;

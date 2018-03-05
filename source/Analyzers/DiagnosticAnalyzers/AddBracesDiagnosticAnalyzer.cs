@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(ifStatement);
+            StatementSyntax statement = ifStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var elseClause = (ElseClauseSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(elseClause, allowIfStatement: false);
+            StatementSyntax statement = elseClause.EmbeddedStatement(allowIfStatement: false);
 
             if (statement == null)
                 return;
@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var forEachStatement = (CommonForEachStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(forEachStatement);
+            StatementSyntax statement = forEachStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var forStatement = (ForStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(forStatement);
+            StatementSyntax statement = forStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var usingStatement = (UsingStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(usingStatement, allowUsingStatement: false);
+            StatementSyntax statement = usingStatement.EmbeddedStatement(allowUsingStatement: false);
 
             if (statement == null)
                 return;
@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var whileStatement = (WhileStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(whileStatement);
+            StatementSyntax statement = whileStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var doStatement = (DoStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(doStatement);
+            StatementSyntax statement = doStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -125,7 +125,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var lockStatement = (LockStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(lockStatement);
+            StatementSyntax statement = lockStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
@@ -137,7 +137,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var fixedStatement = (FixedStatementSyntax)context.Node;
 
-            StatementSyntax statement = EmbeddedStatementHelper.GetEmbeddedStatement(fixedStatement);
+            StatementSyntax statement = fixedStatement.EmbeddedStatement();
 
             if (statement == null)
                 return;
