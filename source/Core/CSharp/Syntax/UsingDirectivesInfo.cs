@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Syntax
 {
-    //XTODO: UsingsInfo
+    //TODO: UsingsInfo
     /// <summary>
     /// Provides information about a list of using directives.
     /// </summary>

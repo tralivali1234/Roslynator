@@ -8,7 +8,6 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: test
     internal static class RemoveRedundantSealedModifierRefactoring
     {
         public static void AnalyzeMethod(SymbolAnalysisContext context)

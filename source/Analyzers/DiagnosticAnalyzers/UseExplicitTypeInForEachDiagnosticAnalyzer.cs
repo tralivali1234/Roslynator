@@ -31,10 +31,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var forEachStatement = (ForEachStatementSyntax)context.Node;
 
-            TypeAnalysis analysis = TypeAnalysis.AnalyzeType(forEachStatement, context.SemanticModel);
-
-            if (analysis.IsImplicit
-                && analysis.SupportsExplicit)
+            if (TypeAnalysis.IsImplicitThatCanBeExplicit(forEachStatement, context.SemanticModel))
             {
                 context.ReportDiagnostic(
                     DiagnosticDescriptors.UseExplicitTypeInsteadOfVarInForEach,
