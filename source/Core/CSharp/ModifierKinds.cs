@@ -4,12 +4,11 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //TODO: ModifierKinds
     /// <summary>
     /// Specifies C# modifier.
     /// </summary>
     [Flags]
-    public enum ModifierKind
+    public enum ModifierKinds
     {
         /// <summary>
         /// None modifier.

@@ -4,12 +4,11 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //TODO: PreprocessorDirectiveKinds
     /// <summary>
     /// Specifies C# preprocessor directives.
     /// </summary>
     [Flags]
-    public enum PreprocessorDirectiveKind
+    public enum PreprocessorDirectiveKinds
     {
         /// <summary>
         /// No preprocessor directive.

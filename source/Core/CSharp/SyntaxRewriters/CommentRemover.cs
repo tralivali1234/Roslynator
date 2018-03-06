@@ -9,16 +9,16 @@ namespace Roslynator.CSharp.SyntaxRewriters
 {
     internal class CommentRemover : CSharpSyntaxRewriter
     {
-        internal CommentRemover(SyntaxNode node, CommentKind kind, TextSpan span)
+        internal CommentRemover(SyntaxNode node, CommentKinds kinds, TextSpan span)
             : base(visitIntoStructuredTrivia: true)
         {
             Node = node;
             Span = span;
 
-            ShouldRemoveSingleLineComment = (kind & CommentKind.SingleLine) != 0;
-            ShouldRemoveMultiLineComment = (kind & CommentKind.MultiLine) != 0;
-            ShouldRemoveSingleLineDocumentationComment = (kind & CommentKind.SingleLineDocumentation) != 0;
-            ShouldRemoveMultiLineDocumentationComment = (kind & CommentKind.MultiLineDocumentation) != 0;
+            ShouldRemoveSingleLineComment = (kinds & CommentKinds.SingleLine) != 0;
+            ShouldRemoveMultiLineComment = (kinds & CommentKinds.MultiLine) != 0;
+            ShouldRemoveSingleLineDocumentationComment = (kinds & CommentKinds.SingleLineDocumentation) != 0;
+            ShouldRemoveMultiLineDocumentationComment = (kinds & CommentKinds.MultiLineDocumentation) != 0;
         }
 
         public SyntaxNode Node { get; }

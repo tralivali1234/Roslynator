@@ -4,12 +4,11 @@ using System;
 
 namespace Roslynator.CSharp
 {
-    //TODO: CommentKinds
     /// <summary>
     /// Specifies C# comments.
     /// </summary>
     [Flags]
-    public enum CommentKind
+    public enum CommentKinds
     {
 
         /// <summary>

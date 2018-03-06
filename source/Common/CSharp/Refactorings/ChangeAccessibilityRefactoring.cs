@@ -169,16 +169,16 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                ModifierKind kind = SyntaxInfo.ModifiersInfo(member).GetKind();
+                ModifierKinds kinds = SyntaxInfo.ModifiersInfo(member).GetKinds();
 
-                if (kind.Any(ModifierKind.Partial))
+                if (kinds.Any(ModifierKinds.Partial))
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 
                     foreach (SyntaxReference reference in symbol.DeclaringSyntaxReferences)
                         members.Add((MemberDeclarationSyntax)reference.GetSyntax(cancellationToken));
                 }
-                else if (kind.Any(ModifierKind.AbstractVirtualOverride))
+                else if (kinds.Any(ModifierKinds.AbstractVirtualOverride))
                 {
                     ISymbol symbol = GetBaseSymbolOrDefault(member, semanticModel, cancellationToken);
 
