@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class UseVarWhenTypeIsNotObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UseExplicitTypeInsteadOfVarWhenTypeIsNotObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -33,11 +33,11 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            TypeAnalysis analysis = TypeAnalysis.AnalyzeType(variableDeclaration, context.SemanticModel, context.CancellationToken);
-
-            if (IsFixable(analysis))
+            if (TypeAnalysis.IsImplicitThatCanBeExplicit(variableDeclaration, context.SemanticModel, TypeAppearance.NotObvious, context.CancellationToken))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, variableDeclaration.Type);
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
+                    variableDeclaration.Type);
             }
         }
 
@@ -45,19 +45,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            TypeAnalysis analysis = TypeAnalysis.AnalyzeType(declarationExpression, context.SemanticModel, context.CancellationToken);
-
-            if (IsFixable(analysis))
+            if (TypeAnalysis.IsImplicitThatCanBeExplicit(declarationExpression, context.SemanticModel, context.CancellationToken))
             {
-                context.ReportDiagnostic(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious, declarationExpression.Type);
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsNotObvious,
+                    declarationExpression.Type);
             }
-        }
-
-        private static bool IsFixable(TypeAnalysis analysis)
-        {
-            return analysis.IsExplicit
-                && analysis.SupportsImplicit
-                && !analysis.IsTypeObvious;
         }
     }
 }

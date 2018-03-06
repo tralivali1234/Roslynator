@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class UseExplicitTypeInsteadOfVarWhenTypeIsObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UseVarInsteadOfExplicitTypeWhenTypeIsNotObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -33,10 +33,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            if (TypeAnalysis.IsImplicitThatCanBeExplicit(variableDeclaration, context.SemanticModel, TypeAppearance.Obvious, context.CancellationToken))
+            if (TypeAnalysis.IsExplicitThatCanBeImplicit(variableDeclaration, context.SemanticModel, TypeAppearance.NotObvious, context.CancellationToken))
             {
                 context.ReportDiagnostic(
-                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                    DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious,
                     variableDeclaration.Type);
             }
         }
@@ -45,10 +45,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var declarationExpression = (DeclarationExpressionSyntax)context.Node;
 
-            if (TypeAnalysis.IsImplicitThatCanBeExplicit(declarationExpression, context.SemanticModel, context.CancellationToken))
+            if (TypeAnalysis.IsExplicitThatCanBeImplicit(declarationExpression, context.SemanticModel, context.CancellationToken))
             {
                 context.ReportDiagnostic(
-                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                    DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsNotObvious,
                     declarationExpression.Type);
             }
         }

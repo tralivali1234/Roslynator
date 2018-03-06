@@ -10,11 +10,11 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class UseExplicitTypeInsteadOfVarWhenTypeIsObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UseVarInsteadOfExplicitTypeWhenTypeIsObviousDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -23,33 +23,19 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
-            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(AnalyzeVariableDeclaration, SyntaxKind.VariableDeclaration);
-            context.RegisterSyntaxNodeAction(AnalyzeDeclarationExpression, SyntaxKind.DeclarationExpression);
         }
 
         private static void AnalyzeVariableDeclaration(SyntaxNodeAnalysisContext context)
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            if (TypeAnalysis.IsImplicitThatCanBeExplicit(variableDeclaration, context.SemanticModel, TypeAppearance.Obvious, context.CancellationToken))
+            if (TypeAnalysis.IsExplicitThatCanBeImplicit(variableDeclaration, context.SemanticModel, TypeAppearance.Obvious, context.CancellationToken))
             {
                 context.ReportDiagnostic(
-                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
+                    DiagnosticDescriptors.UseVarInsteadOfExplicitTypeWhenTypeIsObvious,
                     variableDeclaration.Type);
-            }
-        }
-
-        private static void AnalyzeDeclarationExpression(SyntaxNodeAnalysisContext context)
-        {
-            var declarationExpression = (DeclarationExpressionSyntax)context.Node;
-
-            if (TypeAnalysis.IsImplicitThatCanBeExplicit(declarationExpression, context.SemanticModel, context.CancellationToken))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.UseExplicitTypeInsteadOfVarWhenTypeIsObvious,
-                    declarationExpression.Type);
             }
         }
     }
