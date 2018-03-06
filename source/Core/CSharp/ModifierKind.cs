@@ -4,6 +4,7 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    //TODO: ModifierKinds
     /// <summary>
     /// Specifies C# modifier.
     /// </summary>

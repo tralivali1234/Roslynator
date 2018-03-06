@@ -4,6 +4,7 @@ using System;
 
 namespace Roslynator.CSharp
 {
+    //TODO: PreprocessorDirectiveKinds
     /// <summary>
     /// Specifies C# preprocessor directives.
     /// </summary>
