@@ -113,28 +113,34 @@ namespace Roslynator.CSharp.Refactorings
 
             ElseClauseSyntax elseClause = ifStatement.Else;
 
-            StatementSyntax whenFalse = elseClause.Statement;
+            StatementSyntax statement = elseClause.Statement;
 
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             ExpressionSyntax newCondition = Negation.LogicallyNegate(condition, semanticModel, cancellationToken);
 
-            if (whenFalse.Kind() == SyntaxKind.IfStatement)
+            if (statement.Kind() == SyntaxKind.IfStatement)
             {
-                var nestedIf = (IfStatementSyntax)whenFalse;
+                var nestedIf = (IfStatementSyntax)statement;
 
                 newCondition = LogicalAndExpression(newCondition.Parenthesize(), nestedIf.Condition.Parenthesize());
+
+                statement = nestedIf.Statement;
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            IfStatementSyntax newIfStatement = ifStatement
-                .WithCondition(newCondition)
-                .WithStatement(whenFalse)
-                .WithElse(null)
-                .WithFormatterAnnotation();
+            IfStatementSyntax newNode = ifStatement.Update(
+                ifStatement.IfKeyword,
+                ifStatement.OpenParenToken,
+                newCondition,
+                ifStatement.CloseParenToken,
+                statement,
+                default(ElseClauseSyntax));
 
-            return await document.ReplaceNodeAsync(ifStatement, newIfStatement, cancellationToken).ConfigureAwait(false);
+            newNode = newNode.WithFormatterAnnotation();
+
+            return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
         }
 
         public static Task<Document> RefactorAsync(
@@ -159,12 +165,16 @@ namespace Roslynator.CSharp.Refactorings
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            WhileStatementSyntax newWhileStatement = whileStatement
-                .WithCondition(ifStatement.Condition)
-                .WithStatement(ifStatement.Statement)
-                .WithFormatterAnnotation();
+            WhileStatementSyntax newNode = whileStatement.Update(
+                whileStatement.WhileKeyword,
+                whileStatement.OpenParenToken,
+                ifStatement.Condition,
+                whileStatement.CloseParenToken,
+                ifStatement.Statement);
 
-            return document.ReplaceNodeAsync(whileStatement, whileStatement, cancellationToken);
+            newNode = newNode.WithFormatterAnnotation();
+
+            return document.ReplaceNodeAsync(whileStatement, newNode, cancellationToken);
         }
     }
 }

@@ -23,16 +23,16 @@ namespace Roslynator.CSharp.Analyzers.Tests
             if (condition1 && condition2)
             {
             }
-            else if (condition3)
-            {
+            else
                 Bar();
-            }
 
             if (condition1 && condition2)
             {
             }
-            else
+            else if (condition3)
+            {
                 Bar();
+            }
 
             if (condition1 && condition2)
             {
