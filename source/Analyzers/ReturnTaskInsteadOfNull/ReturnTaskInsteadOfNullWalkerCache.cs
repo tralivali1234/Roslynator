@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
         [ThreadStatic]
         private static ReturnTaskInsteadOfNullWalker _cachedInstance;
 
-        public static ReturnTaskInsteadOfNullWalker Acquire()
+        public static ReturnTaskInsteadOfNullWalker GetInstance()
         {
             ReturnTaskInsteadOfNullWalker walker = _cachedInstance;
 
@@ -26,16 +26,16 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
             return new ReturnTaskInsteadOfNullWalker();
         }
 
-        public static void Release(ReturnTaskInsteadOfNullWalker walker)
+        public static void Free(ReturnTaskInsteadOfNullWalker walker)
         {
             _cachedInstance = walker;
         }
 
-        public static ImmutableArray<ExpressionSyntax> GetExpressionsAndRelease(ReturnTaskInsteadOfNullWalker walker)
+        public static ImmutableArray<ExpressionSyntax> GetExpressionsAndFree(ReturnTaskInsteadOfNullWalker walker)
         {
             List<ExpressionSyntax> expressions = walker.Expressions;
 
-            Release(walker);
+            Free(walker);
 
             return (expressions == null)
                 ? ImmutableArray<ExpressionSyntax>.Empty

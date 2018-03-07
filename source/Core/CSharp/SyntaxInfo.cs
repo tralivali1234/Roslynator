@@ -925,74 +925,74 @@ namespace Roslynator.CSharp
                 cancellationToken);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             ConstructorDeclarationSyntax constructorDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(constructorDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(constructorDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             MethodDeclarationSyntax methodDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(methodDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(methodDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             OperatorDeclarationSyntax operatorDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(operatorDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(operatorDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             ConversionOperatorDeclarationSyntax conversionOperatorDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(conversionOperatorDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(conversionOperatorDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             DelegateDeclarationSyntax delegateDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(delegateDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(delegateDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             LocalFunctionStatementSyntax localFunction,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(localFunction, allowMissing);
+            return Syntax.ParameterInfo.Create(localFunction, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             IndexerDeclarationSyntax indexerDeclaration,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(indexerDeclaration, allowMissing);
+            return Syntax.ParameterInfo.Create(indexerDeclaration, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             SimpleLambdaExpressionSyntax simpleLambda,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(simpleLambda, allowMissing);
+            return Syntax.ParameterInfo.Create(simpleLambda, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             ParenthesizedLambdaExpressionSyntax parenthesizedLambda,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(parenthesizedLambda, allowMissing);
+            return Syntax.ParameterInfo.Create(parenthesizedLambda, allowMissing);
         }
 
-        internal static ParametersInfo ParametersInfo(
+        internal static ParameterInfo ParameterInfo(
             AnonymousMethodExpressionSyntax anonymousMethod,
             bool allowMissing = false)
         {
-            return Syntax.ParametersInfo.Create(anonymousMethod, allowMissing);
+            return Syntax.ParameterInfo.Create(anonymousMethod, allowMissing);
         }
 
         internal static RegionInfo RegionInfo(SyntaxNode node)

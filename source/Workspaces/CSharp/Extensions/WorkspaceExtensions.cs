@@ -419,7 +419,7 @@ namespace Roslynator.CSharp
             SyntaxTokenList newModifiers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            return document.ReplaceNodeAsync(modifiersInfo.Node, modifiersInfo.WithModifiers(newModifiers).Node, cancellationToken);
+            return document.ReplaceNodeAsync(modifiersInfo.Parent, modifiersInfo.WithModifiers(newModifiers).Parent, cancellationToken);
         }
 
         internal static async Task<Document> AddNewDocumentationCommentsAsync(

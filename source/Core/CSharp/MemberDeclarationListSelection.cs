@@ -10,23 +10,37 @@ namespace Roslynator.CSharp
     /// <summary>
     /// Represents selected member declarations in a <see cref="SyntaxList{MemberDeclarationSyntax}"/>.
     /// </summary>
-    public class MemberDeclarationListSelection : SyntaxListSelection<MemberDeclarationSyntax>
+    public sealed class MemberDeclarationListSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {
-        private MemberDeclarationListSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, SelectionResult result)
-             : this(declaration, members, span, result.FirstIndex, result.LastIndex)
+        private MemberDeclarationListSelection(SyntaxNode parent, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, SelectionResult result)
+             : this(parent, members, span, result.FirstIndex, result.LastIndex)
         {
         }
 
-        private MemberDeclarationListSelection(MemberDeclarationSyntax declaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int firstIndex, int lastIndex)
+        private MemberDeclarationListSelection(SyntaxNode parent, SyntaxList<MemberDeclarationSyntax> members, TextSpan span, int firstIndex, int lastIndex)
              : base(members, span, firstIndex, lastIndex)
         {
-            Declaration = declaration;
+            Parent = parent;
         }
 
         /// <summary>
-        /// Gets a declaration that contains selected members.
+        /// Gets a node that contains selected members.
         /// </summary>
-        public MemberDeclarationSyntax Declaration { get; }
+        public SyntaxNode Parent { get; }
+
+        /// <summary>
+        /// Creates a new <see cref="MemberDeclarationListSelection"/> based on the specified compilation unit and span.
+        /// </summary>
+        /// <param name="compilationUnit"></param>
+        /// <param name="span"></param>
+        /// <returns></returns>
+        public static MemberDeclarationListSelection Create(CompilationUnitSyntax compilationUnit, TextSpan span)
+        {
+            if (compilationUnit == null)
+                throw new ArgumentNullException(nameof(compilationUnit));
+
+            return Create(compilationUnit, compilationUnit.Members, span);
+        }
 
         /// <summary>
         /// Creates a new <see cref="MemberDeclarationListSelection"/> based on the specified namespace declaration and span.
@@ -56,11 +70,11 @@ namespace Roslynator.CSharp
             return Create(typeDeclaration, typeDeclaration.Members, span);
         }
 
-        private static MemberDeclarationListSelection Create(MemberDeclarationSyntax memberDeclaration, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
+        private static MemberDeclarationListSelection Create(SyntaxNode parent, SyntaxList<MemberDeclarationSyntax> members, TextSpan span)
         {
             SelectionResult result = SelectionResult.Create(members, span);
 
-            return new MemberDeclarationListSelection(memberDeclaration, members, span, result);
+            return new MemberDeclarationListSelection(parent, members, span, result);
         }
 
         /// <summary>

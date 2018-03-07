@@ -11,7 +11,7 @@ namespace Roslynator.CSharp
     /// <summary>
     /// Represents selected statements in a <see cref="SyntaxList{StatementSyntax}"/>.
     /// </summary>
-    public class StatementListSelection : SyntaxListSelection<StatementSyntax>
+    public sealed class StatementListSelection : SyntaxListSelection<StatementSyntax>
     {
         private StatementListSelection(SyntaxList<StatementSyntax> statements, TextSpan span, SelectionResult result)
              : this(statements, span, result.FirstIndex, result.LastIndex)

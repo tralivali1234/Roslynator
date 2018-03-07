@@ -368,7 +368,7 @@ namespace Roslynator.CSharp.Syntax
 
             ModifiersInfo info = ModifiersInfo().WithModifiers(newModifiers);
 
-            return Create(info.Node, info.Modifiers);
+            return Create(info.Parent, info.Modifiers);
         }
 
         /// <summary>

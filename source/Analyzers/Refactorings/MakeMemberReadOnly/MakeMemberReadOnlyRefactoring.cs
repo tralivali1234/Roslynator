@@ -36,11 +36,11 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 
                 foreach (MemberDeclarationSyntax memberDeclaration in typeDeclaration.Members)
                 {
-                    MakeMemberReadOnlyWalker walker = MakeMemberReadOnlyWalkerCache.Acquire();
+                    MakeMemberReadOnlyWalker walker = MakeMemberReadOnlyWalkerCache.GetInstance();
 
                     walker.Visit(memberDeclaration);
 
-                    HashSet<AssignedInfo> assigned = MakeMemberReadOnlyWalkerCache.GetAssignedAndRelease(walker);
+                    HashSet<AssignedInfo> assigned = MakeMemberReadOnlyWalkerCache.GetAssignedAndFree(walker);
 
                     if (assigned != null)
                     {

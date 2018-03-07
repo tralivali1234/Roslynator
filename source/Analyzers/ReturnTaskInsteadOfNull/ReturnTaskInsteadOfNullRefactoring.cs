@@ -265,11 +265,11 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
             if (body == null)
                 return;
 
-            ReturnTaskInsteadOfNullWalker walker = ReturnTaskInsteadOfNullWalkerCache.Acquire();
+            ReturnTaskInsteadOfNullWalker walker = ReturnTaskInsteadOfNullWalkerCache.GetInstance();
 
             walker.VisitBlock(body);
 
-            foreach (ExpressionSyntax expression in ReturnTaskInsteadOfNullWalkerCache.GetExpressionsAndRelease(walker))
+            foreach (ExpressionSyntax expression in ReturnTaskInsteadOfNullWalkerCache.GetExpressionsAndFree(walker))
                 ReportDiagnostic(context, expression);
         }
 

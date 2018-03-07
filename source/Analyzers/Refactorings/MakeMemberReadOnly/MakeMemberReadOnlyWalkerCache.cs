@@ -10,7 +10,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
         [ThreadStatic]
         private static MakeMemberReadOnlyWalker _cachedInstance;
 
-        public static MakeMemberReadOnlyWalker Acquire()
+        public static MakeMemberReadOnlyWalker GetInstance()
         {
             MakeMemberReadOnlyWalker walker = _cachedInstance;
 
@@ -24,16 +24,16 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
             return new MakeMemberReadOnlyWalker();
         }
 
-        public static void Release(MakeMemberReadOnlyWalker walker)
+        public static void Free(MakeMemberReadOnlyWalker walker)
         {
             _cachedInstance = walker;
         }
 
-        public static HashSet<AssignedInfo> GetAssignedAndRelease(MakeMemberReadOnlyWalker walker)
+        public static HashSet<AssignedInfo> GetAssignedAndFree(MakeMemberReadOnlyWalker walker)
         {
             HashSet<AssignedInfo> assigned = walker.Assigned;
 
-            Release(walker);
+            Free(walker);
 
             return assigned;
         }
