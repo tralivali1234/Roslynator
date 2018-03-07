@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings.InlineAliasExpression
 
             Debug.Assert(parent.IsKind(SyntaxKind.CompilationUnit, SyntaxKind.NamespaceDeclaration), "");
 
-            int index = SyntaxInfo.UsingDirectivesInfo(parent).IndexOf(usingDirective);
+            int index = SyntaxInfo.UsingDirectiveListInfo(parent).IndexOf(usingDirective);
 
             List<IdentifierNameSyntax> names = CollectNames(parent, aliasSymbol, semanticModel, cancellationToken);
 

@@ -87,7 +87,7 @@ namespace Roslynator.CSharp.Refactorings
                 SimpleAssignmentStatement(left, conditionalExpression.WhenTrue.WithoutTrivia()),
                 SimpleAssignmentStatement(left, conditionalExpression.WhenFalse.WithoutTrivia()));
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(localDeclaration);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(localDeclaration);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

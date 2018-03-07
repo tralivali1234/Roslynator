@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             InitializerExpressionSyntax initializer,
             ExpressionSyntax expression)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             if (!statementsInfo.Success)
                 return;
@@ -206,7 +206,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             StatementSyntax statement,
             InitializerExpressionSyntax initializer,
             ExpressionSyntax initializedExpression,

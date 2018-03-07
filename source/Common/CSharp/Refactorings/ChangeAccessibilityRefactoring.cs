@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static Accessibilities GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
+        public static Accessibilities GetValidAccessibilities(MemberDeclarationListSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
                 return Accessibilities.None;
@@ -145,7 +145,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationsSelection selectedMembers,
+            MemberDeclarationListSelection selectedMembers,
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
@@ -153,14 +153,14 @@ namespace Roslynator.CSharp.Refactorings
                 .UnderlyingList
                 .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, selectedMembers.Select(f => SyntaxAccessibility.WithExplicitAccessibility(f, newAccessibility)));
 
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(selectedMembers);
 
             return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         public static async Task<Solution> RefactorAsync(
             Solution solution,
-            MemberDeclarationsSelection selectedMembers,
+            MemberDeclarationListSelection selectedMembers,
             Accessibility newAccessibility,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
@@ -169,16 +169,16 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                ModifierKind kind = SyntaxInfo.ModifiersInfo(member).GetKind();
+                ModifierKinds kinds = SyntaxInfo.ModifiersInfo(member).GetKinds();
 
-                if (kind.Any(ModifierKind.Partial))
+                if (kinds.Any(ModifierKinds.Partial))
                 {
                     ISymbol symbol = semanticModel.GetDeclaredSymbol(member, cancellationToken);
 
                     foreach (SyntaxReference reference in symbol.DeclaringSyntaxReferences)
                         members.Add((MemberDeclarationSyntax)reference.GetSyntax(cancellationToken));
                 }
-                else if (kind.Any(ModifierKind.AbstractVirtualOverride))
+                else if (kinds.Any(ModifierKinds.AbstractVirtualOverride))
                 {
                     ISymbol symbol = GetBaseSymbolOrDefault(member, semanticModel, cancellationToken);
 

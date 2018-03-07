@@ -286,7 +286,7 @@ namespace Roslynator.CSharp.Refactorings
             LocalDeclarationStatementSyntax localDeclaration,
             CancellationToken cancellationToken)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(localDeclaration);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(localDeclaration);
 
             int index = statementsInfo.Statements.IndexOf(localDeclaration);
 

@@ -58,7 +58,7 @@ namespace Roslynator.CSharp.Refactorings
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(localInfo.Statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(localInfo.Statement);
 
             var localSymbol = (ILocalSymbol)semanticModel.GetDeclaredSymbol(localInfo.Declarator, cancellationToken);
 
@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings
                 span = TextSpan.FromBounds(localInfo.Statement.SpanStart, statementsInfo.First(f => f.Span.Contains(position)).Span.End);
             }
 
-            StatementsSelection selectedStatements = StatementsSelection.Create(statementsInfo, span);
+            StatementListSelection selectedStatements = StatementListSelection.Create(statementsInfo, span);
 
             var refactoring = new WrapStatements.WrapInUsingStatementRefactoring();
 

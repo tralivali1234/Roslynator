@@ -224,7 +224,7 @@ namespace Roslynator.CSharp
 
             foreach (SyntaxNode ancestor in node.Ancestors())
             {
-                foreach (UsingDirectiveSyntax usingDirective in SyntaxInfo.UsingDirectivesInfo(ancestor).Usings)
+                foreach (UsingDirectiveSyntax usingDirective in SyntaxInfo.UsingDirectiveListInfo(ancestor).Usings)
                 {
                     if (usingDirective.StaticKeyword.IsKind(SyntaxKind.StaticKeyword))
                     {

@@ -17,11 +17,11 @@ namespace Roslynator.CSharp.Refactorings
             UsingStatementSyntax usingStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(usingStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(usingStatement);
 
             int index = statementsInfo.Statements.IndexOf(usingStatement);
 
-            StatementsInfo newStatementsInfo = statementsInfo.RemoveAt(index);
+            StatementListInfo newStatementsInfo = statementsInfo.RemoveAt(index);
 
             var statements = new List<StatementSyntax>() { SyntaxFactory.LocalDeclarationStatement(usingStatement.Declaration) };
 

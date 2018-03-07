@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
                 .WithTriviaFrom(propertyDeclaration)
                 .WithFormatterAnnotation();
 
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(propertyDeclaration.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(propertyDeclaration.Parent);
 
             SyntaxList<MemberDeclarationSyntax> members = info.Members;
 
@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 IdentifierNameSyntax newNode = IdentifierName(fieldName);
 
-                MemberDeclarationsInfo newInfo = SyntaxInfo.MemberDeclarationsInfo(info.Parent.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
+                MemberDeclarationListInfo newInfo = SyntaxInfo.MemberDeclarationListInfo(info.Parent.ReplaceNodes(nodes, (f, _) => newNode.WithTriviaFrom(f)));
 
                 members = newInfo.Members;
             }

@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
         [ThreadStatic]
         private static UnusedMemberWalker _cachedInstance;
 
-        public static UnusedMemberWalker Acquire(SemanticModel semanticModel, CancellationToken cancellationToken)
+        public static UnusedMemberWalker GetInstance(SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             UnusedMemberWalker walker = _cachedInstance;
 
@@ -32,16 +32,16 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
             return walker;
         }
 
-        public static void Release(UnusedMemberWalker walker)
+        public static void Free(UnusedMemberWalker walker)
         {
             _cachedInstance = walker;
         }
 
-        public static Collection<NodeSymbolInfo> GetNodesAndRelease(UnusedMemberWalker walker)
+        public static Collection<NodeSymbolInfo> GetNodesAndFree(UnusedMemberWalker walker)
         {
             Collection<NodeSymbolInfo> nodes = walker.Nodes;
 
-            Release(walker);
+            Free(walker);
 
             return nodes;
         }

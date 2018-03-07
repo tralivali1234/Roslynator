@@ -10,7 +10,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeAssignmentExpressionWithReturnStatementRefactoring
     {
-        public static void ComputeRefactorings(RefactoringContext context, StatementsSelection selectedStatements)
+        public static void ComputeRefactorings(RefactoringContext context, StatementListSelection selectedStatements)
         {
             if (selectedStatements.Count != 2)
                 return;

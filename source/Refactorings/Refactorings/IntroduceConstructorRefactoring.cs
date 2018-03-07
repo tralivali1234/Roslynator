@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = null;
 
-                foreach (MemberDeclarationSyntax member in SyntaxInfo.MemberDeclarationsInfo(declaration).Members)
+                foreach (MemberDeclarationSyntax member in SyntaxInfo.MemberDeclarationListInfo(declaration).Members)
                 {
                     if (context.Span.Contains(member.Span))
                     {
@@ -156,7 +156,7 @@ namespace Roslynator.CSharp.Refactorings
             if (variable == null)
                 return false;
 
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(fieldDeclaration));
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(GetContainingDeclaration(fieldDeclaration));
 
             if (!info.Success)
                 return false;
@@ -294,7 +294,7 @@ namespace Roslynator.CSharp.Refactorings
             List<MemberDeclarationSyntax> assignableMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(GetContainingDeclaration(declaration));
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(GetContainingDeclaration(declaration));
 
             SyntaxList<MemberDeclarationSyntax> newMembers = info.Members.Insert(CreateConstructor(GetConstructorIdentifierText(info.Parent), assignableMembers));
 

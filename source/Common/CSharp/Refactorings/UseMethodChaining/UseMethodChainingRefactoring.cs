@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             if (statement.SpanOrTrailingTriviaContainsDirectives())
                 return false;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             if (!statementsInfo.Success)
                 return false;
@@ -154,7 +154,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 
             string name = ((IdentifierNameSyntax)WalkDownMethodChain(invocationInfo).Expression).Identifier.ValueText;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(expressionStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(expressionStatement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

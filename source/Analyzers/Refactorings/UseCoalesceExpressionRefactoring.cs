@@ -168,7 +168,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(ifStatement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
@@ -208,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
@@ -288,7 +288,7 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax statement,
             IfStatementSyntax ifStatement,
             int statementIndex,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             ExpressionSyntax expression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

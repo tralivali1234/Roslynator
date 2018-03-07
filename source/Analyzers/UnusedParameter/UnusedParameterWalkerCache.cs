@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
         [ThreadStatic]
         private static UnusedParameterWalker _cachedInstance;
 
-        public static UnusedParameterWalker Acquire(SemanticModel semanticModel, CancellationToken cancellationToken, bool isIndexer = false)
+        public static UnusedParameterWalker GetInstance(SemanticModel semanticModel, CancellationToken cancellationToken, bool isIndexer = false)
         {
             UnusedParameterWalker walker = _cachedInstance;
 
@@ -33,16 +33,16 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             return walker;
         }
 
-        public static void Release(UnusedParameterWalker walker)
+        public static void Free(UnusedParameterWalker walker)
         {
             _cachedInstance = walker;
         }
 
-        public static Dictionary<string, NodeSymbolInfo> GetNodesAndRelease(UnusedParameterWalker walker)
+        public static Dictionary<string, NodeSymbolInfo> GetNodesAndFree(UnusedParameterWalker walker)
         {
             Dictionary<string, NodeSymbolInfo> nodes = walker.Nodes;
 
-            Release(walker);
+            Free(walker);
 
             return nodes;
         }

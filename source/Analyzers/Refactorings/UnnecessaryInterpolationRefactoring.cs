@@ -6,23 +6,29 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    internal static class MergeInterpolationIntoInterpolatedStringRefactoring
+    internal static class UnnecessaryInterpolationRefactoring
     {
-        public static bool CanRefactor(InterpolationSyntax interpolation)
+        public static void AnalyzeInterpolation(SyntaxNodeAnalysisContext context)
         {
-            StringLiteralExpressionInfo stringLiteralExpressionInfo = SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression);
+            var interpolation = (InterpolationSyntax)context.Node;
 
-            if (!stringLiteralExpressionInfo.Success)
-                return false;
+            StringLiteralExpressionInfo stringLiteralInfo = SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression);
+
+            if (!stringLiteralInfo.Success)
+                return;
 
             if (!(interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
-                return false;
+                return;
 
-            return interpolatedString.StringStartToken.ValueText.Contains("@") == stringLiteralExpressionInfo.IsVerbatim;
+            if (interpolatedString.StringStartToken.ValueText.Contains("@") != stringLiteralInfo.IsVerbatim)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UnnecessaryInterpolation, interpolation);
         }
 
         public static Task<Document> RefactorAsync(

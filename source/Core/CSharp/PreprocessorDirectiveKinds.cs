@@ -8,7 +8,7 @@ namespace Roslynator.CSharp
     /// Specifies C# preprocessor directives.
     /// </summary>
     [Flags]
-    public enum PreprocessorDirectiveKind
+    public enum PreprocessorDirectiveKinds
     {
         /// <summary>
         /// No preprocessor directive.

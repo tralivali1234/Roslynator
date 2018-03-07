@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 break;
                             }
 
-                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+                            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
                             if (statementsInfo.Success)
                             {
                                 codeAction = CodeAction.Create(

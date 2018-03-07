@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             INamedTypeSymbol taskSymbol = null,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(ifStatement);
 
             if (!statementsInfo.Success)
                 return Fail(ifStatement);
@@ -443,7 +443,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             bool recursive,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(ifStatement);
 
             SyntaxNode node = statementsInfo.Parent;
 

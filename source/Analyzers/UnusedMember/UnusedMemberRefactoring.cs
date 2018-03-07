@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                             if (SyntaxAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
-                                    walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                    walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                 walker.AddNode(declaration.Identifier.ValueText, declaration);
                             }
@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                                 && SyntaxAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
-                                    walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                    walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                 walker.AddNode(declaration.Identifier.ValueText, declaration);
                             }
@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                             if (SyntaxAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
-                                    walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                    walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                 walker.AddNodes(declaration.Declaration);
                             }
@@ -92,7 +92,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                             if (SyntaxAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
-                                    walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                    walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                 walker.AddNodes(declaration.Declaration, isConst: modifiers.Contains(SyntaxKind.ConstKeyword));
                             }
@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                                 if (!IsMainMethod(declaration, modifiers, methodName))
                                 {
                                     if (walker == null)
-                                        walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                        walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                     walker.AddNode(methodName, declaration);
                                 }
@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
                                 && SyntaxAccessibility.GetAccessibility(declaration) == Accessibility.Private)
                             {
                                 if (walker == null)
-                                    walker = UnusedMemberWalkerCache.Acquire(context.SemanticModel, context.CancellationToken);
+                                    walker = UnusedMemberWalkerCache.GetInstance(context.SemanticModel, context.CancellationToken);
 
                                 walker.AddNode(declaration.Identifier.ValueText, declaration);
                             }
@@ -145,7 +145,7 @@ namespace Roslynator.CSharp.Analyzers.UnusedMember
 
             walker.Visit(typeDeclaration);
 
-            foreach (NodeSymbolInfo info in UnusedMemberWalkerCache.GetNodesAndRelease(walker))
+            foreach (NodeSymbolInfo info in UnusedMemberWalkerCache.GetNodesAndFree(walker))
             {
                 SyntaxNode node = info.Node;
 

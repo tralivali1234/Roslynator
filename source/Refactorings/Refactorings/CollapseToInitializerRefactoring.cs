@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class CollapseToInitializerRefactoring
     {
-        public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementsSelection selectedStatements)
+        public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementListSelection selectedStatements)
         {
             if (selectedStatements.Count <= 1)
                 return;
@@ -106,7 +106,7 @@ namespace Roslynator.CSharp.Refactorings
         public static Task<Document> RefactorAsync(
             Document document,
             ObjectCreationExpressionSyntax objectCreation,
-            StatementsSelection selectedStatements,
+            StatementListSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             ExpressionStatementSyntax[] expressionStatements = selectedStatements
@@ -131,7 +131,7 @@ namespace Roslynator.CSharp.Refactorings
                 count--;
             }
 
-            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementListInfo(selectedStatements), newStatements, cancellationToken);
         }
 
         private static InitializerExpressionSyntax CreateInitializer(ObjectCreationExpressionSyntax objectCreation, ExpressionStatementSyntax[] expressionStatements)

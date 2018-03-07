@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             var statement = (StatementSyntax)assignmentExpression.Parent;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
             if (localDeclaration.IsConst)
                 return;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(localDeclaration);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(localDeclaration);
 
             if (!statementsInfo.Success)
                 return;

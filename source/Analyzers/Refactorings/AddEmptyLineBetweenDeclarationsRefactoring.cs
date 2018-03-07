@@ -185,7 +185,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static MemberDeclarationSyntax GetNextDeclaration(MemberDeclarationSyntax declaration)
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(declaration.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(declaration.Parent);
 
             if (!info.Success)
                 return null;
