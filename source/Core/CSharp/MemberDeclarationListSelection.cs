@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// Represents selected member declaration(s) in a <see cref="SyntaxList{TNode}"/>.
+    /// Represents selected member declarations in a <see cref="SyntaxList{MemberDeclarationSyntax}"/>.
     /// </summary>
     public class MemberDeclarationListSelection : SyntaxListSelection<MemberDeclarationSyntax>
     {

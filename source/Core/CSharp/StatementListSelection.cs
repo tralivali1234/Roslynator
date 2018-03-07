@@ -9,7 +9,7 @@ using Roslynator.CSharp.Syntax;
 namespace Roslynator.CSharp
 {
     /// <summary>
-    /// Represents selected statement(s) in a <see cref="SyntaxList{TNode}"/>.
+    /// Represents selected statements in a <see cref="SyntaxList{StatementSyntax}"/>.
     /// </summary>
     public class StatementListSelection : SyntaxListSelection<StatementSyntax>
     {

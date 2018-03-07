@@ -9,6 +9,7 @@ using static Roslynator.CSharp.Syntax.SyntaxInfoHelpers;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ParameterInfo
     internal readonly struct ParametersInfo : IEquatable<ParametersInfo>
     {
         public ParametersInfo(ParameterSyntax parameter, CSharpSyntaxNode body)

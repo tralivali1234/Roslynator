@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Syntax
 {
+    //TODO: ModifierListInfo
     /// <summary>
     /// Provides information about modifiers.
     /// </summary>
