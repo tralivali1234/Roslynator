@@ -66,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             LocalDeclarationStatementSyntax localStatement = localInfo.Statement;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(localStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(localStatement);
 
             int index = statementsInfo.IndexOf(localStatement);
 
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
                 .WithTrailingTrivia(localStatement.GetTrailingTrivia())
                 .WithFormatterAnnotation();
 
-            StatementsInfo newStatementsInfo = statementsInfo
+            StatementListInfo newStatementsInfo = statementsInfo
                 .Insert(index + 1, assignmentStatement)
                 .ReplaceAt(index, newLocalStatement);
 

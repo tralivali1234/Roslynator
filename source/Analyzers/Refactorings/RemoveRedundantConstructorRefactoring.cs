@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool IsSingleInstanceConstructor(ConstructorDeclarationSyntax constructor)
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(constructor.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(constructor.Parent);
 
             return info.Success
                 && info

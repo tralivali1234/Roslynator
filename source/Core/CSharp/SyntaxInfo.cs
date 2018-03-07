@@ -524,68 +524,68 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified node.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(SyntaxNode node)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(SyntaxNode node)
         {
-            return Syntax.MemberDeclarationsInfo.Create(node);
+            return Syntax.MemberDeclarationListInfo.Create(node);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified compilation unit.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified compilation unit.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(CompilationUnitSyntax compilationUnit)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(CompilationUnitSyntax compilationUnit)
         {
-            return Syntax.MemberDeclarationsInfo.Create(compilationUnit);
+            return Syntax.MemberDeclarationListInfo.Create(compilationUnit);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(NamespaceDeclarationSyntax declaration)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(NamespaceDeclarationSyntax declaration)
         {
-            return Syntax.MemberDeclarationsInfo.Create(declaration);
+            return Syntax.MemberDeclarationListInfo.Create(declaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(ClassDeclarationSyntax declaration)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(ClassDeclarationSyntax declaration)
         {
-            return Syntax.MemberDeclarationsInfo.Create(declaration);
+            return Syntax.MemberDeclarationListInfo.Create(declaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(StructDeclarationSyntax declaration)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(StructDeclarationSyntax declaration)
         {
-            return Syntax.MemberDeclarationsInfo.Create(declaration);
+            return Syntax.MemberDeclarationListInfo.Create(declaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.MemberDeclarationsInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.MemberDeclarationListInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static MemberDeclarationsInfo MemberDeclarationsInfo(InterfaceDeclarationSyntax declaration)
+        public static MemberDeclarationListInfo MemberDeclarationListInfo(InterfaceDeclarationSyntax declaration)
         {
-            return Syntax.MemberDeclarationsInfo.Create(declaration);
+            return Syntax.MemberDeclarationListInfo.Create(declaration);
         }
 
-        internal static MemberDeclarationsInfo MemberDeclarationsInfo(MemberDeclarationsSelection selectedMembers)
+        internal static MemberDeclarationListInfo MemberDeclarationListInfo(MemberDeclarationListSelection selectedMembers)
         {
-            return Syntax.MemberDeclarationsInfo.Create(selectedMembers);
+            return Syntax.MemberDeclarationListInfo.Create(selectedMembers);
         }
 
         /// <summary>
@@ -1205,28 +1205,28 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.StatementsInfo"/> from the specified statement.
+        /// Creates a new <see cref="Syntax.StatementListInfo"/> from the specified statement.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public static StatementsInfo StatementsInfo(StatementSyntax statement)
+        public static StatementListInfo StatementListInfo(StatementSyntax statement)
         {
-            return Syntax.StatementsInfo.Create(statement);
+            return Syntax.StatementListInfo.Create(statement);
         }
 
-        internal static StatementsInfo StatementsInfo(BlockSyntax block)
+        internal static StatementListInfo StatementListInfo(BlockSyntax block)
         {
-            return Syntax.StatementsInfo.Create(block);
+            return Syntax.StatementListInfo.Create(block);
         }
 
-        internal static StatementsInfo StatementsInfo(SwitchSectionSyntax switchSection)
+        internal static StatementListInfo StatementListInfo(SwitchSectionSyntax switchSection)
         {
-            return Syntax.StatementsInfo.Create(switchSection);
+            return Syntax.StatementListInfo.Create(switchSection);
         }
 
-        internal static StatementsInfo StatementsInfo(StatementsSelection selectedStatements)
+        internal static StatementListInfo StatementListInfo(StatementListSelection selectedStatements)
         {
-            return Syntax.StatementsInfo.Create(selectedStatements);
+            return Syntax.StatementListInfo.Create(selectedStatements);
         }
 
         public static StringConcatenationExpressionInfo StringConcatenationExpressionInfo(
@@ -1288,33 +1288,33 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified node.
+        /// Creates a new <see cref="Syntax.UsingDirectiveListInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static UsingDirectivesInfo UsingDirectivesInfo(SyntaxNode node)
+        public static UsingDirectiveListInfo UsingDirectiveListInfo(SyntaxNode node)
         {
-            return Syntax.UsingDirectivesInfo.Create(node);
+            return Syntax.UsingDirectiveListInfo.Create(node);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified compilation unit.
+        /// Creates a new <see cref="Syntax.UsingDirectiveListInfo"/> from the specified compilation unit.
         /// </summary>
         /// <param name="compilationUnit"></param>
         /// <returns></returns>
-        public static UsingDirectivesInfo UsingDirectivesInfo(CompilationUnitSyntax compilationUnit)
+        public static UsingDirectiveListInfo UsingDirectiveListInfo(CompilationUnitSyntax compilationUnit)
         {
-            return Syntax.UsingDirectivesInfo.Create(compilationUnit);
+            return Syntax.UsingDirectiveListInfo.Create(compilationUnit);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.UsingDirectivesInfo"/> from the specified declaration.
+        /// Creates a new <see cref="Syntax.UsingDirectiveListInfo"/> from the specified declaration.
         /// </summary>
         /// <param name="declaration"></param>
         /// <returns></returns>
-        public static UsingDirectivesInfo UsingDirectivesInfo(NamespaceDeclarationSyntax declaration)
+        public static UsingDirectiveListInfo UsingDirectiveListInfo(NamespaceDeclarationSyntax declaration)
         {
-            return Syntax.UsingDirectivesInfo.Create(declaration);
+            return Syntax.UsingDirectiveListInfo.Create(declaration);
         }
 
         /// <summary>

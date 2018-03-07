@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             LocalFunctionStatementSyntax localFunction,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfos = SyntaxInfo.StatementsInfo(localFunction);
+            StatementListInfo statementsInfos = SyntaxInfo.StatementListInfo(localFunction);
 
             SyntaxList<StatementSyntax> statements = statementsInfos.Statements;
             int index = statements.IndexOf(localFunction);

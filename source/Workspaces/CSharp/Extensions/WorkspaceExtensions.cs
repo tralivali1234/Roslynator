@@ -364,7 +364,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceStatementsAsync(
             this Document document,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             IEnumerable<StatementSyntax> newStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -373,7 +373,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceStatementsAsync(
             this Document document,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             SyntaxList<StatementSyntax> newStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -382,7 +382,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceMembersAsync(
             this Document document,
-            MemberDeclarationsInfo info,
+            MemberDeclarationListInfo info,
             IEnumerable<MemberDeclarationSyntax> newMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -394,7 +394,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceMembersAsync(
             this Document document,
-            MemberDeclarationsInfo info,
+            MemberDeclarationListInfo info,
             SyntaxList<MemberDeclarationSyntax> newMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {

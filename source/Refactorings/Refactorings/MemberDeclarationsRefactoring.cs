@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationSyntax member)
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(member.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(member.Parent);
 
             if (!info.Success)
                 return;
@@ -91,7 +91,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> SwapMembersAsync(
             Document document,
-            MemberDeclarationsInfo info,
+            MemberDeclarationListInfo info,
             int index,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -108,7 +108,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> ReplaceMembersAsync(
             Document document,
-            MemberDeclarationsInfo info,
+            MemberDeclarationListInfo info,
             IEnumerable<MemberDeclarationSyntax> newMembers,
             CancellationToken cancellationToken = default(CancellationToken))
         {

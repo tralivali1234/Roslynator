@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             private readonly StatementSyntax _jumpStatement;
             private readonly bool _recursive;
             private readonly SyntaxKind _jumpKind;
-            private StatementsInfo _statementsInfo;
+            private StatementListInfo _statementsInfo;
             private readonly SemanticModel _semanticModel;
             private readonly CancellationToken _cancellationToken;
 
@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             {
                 if (_statementsInfo.Parent == null)
                 {
-                    return Rewrite(new StatementsInfo(node));
+                    return Rewrite(new StatementListInfo(node));
                 }
 
                 return node;
@@ -83,10 +83,10 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 if (_statementsInfo.Parent == null
                     && node.IsParentKind(SyntaxKind.SwitchSection))
                 {
-                    return Rewrite(new StatementsInfo(node));
+                    return Rewrite(new StatementListInfo(node));
                 }
 
-                _statementsInfo = new StatementsInfo(node);
+                _statementsInfo = new StatementListInfo(node);
 
                 IfStatementSyntax ifStatement = FindFixableIfStatement(_statementsInfo.Statements, _jumpKind);
 
@@ -135,7 +135,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 return null;
             }
 
-            private SyntaxNode Rewrite(StatementsInfo statementsInfo)
+            private SyntaxNode Rewrite(StatementListInfo statementsInfo)
             {
                 _statementsInfo = statementsInfo;
 
@@ -144,7 +144,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 return Rewrite(_statementsInfo, ifStatement);
             }
 
-            private SyntaxNode Rewrite(StatementsInfo statementsInfo, IfStatementSyntax ifStatement)
+            private SyntaxNode Rewrite(StatementListInfo statementsInfo, IfStatementSyntax ifStatement)
             {
                 SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

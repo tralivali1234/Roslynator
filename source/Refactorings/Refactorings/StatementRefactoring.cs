@@ -182,7 +182,7 @@ namespace Roslynator.CSharp.Refactorings
             StatementSyntax statement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
             if (statementsInfo.Success)
             {
                 int index = statementsInfo.Statements.IndexOf(statement);
@@ -196,7 +196,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 SyntaxList<StatementSyntax> newStatements = statementsInfo.Statements.Insert(index + 1, statement.WithNavigationAnnotation());
 
-                StatementsInfo newInfo = statementsInfo.WithStatements(newStatements);
+                StatementListInfo newInfo = statementsInfo.WithStatements(newStatements);
 
                 return document.ReplaceNodeAsync(statementsInfo.Parent, newInfo.Parent, cancellationToken);
             }

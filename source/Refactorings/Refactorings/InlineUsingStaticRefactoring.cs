@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
 
             Debug.Assert(parent.IsKind(SyntaxKind.CompilationUnit, SyntaxKind.NamespaceDeclaration));
 
-            int index = SyntaxInfo.UsingDirectivesInfo(parent).IndexOf(usingDirective);
+            int index = SyntaxInfo.UsingDirectiveListInfo(parent).IndexOf(usingDirective);
 
             List<SimpleNameSyntax> names = CollectNames(parent, classSymbol, semanticModel, cancellationToken);
 

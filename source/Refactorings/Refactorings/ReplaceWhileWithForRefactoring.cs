@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         public const string Title = "Replace while with for";
 
-        public static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
+        public static async Task ComputeRefactoringAsync(RefactoringContext context, StatementListSelection selectedStatements)
         {
             if (!(selectedStatements.Last() is WhileStatementSyntax whileStatement))
                 return;
@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.Refactorings
         }
 
         private static bool VerifyLocalDeclarationStatements(
-            StatementsSelection selectedStatements,
+            StatementListSelection selectedStatements,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
@@ -118,7 +118,7 @@ namespace Roslynator.CSharp.Refactorings
             return true;
         }
 
-        private static bool VerifyExpressionStatements(StatementsSelection selectedStatements)
+        private static bool VerifyExpressionStatements(StatementListSelection selectedStatements)
         {
             for (int i = 0; i < selectedStatements.Count - 1; i++)
             {
@@ -194,7 +194,7 @@ namespace Roslynator.CSharp.Refactorings
                 .TrimLeadingTrivia()
                 .PrependToLeadingTrivia(list[0].GetLeadingTrivia());
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(whileStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(whileStatement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

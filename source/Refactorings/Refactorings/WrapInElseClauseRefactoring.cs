@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class WrapInElseClauseRefactoring
     {
-        public static void ComputeRefactoring(RefactoringContext context, StatementsSelection selectedStatements)
+        public static void ComputeRefactoring(RefactoringContext context, StatementListSelection selectedStatements)
         {
             StatementSyntax lastStatement = selectedStatements.Last();
 
@@ -75,7 +75,7 @@ namespace Roslynator.CSharp.Refactorings
         private static Task<Document> RefactorAsync(
             Document document,
             IfStatementInfo ifStatementInfo,
-            StatementsSelection selectedStatements,
+            StatementListSelection selectedStatements,
             CancellationToken cancellationToken)
         {
             StatementSyntax newStatement = null;
@@ -105,7 +105,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = newStatements.Count - 1; i >= selectedStatements.FirstIndex; i--)
                 newStatements = newStatements.RemoveAt(i);
 
-            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementListInfo(selectedStatements), newStatements, cancellationToken);
         }
     }
 }

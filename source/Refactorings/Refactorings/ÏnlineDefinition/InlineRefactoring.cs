@@ -124,11 +124,11 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
             newStatements[0] = newStatements[0].WithLeadingTrivia(expressionStatement.GetLeadingTrivia());
             newStatements[count - 1] = newStatements[count - 1].WithTrailingTrivia(expressionStatement.GetTrailingTrivia());
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(expressionStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(expressionStatement);
 
             if (statementsInfo.Success)
             {
-                StatementsInfo newInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
+                StatementListInfo newInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
 
                 return Document.ReplaceNodeAsync(statementsInfo.Parent, newInfo.Parent, cancellationToken);
             }
@@ -154,11 +154,11 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                 newStatements[0] = newStatements[0].WithLeadingTrivia(expressionStatement.GetLeadingTrivia());
                 newStatements[count - 1] = newStatements[count - 1].WithTrailingTrivia(expressionStatement.GetTrailingTrivia());
 
-                StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(expressionStatement);
+                StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(expressionStatement);
 
                 if (statementsInfo.Success)
                 {
-                    StatementsInfo newStatementsInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
+                    StatementListInfo newStatementsInfo = statementsInfo.WithStatements(statementsInfo.Statements.ReplaceRange(expressionStatement, newStatements));
 
                     editor.ReplaceNode(statementsInfo.Parent, newStatementsInfo.Parent);
                 }

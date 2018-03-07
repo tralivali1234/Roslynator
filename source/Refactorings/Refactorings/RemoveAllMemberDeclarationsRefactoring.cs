@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax member,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(member);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(member);
 
             SyntaxNode newNode = info
                 .WithMembers(default(SyntaxList<MemberDeclarationSyntax>))

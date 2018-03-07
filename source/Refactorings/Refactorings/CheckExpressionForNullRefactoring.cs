@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Refactorings
             return typeSymbol.IsReferenceOrNullableType();
         }
 
-        internal static async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
+        internal static async Task ComputeRefactoringAsync(RefactoringContext context, StatementListSelection selectedStatements)
         {
             if (selectedStatements.Count <= 1)
                 return;
@@ -179,7 +179,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static bool NullCheckExists(ExpressionSyntax expression, StatementSyntax statement)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             if (!statementsInfo.Success)
                 return false;
@@ -216,7 +216,7 @@ namespace Roslynator.CSharp.Refactorings
             }
             else
             {
-                StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+                StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
                 SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
                 int statementIndex = statements.IndexOf(statement);
@@ -255,7 +255,7 @@ namespace Roslynator.CSharp.Refactorings
             int statementCount,
             CancellationToken cancellationToken)
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 
@@ -275,7 +275,7 @@ namespace Roslynator.CSharp.Refactorings
             Document document,
             ExpressionSyntax expression,
             SyntaxList<StatementSyntax> statements,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             int statementIndex,
             int lastStatementIndex,
             CancellationToken cancellationToken)

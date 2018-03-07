@@ -10,23 +10,23 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static void ComputeRefactoring(RefactoringContext context, NamespaceDeclarationSyntax namespaceDeclaration)
         {
-            if (MemberDeclarationsSelection.TryCreate(namespaceDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
+            if (MemberDeclarationListSelection.TryCreate(namespaceDeclaration, context.Span, out MemberDeclarationListSelection selectedMembers))
                 ComputeRefactoring(context, selectedMembers);
         }
 
         public static void ComputeRefactoring(RefactoringContext context, ClassDeclarationSyntax classDeclaration)
         {
-            if (MemberDeclarationsSelection.TryCreate(classDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
+            if (MemberDeclarationListSelection.TryCreate(classDeclaration, context.Span, out MemberDeclarationListSelection selectedMembers))
                 ComputeRefactoring(context, selectedMembers);
         }
 
         public static void ComputeRefactoring(RefactoringContext context, StructDeclarationSyntax structDeclaration)
         {
-            if (MemberDeclarationsSelection.TryCreate(structDeclaration, context.Span, out MemberDeclarationsSelection selectedMembers))
+            if (MemberDeclarationListSelection.TryCreate(structDeclaration, context.Span, out MemberDeclarationListSelection selectedMembers))
                 ComputeRefactoring(context, selectedMembers);
         }
 
-        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationsSelection selectedMembers)
+        public static void ComputeRefactoring(RefactoringContext context, MemberDeclarationListSelection selectedMembers)
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeAccessibility))
             {

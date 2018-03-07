@@ -112,7 +112,7 @@ namespace Roslynator.CSharp.Refactorings.IntroduceAndInitialize
         {
             ConstructorDeclarationSyntax constructor = Constructor;
 
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(constructor.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(constructor.Parent);
 
             SyntaxList<MemberDeclarationSyntax> members = info.Members;
 

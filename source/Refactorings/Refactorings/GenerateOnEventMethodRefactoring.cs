@@ -96,7 +96,7 @@ namespace Roslynator.CSharp.Refactorings
             bool supportsCSharp6,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(eventFieldDeclaration.Parent);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(eventFieldDeclaration.Parent);
 
             MethodDeclarationSyntax method = CreateOnEventMethod(eventSymbol, eventArgsSymbol, supportsCSharp6)
                 .WithFormatterAnnotation();

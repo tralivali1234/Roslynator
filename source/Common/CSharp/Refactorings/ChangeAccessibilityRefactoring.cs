@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static Accessibilities GetValidAccessibilities(MemberDeclarationsSelection selectedMembers, bool allowOverride = false)
+        public static Accessibilities GetValidAccessibilities(MemberDeclarationListSelection selectedMembers, bool allowOverride = false)
         {
             if (selectedMembers.Count < 2)
                 return Accessibilities.None;
@@ -145,7 +145,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            MemberDeclarationsSelection selectedMembers,
+            MemberDeclarationListSelection selectedMembers,
             Accessibility newAccessibility,
             CancellationToken cancellationToken)
         {
@@ -153,14 +153,14 @@ namespace Roslynator.CSharp.Refactorings
                 .UnderlyingList
                 .ReplaceRangeAt(selectedMembers.FirstIndex, selectedMembers.Count, selectedMembers.Select(f => SyntaxAccessibility.WithExplicitAccessibility(f, newAccessibility)));
 
-            MemberDeclarationsInfo info = SyntaxInfo.MemberDeclarationsInfo(selectedMembers);
+            MemberDeclarationListInfo info = SyntaxInfo.MemberDeclarationListInfo(selectedMembers);
 
             return document.ReplaceMembersAsync(info, newMembers, cancellationToken);
         }
 
         public static async Task<Solution> RefactorAsync(
             Solution solution,
-            MemberDeclarationsSelection selectedMembers,
+            MemberDeclarationListSelection selectedMembers,
             Accessibility newAccessibility,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
             if (IfStatement.IsSimpleIf())
             {
-                    StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(IfStatement);
+                    StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(IfStatement);
 
                     SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

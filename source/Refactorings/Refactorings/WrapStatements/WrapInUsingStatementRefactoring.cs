@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings.WrapStatements
 {
     internal class WrapInUsingStatementRefactoring : WrapStatementsRefactoring<UsingStatementSyntax>
     {
-        public async Task ComputeRefactoringAsync(RefactoringContext context, StatementsSelection selectedStatements)
+        public async Task ComputeRefactoringAsync(RefactoringContext context, StatementListSelection selectedStatements)
         {
             SingleLocalDeclarationStatementInfo localInfo = SyntaxInfo.SingleLocalDeclarationStatementInfo(selectedStatements.FirstOrDefault() as LocalDeclarationStatementSyntax);
 

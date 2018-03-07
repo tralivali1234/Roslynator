@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!partialKeyword.IsKind(SyntaxKind.PartialKeyword))
                 return;
 
-            if (SyntaxInfo.MemberDeclarationsInfo(memberDeclaration)
+            if (SyntaxInfo.MemberDeclarationListInfo(memberDeclaration)
                 .Members
                 .Any(member => member.Kind() == SyntaxKind.MethodDeclaration && ((MethodDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.PartialKeyword)))
             {

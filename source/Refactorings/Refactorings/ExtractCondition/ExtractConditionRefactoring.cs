@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
                         }
                         else if (kind == SyntaxKind.LogicalOrExpression)
                         {
-                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
+                            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo((StatementSyntax)parent);
 
                             if (statementsInfo.Success)
                             {
@@ -102,7 +102,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
                         }
                         else if (kind == SyntaxKind.LogicalOrExpression)
                         {
-                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
+                            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo((StatementSyntax)parent);
 
                             if (statementsInfo.Success)
                             {
@@ -120,7 +120,7 @@ namespace Roslynator.CSharp.Refactorings.ExtractCondition
                     {
                         if (kind == SyntaxKind.LogicalAndExpression)
                         {
-                            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo((StatementSyntax)parent);
+                            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo((StatementSyntax)parent);
 
                             if (statementsInfo.Success)
                             {

@@ -14,9 +14,9 @@ namespace Roslynator.CSharp.Syntax
     /// <summary>
     /// Provides information about a list of statements.
     /// </summary>
-    public readonly struct StatementsInfo : IEquatable<StatementsInfo>, IReadOnlyList<StatementSyntax>
+    public readonly struct StatementListInfo : IEquatable<StatementListInfo>, IReadOnlyList<StatementSyntax>
     {
-        internal StatementsInfo(BlockSyntax block)
+        internal StatementListInfo(BlockSyntax block)
         {
             Debug.Assert(block != null);
 
@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Syntax
             Statements = block.Statements;
         }
 
-        internal StatementsInfo(SwitchSectionSyntax switchSection)
+        internal StatementListInfo(SwitchSectionSyntax switchSection)
         {
             Debug.Assert(switchSection != null);
 
@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Syntax
             Statements = switchSection.Statements;
         }
 
-        private static StatementsInfo Default { get; } = new StatementsInfo();
+        private static StatementListInfo Default { get; } = new StatementListInfo();
 
         /// <summary>
         /// The node that contains the statements. It can be either a <see cref="BlockSyntax"/> or a <see cref="SwitchSectionSyntax"/>.
@@ -121,23 +121,23 @@ namespace Roslynator.CSharp.Syntax
             return Statements.GetEnumerator();
         }
 
-        internal static StatementsInfo Create(BlockSyntax block)
+        internal static StatementListInfo Create(BlockSyntax block)
         {
             if (block == null)
                 return Default;
 
-            return new StatementsInfo(block);
+            return new StatementListInfo(block);
         }
 
-        internal static StatementsInfo Create(SwitchSectionSyntax switchSection)
+        internal static StatementListInfo Create(SwitchSectionSyntax switchSection)
         {
             if (switchSection == null)
                 return Default;
 
-            return new StatementsInfo(switchSection);
+            return new StatementListInfo(switchSection);
         }
 
-        internal static StatementsInfo Create(StatementSyntax statement)
+        internal static StatementListInfo Create(StatementSyntax statement)
         {
             if (statement == null)
                 return Default;
@@ -147,101 +147,101 @@ namespace Roslynator.CSharp.Syntax
             switch (parent?.Kind())
             {
                 case SyntaxKind.Block:
-                    return new StatementsInfo((BlockSyntax)parent);
+                    return new StatementListInfo((BlockSyntax)parent);
                 case SyntaxKind.SwitchSection:
-                    return new StatementsInfo((SwitchSectionSyntax)parent);
+                    return new StatementListInfo((SwitchSectionSyntax)parent);
                 default:
                     return Default;
             }
         }
 
-        internal static StatementsInfo Create(StatementsSelection selectedStatements)
+        internal static StatementListInfo Create(StatementListSelection selectedStatements)
         {
             return Create(selectedStatements?.First());
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the statements updated.
+        /// Creates a new <see cref="StatementListInfo"/> with the statements updated.
         /// </summary>
         /// <param name="statements"></param>
         /// <returns></returns>
-        public StatementsInfo WithStatements(IEnumerable<StatementSyntax> statements)
+        public StatementListInfo WithStatements(IEnumerable<StatementSyntax> statements)
         {
             return WithStatements(List(statements));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the statements updated.
+        /// Creates a new <see cref="StatementListInfo"/> with the statements updated.
         /// </summary>
         /// <param name="statements"></param>
         /// <returns></returns>
-        public StatementsInfo WithStatements(SyntaxList<StatementSyntax> statements)
+        public StatementListInfo WithStatements(SyntaxList<StatementSyntax> statements)
         {
             ThrowInvalidOperationIfNotInitialized();
 
             if (IsBlock)
-                return new StatementsInfo(Block.WithStatements(statements));
+                return new StatementListInfo(Block.WithStatements(statements));
 
             if (IsSwitchSection)
-                return new StatementsInfo(SwitchSection.WithStatements(statements));
+                return new StatementListInfo(SwitchSection.WithStatements(statements));
 
             throw new InvalidOperationException();
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified node removed.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified node removed.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public StatementsInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
+        public StatementListInfo RemoveNode(SyntaxNode node, SyntaxRemoveOptions options)
         {
             ThrowInvalidOperationIfNotInitialized();
 
             if (IsBlock)
-                return new StatementsInfo(Block.RemoveNode(node, options));
+                return new StatementListInfo(Block.RemoveNode(node, options));
 
             if (IsSwitchSection)
-                return new StatementsInfo(SwitchSection.RemoveNode(node, options));
+                return new StatementListInfo(SwitchSection.RemoveNode(node, options));
 
             throw new InvalidOperationException();
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified old node replaced with a new node.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified old node replaced with a new node.
         /// </summary>
         /// <param name="oldNode"></param>
         /// <param name="newNode"></param>
         /// <returns></returns>
-        public StatementsInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
+        public StatementListInfo ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode)
         {
             ThrowInvalidOperationIfNotInitialized();
 
             if (IsBlock)
-                return new StatementsInfo(Block.ReplaceNode(oldNode, newNode));
+                return new StatementListInfo(Block.ReplaceNode(oldNode, newNode));
 
             if (IsSwitchSection)
-                return new StatementsInfo(SwitchSection.ReplaceNode(oldNode, newNode));
+                return new StatementListInfo(SwitchSection.ReplaceNode(oldNode, newNode));
 
             throw new InvalidOperationException();
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statement added at the end.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statement added at the end.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public StatementsInfo Add(StatementSyntax statement)
+        public StatementListInfo Add(StatementSyntax statement)
         {
             return WithStatements(Statements.Add(statement));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statements added at the end.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statements added at the end.
         /// </summary>
         /// <param name="statements"></param>
         /// <returns></returns>
-        public StatementsInfo AddRange(IEnumerable<StatementSyntax> statements)
+        public StatementListInfo AddRange(IEnumerable<StatementSyntax> statements)
         {
             return WithStatements(Statements.AddRange(statements));
         }
@@ -294,23 +294,23 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statement inserted at the index.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statement inserted at the index.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public StatementsInfo Insert(int index, StatementSyntax statement)
+        public StatementListInfo Insert(int index, StatementSyntax statement)
         {
             return WithStatements(Statements.Insert(index, statement));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statements inserted at the index.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statements inserted at the index.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="statements"></param>
         /// <returns></returns>
-        public StatementsInfo InsertRange(int index, IEnumerable<StatementSyntax> statements)
+        public StatementListInfo InsertRange(int index, IEnumerable<StatementSyntax> statements)
         {
             return WithStatements(Statements.InsertRange(index, statements));
         }
@@ -354,54 +354,54 @@ namespace Roslynator.CSharp.Syntax
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statement removed.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statement removed.
         /// </summary>
         /// <param name="statement"></param>
         /// <returns></returns>
-        public StatementsInfo Remove(StatementSyntax statement)
+        public StatementListInfo Remove(StatementSyntax statement)
         {
             return WithStatements(Statements.Remove(statement));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the statement at the specified index removed.
+        /// Creates a new <see cref="StatementListInfo"/> with the statement at the specified index removed.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public StatementsInfo RemoveAt(int index)
+        public StatementListInfo RemoveAt(int index)
         {
             return WithStatements(Statements.RemoveAt(index));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statement replaced with the new statement.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statement replaced with the new statement.
         /// </summary>
         /// <param name="statementInList"></param>
         /// <param name="newStatement"></param>
         /// <returns></returns>
-        public StatementsInfo Replace(StatementSyntax statementInList, StatementSyntax newStatement)
+        public StatementListInfo Replace(StatementSyntax statementInList, StatementSyntax newStatement)
         {
             return WithStatements(Statements.Replace(statementInList, newStatement));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the statement at the specified index replaced with a new statement.
+        /// Creates a new <see cref="StatementListInfo"/> with the statement at the specified index replaced with a new statement.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="newStatement"></param>
         /// <returns></returns>
-        public StatementsInfo ReplaceAt(int index, StatementSyntax newStatement)
+        public StatementListInfo ReplaceAt(int index, StatementSyntax newStatement)
         {
             return WithStatements(Statements.ReplaceAt(index, newStatement));
         }
 
         /// <summary>
-        /// Creates a new <see cref="StatementsInfo"/> with the specified statement replaced with new statements.
+        /// Creates a new <see cref="StatementListInfo"/> with the specified statement replaced with new statements.
         /// </summary>
         /// <param name="statementInList"></param>
         /// <param name="newStatements"></param>
         /// <returns></returns>
-        public StatementsInfo ReplaceRange(StatementSyntax statementInList, IEnumerable<StatementSyntax> newStatements)
+        public StatementListInfo ReplaceRange(StatementSyntax statementInList, IEnumerable<StatementSyntax> newStatements)
         {
             return WithStatements(Statements.ReplaceRange(statementInList, newStatements));
         }
@@ -409,7 +409,7 @@ namespace Roslynator.CSharp.Syntax
         private void ThrowInvalidOperationIfNotInitialized()
         {
             if (Parent == null)
-                throw new InvalidOperationException($"{nameof(StatementsInfo)} is not initalized.");
+                throw new InvalidOperationException($"{nameof(StatementListInfo)} is not initalized.");
         }
 
         /// <summary>
@@ -428,7 +428,7 @@ namespace Roslynator.CSharp.Syntax
         /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false. </returns>
         public override bool Equals(object obj)
         {
-            return obj is StatementsInfo other && Equals(other);
+            return obj is StatementListInfo other && Equals(other);
         }
 
         /// <summary>
@@ -436,7 +436,7 @@ namespace Roslynator.CSharp.Syntax
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
-        public bool Equals(StatementsInfo other)
+        public bool Equals(StatementListInfo other)
         {
             return EqualityComparer<SyntaxNode>.Default.Equals(Parent, other.Parent);
         }
@@ -450,12 +450,12 @@ namespace Roslynator.CSharp.Syntax
             return EqualityComparer<SyntaxNode>.Default.GetHashCode(Parent);
         }
 
-        public static bool operator ==(StatementsInfo info1, StatementsInfo info2)
+        public static bool operator ==(StatementListInfo info1, StatementListInfo info2)
         {
             return info1.Equals(info2);
         }
 
-        public static bool operator !=(StatementsInfo info1, StatementsInfo info2)
+        public static bool operator !=(StatementListInfo info1, StatementListInfo info2)
         {
             return !(info1 == info2);
         }

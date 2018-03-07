@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public override async Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(IfStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(IfStatement);
 
             SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
 

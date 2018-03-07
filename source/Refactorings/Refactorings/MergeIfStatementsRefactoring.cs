@@ -16,7 +16,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeIfStatementsRefactoring
     {
-        public static void ComputeRefactorings(RefactoringContext context, StatementsSelection selectedStatements)
+        public static void ComputeRefactorings(RefactoringContext context, StatementListSelection selectedStatements)
         {
             int count = 0;
 
@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
         public static Task<Document> RefactorAsync(
             Document document,
-            StatementsSelection selectedStatements,
+            StatementListSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             ImmutableArray<IfStatementSyntax> ifStatements = selectedStatements.Cast<IfStatementSyntax>().ToImmutableArray();
@@ -60,7 +60,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = 1; i < ifStatements.Length; i++)
                 newStatements = newStatements.RemoveAt(index + 1);
 
-            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementListInfo(selectedStatements), newStatements, cancellationToken);
         }
 
         private static BinaryExpressionSyntax BinaryExpression(SyntaxKind kind, IEnumerable<ExpressionSyntax> expressions)

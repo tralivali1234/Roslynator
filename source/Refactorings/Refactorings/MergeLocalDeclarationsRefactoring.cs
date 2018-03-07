@@ -10,7 +10,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeLocalDeclarationsRefactoring
     {
-        public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementsSelection selectedStatements)
+        public static async Task ComputeRefactoringsAsync(RefactoringContext context, StatementListSelection selectedStatements)
         {
             if (selectedStatements.Count <= 1)
                 return;
@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
         }
 
         private static bool AreLocalDeclarations(
-            StatementsSelection statements,
+            StatementListSelection statements,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
 
         private static Task<Document> RefactorAsync(
             Document document,
-            StatementsSelection selectedStatements,
+            StatementListSelection selectedStatements,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             LocalDeclarationStatementSyntax[] localDeclarations = selectedStatements
@@ -94,7 +94,7 @@ namespace Roslynator.CSharp.Refactorings
             for (int i = 1; i < localDeclarations.Length; i++)
                 newStatements = newStatements.RemoveAt(index + 1);
 
-            return document.ReplaceStatementsAsync(SyntaxInfo.StatementsInfo(selectedStatements), newStatements, cancellationToken);
+            return document.ReplaceStatementsAsync(SyntaxInfo.StatementListInfo(selectedStatements), newStatements, cancellationToken);
         }
     }
 }

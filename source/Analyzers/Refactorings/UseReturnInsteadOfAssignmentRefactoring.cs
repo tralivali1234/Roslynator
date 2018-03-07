@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             if (ifStatement.IsSimpleIf())
                 return;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(ifStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(ifStatement);
             if (!statementsInfo.Success)
                 return;
 
@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var switchStatement = (SwitchStatementSyntax)context.Node;
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(switchStatement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(switchStatement);
 
             if (!statementsInfo.Success)
                 return;
@@ -268,7 +268,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
-            StatementsInfo statementsInfo = SyntaxInfo.StatementsInfo(statement);
+            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
 
             int index = statementsInfo.IndexOf(statement);
 
@@ -301,7 +301,7 @@ namespace Roslynator.CSharp.Refactorings
                             endsWithElse = ifOrElse.IsElse;
                         }
 
-                        StatementsInfo newStatementsInfo = await RefactorAsync(
+                        StatementListInfo newStatementsInfo = await RefactorAsync(
                             document,
                             statementsInfo,
                             ifStatement,
@@ -325,7 +325,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         SwitchStatementSyntax newSwitchStatement = switchStatement.WithSections(newSections);
 
-                        StatementsInfo newStatementsInfo = await RefactorAsync(
+                        StatementListInfo newStatementsInfo = await RefactorAsync(
                             document,
                             statementsInfo,
                             switchStatement,
@@ -356,9 +356,9 @@ namespace Roslynator.CSharp.Refactorings
             return section.RemoveStatement(GetStatements(section).Last());
         }
 
-        private static async Task<StatementsInfo> RefactorAsync(
+        private static async Task<StatementListInfo> RefactorAsync(
             Document document,
-            StatementsInfo statementsInfo,
+            StatementListInfo statementsInfo,
             StatementSyntax statement,
             StatementSyntax newStatement,
             int index,
