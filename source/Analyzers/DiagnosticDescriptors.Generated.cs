@@ -2436,15 +2436,15 @@ namespace Roslynator.CSharp
         public static readonly DiagnosticDescriptor ReplaceInterpolatedStringWithConcatenationFadeOut = ReplaceInterpolatedStringWithConcatenation.CreateFadeOut();
 
         /// <summary>RCS1218</summary>
-        public static readonly DiagnosticDescriptor SimplifyCondition = new DiagnosticDescriptor(
-            id:                 DiagnosticIdentifiers.SimplifyCondition, 
-            title:              "Simplify condition.", 
-            messageFormat:      "Simplify condition.", 
+        public static readonly DiagnosticDescriptor SimplifyCodeBranching = new DiagnosticDescriptor(
+            id:                 DiagnosticIdentifiers.SimplifyCodeBranching, 
+            title:              "Simplify code branching.", 
+            messageFormat:      "Simplify code branching.", 
             category:           DiagnosticCategories.Readability, 
             defaultSeverity:    DiagnosticSeverity.Info, 
             isEnabledByDefault: true, 
             description:        null, 
-            helpLinkUri:        $"{HelpLinkUriRoot}{DiagnosticIdentifiers.SimplifyCondition}", 
+            helpLinkUri:        $"{HelpLinkUriRoot}{DiagnosticIdentifiers.SimplifyCodeBranching}", 
             customTags:         Array.Empty<string>());
 
     }

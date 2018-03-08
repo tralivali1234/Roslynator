@@ -4559,10 +4559,10 @@ string y = $"{x}{x}{x}";]]></Before>
       </Sample>
     </Samples>
   </Analyzer>
-  <Analyzer Identifier="SimplifyCondition">
+  <Analyzer Identifier="SimplifyCodeBranching">
     <Id>RCS1218</Id>
-    <Title>Simplify condition.</Title>
-    <MessageFormat>Simplify condition.</MessageFormat>
+    <Title>Simplify code branching.</Title>
+    <MessageFormat>Simplify code branching.</MessageFormat>
     <Category>Readability</Category>
     <DefaultSeverity>Info</DefaultSeverity>
     <IsEnabledByDefault>true</IsEnabledByDefault>
@@ -4603,6 +4603,39 @@ else
         <After><![CDATA[while (x)
 {
 }]]></After>
+      </Sample>
+      <Sample>
+        <Before><![CDATA[while (true)
+{
+  Foo();
+
+  if (x)
+  {
+    break;
+  }
+}]]></Before>
+        <After><![CDATA[do
+{
+  Foo();
+      
+} while (!x)]]></After>
+      </Sample>
+      <Sample>
+        <Before><![CDATA[do
+{
+  Foo();
+
+  if (x)
+  {
+    break;
+  }
+  
+} while (true)]]></Before>
+        <After><![CDATA[do
+{
+  Foo();
+
+} while (!x)]]></After>
       </Sample>
     </Samples>
   </Analyzer>

@@ -17,11 +17,11 @@ namespace Roslynator.CSharp.CodeFixes
     [Shared]
     public class SimplifyConditionCodeFixProvider : BaseCodeFixProvider
     {
-        private const string Title = "Simplify condition";
+        private const string Title = "Simplify code branching";
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(DiagnosticIdentifiers.SimplifyCondition); }
+            get { return ImmutableArray.Create(DiagnosticIdentifiers.SimplifyCodeBranching); }
         }
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.CodeFixes
                     {
                         CodeAction codeAction = CodeAction.Create(
                             Title,
-                            cancellationToken => SimplifyConditionRefactoring.RefactorAsync(context.Document, ifStatement, cancellationToken),
+                            cancellationToken => SimplifyCodeBranchingRefactoring.RefactorAsync(context.Document, ifStatement, cancellationToken),
                             GetEquivalenceKey(diagnostic));
 
                         context.RegisterCodeFix(codeAction, diagnostic);
@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.CodeFixes
                     {
                         CodeAction codeAction = CodeAction.Create(
                             Title,
-                            cancellationToken => SimplifyConditionRefactoring.RefactorAsync(context.Document, whileStatement, cancellationToken),
+                            cancellationToken => SimplifyCodeBranchingRefactoring.RefactorAsync(context.Document, whileStatement, cancellationToken),
                             GetEquivalenceKey(diagnostic));
 
                         context.RegisterCodeFix(codeAction, diagnostic);

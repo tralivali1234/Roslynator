@@ -13,7 +13,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    internal static class SimplifyConditionRefactoring
+    internal static class SimplifyCodeBranchingRefactoring
     {
         internal static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
         {
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
                     return;
             }
 
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCondition, ifStatement);
+            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
         }
 
         private static void AnalyzeIfInsideWhileOrDo(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement)
@@ -110,7 +110,7 @@ namespace Roslynator.CSharp.Refactorings
                 return;
             }
 
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCondition, ifStatement);
+            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
         }
 
         internal static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
@@ -149,7 +149,7 @@ namespace Roslynator.CSharp.Refactorings
             if (ifStatement.Else != null)
                 return;
 
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCondition, whileStatement);
+            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, whileStatement);
         }
 
         public static async Task<Document> RefactorAsync(
@@ -161,11 +161,11 @@ namespace Roslynator.CSharp.Refactorings
 
             ElseClauseSyntax elseClause = ifStatement.Else;
 
-            StatementSyntax statement = elseClause.Statement;
+            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
             if (elseClause != null)
             {
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+                StatementSyntax statement = elseClause.Statement;
 
                 ExpressionSyntax newCondition = Negation.LogicallyNegate(condition, semanticModel, cancellationToken);
 
@@ -200,22 +200,22 @@ namespace Roslynator.CSharp.Refactorings
 
                 BlockSyntax newBlock = block.WithStatements(statements.RemoveAt(statements.Count - 1));
 
+                ExpressionSyntax newCondition = Negation.LogicallyNegate(condition, semanticModel, cancellationToken);
+
                 SyntaxNode newNode = block.Parent;
 
                 switch (block.Parent)
                 {
                     case WhileStatementSyntax whileStatement:
                         {
-                            SyntaxToken whileKeyword = whileStatement.WhileKeyword;
-
                             newNode = DoStatement(
-                                Token(whileKeyword.LeadingTrivia, SyntaxKind.DoKeyword, whileKeyword.TrailingTrivia),
-                                newBlock,
+                                Token(whileStatement.WhileKeyword.LeadingTrivia, SyntaxKind.DoKeyword, whileStatement.CloseParenToken.TrailingTrivia),
+                                newBlock.WithoutTrailingTrivia(),
                                 WhileKeyword(),
                                 OpenParenToken(),
-                                ifStatement.Condition,
+                                newCondition,
                                 CloseParenToken(),
-                                SemicolonToken());
+                                SemicolonToken().WithTrailingTrivia(newBlock.GetTrailingTrivia()));
 
                             break;
                         }
@@ -226,7 +226,7 @@ namespace Roslynator.CSharp.Refactorings
                                 newBlock,
                                 doStatement.WhileKeyword,
                                 doStatement.OpenParenToken,
-                                ifStatement.Condition,
+                                newCondition,
                                 doStatement.CloseParenToken,
                                 doStatement.SemicolonToken);
 
@@ -238,6 +238,8 @@ namespace Roslynator.CSharp.Refactorings
                             break;
                         }
                 }
+
+                newNode = newNode.WithFormatterAnnotation();
 
                 return await document.ReplaceNodeAsync(block.Parent, newNode, cancellationToken).ConfigureAwait(false);
             }

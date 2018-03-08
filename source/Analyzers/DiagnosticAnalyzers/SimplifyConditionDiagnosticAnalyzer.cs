@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.SimplifyCondition); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.SimplifyCodeBranching); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -25,8 +25,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(SimplifyConditionRefactoring.AnalyzeIfStatement, SyntaxKind.IfStatement);
-            context.RegisterSyntaxNodeAction(SimplifyConditionRefactoring.AnalyzeWhileStatement, SyntaxKind.WhileStatement);
+            context.RegisterSyntaxNodeAction(SimplifyCodeBranchingRefactoring.AnalyzeIfStatement, SyntaxKind.IfStatement);
+            context.RegisterSyntaxNodeAction(SimplifyCodeBranchingRefactoring.AnalyzeWhileStatement, SyntaxKind.WhileStatement);
         }
     }
 }
