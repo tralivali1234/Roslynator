@@ -4559,4 +4559,78 @@ string y = $"{x}{x}{x}";]]></Before>
       </Sample>
     </Samples>
   </Analyzer>
+  <Analyzer Identifier="SimplifyCodeBranching">
+    <Id>RCS1218</Id>
+    <Title>Simplify code branching.</Title>
+    <MessageFormat>Simplify code branching.</MessageFormat>
+    <Category>Readability</Category>
+    <DefaultSeverity>Info</DefaultSeverity>
+    <IsEnabledByDefault>true</IsEnabledByDefault>
+    <SupportsFadeOut>false</SupportsFadeOut>
+    <SupportsFadeOutAnalyzer>false</SupportsFadeOutAnalyzer>
+    <Samples>
+      <Sample>
+        <Before><![CDATA[if (x)
+{
+}
+else
+{
+  Foo();
+}]]></Before><After><![CDATA[if (!x)
+{
+  Foo();
+}]]></After>
+      </Sample>
+      <Sample>
+        <Before><![CDATA[while (true)
+{
+  if (x)
+  {
+    Foo();
+  }
+  else
+  {
+    break;
+  }
+}]]></Before>
+        <After><![CDATA[while (x)
+{
+  Foo();
+}]]></After>
+      </Sample>
+      <Sample>
+        <Before><![CDATA[while (true)
+{
+  if (x)
+  {
+    break;
+  }
+
+  Foo();
+}]]></Before>
+        <After><![CDATA[while (!x)
+{
+  Foo();
+      
+}]]></After>
+      </Sample>
+      <Sample>
+        <Before><![CDATA[do
+{
+  Foo();
+
+  if (x)
+  {
+    break;
+  }
+  
+} while (true)]]></Before>
+        <After><![CDATA[do
+{
+  Foo();
+
+} while (!x)]]></After>
+      </Sample>
+    </Samples>
+  </Analyzer>
 </Analyzers>
