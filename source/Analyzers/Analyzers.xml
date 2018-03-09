@@ -4559,4 +4559,31 @@ string y = $"{x}{x}{x}";]]></Before>
       </Sample>
     </Samples>
   </Analyzer>
+  <Analyzer Identifier="AddCommaAfterLastEnumMember">
+    <Id>RCS1218</Id>
+    <Title>Add comma after last enum member.</Title>
+    <MessageFormat>Add comma after last enum member.</MessageFormat>
+    <Category>Maintainability</Category>
+    <DefaultSeverity>Info</DefaultSeverity>
+    <IsEnabledByDefault>true</IsEnabledByDefault>
+    <SupportsFadeOut>false</SupportsFadeOut>
+    <SupportsFadeOutAnalyzer>false</SupportsFadeOutAnalyzer>
+    <Samples>
+      <Sample>
+        <Before>
+          <![CDATA[public enum Foo
+{
+  A,
+  B,
+  C // RCS0218
+}]]></Before>
+        <After><![CDATA[public enum Foo
+{
+  A,
+  B,
+  C,
+}]]></After>
+      </Sample>
+    </Samples>
+  </Analyzer>
 </Analyzers>
