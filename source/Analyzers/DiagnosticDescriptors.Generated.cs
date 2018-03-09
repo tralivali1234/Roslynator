@@ -2447,5 +2447,17 @@ namespace Roslynator.CSharp
             helpLinkUri:        $"{HelpLinkUriRoot}{DiagnosticIdentifiers.SimplifyCodeBranching}", 
             customTags:         Array.Empty<string>());
 
+        /// <summary>RCS1219</summary>
+        public static readonly DiagnosticDescriptor AddCommaAfterLastEnumMember = new DiagnosticDescriptor(
+            id:                 DiagnosticIdentifiers.AddCommaAfterLastEnumMember, 
+            title:              "Add comma after last enum member.", 
+            messageFormat:      "Add comma after last enum member.", 
+            category:           DiagnosticCategories.Maintainability, 
+            defaultSeverity:    DiagnosticSeverity.Info, 
+            isEnabledByDefault: true, 
+            description:        null, 
+            helpLinkUri:        $"{HelpLinkUriRoot}{DiagnosticIdentifiers.AddCommaAfterLastEnumMember}", 
+            customTags:         Array.Empty<string>());
+
     }
 }
