@@ -11,6 +11,6 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
         AllowNestedFix = 1,
         AllowIfInsideIfElse = 2,
         AllowLoop = 4,
-        AllowSwitchSection = 8
+        AllowSwitchSection = 8,
     }
 }

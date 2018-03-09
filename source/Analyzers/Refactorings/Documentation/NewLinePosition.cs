@@ -4,7 +4,7 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
 {
     internal enum NewLinePosition
     {
-        Beginning,
-        End
+        Beginning = 0,
+        End = 1,
     }
 }

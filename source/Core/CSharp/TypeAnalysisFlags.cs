@@ -13,6 +13,6 @@ namespace Roslynator.CSharp
         Dynamic = 4,
         SupportsImplicit = 8,
         SupportsExplicit = 16,
-        TypeObvious = 32
+        TypeObvious = 32,
     }
 }

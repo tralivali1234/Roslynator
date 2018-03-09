@@ -4,8 +4,8 @@ namespace Roslynator.CSharp.Documentation
 {
     internal enum DocumentationCommentOrigin
     {
-        None,
-        BaseMember,
-        InterfaceMember
+        None = 0,
+        BaseMember = 1,
+        InterfaceMember = 2,
     }
 }

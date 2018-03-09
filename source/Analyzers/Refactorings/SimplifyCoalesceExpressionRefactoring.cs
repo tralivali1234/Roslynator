@@ -184,7 +184,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             None,
             Left,
-            Right
+            Right,
         }
     }
 }

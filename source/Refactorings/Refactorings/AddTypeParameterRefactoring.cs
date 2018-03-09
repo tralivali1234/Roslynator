@@ -371,7 +371,7 @@ namespace Roslynator.CSharp.Refactorings
             Type,
             Class,
             Struct,
-            Constructor
+            Constructor,
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Roslynator.CSharp
     {
         None = 0,
         Obvious = 1,
-        NotObvious = 2
+        NotObvious = 2,
     }
 }

@@ -261,10 +261,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
         private enum AnalysisResult
         {
-            None,
-            BooleanLiteral,
-            Boolean,
-            LogicalNotWithNullableBoolean
+            None = 0,
+            BooleanLiteral = 1,
+            Boolean = 2,
+            LogicalNotWithNullableBoolean = 3,
         }
     }
 }
