@@ -51,7 +51,7 @@ namespace Roslynator.CSharp.Refactorings
                 .WithFormatterAnnotation();
 
             FieldDeclarationSyntax fieldDeclaration = FieldDeclaration(
-                (SyntaxInfo.ModifiersInfo(containingMember).IsStatic) ? Modifiers.PrivateStatic() : Modifiers.Private(),
+                (SyntaxInfo.ModifierListInfo(containingMember).IsStatic) ? Modifiers.PrivateStatic() : Modifiers.Private(),
                 typeSymbol.ToMinimalTypeSyntax(semanticModel, containingType.OpenBraceToken.Span.End),
                 name);
 

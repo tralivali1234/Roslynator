@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.CodeFixes
                 {
                     case CompilerDiagnosticIdentifiers.UserDefinedOperatorMustBeDeclaredStaticAndPublic:
                         {
-                            ModifiersInfo info = SyntaxInfo.ModifiersInfo(memberDeclaration);
+                            ModifierListInfo info = SyntaxInfo.ModifierListInfo(memberDeclaration);
 
                             string title = "Add ";
 

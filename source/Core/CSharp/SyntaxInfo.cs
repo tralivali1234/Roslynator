@@ -667,213 +667,213 @@ namespace Roslynator.CSharp
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified node.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified node.
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(SyntaxNode node)
+        public static ModifierListInfo ModifierListInfo(SyntaxNode node)
         {
-            return Syntax.ModifiersInfo.Create(node);
+            return Syntax.ModifierListInfo.Create(node);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified class declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified class declaration.
         /// </summary>
         /// <param name="classDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(ClassDeclarationSyntax classDeclaration)
+        public static ModifierListInfo ModifierListInfo(ClassDeclarationSyntax classDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(classDeclaration);
+            return Syntax.ModifierListInfo.Create(classDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified constructor declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified constructor declaration.
         /// </summary>
         /// <param name="constructorDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(ConstructorDeclarationSyntax constructorDeclaration)
+        public static ModifierListInfo ModifierListInfo(ConstructorDeclarationSyntax constructorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(constructorDeclaration);
+            return Syntax.ModifierListInfo.Create(constructorDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified conversion operator declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified conversion operator declaration.
         /// </summary>
         /// <param name="conversionOperatorDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
+        public static ModifierListInfo ModifierListInfo(ConversionOperatorDeclarationSyntax conversionOperatorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(conversionOperatorDeclaration);
+            return Syntax.ModifierListInfo.Create(conversionOperatorDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified delegate declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified delegate declaration.
         /// </summary>
         /// <param name="delegateDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(DelegateDeclarationSyntax delegateDeclaration)
+        public static ModifierListInfo ModifierListInfo(DelegateDeclarationSyntax delegateDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(delegateDeclaration);
+            return Syntax.ModifierListInfo.Create(delegateDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified destructor declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified destructor declaration.
         /// </summary>
         /// <param name="destructorDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(DestructorDeclarationSyntax destructorDeclaration)
+        public static ModifierListInfo ModifierListInfo(DestructorDeclarationSyntax destructorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(destructorDeclaration);
+            return Syntax.ModifierListInfo.Create(destructorDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified enum declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified enum declaration.
         /// </summary>
         /// <param name="enumDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(EnumDeclarationSyntax enumDeclaration)
+        public static ModifierListInfo ModifierListInfo(EnumDeclarationSyntax enumDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(enumDeclaration);
+            return Syntax.ModifierListInfo.Create(enumDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified event declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified event declaration.
         /// </summary>
         /// <param name="eventDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(EventDeclarationSyntax eventDeclaration)
+        public static ModifierListInfo ModifierListInfo(EventDeclarationSyntax eventDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(eventDeclaration);
+            return Syntax.ModifierListInfo.Create(eventDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified event field declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified event field declaration.
         /// </summary>
         /// <param name="eventFieldDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(EventFieldDeclarationSyntax eventFieldDeclaration)
+        public static ModifierListInfo ModifierListInfo(EventFieldDeclarationSyntax eventFieldDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(eventFieldDeclaration);
+            return Syntax.ModifierListInfo.Create(eventFieldDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified field declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified field declaration.
         /// </summary>
         /// <param name="fieldDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(FieldDeclarationSyntax fieldDeclaration)
+        public static ModifierListInfo ModifierListInfo(FieldDeclarationSyntax fieldDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(fieldDeclaration);
+            return Syntax.ModifierListInfo.Create(fieldDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified indexer declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified indexer declaration.
         /// </summary>
         /// <param name="indexerDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(IndexerDeclarationSyntax indexerDeclaration)
+        public static ModifierListInfo ModifierListInfo(IndexerDeclarationSyntax indexerDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(indexerDeclaration);
+            return Syntax.ModifierListInfo.Create(indexerDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified interface declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified interface declaration.
         /// </summary>
         /// <param name="interfaceDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(InterfaceDeclarationSyntax interfaceDeclaration)
+        public static ModifierListInfo ModifierListInfo(InterfaceDeclarationSyntax interfaceDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(interfaceDeclaration);
+            return Syntax.ModifierListInfo.Create(interfaceDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified method declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified method declaration.
         /// </summary>
         /// <param name="methodDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(MethodDeclarationSyntax methodDeclaration)
+        public static ModifierListInfo ModifierListInfo(MethodDeclarationSyntax methodDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(methodDeclaration);
+            return Syntax.ModifierListInfo.Create(methodDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified operator declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified operator declaration.
         /// </summary>
         /// <param name="operatorDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(OperatorDeclarationSyntax operatorDeclaration)
+        public static ModifierListInfo ModifierListInfo(OperatorDeclarationSyntax operatorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(operatorDeclaration);
+            return Syntax.ModifierListInfo.Create(operatorDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified property declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified property declaration.
         /// </summary>
         /// <param name="propertyDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(PropertyDeclarationSyntax propertyDeclaration)
+        public static ModifierListInfo ModifierListInfo(PropertyDeclarationSyntax propertyDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(propertyDeclaration);
+            return Syntax.ModifierListInfo.Create(propertyDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified struct declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified struct declaration.
         /// </summary>
         /// <param name="structDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(StructDeclarationSyntax structDeclaration)
+        public static ModifierListInfo ModifierListInfo(StructDeclarationSyntax structDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(structDeclaration);
+            return Syntax.ModifierListInfo.Create(structDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified incomplete member.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified incomplete member.
         /// </summary>
         /// <param name="incompleteMember"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(IncompleteMemberSyntax incompleteMember)
+        public static ModifierListInfo ModifierListInfo(IncompleteMemberSyntax incompleteMember)
         {
-            return Syntax.ModifiersInfo.Create(incompleteMember);
+            return Syntax.ModifierListInfo.Create(incompleteMember);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified accessor declaration.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified accessor declaration.
         /// </summary>
         /// <param name="accessorDeclaration"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(AccessorDeclarationSyntax accessorDeclaration)
+        public static ModifierListInfo ModifierListInfo(AccessorDeclarationSyntax accessorDeclaration)
         {
-            return Syntax.ModifiersInfo.Create(accessorDeclaration);
+            return Syntax.ModifierListInfo.Create(accessorDeclaration);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified local declaration statement.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified local declaration statement.
         /// </summary>
         /// <param name="localDeclarationStatement"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(LocalDeclarationStatementSyntax localDeclarationStatement)
+        public static ModifierListInfo ModifierListInfo(LocalDeclarationStatementSyntax localDeclarationStatement)
         {
-            return Syntax.ModifiersInfo.Create(localDeclarationStatement);
+            return Syntax.ModifierListInfo.Create(localDeclarationStatement);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified local function.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified local function.
         /// </summary>
         /// <param name="localFunctionStatement"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(LocalFunctionStatementSyntax localFunctionStatement)
+        public static ModifierListInfo ModifierListInfo(LocalFunctionStatementSyntax localFunctionStatement)
         {
-            return Syntax.ModifiersInfo.Create(localFunctionStatement);
+            return Syntax.ModifierListInfo.Create(localFunctionStatement);
         }
 
         /// <summary>
-        /// Creates a new <see cref="Syntax.ModifiersInfo"/> from the specified parameter.
+        /// Creates a new <see cref="Syntax.ModifierListInfo"/> from the specified parameter.
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static ModifiersInfo ModifiersInfo(ParameterSyntax parameter)
+        public static ModifierListInfo ModifierListInfo(ParameterSyntax parameter)
         {
-            return Syntax.ModifiersInfo.Create(parameter);
+            return Syntax.ModifierListInfo.Create(parameter);
         }
 
         /// <summary>

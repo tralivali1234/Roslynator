@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
             if (node.IsKind(SyntaxKind.DestructorDeclaration))
                 return;
 
-            ModifiersInfo modifiersInfo = SyntaxInfo.ModifiersInfo(node);
+            ModifierListInfo modifiersInfo = SyntaxInfo.ModifierListInfo(node);
 
             if (node.IsKind(
                 SyntaxKind.ClassDeclaration,

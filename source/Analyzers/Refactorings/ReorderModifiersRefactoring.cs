@@ -131,7 +131,7 @@ namespace Roslynator.CSharp.Refactorings
             MemberDeclarationSyntax declaration,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ModifiersInfo info = SyntaxInfo.ModifiersInfo(declaration);
+            ModifierListInfo info = SyntaxInfo.ModifierListInfo(declaration);
 
             SyntaxTokenList modifiers = info.Modifiers;
 

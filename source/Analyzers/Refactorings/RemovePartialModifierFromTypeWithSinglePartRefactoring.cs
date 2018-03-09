@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax memberDeclaration))
                 return;
 
-            SyntaxToken partialKeyword = SyntaxInfo.ModifiersInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
+            SyntaxToken partialKeyword = SyntaxInfo.ModifierListInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
 
             if (!partialKeyword.IsKind(SyntaxKind.PartialKeyword))
                 return;

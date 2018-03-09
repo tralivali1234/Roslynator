@@ -230,7 +230,7 @@ namespace Roslynator.CSharp.CodeFixes
             Func<SyntaxToken, bool> predicate,
             string additionalKey = null)
         {
-            SyntaxTokenList modifiers = SyntaxInfo.ModifiersInfo(node).Modifiers;
+            SyntaxTokenList modifiers = SyntaxInfo.ModifierListInfo(node).Modifiers;
 
             RemoveModifiers(context, diagnostic, node, modifiers, predicate, additionalKey);
         }
@@ -283,7 +283,7 @@ namespace Roslynator.CSharp.CodeFixes
             SyntaxNode node,
             string additionalKey = null)
         {
-            SyntaxToken modifier = SyntaxInfo.ModifiersInfo(node).Modifiers.SingleOrDefault(shouldThrow: false);
+            SyntaxToken modifier = SyntaxInfo.ModifierListInfo(node).Modifiers.SingleOrDefault(shouldThrow: false);
 
             if (modifier != default(SyntaxToken))
             {
@@ -313,7 +313,7 @@ namespace Roslynator.CSharp.CodeFixes
         {
             var accessModifier = default(SyntaxToken);
 
-            foreach (SyntaxToken modifier in SyntaxInfo.ModifiersInfo(node).Modifiers)
+            foreach (SyntaxToken modifier in SyntaxInfo.ModifierListInfo(node).Modifiers)
             {
                 if (IsAccessibilityModifier(modifier.Kind()))
                 {

@@ -115,7 +115,7 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.RemoveInvalidModifier))
                                 break;
 
-                            SyntaxTokenList modifiers = SyntaxInfo.ModifiersInfo(node).Modifiers;
+                            SyntaxTokenList modifiers = SyntaxInfo.ModifierListInfo(node).Modifiers;
 
                             if (modifiers.Contains(token))
                             {

@@ -169,7 +169,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (MemberDeclarationSyntax member in selectedMembers)
             {
-                ModifierKinds kinds = SyntaxInfo.ModifiersInfo(member).GetKinds();
+                ModifierKinds kinds = SyntaxInfo.ModifierListInfo(member).GetKinds();
 
                 if (kinds.Any(ModifierKinds.Partial))
                 {

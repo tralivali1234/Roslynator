@@ -41,9 +41,9 @@ namespace Roslynator.CSharp.CodeFixes
             {
                 if (parent is MemberDeclarationSyntax memberDeclaration)
                 {
-                    Debug.Assert(SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic, memberDeclaration.ToString());
+                    Debug.Assert(SyntaxInfo.ModifierListInfo(memberDeclaration).IsStatic, memberDeclaration.ToString());
 
-                    if (SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
+                    if (SyntaxInfo.ModifierListInfo(memberDeclaration).IsStatic)
                     {
                         if (Settings.IsCodeFixEnabled(CodeFixIdentifiers.MakeMemberNonStatic))
                         {
@@ -104,7 +104,7 @@ namespace Roslynator.CSharp.CodeFixes
             if (!(syntax is MemberDeclarationSyntax memberDeclaration))
                 return;
 
-            if (SyntaxInfo.ModifiersInfo(memberDeclaration).IsStatic)
+            if (SyntaxInfo.ModifierListInfo(memberDeclaration).IsStatic)
                 return;
 
             Document document = context.Document;

@@ -212,7 +212,7 @@ namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
 
             if (node is MemberDeclarationSyntax memberDeclaration)
             {
-                if (SyntaxInfo.ModifiersInfo(memberDeclaration).Modifiers.Contains(SyntaxKind.UnsafeKeyword))
+                if (SyntaxInfo.ModifierListInfo(memberDeclaration).Modifiers.Contains(SyntaxKind.UnsafeKeyword))
                     return true;
 
                 return ParentTypeDeclarationsContainsUnsafeModifier(memberDeclaration);

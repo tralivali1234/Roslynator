@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
 
             Debug.Assert(node.IsKind(SyntaxKind.MethodDeclaration, SyntaxKind.PropertyDeclaration, SyntaxKind.IndexerDeclaration), node.Kind().ToString());
 
-            ModifiersInfo info = SyntaxInfo.ModifiersInfo(node);
+            ModifierListInfo info = SyntaxInfo.ModifierListInfo(node);
 
             Debug.Assert(info.IsSealed, info.Modifiers.ToString());
 
