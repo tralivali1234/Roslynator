@@ -64,18 +64,10 @@ namespace Roslynator.VisualStudio
             var refactoringsOptionsPage = (RefactoringsOptionsPage)GetDialogPage(typeof(RefactoringsOptionsPage));
             var codeFixesOptionsPage = (CodeFixesOptionsPage)GetDialogPage(typeof(CodeFixesOptionsPage));
 
-            if (!Version.TryParse(generalOptionsPage.ApplicationVersion, out Version version)
-                || version.Major < 1
-                || version.Minor < 2
-                || version.Build < 50)
-            {
-                refactoringsOptionsPage.MigrateValuesFromIdentifierProperties();
-                refactoringsOptionsPage.SaveSettingsToStorage();
-            }
-
             Version currentVersion = typeof(GeneralOptionsPage).Assembly.GetName().Version;
 
-            if (version == null || version < currentVersion)
+            if (!Version.TryParse(generalOptionsPage.ApplicationVersion, out Version version)
+                || version < currentVersion)
             {
                 generalOptionsPage.ApplicationVersion = currentVersion.ToString();
                 generalOptionsPage.SaveSettingsToStorage();
