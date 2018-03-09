@@ -1150,8 +1150,8 @@ namespace Roslynator.CSharp
         /// <summary>RCS1099</summary>
         public static readonly DiagnosticDescriptor DefaultLabelShouldBeLastLabelInSwitchSection = new DiagnosticDescriptor(
             id:                 DiagnosticIdentifiers.DefaultLabelShouldBeLastLabelInSwitchSection, 
-            title:              "Default label should be last label in switch section.", 
-            messageFormat:      "Move default label to last position in switch section.", 
+            title:              "Default label should be the last label in a switch section.", 
+            messageFormat:      "Move default label to the last position in a switch section.", 
             category:           DiagnosticCategories.Readability, 
             defaultSeverity:    DiagnosticSeverity.Info, 
             isEnabledByDefault: true, 
@@ -1878,8 +1878,8 @@ namespace Roslynator.CSharp
         /// <summary>RCS1172</summary>
         public static readonly DiagnosticDescriptor UseIsOperatorInsteadOfAsOperator = new DiagnosticDescriptor(
             id:                 DiagnosticIdentifiers.UseIsOperatorInsteadOfAsOperator, 
-            title:              "Use is operator instead of as operator.", 
-            messageFormat:      "Use is operator instead of as operator.", 
+            title:              "Use 'is' operator instead of 'as' operator.", 
+            messageFormat:      "Use 'is' operator instead of 'as' operator.", 
             category:           DiagnosticCategories.Simplification, 
             defaultSeverity:    DiagnosticSeverity.Warning, 
             isEnabledByDefault: true, 
