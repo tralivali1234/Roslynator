@@ -50,26 +50,6 @@ namespace Roslynator.CodeGeneration.CSharp
                 AccessorList(AutoGetAccessorDeclaration()),
                 ParseExpression($"RefactoringIdentifiers.{refactorings.OrderBy(f => f.Id, comparer).Last().Identifier}"));
 
-            yield return ConstructorDeclaration(
-                Modifiers.Public(),
-                Identifier("RefactoringsOptionsPage"),
-                ParameterList(),
-                Block(
-                    refactorings
-                        .Where(ShouldGenerateProperty)
-                        .Select(f => ExpressionStatement(ParseExpression($"{f.Identifier} = {TrueOrFalseLiteralExpression(f.IsEnabledByDefault)}")))
-                        .ToSyntaxList()));
-
-            yield return MethodDeclaration(
-                Modifiers.Public(),
-                VoidType(),
-                Identifier("MigrateValuesFromIdentifierProperties"),
-                ParameterList(),
-                Block(refactorings
-                    .Where(ShouldGenerateProperty)
-                    .OrderBy(f => f.Id, comparer)
-                    .Select(refactoring => ExpressionStatement(ParseExpression($"SetIsEnabled(RefactoringIdentifiers.{refactoring.Identifier}, {refactoring.Identifier})")))));
-
             yield return MethodDeclaration(
                 Modifiers.InternalStatic(),
                 VoidType(),
@@ -98,36 +78,6 @@ namespace Roslynator.CodeGeneration.CSharp
                                 return ExpressionStatement(
                                     ParseExpression($"refactorings.Add(new BaseModel(RefactoringIdentifiers.{refactoring.Identifier}, \"{StringUtility.EscapeQuote(refactoring.Title)}\", IsEnabled(RefactoringIdentifiers.{refactoring.Identifier})))"));
                             }))));
-
-            foreach (RefactoringDescriptor info in refactorings
-                .Where(ShouldGenerateProperty)
-                .OrderBy(f => f.Identifier, comparer))
-            {
-                yield return PropertyDeclaration(
-                    List(new AttributeListSyntax[]
-                    {
-                       AttributeList(Attribute(IdentifierName("Browsable"), AttributeArgument(FalseLiteralExpression()))),
-                       AttributeList(Attribute(IdentifierName("Category"), AttributeArgument(IdentifierName("RefactoringCategory")))),
-                       AttributeList(Attribute(IdentifierName("TypeConverter"), AttributeArgument(TypeOfExpression(IdentifierName("EnabledDisabledConverter")))))
-                    }),
-                    Modifiers.Public(),
-                    PredefinedBoolType(),
-                    default(ExplicitInterfaceSpecifierSyntax),
-                    Identifier(info.Identifier),
-                    AccessorList(
-                        AutoGetAccessorDeclaration(),
-                        AutoSetAccessorDeclaration()));
-            }
-        }
-
-        private static LiteralExpressionSyntax TrueOrFalseLiteralExpression(bool value)
-        {
-            return (value) ? TrueLiteralExpression() : FalseLiteralExpression();
-        }
-
-        private static bool ShouldGenerateProperty(RefactoringDescriptor refactoring)
-        {
-            return int.Parse(refactoring.Id.Substring(2)) <= 177;
         }
     }
 }
