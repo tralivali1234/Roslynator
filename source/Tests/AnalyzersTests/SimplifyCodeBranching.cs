@@ -4,15 +4,14 @@
 
 namespace Roslynator.CSharp.Analyzers.Tests
 {
-    internal static class SimplifyCondition
+    internal static class SimplifyCodeBranching
     {
         public static void Bar()
         {
             bool condition1 = false;
             bool condition2 = false;
-            bool condition3 = false;
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
             else
@@ -20,29 +19,46 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 Bar();
             }
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
             else
                 Bar();
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
-            else if (condition3)
+            else if (condition2)
             {
                 Bar();
             }
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
-            else if (condition3)
+            else if (condition2)
                 Bar();
 
             while (true)
             {
                 if (condition1)
+                {
+                    Bar();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                if (condition1)
+                {
+                    Bar();
+                    Bar();
+                }
+                else
                 {
                     break;
                 }
@@ -51,30 +67,29 @@ namespace Roslynator.CSharp.Analyzers.Tests
             while (true)
                 if (condition1)
                 {
+                    Bar();
+                }
+                else
+                {
+                    break;
+                }
+
+            while (true)
+                if (condition1)
+                {
+                    Bar();
+                    Bar();
+                }
+                else
+                {
                     break;
                 }
 
             while (true)
             {
                 if (condition1)
-                    break;
-            }
-
-            while (true)
-            {
-                Bar();
-
-                if (condition1 && condition2)
-                {
-                    break;
-                }
-            }
-
-            while (true)
-            {
-                Bar();
-
-                if (condition1 && condition2)
+                    Bar();
+                else
                     break;
             }
 
@@ -82,7 +97,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
             {
                 Bar();
 
-                if (condition1 && condition2)
+                if (condition1)
                 {
                     break;
                 }
@@ -93,24 +108,80 @@ namespace Roslynator.CSharp.Analyzers.Tests
             {
                 Bar();
 
-                if (condition1 && condition2)
+                if (condition1)
                     break;
+            }
+            while (true);
+
+            while (true)
+            {
+                Bar();
+
+                if (condition1)
+                {
+                    break;
+                }
+            }
+
+            while (true)
+            {
+                Bar();
+
+                if (condition1)
+                    break;
+            }
+
+            while (true)
+            {
+                if (condition1)
+                {
+                    break;
+                }
+
+                Bar();
+            }
+
+            while (true)
+            {
+                if (condition1)
+                    break;
+
+                Bar();
+            }
+
+            do
+            {
+                if (condition1)
+                {
+                    break;
+                }
+
+                Bar();
+            }
+            while (true);
+
+            do
+            {
+                if (condition1)
+                    break;
+
+                Bar();
             }
             while (true);
 
             //n
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
             else
             {
             }
 
-            if (condition1 && condition2)
+            if (condition1)
             {
             }
-            else if (condition3)
+            else if (condition2)
             {
             }
 
@@ -127,7 +198,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
             {
                 Bar();
             }
-            else if (condition3)
+            else if (condition2)
             {
                 Bar();
             }
@@ -135,7 +206,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
             if ()
             {
             }
-            else if (condition3)
+            else if (condition2)
             {
                 Bar();
             }
@@ -148,6 +219,14 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 Bar();
             }
 
+            while (true)
+            {
+                if (condition1)
+                {
+                    break;
+                }
+            }
+
             while (condition1)
             {
                 if (condition2)
@@ -158,23 +237,13 @@ namespace Roslynator.CSharp.Analyzers.Tests
 
             while (true)
             {
-                if (condition2)
+                if (condition1)
                 {
                     break;
                 }
                 else
                 {
-
                 }
-            }
-
-            while (true)
-            {
-                if (condition1)
-                    break;
-
-                if (condition2)
-                    break;
             }
 
             while ()
@@ -232,6 +301,50 @@ namespace Roslynator.CSharp.Analyzers.Tests
                     break;
                 }
             }
+
+            do
+            {
+                Bar();
+
+                if (condition2)
+                {
+                    break;
+                }
+
+            } while (condition1);
+
+            do
+            {
+                Bar();
+
+                if (condition2)
+                {
+                    return;
+                }
+            }
+            while (condition1);
+
+            do
+            {
+                Bar();
+
+                if (condition1)
+                {
+                    break;
+                }
+            }
+            while ();
+
+            do
+            {
+                Bar();
+
+                if ()
+                {
+                    break;
+                }
+            }
+            while (condition1);
 
             do
             {
@@ -276,6 +389,36 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 }
 
             } while (condition1);
+
+            while (condition1)
+            {
+                Bar();
+
+                if (condition2)
+                {
+                    return;
+                }
+            }
+
+            while ()
+            {
+                Bar();
+
+                if (condition1)
+                {
+                    break;
+                }
+            }
+
+            while (condition1)
+            {
+                Bar();
+
+                if ()
+                {
+                    break;
+                }
+            }
         }
     }
 }

@@ -4573,18 +4573,6 @@ string y = $"{x}{x}{x}";]]></Before>
         <Before><![CDATA[if (x)
 {
 }
-else if (y)
-{
-  Foo();
-}]]></Before><After><![CDATA[if (!x && y)
-{
-  Foo();
-}]]></After>
-      </Sample>
-      <Sample>
-        <Before><![CDATA[if (x)
-{
-}
 else
 {
   Foo();
@@ -4598,27 +4586,33 @@ else
 {
   if (x)
   {
+    Foo();
+  }
+  else
+  {
+    break;
   }
 }]]></Before>
         <After><![CDATA[while (x)
 {
+  Foo();
 }]]></After>
       </Sample>
       <Sample>
         <Before><![CDATA[while (true)
 {
-  Foo();
-
   if (x)
   {
     break;
   }
+
+  Foo();
 }]]></Before>
-        <After><![CDATA[do
+        <After><![CDATA[while (!x)
 {
   Foo();
       
-} while (!x)]]></After>
+}]]></After>
       </Sample>
       <Sample>
         <Before><![CDATA[do

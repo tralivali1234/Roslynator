@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
@@ -28,34 +27,17 @@ namespace Roslynator.CSharp.CodeFixes
         {
             SyntaxNode root = await context.GetSyntaxRootAsync().ConfigureAwait(false);
 
-            if (!TryFindFirstAncestorOrSelf(root, context.Span, out SyntaxNode node, predicate: f => f.IsKind(SyntaxKind.IfStatement, SyntaxKind.WhileStatement)))
+            if (!TryFindFirstAncestorOrSelf(root, context.Span, out IfStatementSyntax ifStatement))
                 return;
 
             Diagnostic diagnostic = context.Diagnostics[0];
 
-            switch (node)
-            {
-                case IfStatementSyntax ifStatement:
-                    {
-                        CodeAction codeAction = CodeAction.Create(
-                            Title,
-                            cancellationToken => SimplifyCodeBranchingRefactoring.RefactorAsync(context.Document, ifStatement, cancellationToken),
-                            GetEquivalenceKey(diagnostic));
+            CodeAction codeAction = CodeAction.Create(
+                Title,
+                cancellationToken => SimplifyCodeBranchingRefactoring.RefactorAsync(context.Document, ifStatement, cancellationToken),
+                GetEquivalenceKey(diagnostic));
 
-                        context.RegisterCodeFix(codeAction, diagnostic);
-                        break;
-                    }
-                case WhileStatementSyntax whileStatement:
-                    {
-                        CodeAction codeAction = CodeAction.Create(
-                            Title,
-                            cancellationToken => SimplifyCodeBranchingRefactoring.RefactorAsync(context.Document, whileStatement, cancellationToken),
-                            GetEquivalenceKey(diagnostic));
-
-                        context.RegisterCodeFix(codeAction, diagnostic);
-                        break;
-                    }
-            }
+            context.RegisterCodeFix(codeAction, diagnostic);
         }
     }
 }

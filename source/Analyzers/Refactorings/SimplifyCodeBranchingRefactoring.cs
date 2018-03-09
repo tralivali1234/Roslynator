@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -19,36 +18,49 @@ namespace Roslynator.CSharp.Refactorings
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            if (ifStatement.SpanContainsDirectives())
+            if (ifStatement.Condition?.WalkDownParentheses().IsMissing != false)
                 return;
 
-            if (ifStatement.Condition?.IsMissing != false)
+            StatementSyntax statement = ifStatement.Statement;
+
+            if (statement == null)
                 return;
 
-            ElseClauseSyntax elseClause = ifStatement.Else;
-
-            if (elseClause != null)
+            if ((statement as BlockSyntax)?.Statements.Any() == false)
             {
-                AnalyzeIfElse(context, ifStatement, elseClause);
+                if (IsFixableIfElse(ifStatement))
+                    context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
             }
             else
             {
-                AnalyzeIfInsideWhileOrDo(context, ifStatement);
+                ElseClauseSyntax elseClause = ifStatement.Else;
+
+                if (elseClause != null)
+                {
+                    if (IsFixableIfElseInsideWhile(ifStatement, elseClause))
+                        context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
+                }
+                else if (IsFixableIfInsideWhileOrDo(ifStatement))
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
+                }
             }
         }
 
-        private static void AnalyzeIfElse(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement, ElseClauseSyntax elseClause)
+        private static bool IsFixableIfElse(IfStatementSyntax ifStatement)
         {
-            if (!(ifStatement.Statement is BlockSyntax block))
-                return;
+            if (ifStatement.SpanContainsDirectives())
+                return false;
 
-            if (block.Statements.Any())
-                return;
+            ElseClauseSyntax elseClause = ifStatement.Else;
+
+            if (elseClause == null)
+                return false;
 
             StatementSyntax whenFalse = elseClause.Statement;
 
             if (whenFalse == null)
-                return;
+                return false;
 
             SyntaxKind kind = whenFalse.Kind();
 
@@ -56,100 +68,112 @@ namespace Roslynator.CSharp.Refactorings
             {
                 var nestedIf = (IfStatementSyntax)whenFalse;
 
-                if (nestedIf.Condition?.IsMissing != false)
-                    return;
+                if (nestedIf.Condition?.WalkDownParentheses().IsMissing != false)
+                    return false;
 
                 StatementSyntax statement = nestedIf.Statement;
 
                 if (statement == null)
-                    return;
+                    return false;
 
                 if ((statement as BlockSyntax)?.Statements.Any() == false)
-                    return;
+                    return false;
             }
             else if (kind == SyntaxKind.Block)
             {
                 if (!((BlockSyntax)whenFalse).Statements.Any())
-                    return;
+                    return false;
             }
 
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
+            return true;
         }
 
-        private static void AnalyzeIfInsideWhileOrDo(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement)
+        private static bool IsFixableIfElseInsideWhile(
+            IfStatementSyntax ifStatement,
+            ElseClauseSyntax elseClause)
         {
-            if (!(ifStatement.Parent is BlockSyntax block))
-                return;
+            if (elseClause.SingleNonBlockStatementOrDefault()?.Kind() != SyntaxKind.BreakStatement)
+                return false;
+
+            SyntaxNode parent = ifStatement.Parent;
+
+            if (parent is BlockSyntax block)
+            {
+                if (block.Statements.Count != 1)
+                    return false;
+
+                parent = block.Parent;
+            }
+
+            if (!(parent is WhileStatementSyntax whileStatement))
+                return false;
+
+            if (whileStatement.SpanContainsDirectives())
+                return false;
+
+            if (whileStatement.Condition?.WalkDownParentheses().Kind() != SyntaxKind.TrueLiteralExpression)
+                return false;
+
+            return true;
+        }
+
+        private static bool IsFixableIfInsideWhileOrDo(IfStatementSyntax ifStatement)
+        {
+            SyntaxNode parent = ifStatement.Parent;
+
+            if (parent.Kind() != SyntaxKind.Block)
+                return false;
+
+            if (ifStatement.SingleNonBlockStatementOrDefault()?.Kind() != SyntaxKind.BreakStatement)
+                return false;
+
+            var block = (BlockSyntax)parent;
 
             SyntaxList<StatementSyntax> statements = block.Statements;
 
-            if (statements.Count == 1)
-                return;
+            int count = statements.Count;
 
-            if (!statements.IsLast(ifStatement))
-                return;
+            if (count == 1)
+                return false;
 
-            if (ifStatement.SingleNonBlockStatementOrDefault()?.Kind() != SyntaxKind.BreakStatement)
-                return;
+            int index = statements.IndexOf(ifStatement);
 
-            SyntaxNode parent = block.Parent;
+            if (index != 0
+                && index != count - 1)
+            {
+                return false;
+            }
+
+            parent = block.Parent;
+
             SyntaxKind kind = parent.Kind();
 
             if (kind == SyntaxKind.WhileStatement)
             {
-                if (((WhileStatementSyntax)parent).Condition?.IsMissing != false)
-                    return;
+                var whileStatement = (WhileStatementSyntax)parent;
+
+                if (whileStatement.SpanContainsDirectives())
+                    return false;
+
+                if (whileStatement.Condition?.WalkDownParentheses().Kind() != SyntaxKind.TrueLiteralExpression)
+                    return false;
             }
             else if (kind == SyntaxKind.DoStatement)
             {
-                if (((DoStatementSyntax)parent).Condition?.IsMissing != false)
-                    return;
+                var doStatement = (DoStatementSyntax)parent;
+
+                if (doStatement.SpanContainsDirectives())
+                    return false;
+
+                if (doStatement.Condition?.WalkDownParentheses().Kind() != SyntaxKind.TrueLiteralExpression)
+                    return false;
             }
             else
             {
-                return;
+                return false;
             }
 
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, ifStatement);
-        }
-
-        internal static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
-        {
-            var whileStatement = (WhileStatementSyntax)context.Node;
-
-            if (whileStatement.SpanContainsDirectives())
-                return;
-
-            if (whileStatement.Condition?.WalkDownParentheses().Kind() != SyntaxKind.TrueLiteralExpression)
-                return;
-
-            StatementSyntax statement = whileStatement.Statement;
-
-            if (statement == null)
-                return;
-
-            SyntaxKind kind = statement.Kind();
-
-            IfStatementSyntax ifStatement = null;
-
-            if (kind == SyntaxKind.IfStatement)
-            {
-                ifStatement = (IfStatementSyntax)statement;
-            }
-            else if (kind == SyntaxKind.Block)
-            {
-                var block = (BlockSyntax)statement;
-
-                ifStatement = block.Statements.SingleOrDefault(shouldThrow: false) as IfStatementSyntax;
-            }
-
-            if (ifStatement?.Condition?.IsMissing != false)
-                return;
-
-            if (ifStatement.Else != null)
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyCodeBranching, whileStatement);
+            return true;
         }
 
         public static async Task<Document> RefactorAsync(
@@ -161,18 +185,16 @@ namespace Roslynator.CSharp.Refactorings
 
             ElseClauseSyntax elseClause = ifStatement.Else;
 
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            if (elseClause != null)
+            if ((ifStatement.Statement as BlockSyntax)?.Statements.Any() == false)
             {
-                StatementSyntax statement = elseClause.Statement;
+                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
                 ExpressionSyntax newCondition = Negation.LogicallyNegate(condition, semanticModel, cancellationToken);
 
-                if (statement.Kind() == SyntaxKind.IfStatement)
-                {
-                    var nestedIf = (IfStatementSyntax)statement;
+                StatementSyntax statement = elseClause.Statement;
 
+                if (statement is IfStatementSyntax nestedIf)
+                {
                     newCondition = LogicalAndExpression(newCondition.Parenthesize(), nestedIf.Condition.Parenthesize());
 
                     statement = nestedIf.Statement;
@@ -192,13 +214,48 @@ namespace Roslynator.CSharp.Refactorings
 
                 return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
             }
+            else if (elseClause != null)
+            {
+                WhileStatementSyntax whileStatement = null;
+
+                SyntaxNode newNode = null;
+
+                if (ifStatement.Parent is BlockSyntax block)
+                {
+                    whileStatement = (WhileStatementSyntax)block.Parent;
+                }
+                else
+                {
+                    block = Block();
+                    whileStatement = (WhileStatementSyntax)ifStatement.Parent;
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                BlockSyntax newBlock = (ifStatement.Statement is BlockSyntax ifBlock)
+                    ? block.WithStatements(ifBlock.Statements)
+                    : block.WithStatements(SingletonList(ifStatement.Statement));
+
+                newNode = whileStatement.Update(
+                    whileStatement.WhileKeyword,
+                    whileStatement.OpenParenToken,
+                    ifStatement.Condition,
+                    whileStatement.CloseParenToken,
+                    newBlock);
+
+                newNode = newNode.WithFormatterAnnotation();
+
+                return await document.ReplaceNodeAsync(whileStatement, newNode, cancellationToken).ConfigureAwait(false);
+            }
             else
             {
                 var block = (BlockSyntax)ifStatement.Parent;
 
                 SyntaxList<StatementSyntax> statements = block.Statements;
 
-                BlockSyntax newBlock = block.WithStatements(statements.RemoveAt(statements.Count - 1));
+                BlockSyntax newBlock = block.WithStatements(statements.Remove(ifStatement));
+
+                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
 
                 ExpressionSyntax newCondition = Negation.LogicallyNegate(condition, semanticModel, cancellationToken);
 
@@ -208,27 +265,55 @@ namespace Roslynator.CSharp.Refactorings
                 {
                     case WhileStatementSyntax whileStatement:
                         {
-                            newNode = DoStatement(
-                                Token(whileStatement.WhileKeyword.LeadingTrivia, SyntaxKind.DoKeyword, whileStatement.CloseParenToken.TrailingTrivia),
-                                newBlock.WithoutTrailingTrivia(),
-                                WhileKeyword(),
-                                OpenParenToken(),
-                                newCondition,
-                                CloseParenToken(),
-                                SemicolonToken().WithTrailingTrivia(newBlock.GetTrailingTrivia()));
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            if (statements.IsFirst(ifStatement))
+                            {
+                                newNode = whileStatement.Update(
+                                    whileStatement.WhileKeyword,
+                                    whileStatement.OpenParenToken,
+                                    newCondition,
+                                    whileStatement.CloseParenToken,
+                                    newBlock);
+                            }
+                            else
+                            {
+                                newNode = DoStatement(
+                                    Token(whileStatement.WhileKeyword.LeadingTrivia, SyntaxKind.DoKeyword, whileStatement.CloseParenToken.TrailingTrivia),
+                                    newBlock.WithoutTrailingTrivia(),
+                                    WhileKeyword(),
+                                    OpenParenToken(),
+                                    newCondition,
+                                    CloseParenToken(),
+                                    SemicolonToken().WithTrailingTrivia(newBlock.GetTrailingTrivia()));
+                            }
 
                             break;
                         }
                     case DoStatementSyntax doStatement:
                         {
-                            newNode = doStatement.Update(
-                                doStatement.DoKeyword,
-                                newBlock,
-                                doStatement.WhileKeyword,
-                                doStatement.OpenParenToken,
-                                newCondition,
-                                doStatement.CloseParenToken,
-                                doStatement.SemicolonToken);
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            if (statements.IsLast(ifStatement))
+                            {
+                                newNode = doStatement.Update(
+                                    doStatement.DoKeyword,
+                                    newBlock,
+                                    doStatement.WhileKeyword,
+                                    doStatement.OpenParenToken,
+                                    newCondition,
+                                    doStatement.CloseParenToken,
+                                    doStatement.SemicolonToken);
+                            }
+                            else
+                            {
+                                newNode = WhileStatement(
+                                    Token(doStatement.DoKeyword.LeadingTrivia, SyntaxKind.WhileKeyword, SyntaxTriviaList.Empty),
+                                    OpenParenToken(),
+                                    newCondition,
+                                    Token(SyntaxTriviaList.Empty, SyntaxKind.CloseParenToken, doStatement.DoKeyword.TrailingTrivia),
+                                    newBlock.WithTrailingTrivia(doStatement.GetTrailingTrivia()));
+                            }
 
                             break;
                         }
@@ -243,40 +328,6 @@ namespace Roslynator.CSharp.Refactorings
 
                 return await document.ReplaceNodeAsync(block.Parent, newNode, cancellationToken).ConfigureAwait(false);
             }
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            WhileStatementSyntax whileStatement,
-            CancellationToken cancellationToken)
-        {
-            StatementSyntax statement = whileStatement.Statement;
-
-            ExpressionSyntax condition = whileStatement.Condition;
-
-            IfStatementSyntax ifStatement = null;
-
-            if (statement is BlockSyntax block)
-            {
-                ifStatement = (IfStatementSyntax)block.Statements.SingleOrDefault();
-            }
-            else
-            {
-                ifStatement = (IfStatementSyntax)statement;
-            }
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            WhileStatementSyntax newNode = whileStatement.Update(
-                whileStatement.WhileKeyword,
-                whileStatement.OpenParenToken,
-                ifStatement.Condition,
-                whileStatement.CloseParenToken,
-                ifStatement.Statement);
-
-            newNode = newNode.WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(whileStatement, newNode, cancellationToken);
         }
     }
 }

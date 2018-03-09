@@ -10,7 +10,7 @@ using Roslynator.CSharp.Refactorings;
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class SimplifyConditionDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class SimplifyCodeBranchingDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
@@ -23,10 +23,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
-            context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(SimplifyCodeBranchingRefactoring.AnalyzeIfStatement, SyntaxKind.IfStatement);
-            context.RegisterSyntaxNodeAction(SimplifyCodeBranchingRefactoring.AnalyzeWhileStatement, SyntaxKind.WhileStatement);
         }
     }
 }
