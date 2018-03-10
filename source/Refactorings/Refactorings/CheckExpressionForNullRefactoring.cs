@@ -85,7 +85,7 @@ namespace Roslynator.CSharp.Refactorings
             if (value?.IsKind(SyntaxKind.NullLiteralExpression, SyntaxKind.DefaultExpression) != false)
                 return false;
 
-            if (!CannotBeEqualToNull(value))
+            if (CannotBeEqualToNull(value))
                 return false;
 
             IdentifierNameSyntax identifierName = IdentifierName(localInfo.Identifier);
