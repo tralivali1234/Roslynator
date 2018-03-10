@@ -11,5 +11,9 @@ namespace Roslynator
             typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypes,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.UseSpecialTypes
                 | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
+
+        public static SymbolDisplayFormat FullyQualifiedTypeName { get; } = new SymbolDisplayFormat(
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces);
     }
 }
