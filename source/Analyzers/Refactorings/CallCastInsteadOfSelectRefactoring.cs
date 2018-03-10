@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
 
             context.ReportDiagnostic(
                 DiagnosticDescriptors.CallCastInsteadOfSelect,
-                Location.Create(invocationExpression.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.Span.Start, invocationExpression.Span.End)));
+                Location.Create(invocationExpression.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.SpanStart, invocationExpression.Span.End)));
         }
 
         private static CastExpressionSyntax GetCastExpression(CSharpSyntaxNode node)

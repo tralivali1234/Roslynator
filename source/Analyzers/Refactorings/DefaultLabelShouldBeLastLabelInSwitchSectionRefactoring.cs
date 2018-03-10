@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (label.Kind() == SyntaxKind.DefaultSwitchLabel)
                 {
-                    TextSpan span = TextSpan.FromBounds(label.Span.End, lastLabel.Span.Start);
+                    TextSpan span = TextSpan.FromBounds(label.Span.End, lastLabel.SpanStart);
 
                     if (!switchSection.ContainsDirectives(span))
                     {

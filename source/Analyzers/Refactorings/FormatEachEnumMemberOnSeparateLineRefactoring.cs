@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
                 if (members[i].GetSpanStartLine() == previousIndex)
                 {
                     TextSpan span = TextSpan.FromBounds(
-                        members.First().Span.Start,
+                        members.First().SpanStart,
                         members.Last().Span.End);
 
                     context.ReportDiagnostic(

@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
 
             var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
 
-            TextSpan span = TextSpan.FromBounds(memberAccess.OperatorToken.Span.Start, invocation.Span.End);
+            TextSpan span = TextSpan.FromBounds(memberAccess.OperatorToken.SpanStart, invocation.Span.End);
 
             if (invocation.ContainsDirectives(span))
                 return;

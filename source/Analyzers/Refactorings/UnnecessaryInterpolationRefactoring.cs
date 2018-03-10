@@ -40,9 +40,9 @@ namespace Roslynator.CSharp.Refactorings
 
             string s = interpolatedString.ToString();
 
-            s = s.Substring(0, interpolation.Span.Start - interpolatedString.Span.Start)
+            s = s.Substring(0, interpolation.SpanStart - interpolatedString.SpanStart)
                 + StringUtility.DoubleBraces(SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression).InnerText)
-                + s.Substring(interpolation.Span.End - interpolatedString.Span.Start);
+                + s.Substring(interpolation.Span.End - interpolatedString.SpanStart);
 
             var newInterpolatedString = (InterpolatedStringExpressionSyntax)SyntaxFactory.ParseExpression(s)
                 .WithTriviaFrom(interpolatedString);

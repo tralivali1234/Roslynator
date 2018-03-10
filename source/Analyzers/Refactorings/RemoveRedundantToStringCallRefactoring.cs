@@ -20,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 
-            TextSpan span = TextSpan.FromBounds(invocationInfo.OperatorToken.Span.Start, invocationExpression.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo.OperatorToken.SpanStart, invocationExpression.Span.End);
 
             if (invocationExpression.ContainsDirectives(span))
                 return;

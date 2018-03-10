@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (!identifier.IsMissing
                     && span.Start >= identifier.Span.End
-                    && span.End <= identifier.GetNextToken().Span.Start)
+                    && span.End <= identifier.GetNextToken().SpanStart)
                 {
                     RegisterRefactoring(context, classDeclaration);
                 }
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (!identifier.IsMissing
                     && span.Start >= identifier.Span.End
-                    && span.End <= identifier.GetNextToken().Span.Start)
+                    && span.End <= identifier.GetNextToken().SpanStart)
                 {
                     RegisterRefactoring(context, structDeclaration);
                 }
@@ -79,7 +79,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 if (!identifier.IsMissing
                     && span.Start >= identifier.Span.End
-                    && span.End <= identifier.GetNextToken().Span.Start)
+                    && span.End <= identifier.GetNextToken().SpanStart)
                 {
                     RegisterRefactoring(context, interfaceDeclaration);
                 }
@@ -107,7 +107,7 @@ namespace Roslynator.CSharp.Refactorings
                     ParameterListSyntax parameterList = delegateDeclaration.ParameterList;
 
                     if (parameterList != null
-                        && span.End <= parameterList.Span.Start)
+                        && span.End <= parameterList.SpanStart)
                     {
                         RegisterRefactoring(context, delegateDeclaration);
                     }
@@ -136,7 +136,7 @@ namespace Roslynator.CSharp.Refactorings
                     ParameterListSyntax parameterList = methodDeclaration.ParameterList;
 
                     if (parameterList != null
-                        && span.End <= parameterList.Span.Start
+                        && span.End <= parameterList.SpanStart
                         && methodDeclaration.BodyOrExpressionBody() != null)
                     {
                         RegisterRefactoring(context, methodDeclaration);
@@ -166,7 +166,7 @@ namespace Roslynator.CSharp.Refactorings
                     ParameterListSyntax parameterList = localFunctionStatement.ParameterList;
 
                     if (parameterList != null
-                        && span.End <= parameterList.Span.Start)
+                        && span.End <= parameterList.SpanStart)
                     {
                         RegisterRefactoring(context, localFunctionStatement);
                     }

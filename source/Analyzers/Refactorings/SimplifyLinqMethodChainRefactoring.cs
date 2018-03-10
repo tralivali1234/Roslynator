@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!SymbolUtility.IsLinqWhere(methodSymbol2, semanticModel, allowImmutableArrayExtension: true))
                 return;
 
-            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.Span.Start, invocation.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocation.Span.End);
 
             if (invocation.ContainsDirectives(span))
                 return;

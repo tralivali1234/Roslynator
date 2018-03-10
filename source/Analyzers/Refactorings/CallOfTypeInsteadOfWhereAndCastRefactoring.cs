@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!typeSymbol.Equals(typeSymbol2))
                 return;
 
-            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.Span.Start, invocationInfo.InvocationExpression.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationInfo.InvocationExpression.Span.End);
 
             if (invocationInfo.InvocationExpression.ContainsDirectives(span))
                 return;

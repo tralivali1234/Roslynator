@@ -180,7 +180,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     return ExpressionStatement(invocationExpression.WithoutTrivia())
                         .WithTriviaFrom(node)
-                        .AppendToLeadingTrivia(node.DescendantTrivia(TextSpan.FromBounds(keyword.Span.End, expression.Span.Start)));
+                        .AppendToLeadingTrivia(node.DescendantTrivia(TextSpan.FromBounds(keyword.Span.End, expression.SpanStart)));
                 }
                 else if (kind == SyntaxKind.YieldBreakStatement)
                 {

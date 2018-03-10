@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.Refactorings
                 return value != null
                     && expression.IsKind(SyntaxKind.IdentifierName)
                     && string.Equals(declarator.Identifier.ValueText, ((IdentifierNameSyntax)expression).Identifier.ValueText, StringComparison.Ordinal)
-                    && !parent.ContainsDirectives(TextSpan.FromBounds(value.Span.End, ifStatement.Span.Start));
+                    && !parent.ContainsDirectives(TextSpan.FromBounds(value.Span.End, ifStatement.SpanStart));
             }
 
             return false;
@@ -156,7 +156,7 @@ namespace Roslynator.CSharp.Refactorings
 
                     return right?.IsMissing == false
                         && CSharpFactory.AreEquivalent(expression, left)
-                        && !parent.ContainsDirectives(TextSpan.FromBounds(right.Span.End, ifStatement.Span.Start));
+                        && !parent.ContainsDirectives(TextSpan.FromBounds(right.Span.End, ifStatement.SpanStart));
                 }
             }
 

@@ -12,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddUsingDirective)
                 && context.Span.IsEmpty
-                && qualifiedName.DotToken.Span.Start == context.Span.Start
+                && qualifiedName.DotToken.SpanStart == context.Span.Start
                 && qualifiedName.Left?.Kind() == SyntaxKind.IdentifierName)
             {
                 await AddUsingDirectiveRefactoring.ComputeRefactoringsAsync(context, (IdentifierNameSyntax)qualifiedName.Left).ConfigureAwait(false);

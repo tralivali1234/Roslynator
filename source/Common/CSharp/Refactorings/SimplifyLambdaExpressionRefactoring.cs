@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
 
             return expression?.IsSingleLine() == true
                 && lambda
-                    .DescendantTrivia(TextSpan.FromBounds(lambda.ArrowToken.Span.End, expression.Span.Start))
+                    .DescendantTrivia(TextSpan.FromBounds(lambda.ArrowToken.Span.End, expression.SpanStart))
                     .All(f => f.IsWhitespaceOrEndOfLineTrivia())
                 && lambda
                     .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, block.Span.End))

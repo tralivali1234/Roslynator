@@ -56,7 +56,7 @@ namespace Roslynator.CSharp.Refactorings
 
                                     if (!closeBrace.IsMissing)
                                     {
-                                        TextSpan span = TextSpan.FromBounds(identifier.Span.End, closeBrace.Span.Start);
+                                        TextSpan span = TextSpan.FromBounds(identifier.Span.End, closeBrace.SpanStart);
 
                                         if (propertyDeclaration
                                             .DescendantTrivia(span)
@@ -89,7 +89,7 @@ namespace Roslynator.CSharp.Refactorings
 
                                         if (!closeBrace.IsMissing)
                                         {
-                                            TextSpan span = TextSpan.FromBounds(closeBracket.Span.End, closeBrace.Span.Start);
+                                            TextSpan span = TextSpan.FromBounds(closeBracket.Span.End, closeBrace.SpanStart);
 
                                             if (indexerDeclaration
                                                 .DescendantTrivia(span)
@@ -117,7 +117,7 @@ namespace Roslynator.CSharp.Refactorings
                 SyntaxList<StatementSyntax> statements = body.Statements;
 
                 if (statements.Count <= 1
-                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.Span.Start, accessor.Span.End))
+                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.SpanStart, accessor.Span.End))
                     && (statements.Count == 0 || statements[0].IsSingleLine()))
                 {
                     return accessor
@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.Refactorings
                 ArrowExpressionClauseSyntax expressionBody = accessor.ExpressionBody;
 
                 if (expressionBody != null
-                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.Span.Start, accessor.Span.End))
+                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.SpanStart, accessor.Span.End))
                     && expressionBody.Expression?.IsSingleLine() == true)
                 {
                     return accessor
@@ -164,7 +164,7 @@ namespace Roslynator.CSharp.Refactorings
 
                             TextSpan span = TextSpan.FromBounds(
                                 propertyDeclaration.Identifier.Span.End,
-                                accessorList.CloseBraceToken.Span.Start);
+                                accessorList.CloseBraceToken.SpanStart);
 
                             PropertyDeclarationSyntax newNode = propertyDeclaration.RemoveWhitespace(span);
 
@@ -178,7 +178,7 @@ namespace Roslynator.CSharp.Refactorings
 
                             TextSpan span = TextSpan.FromBounds(
                                 indexerDeclaration.ParameterList.CloseBracketToken.Span.End,
-                                accessorList.CloseBraceToken.Span.Start);
+                                accessorList.CloseBraceToken.SpanStart);
 
                             IndexerDeclarationSyntax newNode = indexerDeclaration.RemoveWhitespace(span);
 

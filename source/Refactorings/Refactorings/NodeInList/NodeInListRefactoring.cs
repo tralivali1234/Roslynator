@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings.NodeInList
                     {
                         SyntaxToken tokenAfter = GetTokenAfter(i);
 
-                        if (span.End <= tokenAfter.Span.Start)
+                        if (span.End <= tokenAfter.SpanStart)
                             return i;
 
                         return -1;

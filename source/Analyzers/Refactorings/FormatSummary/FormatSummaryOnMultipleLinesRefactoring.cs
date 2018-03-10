@@ -45,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.FormatSummary
 
             SourceText newSourceText = sourceText.WithChanges(
                 new TextChange(new TextSpan(summaryElement.StartTag.Span.End, 0), newText),
-                new TextChange(new TextSpan(summaryElement.EndTag.Span.Start, 0), newText));
+                new TextChange(new TextSpan(summaryElement.EndTag.SpanStart, 0), newText));
 
             return document.WithText(newSourceText);
         }

@@ -96,7 +96,7 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax left = binaryExpression.Left;
             ExpressionSyntax right = binaryExpression.Right;
 
-            TextSpan span = TextSpan.FromBounds(left.Span.End, right.Span.Start);
+            TextSpan span = TextSpan.FromBounds(left.Span.End, right.SpanStart);
 
             IEnumerable<SyntaxTrivia> trivia = binaryExpression.DescendantTrivia(span);
 

@@ -85,7 +85,7 @@ namespace Roslynator.CSharp.Refactorings
 
             InvocationExpressionSyntax invocation = invocationInfo.InvocationExpression;
 
-            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.Span.Start, invocation.Span.End);
+            TextSpan span = TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocation.Span.End);
 
             if (invocation.ContainsDirectives(span))
                 return;
@@ -95,7 +95,7 @@ namespace Roslynator.CSharp.Refactorings
                 Location.Create(invocation.SyntaxTree, span));
 
             TextSpan fadeOutSpan = TextSpan.FromBounds(
-                invocationInfo.OperatorToken.Span.Start,
+                invocationInfo.OperatorToken.SpanStart,
                 ((LambdaExpressionSyntax)expression).ArrowToken.Span.End);
 
             context.ReportDiagnostic(DiagnosticDescriptors.CombineEnumerableWhereMethodChainFadeOut, Location.Create(invocation.SyntaxTree, fadeOutSpan));

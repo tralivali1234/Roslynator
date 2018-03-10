@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
             if (identifier.IsMissing)
                 return;
 
-            if (context.Span.Start < identifier.Span.Start)
+            if (context.Span.Start < identifier.SpanStart)
                 return;
 
             EqualsValueClauseSyntax @default = parameter.Default;

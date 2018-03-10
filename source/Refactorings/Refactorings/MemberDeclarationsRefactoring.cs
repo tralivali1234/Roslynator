@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             int index = members.IndexOf(member);
 
-            if (span.End < member.Span.Start)
+            if (span.End < member.SpanStart)
             {
                 if (index > 0
                     && span.Start > members[index - 1].Span.End)
@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.Refactorings
             else if (span.End > member.Span.End)
             {
                 if (index < members.Count - 1
-                    && span.End < members[index + 1].Span.Start)
+                    && span.End < members[index + 1].SpanStart)
                 {
                     return index;
                 }

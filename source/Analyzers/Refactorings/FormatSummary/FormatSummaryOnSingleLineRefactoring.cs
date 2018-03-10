@@ -52,8 +52,8 @@ namespace Roslynator.CSharp.Refactorings.FormatSummary
                     {
                         Match match = _regex.Match(
                             summaryElement.ToString(),
-                            startTag.Span.End - summaryElement.Span.Start,
-                            endTag.Span.Start - startTag.Span.End);
+                            startTag.Span.End - summaryElement.SpanStart,
+                            endTag.SpanStart - startTag.Span.End);
 
                         if (match.Success)
                         {
@@ -80,8 +80,8 @@ namespace Roslynator.CSharp.Refactorings.FormatSummary
 
             Match match = _regex.Match(
                 summaryElement.ToString(),
-                startTag.Span.End - summaryElement.Span.Start,
-                endTag.Span.Start - startTag.Span.End);
+                startTag.Span.End - summaryElement.SpanStart,
+                endTag.SpanStart - startTag.Span.End);
 
             var textChange = new TextChange(
                 new TextSpan(startTag.Span.End, match.Length),

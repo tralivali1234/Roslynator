@@ -127,7 +127,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (trivia.IsKind(SyntaxKind.SingleLineDocumentationCommentTrivia))
             {
-                TextSpan span = TextSpan.FromBounds(trivia.Span.Start, node.Span.End);
+                TextSpan span = TextSpan.FromBounds(trivia.SpanStart, node.Span.End);
 
                 return node.SyntaxTree.GetLineSpan(span, cancellationToken);
             }

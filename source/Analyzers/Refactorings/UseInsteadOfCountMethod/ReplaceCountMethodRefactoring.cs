@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
             {
                 context.ReportDiagnostic(
                     DiagnosticDescriptors.UseCountOrLengthPropertyInsteadOfCountMethod,
-                    Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.Span.Start, invocationExpression.Span.End)),
+                    Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.SpanStart, invocationExpression.Span.End)),
                     ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("PropertyName", propertyName) }),
                     propertyName);
             }

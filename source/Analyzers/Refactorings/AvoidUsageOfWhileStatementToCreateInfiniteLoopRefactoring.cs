@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings
 
             TextSpan span = TextSpan.FromBounds(
                 whileStatement.OpenParenToken.Span.End,
-                whileStatement.CloseParenToken.Span.Start);
+                whileStatement.CloseParenToken.SpanStart);
 
             if (!whileStatement
                 .DescendantTrivia(span)

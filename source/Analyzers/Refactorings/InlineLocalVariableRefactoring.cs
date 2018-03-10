@@ -302,7 +302,7 @@ namespace Roslynator.CSharp.Refactorings
 
             IEnumerable<SyntaxTrivia> trivia = statementsInfo
                 .Parent
-                .DescendantTrivia(TextSpan.FromBounds(localDeclaration.SpanStart, nextStatement.Span.Start));
+                .DescendantTrivia(TextSpan.FromBounds(localDeclaration.SpanStart, nextStatement.SpanStart));
 
             if (!trivia.All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {

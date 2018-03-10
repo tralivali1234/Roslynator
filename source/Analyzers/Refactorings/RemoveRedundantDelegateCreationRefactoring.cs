@@ -79,7 +79,7 @@ namespace Roslynator.CSharp.Refactorings
                 .Expression;
 
             IEnumerable<SyntaxTrivia> leadingTrivia = objectCreation
-                .DescendantTrivia(TextSpan.FromBounds(objectCreation.FullSpan.Start, expression.Span.Start));
+                .DescendantTrivia(TextSpan.FromBounds(objectCreation.FullSpan.Start, expression.SpanStart));
 
             IEnumerable<SyntaxTrivia> trailingTrivia = objectCreation
                 .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, objectCreation.FullSpan.End));

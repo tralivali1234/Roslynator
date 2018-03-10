@@ -211,7 +211,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (node1
                 .SyntaxTree
-                .GetLineSpan(TextSpan.FromBounds(node1.Span.End, node2.Span.Start), context.CancellationToken)
+                .GetLineSpan(TextSpan.FromBounds(node1.Span.End, node2.SpanStart), context.CancellationToken)
                 .GetLineCount() != 3)
             {
                 return;
@@ -255,7 +255,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (token
                 .SyntaxTree
-                .GetLineSpan(TextSpan.FromBounds(token.Span.End, node.Span.Start), context.CancellationToken)
+                .GetLineSpan(TextSpan.FromBounds(token.Span.End, node.SpanStart), context.CancellationToken)
                 .GetLineCount() != 3)
             {
                 return;

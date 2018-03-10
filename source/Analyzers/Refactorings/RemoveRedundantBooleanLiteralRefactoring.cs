@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax newNode = binaryExpression;
 
-            TextSpan span = TextSpan.FromBounds(left.Span.End, right.Span.Start);
+            TextSpan span = TextSpan.FromBounds(left.Span.End, right.SpanStart);
 
             IEnumerable<SyntaxTrivia> trivia = binaryExpression.DescendantTrivia(span);
 
@@ -97,7 +97,7 @@ namespace Roslynator.CSharp.Refactorings
             ForStatementSyntax newForStatement;
 
             if (forStatement
-                .DescendantTrivia(TextSpan.FromBounds(forStatement.FirstSemicolonToken.Span.End, forStatement.SecondSemicolonToken.Span.Start))
+                .DescendantTrivia(TextSpan.FromBounds(forStatement.FirstSemicolonToken.Span.End, forStatement.SecondSemicolonToken.SpanStart))
                 .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
             {
                 newForStatement = forStatement.Update(

@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             if (declarator == null)
                 return;
 
-            if (context.Span.Start < type.Span.Start)
+            if (context.Span.Start < type.SpanStart)
                 return;
 
             SyntaxTriviaList triviaList = type.GetTrailingTrivia();
@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!trivia.IsEndOfLineTrivia())
                 return;
 
-            if (context.Span.End > trivia.Span.Start)
+            if (context.Span.End > trivia.SpanStart)
                 return;
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
@@ -101,7 +101,7 @@ namespace Roslynator.CSharp.Refactorings
                 .SkipWhile(f => f.IsWhitespaceTrivia())
                 .First();
 
-            TextSpan span = TextSpan.FromBounds(type.Span.End, endOfLine.Span.Start);
+            TextSpan span = TextSpan.FromBounds(type.Span.End, endOfLine.SpanStart);
 
             var textChange = new TextChange(span, " " + name);
 

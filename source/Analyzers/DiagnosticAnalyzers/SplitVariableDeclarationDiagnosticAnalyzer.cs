@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 SeparatedSyntaxList<VariableDeclaratorSyntax> variables = variableDeclaration.Variables;
 
-                TextSpan span = TextSpan.FromBounds(variables[1].Span.Start, variables.Last().Span.End);
+                TextSpan span = TextSpan.FromBounds(variables[1].SpanStart, variables.Last().Span.End);
 
                 if (context.Node
                     .DescendantTrivia(span)
