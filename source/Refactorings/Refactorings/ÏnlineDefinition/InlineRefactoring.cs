@@ -264,7 +264,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                             }
                             else if (symbol is ITypeSymbol typeSymbol)
                             {
-                                replacementMap.Add(identifierName, typeSymbol.ToMinimalTypeSyntax(InvocationSemanticModel, Node.SpanStart, SymbolDisplayFormats.FullyQualifiedTypeName));
+                                replacementMap.Add(identifierName, typeSymbol.ToMinimalTypeSyntax(InvocationSemanticModel, Node.SpanStart));
                             }
                         }
 
