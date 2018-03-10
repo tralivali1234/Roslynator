@@ -264,8 +264,8 @@ namespace Roslynator.CSharp.Refactorings
         {
             ISymbol symbol = semanticModel.GetSymbol(identifier, cancellationToken);
 
-            if (symbol.IsPrivate()
-                && symbol.IsField())
+            if (symbol?.DeclaredAccessibility == Accessibility.Private
+                && symbol.Kind == SymbolKind.Field)
             {
                 var fieldSymbol = (IFieldSymbol)symbol;
 
@@ -296,7 +296,7 @@ namespace Roslynator.CSharp.Refactorings
                     ISymbol symbol = semanticModel.GetSymbol(getterIdentifier, cancellationToken);
 
                     if (symbol?.DeclaredAccessibility == Accessibility.Private
-                        && symbol.IsField())
+                        && symbol.Kind == SymbolKind.Field)
                     {
                         var fieldSymbol = (IFieldSymbol)symbol;
 

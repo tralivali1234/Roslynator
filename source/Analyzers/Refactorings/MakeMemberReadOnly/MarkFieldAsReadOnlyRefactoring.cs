@@ -22,7 +22,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 
             foreach (ISymbol member in containingType.GetMembers())
             {
-                if (member.IsField())
+                if (member.Kind == SymbolKind.Field)
                 {
                     var fieldSymbol = (IFieldSymbol)member;
 

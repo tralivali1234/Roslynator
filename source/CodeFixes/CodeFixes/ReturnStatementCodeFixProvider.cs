@@ -82,7 +82,7 @@ namespace Roslynator.CSharp.CodeFixes
                                             replacementKind = SyntaxKind.YieldReturnStatement;
                                         }
                                     }
-                                    else if (returnType.IsNamedType())
+                                    else if (returnType.Kind == SymbolKind.NamedType)
                                     {
                                         var namedTypeSymbol = (INamedTypeSymbol)returnType;
 

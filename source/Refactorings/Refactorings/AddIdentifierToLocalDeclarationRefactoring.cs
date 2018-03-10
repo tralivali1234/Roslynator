@@ -72,7 +72,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetSymbol(expression, context.CancellationToken);
 
-            if (symbol?.IsNamedType() == false)
+            if (symbol?.Kind != SymbolKind.NamedType)
                 return;
 
             ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, context.CancellationToken);

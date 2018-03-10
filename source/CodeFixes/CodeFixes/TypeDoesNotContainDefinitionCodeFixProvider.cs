@@ -167,13 +167,13 @@ namespace Roslynator.CSharp.CodeFixes
 
             if (typeSymbol != null)
             {
-                if (typeSymbol.IsArrayType())
-                    typeSymbol = ((IArrayTypeSymbol)typeSymbol).ElementType;
+                if (typeSymbol is IArrayTypeSymbol arrayType)
+                    typeSymbol = arrayType.ElementType;
 
                 foreach (ISymbol symbol in typeSymbol.GetMembers(newName))
                 {
                     if (!symbol.IsStatic
-                        && symbol.IsProperty())
+                        && symbol.Kind == SymbolKind.Property)
                     {
                         var propertySymbol = (IPropertySymbol)symbol;
 

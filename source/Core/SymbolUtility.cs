@@ -138,7 +138,7 @@ namespace Roslynator
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            if (symbol.IsNamedType())
+            if (symbol.Kind == SymbolKind.NamedType)
             {
                 INamedTypeSymbol funcSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Func_T2);
 
@@ -171,7 +171,7 @@ namespace Roslynator
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            if (symbol.IsNamedType())
+            if (symbol.Kind == SymbolKind.NamedType)
             {
                 INamedTypeSymbol funcSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Func_T3);
 
@@ -202,7 +202,7 @@ namespace Roslynator
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            if (symbol.IsNamedType())
+            if (symbol.Kind == SymbolKind.NamedType)
             {
                 INamedTypeSymbol funcSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Func_T2);
 
@@ -235,7 +235,7 @@ namespace Roslynator
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            if (symbol.IsNamedType())
+            if (symbol.Kind == SymbolKind.NamedType)
             {
                 INamedTypeSymbol funcSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Func_T3);
 

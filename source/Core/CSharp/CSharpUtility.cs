@@ -312,11 +312,13 @@ namespace Roslynator.CSharp
                 if (semanticModel.GetAliasInfo(name, cancellationToken) != null
                     || !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    if (symbol.IsNamespace())
+                    SymbolKind kind = symbol.Kind;
+
+                    if (kind == SymbolKind.Namespace)
                     {
                         return SyntaxFactory.ParseName(symbol.ToString()).WithTriviaFrom(name);
                     }
-                    else if (symbol.IsNamedType())
+                    else if (kind == SymbolKind.NamedType)
                     {
                         return (NameSyntax)((INamedTypeSymbol)symbol).ToTypeSyntax(_symbolDisplayFormat).WithTriviaFrom(name);
                     }

@@ -80,7 +80,7 @@ namespace Roslynator.CSharp.Refactorings
 
             foreach (ISymbol memberSymbol in members)
             {
-                if (memberSymbol.IsField())
+                if (memberSymbol.Kind == SymbolKind.Field)
                 {
                     sections.Add(
                         SwitchSection(

@@ -239,7 +239,7 @@ namespace Roslynator.CSharp.Refactorings.InlineDefinition
                                 }
                             }
                         }
-                        else if (symbol.IsTypeParameter())
+                        else if (symbol.Kind == SymbolKind.TypeParameter)
                         {
                             var typeParameter = (ITypeParameterSymbol)symbol;
 

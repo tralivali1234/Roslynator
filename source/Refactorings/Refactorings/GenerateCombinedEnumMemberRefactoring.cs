@@ -210,7 +210,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             foreach (ISymbol member in enumSymbol.GetMembers())
             {
-                if (member.IsField())
+                if (member.Kind == SymbolKind.Field)
                 {
                     var fieldSymbol = (IFieldSymbol)member;
 

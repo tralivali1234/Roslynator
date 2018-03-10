@@ -49,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (memberSymbol.IsAsyncMethod())
             {
-                if (memberTypeSymbol.IsNamedType())
+                if (memberTypeSymbol.Kind == SymbolKind.NamedType)
                 {
                     var namedTypeSymbol = (INamedTypeSymbol)memberTypeSymbol;
 

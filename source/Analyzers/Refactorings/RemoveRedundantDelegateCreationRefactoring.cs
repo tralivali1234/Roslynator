@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!(semanticModel.GetSymbol(expression, cancellationToken) is IMethodSymbol))
                 return;
 
-            if (semanticModel.GetSymbol(info.Left, cancellationToken)?.IsEvent() != true)
+            if (semanticModel.GetSymbol(info.Left, cancellationToken)?.Kind != SymbolKind.Event)
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantDelegateCreation, info.Right);

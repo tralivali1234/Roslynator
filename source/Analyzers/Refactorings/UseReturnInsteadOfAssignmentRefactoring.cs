@@ -374,7 +374,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
 
-            if (symbol.IsLocal()
+            if (symbol?.Kind == SymbolKind.Local
                 && index > 0)
             {
                 LocalDeclarationStatementSyntax localDeclarationStatement = FindLocalDeclarationStatementAbove(statementsInfo.Statements, index);

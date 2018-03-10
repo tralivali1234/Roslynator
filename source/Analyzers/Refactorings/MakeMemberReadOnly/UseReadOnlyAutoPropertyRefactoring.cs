@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
 
             for (int i = 0; i < members.Length; i++)
             {
-                if (members[i].IsProperty())
+                if (members[i].Kind == SymbolKind.Property)
                 {
                     var propertySymbol = (IPropertySymbol)members[i];
 

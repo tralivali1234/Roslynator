@@ -133,7 +133,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
 
-            if (symbol?.IsParameter() != true)
+            if (symbol?.Kind != SymbolKind.Parameter)
                 return null;
 
             var parameterSymbol = (IParameterSymbol)symbol;
