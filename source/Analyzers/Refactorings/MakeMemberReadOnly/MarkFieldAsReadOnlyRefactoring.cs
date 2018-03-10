@@ -27,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
                     var fieldSymbol = (IFieldSymbol)member;
 
                     if (!fieldSymbol.IsConst
-                        && fieldSymbol.IsPrivate()
+                        && fieldSymbol.DeclaredAccessibility == Accessibility.Private
                         && !fieldSymbol.IsReadOnly
                         && !fieldSymbol.IsVolatile
                         && !fieldSymbol.IsImplicitlyDeclared

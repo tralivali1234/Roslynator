@@ -290,46 +290,6 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Returns true if the symbol is declared as public.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsPublic(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Public;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as internal.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsInternal(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Internal;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as protected.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsProtected(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Protected;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as private.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsPrivate(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Private;
-        }
-
-        /// <summary>
         /// Returns true if the symbol represents an error.
         /// </summary>
         /// <param name="symbol"></param>
