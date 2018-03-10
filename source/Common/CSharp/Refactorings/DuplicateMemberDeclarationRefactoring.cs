@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
             int index = statements.IndexOf(localFunction);
 
             if (index == 0
-                && statementsInfos.Block.OpenBraceToken.GetFullSpanEndLine() == localFunction.GetFullSpanStartLine())
+                && statementsInfos.ParentAsBlock.OpenBraceToken.GetFullSpanEndLine() == localFunction.GetFullSpanStartLine())
             {
                 localFunction = localFunction.WithLeadingTrivia(localFunction.GetLeadingTrivia().Insert(0, NewLine()));
             }

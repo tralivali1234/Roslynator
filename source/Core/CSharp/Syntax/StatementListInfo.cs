@@ -20,7 +20,6 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(block != null);
 
-            IsBlock = true;
             Statements = block.Statements;
         }
 
@@ -28,7 +27,6 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(switchSection != null);
 
-            IsBlock = false;
             Statements = switchSection.Statements;
         }
 
@@ -50,30 +48,41 @@ namespace Roslynator.CSharp.Syntax
         /// <summary>
         /// Determines whether the statements are contained in a <see cref="BlockSyntax"/>.
         /// </summary>
-        public bool IsBlock { get; }
+        public bool IsParentBlock
+        {
+            get { return Parent?.Kind() == SyntaxKind.Block; }
+        }
 
         /// <summary>
         /// Determines whether the statements are contained in a <see cref="SwitchSectionSyntax"/>.
         /// </summary>
-        public bool IsSwitchSection
+        public bool IsParentSwitchSection
         {
-            get { return Success && !IsBlock; }
+            get { return Parent?.Kind() == SyntaxKind.SwitchSection; }
         }
 
         /// <summary>
         /// Gets a block that contains the statements. Returns null if the statements are not contained in a block.
         /// </summary>
-        public BlockSyntax Block
+        public BlockSyntax ParentAsBlock
         {
-            get { return (IsBlock) ? (BlockSyntax)Parent : null; }
+            get
+            {
+                SyntaxNode parent = Parent;
+                return (parent?.Kind() == SyntaxKind.Block) ? (BlockSyntax)parent : null;
+            }
         }
 
         /// <summary>
         /// Gets a switch section that contains the statements. Returns null if the statements are not contained in a switch section.
         /// </summary>
-        public SwitchSectionSyntax SwitchSection
+        public SwitchSectionSyntax ParentAsSwitchSection
         {
-            get { return (IsSwitchSection) ? (SwitchSectionSyntax)Parent : null; }
+            get
+            {
+                SyntaxNode parent = Parent;
+                return (parent?.Kind() == SyntaxKind.SwitchSection) ? (SwitchSectionSyntax)parent : null;
+            }
         }
 
         /// <summary>
@@ -179,13 +188,12 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsBlock)
-                return new StatementListInfo(Block.WithStatements(statements));
+            SyntaxNode parent = Parent;
 
-            if (IsSwitchSection)
-                return new StatementListInfo(SwitchSection.WithStatements(statements));
+            if (parent.Kind() == SyntaxKind.Block)
+                return new StatementListInfo(((BlockSyntax)parent).WithStatements(statements));
 
-            throw new InvalidOperationException();
+            return new StatementListInfo(((SwitchSectionSyntax)parent).WithStatements(statements));
         }
 
         /// <summary>
@@ -198,13 +206,12 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsBlock)
-                return new StatementListInfo(Block.RemoveNode(node, options));
+            SyntaxNode parent = Parent;
 
-            if (IsSwitchSection)
-                return new StatementListInfo(SwitchSection.RemoveNode(node, options));
+            if (parent.Kind() == SyntaxKind.Block)
+                return new StatementListInfo(((BlockSyntax)parent).RemoveNode(node, options));
 
-            throw new InvalidOperationException();
+            return new StatementListInfo(((SwitchSectionSyntax)parent).RemoveNode(node, options));
         }
 
         /// <summary>
@@ -217,13 +224,12 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            if (IsBlock)
-                return new StatementListInfo(Block.ReplaceNode(oldNode, newNode));
+            SyntaxNode parent = Parent;
 
-            if (IsSwitchSection)
-                return new StatementListInfo(SwitchSection.ReplaceNode(oldNode, newNode));
+            if (parent.Kind() == SyntaxKind.Block)
+                return new StatementListInfo(((BlockSyntax)parent).ReplaceNode(oldNode, newNode));
 
-            throw new InvalidOperationException();
+            return new StatementListInfo(((SwitchSectionSyntax)parent).ReplaceNode(oldNode, newNode));
         }
 
         /// <summary>
