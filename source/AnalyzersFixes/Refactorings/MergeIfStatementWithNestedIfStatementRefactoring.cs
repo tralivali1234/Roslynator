@@ -1,89 +1,17 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
-using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeIfStatementWithNestedIfStatementRefactoring
     {
-        public static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
-        {
-            var ifStatement = (IfStatementSyntax)context.Node;
-
-            if (ifStatement.SpanContainsDirectives())
-                return;
-
-            SimpleIfStatementInfo simpleIf = SyntaxInfo.SimpleIfStatementInfo(ifStatement);
-
-            if (!simpleIf.Success)
-                return;
-
-            if (simpleIf.Condition.Kind() == SyntaxKind.LogicalOrExpression)
-                return;
-
-            SimpleIfStatementInfo nestedIf = SyntaxInfo.SimpleIfStatementInfo(GetNestedIfStatement(ifStatement));
-
-            if (!nestedIf.Success)
-                return;
-
-            if (nestedIf.Condition.Kind() == SyntaxKind.LogicalOrExpression)
-                return;
-
-            if (!CheckTrivia(ifStatement, nestedIf.IfStatement))
-                return;
-
-            ReportDiagnostic(context, ifStatement, nestedIf.IfStatement);
-        }
-
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, IfStatementSyntax ifStatement, IfStatementSyntax nestedIf)
-        {
-            context.ReportDiagnostic(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatement, ifStatement);
-
-            context.ReportToken(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatementFadeOut, nestedIf.IfKeyword);
-            context.ReportToken(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatementFadeOut, nestedIf.OpenParenToken);
-            context.ReportToken(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatementFadeOut, nestedIf.CloseParenToken);
-
-            if (ifStatement.Statement.IsKind(SyntaxKind.Block)
-                && nestedIf.Statement.IsKind(SyntaxKind.Block))
-            {
-                context.ReportBraces(DiagnosticDescriptors.MergeIfStatementWithNestedIfStatementFadeOut, (BlockSyntax)nestedIf.Statement);
-            }
-        }
-
-        private static bool CheckTrivia(IfStatementSyntax ifStatement, IfStatementSyntax nestedIf)
-        {
-            TextSpan span = TextSpan.FromBounds(
-                nestedIf.FullSpan.Start,
-                nestedIf.CloseParenToken.FullSpan.End);
-
-            if (nestedIf.DescendantTrivia(span).All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-            {
-                if (ifStatement.Statement.IsKind(SyntaxKind.Block)
-                    && nestedIf.Statement.IsKind(SyntaxKind.Block))
-                {
-                    var block = (BlockSyntax)nestedIf.Statement;
-
-                    return block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                        && block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                        && block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                        && block.CloseBraceToken.TrailingTrivia.IsEmptyOrWhitespace();
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
+        //TODO: 
         private static IfStatementSyntax GetNestedIfStatement(IfStatementSyntax ifStatement)
         {
             StatementSyntax statement = ifStatement.Statement;

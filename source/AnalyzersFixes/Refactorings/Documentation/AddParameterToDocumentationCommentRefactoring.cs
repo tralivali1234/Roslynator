@@ -4,7 +4,6 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings.DocumentationComment
 {
@@ -21,36 +20,6 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
         }
 
         public override ImmutableArray<string> ElementNames { get; } = ImmutableArray.Create("param", "PARAM", "typeparam", "TYPEPARAM", "summary", "SUMMARY");
-
-        public static void Analyze(
-            SyntaxNodeAnalysisContext context,
-            MemberDeclarationSyntax memberDeclaration,
-            SeparatedSyntaxList<ParameterSyntax> parameters)
-        {
-            if (parameters.Any())
-            {
-                DocumentationCommentTriviaSyntax comment = memberDeclaration.GetSingleLineDocumentationComment();
-
-                if (comment != null)
-                {
-                    ImmutableArray<string> values = DocumentationCommentRefactoring.GetAttributeValues(comment, "param", "PARAM", "name");
-
-                    if (!values.IsDefault)
-                    {
-                        foreach (ParameterSyntax parameter in parameters)
-                        {
-                            if (!parameter.IsMissing
-                                && !values.Contains(parameter.Identifier.ValueText))
-                            {
-                                context.ReportDiagnostic(
-                                    DiagnosticDescriptors.AddParameterToDocumentationComment,
-                                    parameter.Identifier);
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         public override SeparatedSyntaxList<ParameterSyntax> GetContainingList(ParameterSyntax node)
         {

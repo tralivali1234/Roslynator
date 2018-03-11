@@ -11,48 +11,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AddParenthesesAccordingToOperatorPrecedenceRefactoring
     {
-        public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
-        {
-            var binaryExpression = (BinaryExpressionSyntax)context.Node;
-
-            if (binaryExpression.ContainsDiagnostics)
-                return;
-
-            SyntaxKind binaryExpressionKind = binaryExpression.Kind();
-
-            ExpressionSyntax left = binaryExpression.Left;
-
-            if (left?.IsMissing == false)
-                Analyze(context, left, binaryExpressionKind);
-
-            ExpressionSyntax right = binaryExpression.Right;
-
-            if (right?.IsMissing == false)
-                Analyze(context, right, binaryExpressionKind);
-        }
-
-        private static void Analyze(SyntaxNodeAnalysisContext context, ExpressionSyntax expression, SyntaxKind binaryExpressionKind)
-        {
-            if (!IsFixable(expression, binaryExpressionKind))
-                return;
-
-            if (IsNestedDiagnostic(expression))
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AddParenthesesAccordingToOperatorPrecedence, expression);
-        }
-
-        private static bool IsNestedDiagnostic(SyntaxNode node)
-        {
-            for (SyntaxNode current = node.Parent; current != null; current = current.Parent)
-            {
-                if (IsFixable(current))
-                    return true;
-            }
-
-            return false;
-        }
-
+        //TODO: 
         private static bool IsFixable(SyntaxNode node)
         {
             SyntaxNode parent = node.Parent;

@@ -9,68 +9,12 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareEnumValueAsCombinationOfNamesRefactoring
     {
-        public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol flagsAttribute)
-        {
-            var enumSymbol = (INamedTypeSymbol)context.Symbol;
-
-            if (enumSymbol.TypeKind != TypeKind.Enum)
-                return;
-
-            if (!enumSymbol.HasAttribute(flagsAttribute))
-                return;
-
-            var infos = default(ImmutableArray<EnumFieldInfo>);
-
-            foreach (ISymbol member in enumSymbol.GetMembers())
-            {
-                if (member is IFieldSymbol fieldSymbol)
-                {
-                    if (!fieldSymbol.HasConstantValue)
-                        return;
-
-                    var info = new EnumFieldInfo(fieldSymbol);
-
-                    if (info.IsComposite())
-                    {
-                        var declaration = (EnumMemberDeclarationSyntax)info.Symbol.GetSyntax(context.CancellationToken);
-
-                        ExpressionSyntax valueExpression = declaration.EqualsValue?.Value;
-
-                        if (valueExpression != null
-                            && (valueExpression.IsKind(SyntaxKind.NumericLiteralExpression)
-                                || valueExpression
-                                    .DescendantNodes()
-                                    .Any(f => f.IsKind(SyntaxKind.NumericLiteralExpression))))
-                        {
-                            if (infos.IsDefault)
-                            {
-                                infos = EnumFieldInfo.CreateRange(enumSymbol);
-
-                                if (infos.IsDefault)
-                                    return;
-                            }
-
-                            List<EnumFieldInfo> values = info.Decompose(infos);
-
-                            if (values?.Count > 1)
-                            {
-                                context.ReportDiagnostic(
-                                    DiagnosticDescriptors.DeclareEnumValueAsCombinationOfNames,
-                                    valueExpression);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             EnumMemberDeclarationSyntax enumMemberDeclaration,
@@ -119,6 +63,7 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceNodeAsync(value, newValue, cancellationToken).ConfigureAwait(false);
         }
 
+        //TODO: 
         private readonly struct EnumFieldInfo
         {
             public EnumFieldInfo(IFieldSymbol symbol)

@@ -14,52 +14,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeSwitchSectionsRefactoring
     {
-        public static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context)
-        {
-            var switchStatement = (SwitchStatementSyntax)context.Node;
-
-            if (switchStatement.ContainsDiagnostics)
-                return;
-
-            SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
-
-            if (sections.Count <= 1)
-                return;
-
-            SwitchSectionSyntax section = FindFixableSection(sections);
-
-            if (section == null)
-                return;
-
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.MergeSwitchSectionsWithEquivalentContent,
-                Location.Create(switchStatement.SyntaxTree, section.Statements.Span));
-        }
-
-        private static SwitchSectionSyntax FindFixableSection(SyntaxList<SwitchSectionSyntax> sections)
-        {
-            SyntaxList<StatementSyntax> statements = GetStatementsOrDefault(sections[0]);
-
-            int i = 1;
-
-            while (i < sections.Count)
-            {
-                SyntaxList<StatementSyntax> nextStatements = GetStatementsOrDefault(sections[i]);
-
-                if (AreEquivalent(statements, nextStatements)
-                    && !sections[i - 1].SpanOrTrailingTriviaContainsDirectives()
-                    && !sections[i].SpanOrLeadingTriviaContainsDirectives())
-                {
-                    return sections[i - 1];
-                }
-
-                statements = nextStatements;
-                i++;
-            }
-
-            return null;
-        }
-
+        //TODO: 
         private static bool AreEquivalent(SyntaxList<StatementSyntax> statements1, SyntaxList<StatementSyntax> statements2)
         {
             int count = statements1.Count;

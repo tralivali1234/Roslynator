@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -13,37 +12,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class CallFindInsteadOfFirstOrDefaultRefactoring
     {
-        public static void Analyze(
-            SyntaxNodeAnalysisContext context,
-            MemberInvocationExpressionInfo invocationInfo)
-        {
-            SemanticModel semanticModel = context.SemanticModel;
-            CancellationToken cancellationToken = context.CancellationToken;
-
-            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, cancellationToken).Symbol;
-
-            if (methodSymbol == null)
-                return;
-
-            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, semanticModel, "FirstOrDefault"))
-                return;
-
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);
-
-            if (typeSymbol == null)
-                return;
-
-            if (typeSymbol.Kind == SymbolKind.ArrayType
-                && ((IArrayTypeSymbol)typeSymbol).Rank == 1)
-            {
-                context.ReportDiagnostic(DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault, invocationInfo.Name);
-            }
-            else if (typeSymbol.IsConstructedFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Collections_Generic_List_T)))
-            {
-                context.ReportDiagnostic(DiagnosticDescriptors.CallFindInsteadOfFirstOrDefault, invocationInfo.Name);
-            }
-        }
-
         internal static async Task<Document> RefactorAsync(
             Document document,
             InvocationExpressionSyntax invocation,

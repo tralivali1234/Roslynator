@@ -5,29 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings.FormatSummary
 {
     internal static class FormatSummaryOnMultipleLinesRefactoring
     {
-        public static void AnalyzeSingleLineDocumentationCommentTrivia(SyntaxNodeAnalysisContext context)
-        {
-            var documentationComment = (DocumentationCommentTriviaSyntax)context.Node;
-
-            XmlElementSyntax summaryElement = documentationComment.SummaryElement();
-
-            if (summaryElement?.StartTag?.IsMissing == false
-                && summaryElement.EndTag?.IsMissing == false
-                && summaryElement.IsSingleLine(includeExteriorTrivia: false, trim: false))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.FormatDocumentationSummaryOnMultipleLines,
-                    summaryElement);
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             DocumentationCommentTriviaSyntax documentationComment,

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -15,99 +14,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatAccessorListRefactoring
     {
-        public static void AnalyzeAccessorList(SyntaxNodeAnalysisContext context)
-        {
-            var accessorList = (AccessorListSyntax)context.Node;
-
-            SyntaxList<AccessorDeclarationSyntax> accessors = accessorList.Accessors;
-
-            if (accessors.Any(f => f.BodyOrExpressionBody() != null))
-            {
-                if (accessorList.IsSingleLine(includeExteriorTrivia: false))
-                {
-                    ReportDiagnostic(context, accessorList);
-                }
-                else
-                {
-                    foreach (AccessorDeclarationSyntax accessor in accessors)
-                    {
-                        if (ShouldBeFormatted(accessor))
-                            ReportDiagnostic(context, accessor);
-                    }
-                }
-            }
-            else
-            {
-                SyntaxNode parent = accessorList.Parent;
-
-                switch (parent?.Kind())
-                {
-                    case SyntaxKind.PropertyDeclaration:
-                        {
-                            if (accessors.All(f => !f.AttributeLists.Any())
-                                && !accessorList.IsSingleLine(includeExteriorTrivia: false))
-                            {
-                                var propertyDeclaration = (PropertyDeclarationSyntax)parent;
-                                SyntaxToken identifier = propertyDeclaration.Identifier;
-
-                                if (!identifier.IsMissing)
-                                {
-                                    SyntaxToken closeBrace = accessorList.CloseBraceToken;
-
-                                    if (!closeBrace.IsMissing)
-                                    {
-                                        TextSpan span = TextSpan.FromBounds(identifier.Span.End, closeBrace.SpanStart);
-
-                                        if (propertyDeclaration
-                                            .DescendantTrivia(span)
-                                            .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                                        {
-                                            ReportDiagnostic(context, accessorList);
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-                    case SyntaxKind.IndexerDeclaration:
-                        {
-                            if (accessors.All(f => !f.AttributeLists.Any())
-                                && !accessorList.IsSingleLine(includeExteriorTrivia: false))
-                            {
-                                var indexerDeclaration = (IndexerDeclarationSyntax)parent;
-
-                                BracketedParameterListSyntax parameterList = indexerDeclaration.ParameterList;
-
-                                if (parameterList != null)
-                                {
-                                    SyntaxToken closeBracket = parameterList.CloseBracketToken;
-
-                                    if (!closeBracket.IsMissing)
-                                    {
-                                        SyntaxToken closeBrace = accessorList.CloseBraceToken;
-
-                                        if (!closeBrace.IsMissing)
-                                        {
-                                            TextSpan span = TextSpan.FromBounds(closeBracket.Span.End, closeBrace.SpanStart);
-
-                                            if (indexerDeclaration
-                                                .DescendantTrivia(span)
-                                                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-                                            {
-                                                ReportDiagnostic(context, accessorList);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                        }
-                }
-            }
-        }
-
+        //TODO: 
         private static bool ShouldBeFormatted(AccessorDeclarationSyntax accessor)
         {
             BlockSyntax body = accessor.Body;
@@ -140,11 +47,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return false;
-        }
-
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node)
-        {
-            context.ReportDiagnostic(DiagnosticDescriptors.FormatAccessorList, node);
         }
 
         public static async Task<Document> RefactorAsync(

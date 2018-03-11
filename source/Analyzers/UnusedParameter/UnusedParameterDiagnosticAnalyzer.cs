@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.UnusedParameter.UnusedParameterRefactoring;
+using static Roslynator.CSharp.Analyzers.UnusedParameter.UnusedParameterAnalysis;
 
 namespace Roslynator.CSharp.Analyzers.UnusedParameter
 {

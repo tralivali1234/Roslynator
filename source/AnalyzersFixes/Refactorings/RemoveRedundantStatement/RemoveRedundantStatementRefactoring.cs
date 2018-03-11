@@ -9,12 +9,6 @@ namespace Roslynator.CSharp.Refactorings.RemoveRedundantStatement
 {
     internal static class RemoveRedundantStatementRefactoring
     {
-        public static RemoveRedundantContinueStatementRefactoring ContinueStatement { get; } = new RemoveRedundantContinueStatementRefactoring();
-
-        public static RemoveRedundantReturnStatementRefactoring ReturnStatement { get; } = new RemoveRedundantReturnStatementRefactoring();
-
-        public static RemoveRedundantYieldBreakStatementRefactoring YieldBreakStatement { get; } = new RemoveRedundantYieldBreakStatementRefactoring();
-
         public static Task<Document> RefactorAsync(
             Document document,
             StatementSyntax statement,

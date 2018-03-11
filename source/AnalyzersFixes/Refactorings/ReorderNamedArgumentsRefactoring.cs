@@ -7,37 +7,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReorderNamedArgumentsRefactoring
     {
-        public static void AnalyzeBaseArgumentList(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
-            var argumentList = (BaseArgumentListSyntax)context.Node;
-
-            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
-
-            int index = IndexOfFirstFixableParameter(argumentList, arguments, context.SemanticModel, context.CancellationToken);
-
-            if (index == -1)
-                return;
-
-            TextSpan span = TextSpan.FromBounds(arguments[index].SpanStart, arguments.Last().Span.End);
-
-            if (argumentList.ContainsDirectives(span))
-                return;
-
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.ReorderNamedArguments,
-                Location.Create(argumentList.SyntaxTree, span));
-        }
-
+        //TODO: ?
         public static int IndexOfFirstFixableParameter(
             BaseArgumentListSyntax argumentList,
             SeparatedSyntaxList<ArgumentSyntax> arguments,

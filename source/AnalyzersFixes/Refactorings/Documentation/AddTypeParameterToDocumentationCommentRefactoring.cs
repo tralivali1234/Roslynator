@@ -3,7 +3,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings.DocumentationComment
 {
@@ -20,36 +19,6 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
         }
 
         public override ImmutableArray<string> ElementNames { get; } = ImmutableArray.Create("typeparam", "TYPEPARAM", "summary", "SUMMARY");
-
-        public static void Analyze(
-            SyntaxNodeAnalysisContext context,
-            MemberDeclarationSyntax memberDeclaration,
-            SeparatedSyntaxList<TypeParameterSyntax> typeParameters)
-        {
-            if (typeParameters.Any())
-            {
-                DocumentationCommentTriviaSyntax comment = memberDeclaration.GetSingleLineDocumentationComment();
-
-                if (comment != null)
-                {
-                    ImmutableArray<string> values = DocumentationCommentRefactoring.GetAttributeValues(comment, "typeparam", "TYPEPARAM", "name");
-
-                    if (!values.IsDefault)
-                    {
-                        foreach (TypeParameterSyntax typeParameter in typeParameters)
-                        {
-                            if (!typeParameter.IsMissing
-                                && !values.Contains(typeParameter.Identifier.ValueText))
-                            {
-                                context.ReportDiagnostic(
-                                    DiagnosticDescriptors.AddTypeParameterToDocumentationComment,
-                                    typeParameter.Identifier);
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         public override SeparatedSyntaxList<TypeParameterSyntax> GetContainingList(TypeParameterSyntax node)
         {

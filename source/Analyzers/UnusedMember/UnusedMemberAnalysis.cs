@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Analyzers.UnusedMember
 {
-    internal static class UnusedMemberRefactoring
+    internal static class UnusedMemberAnalysis
     {
         public static void AnalyzeClassDeclaration(SyntaxNodeAnalysisContext context)
         {

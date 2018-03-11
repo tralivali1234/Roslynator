@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                MarkLocalVariableAsConstRefactoring.AnalyzeLocalDeclarationStatement,
+                MarkLocalVariableAsConstAnalysis.AnalyzeLocalDeclarationStatement,
                 SyntaxKind.LocalDeclarationStatement);
         }
     }

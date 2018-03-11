@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -17,18 +16,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class EnumMemberShouldDeclareExplicitValueRefactoring
     {
-        public static void AnalyzeEnumMemberDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            var enumMember = (EnumMemberDeclarationSyntax)context.Node;
-
-            if (HasImplicitValue(enumMember, context.SemanticModel, context.CancellationToken))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.EnumMemberShouldDeclareExplicitValue,
-                    enumMember.Identifier);
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             EnumMemberDeclarationSyntax enumMember,

@@ -1,16 +1,12 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -18,36 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseCountOrLengthPropertyInsteadOfAnyMethodRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
-        {
-            InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
-
-            if (invocationExpression.IsParentKind(SyntaxKind.SimpleMemberAccessExpression))
-                return;
-
-            SemanticModel semanticModel = context.SemanticModel;
-            CancellationToken cancellationToken = context.CancellationToken;
-
-            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocationExpression, cancellationToken).Symbol;
-
-            if (methodSymbol == null)
-                return;
-
-            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodSymbol, "Any", semanticModel))
-                return;
-
-            string propertyName = CSharpUtility.GetCountOrLengthPropertyName(invocationInfo.Expression, semanticModel, cancellationToken);
-
-            if (propertyName == null)
-                return;
-
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.UseCountOrLengthPropertyInsteadOfAnyMethod,
-                Location.Create(context.Node.SyntaxTree, TextSpan.FromBounds(invocationInfo.Name.SpanStart, invocationExpression.Span.End)),
-                ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("PropertyName", propertyName) }),
-                propertyName);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             InvocationExpressionSyntax invocation,

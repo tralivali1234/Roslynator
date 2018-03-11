@@ -9,7 +9,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
 {
-    internal static class MarkLocalVariableAsConstRefactoring
+    internal static class MarkLocalVariableAsConstAnalysis
     {
         public static void AnalyzeLocalDeclarationStatement(SyntaxNodeAnalysisContext context)
         {

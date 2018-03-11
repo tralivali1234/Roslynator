@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
     {
         // x >= 0 (x >= 0) true
         // 0 >= x (x <= 0) true/false
-        public static void GreaterThanOrEqualExpression(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeGreaterThanOrEqualExpression(SyntaxNodeAnalysisContext context)
         {
             var greaterThanOrEqualExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings
 
         // x > 0 (x > 0) true/false
         // 0 > x (x < 0) false
-        public static void GreaterThanExpression(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeGreaterThanExpression(SyntaxNodeAnalysisContext context)
         {
             var greaterThanExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -48,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings
 
         // x <= 0 (x <= 0) true/false
         // 0 <= x (x >= 0) true
-        public static void LessThanOrEqualExpression(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeLessThanOrEqualExpression(SyntaxNodeAnalysisContext context)
         {
             var lessThanOrEqualExpression = (BinaryExpressionSyntax)context.Node;
 
@@ -65,7 +65,7 @@ namespace Roslynator.CSharp.Refactorings
 
         // x < 0 (x < 0) false
         // 0 < x (x > 0) true/false
-        public static void LessThanExpression(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeLessThanExpression(SyntaxNodeAnalysisContext context)
         {
             var lessThanExpression = (BinaryExpressionSyntax)context.Node;
 

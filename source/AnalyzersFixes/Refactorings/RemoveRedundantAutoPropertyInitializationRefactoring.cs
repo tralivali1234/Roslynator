@@ -4,52 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveRedundantAutoPropertyInitializationRefactoring
     {
-        public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.ContainsDiagnostics)
-                return;
-
-            var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
-
-            EqualsValueClauseSyntax initializer = propertyDeclaration.Initializer;
-
-            if (initializer == null)
-                return;
-
-            if (initializer.SpanOrLeadingTriviaContainsDirectives())
-                return;
-
-            ExpressionSyntax value = initializer.Value;
-
-            if (value == null)
-                return;
-
-            AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
-
-            if (accessorList == null)
-                return;
-
-            if (accessorList.Accessors.Any(f => !f.IsAutoImplemented()))
-                return;
-
-            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(propertyDeclaration.Type, context.CancellationToken);
-
-            if (typeSymbol?.IsErrorType() != false)
-                return;
-
-            if (!context.SemanticModel.IsDefaultValue(typeSymbol, value, context.CancellationToken))
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantAutoPropertyInitialization, value);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             PropertyDeclarationSyntax propertyDeclaration,

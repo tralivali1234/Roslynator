@@ -13,26 +13,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveUnnecessaryElseClauseRefactoring
     {
-        public static bool IsFixable(ElseClauseSyntax elseClause)
-        {
-            if (elseClause.Statement?.IsKind(SyntaxKind.IfStatement) != false)
-                return false;
-
-            if (!(elseClause.Parent is IfStatementSyntax ifStatement))
-                return false;
-
-            if (!ifStatement.IsTopmostIf())
-                return false;
-
-            StatementSyntax statement = ifStatement.Statement;
-
-            if (statement is BlockSyntax block)
-                statement = block.Statements.LastOrDefault();
-
-            return statement != null
-                && CSharpFacts.IsJumpStatement(statement.Kind());
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ElseClauseSyntax elseClause,

@@ -10,7 +10,7 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 {
-    internal static class ReturnTaskInsteadOfNullRefactoring
+    internal static class ReturnTaskInsteadOfNullAnalysis
     {
         public static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context, INamedTypeSymbol taskOfTSymbol)
         {

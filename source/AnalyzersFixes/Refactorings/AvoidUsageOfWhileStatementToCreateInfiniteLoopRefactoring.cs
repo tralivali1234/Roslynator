@@ -1,14 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -16,25 +12,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AvoidUsageOfWhileStatementToCreateInfiniteLoopRefactoring
     {
-        public static void Analyze(SyntaxNodeAnalysisContext context, WhileStatementSyntax whileStatement)
-        {
-            if (whileStatement.Condition?.Kind() != SyntaxKind.TrueLiteralExpression)
-                return;
-
-            TextSpan span = TextSpan.FromBounds(
-                whileStatement.OpenParenToken.Span.End,
-                whileStatement.CloseParenToken.SpanStart);
-
-            if (!whileStatement
-                .DescendantTrivia(span)
-                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(DiagnosticDescriptors.AvoidUsageOfWhileStatementToCreateInfiniteLoop, whileStatement.WhileKeyword);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             WhileStatementSyntax whileStatement,

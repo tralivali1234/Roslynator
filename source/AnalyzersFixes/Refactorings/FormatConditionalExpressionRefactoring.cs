@@ -6,32 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatConditionalExpressionRefactoring
     {
-        public static void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
-        {
-            var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
-
-            if (conditionalExpression.ContainsDiagnostics)
-                return;
-
-            if (conditionalExpression.SpanContainsDirectives())
-                return;
-
-            if (!IsFixable(conditionalExpression.Condition, conditionalExpression.QuestionToken)
-                && !IsFixable(conditionalExpression.WhenTrue, conditionalExpression.ColonToken))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(DiagnosticDescriptors.FormatConditionalExpression, conditionalExpression);
-        }
-
+        //TODO: 
         private static bool IsFixable(ExpressionSyntax expression, SyntaxToken token)
         {
             SyntaxTriviaList expressionTrailing = expression.GetTrailingTrivia();

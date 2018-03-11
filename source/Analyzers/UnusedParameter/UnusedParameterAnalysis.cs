@@ -12,7 +12,7 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers.UnusedParameter
 {
-    internal static class UnusedParameterRefactoring
+    internal static class UnusedParameterAnalysis
     {
         public static void AnalyzeConstructorDeclaration(
             SyntaxNodeAnalysisContext context,

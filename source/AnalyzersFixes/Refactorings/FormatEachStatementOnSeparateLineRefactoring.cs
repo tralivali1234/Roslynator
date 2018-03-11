@@ -5,47 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatEachStatementOnSeparateLineRefactoring
     {
-        public static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
-        {
-            var block = (BlockSyntax)context.Node;
-
-            Analyze(context, block.Statements);
-        }
-
-        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
-        {
-            var switchSection = (SwitchSectionSyntax)context.Node;
-
-            Analyze(context, switchSection.Statements);
-        }
-
-        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxList<StatementSyntax> statements)
-        {
-            if (statements.Count <= 1)
-                return;
-
-            int previousEndLine = statements[0].GetSpanEndLine();
-
-            for (int i = 1; i < statements.Count; i++)
-            {
-                StatementSyntax statement = statements[i];
-
-                if (!statement.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement)
-                    && statement.GetSpanStartLine() == previousEndLine)
-                {
-                    context.ReportDiagnostic(DiagnosticDescriptors.FormatEachStatementOnSeparateLine, statement);
-                }
-
-                previousEndLine = statement.GetSpanEndLine();
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             StatementSyntax statement,

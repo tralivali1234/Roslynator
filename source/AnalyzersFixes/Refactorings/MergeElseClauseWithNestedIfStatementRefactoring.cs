@@ -4,36 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeElseClauseWithNestedIfStatementRefactoring
     {
-        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
-        {
-            var elseClause = (ElseClauseSyntax)context.Node;
-
-            if (!(elseClause.Statement is BlockSyntax block))
-                return;
-
-            if (!(block.Statements.SingleOrDefault(shouldThrow: false) is IfStatementSyntax ifStatement))
-                return;
-
-            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace()
-                || !block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                || !block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                || !ifStatement.IfKeyword.LeadingTrivia.IsEmptyOrWhitespace()
-                || !ifStatement.GetTrailingTrivia().IsEmptyOrWhitespace()
-                || !block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatement, block);
-            context.ReportBraces(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatementFadeOut, block);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ElseClauseSyntax elseClause,

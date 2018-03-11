@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -15,115 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseRegexInstanceInsteadOfStaticMethodRefactoring
     {
-        internal static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
-        {
-            if (!ValidateMethodNameAndArgumentCount())
-                return;
-
-            SemanticModel semanticModel = context.SemanticModel;
-            CancellationToken cancellationToken = context.CancellationToken;
-
-            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
-
-            if (!SymbolUtility.IsPublicStaticNonGeneric(methodSymbol))
-                return;
-
-            if (methodSymbol.ContainingType?.Equals(MetadataNames.System_Text_RegularExpressions_Regex) != true)
-                return;
-
-            SeparatedSyntaxList<ArgumentSyntax> arguments = invocationInfo.Arguments;
-
-            if (!ValidateArgument(arguments[1]))
-                return;
-
-            if (methodSymbol.Name == "Replace")
-            {
-                if (arguments.Count == 4
-                    && !ValidateArgument(arguments[3]))
-                {
-                    return;
-                }
-            }
-            else if (arguments.Count == 3
-                && !ValidateArgument(arguments[2]))
-            {
-                return;
-            }
-
-            context.ReportDiagnostic(DiagnosticDescriptors.UseRegexInstanceInsteadOfStaticMethod, invocationInfo.Name);
-
-            bool ValidateMethodNameAndArgumentCount()
-            {
-                switch (invocationInfo.NameText)
-                {
-                    case "IsMatch":
-                    case "Match":
-                    case "Matches":
-                    case "Split":
-                        {
-                            int count = invocationInfo.Arguments.Count;
-
-                            return count >= 2
-                                && count <= 3;
-                        }
-                    case "Replace":
-                        {
-                            int count = invocationInfo.Arguments.Count;
-
-                            return count >= 3
-                                && count <= 4;
-                        }
-                }
-
-                return false;
-            }
-
-            bool ValidateArgument(ArgumentSyntax argument)
-            {
-                ExpressionSyntax expression = argument.Expression;
-
-                if (expression == null)
-                    return false;
-
-                if (expression.WalkDownParentheses() is LiteralExpressionSyntax)
-                    return true;
-
-                if (!semanticModel.HasConstantValue(expression, cancellationToken))
-                    return false;
-
-                ISymbol symbol = semanticModel.GetSymbol(expression, cancellationToken);
-
-                Debug.Assert(symbol != null);
-
-                if (symbol == null)
-                    return true;
-
-                switch (symbol.Kind)
-                {
-                    case SymbolKind.Field:
-                        {
-                            return ((IFieldSymbol)symbol).HasConstantValue;
-                        }
-                    case SymbolKind.Method:
-                        {
-                            if (((IMethodSymbol)symbol).MethodKind != MethodKind.BuiltinOperator)
-                                return false;
-
-                            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
-
-                            if (typeSymbol == null)
-                                return false;
-
-                            return typeSymbol.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Text_RegularExpressions_RegexOptions));
-                        }
-                    default:
-                        {
-                            return false;
-                        }
-                }
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             InvocationExpressionSyntax invocationExpression,

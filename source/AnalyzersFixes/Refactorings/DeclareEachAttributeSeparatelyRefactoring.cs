@@ -10,11 +10,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareEachAttributeSeparatelyRefactoring
     {
-        public static bool CanRefactor(AttributeListSyntax attributeList)
-        {
-            return attributeList.Attributes.Count > 1;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             AttributeListSyntax attributeList,

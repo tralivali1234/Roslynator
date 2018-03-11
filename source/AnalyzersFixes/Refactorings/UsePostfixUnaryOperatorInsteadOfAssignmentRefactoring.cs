@@ -8,110 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class UsePostfixUnaryOperatorInsteadOfAssignmentRefactoring
     {
-        public static void AnalyzeSimpleAssignmentExpression(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.SpanContainsDirectives())
-                return;
-
-            var assignment = (AssignmentExpressionSyntax)context.Node;
-
-            if (assignment.IsParentKind(SyntaxKind.ObjectInitializerExpression))
-                return;
-
-            ExpressionSyntax left = assignment.Left;
-            ExpressionSyntax right = assignment.Right;
-
-            if (left?.IsMissing != false)
-                return;
-
-            if (right?.IsKind(SyntaxKind.AddExpression, SyntaxKind.SubtractExpression) != true)
-                return;
-
-            var binaryExpression = (BinaryExpressionSyntax)right;
-
-            ExpressionSyntax binaryLeft = binaryExpression.Left;
-            ExpressionSyntax binaryRight = binaryExpression.Right;
-
-            if (binaryLeft?.IsMissing != false)
-                return;
-
-            if (binaryRight?.IsNumericLiteralExpression("1") != true)
-                return;
-
-            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
-
-            if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() != true)
-                return;
-
-            if (!CSharpFactory.AreEquivalent(left, binaryLeft))
-                return;
-
-            string operatorText = GetOperatorText(assignment);
-
-            ReportDiagnostic(context, assignment, operatorText);
-
-            context.ReportToken(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.OperatorToken, operatorText);
-            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryLeft, operatorText);
-            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, binaryRight, operatorText);
-        }
-
-        public static void AnalyzeAddAssignmentExpression(SyntaxNodeAnalysisContext context)
-        {
-            AnalyzeAddOrSubtractAssignmentExpression(context);
-        }
-
-        public static void AnalyzeSubtractAssignmentExpression(SyntaxNodeAnalysisContext context)
-        {
-            AnalyzeAddOrSubtractAssignmentExpression(context);
-        }
-
-        private static void AnalyzeAddOrSubtractAssignmentExpression(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.SpanContainsDirectives())
-                return;
-
-            var assignment = (AssignmentExpressionSyntax)context.Node;
-
-            ExpressionSyntax left = assignment.Left;
-            ExpressionSyntax right = assignment.Right;
-
-            if (left?.IsMissing != false)
-                return;
-
-            if (right?.IsNumericLiteralExpression("1") != true)
-                return;
-
-            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(left, context.CancellationToken);
-
-            if (typeSymbol?.SupportsPrefixOrPostfixUnaryOperator() != true)
-                return;
-
-            string operatorText = GetOperatorText(assignment);
-
-            ReportDiagnostic(context, assignment, operatorText);
-
-            SyntaxToken operatorToken = assignment.OperatorToken;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, Location.Create(assignment.SyntaxTree, new TextSpan(operatorToken.SpanStart, 1)), operatorText);
-            context.ReportNode(DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignmentFadeOut, assignment.Right, operatorText);
-        }
-
-        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, AssignmentExpressionSyntax assignment, string operatorText)
-        {
-            context.ReportDiagnostic(
-                DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignment,
-                assignment,
-                operatorText);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             AssignmentExpressionSyntax assignment,

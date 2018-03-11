@@ -6,46 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class DefaultLabelShouldBeLastLabelInSwitchSectionRefactoring
     {
-        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
-        {
-            var switchSection = (SwitchSectionSyntax)context.Node;
-
-            SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
-
-            int count = labels.Count;
-
-            if (count <= 1)
-                return;
-
-            SwitchLabelSyntax lastLabel = labels.Last();
-
-            for (int i = 0; i < count - 1; i++)
-            {
-                SwitchLabelSyntax label = labels[i];
-
-                if (label.Kind() == SyntaxKind.DefaultSwitchLabel)
-                {
-                    TextSpan span = TextSpan.FromBounds(label.Span.End, lastLabel.SpanStart);
-
-                    if (!switchSection.ContainsDirectives(span))
-                    {
-                        context.ReportDiagnostic(
-                            DiagnosticDescriptors.DefaultLabelShouldBeLastLabelInSwitchSection,
-                            label);
-
-                        break;
-                    }
-                }
-            }
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             SwitchSectionSyntax switchSection,

@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.UnusedMember.UnusedMemberRefactoring;
+using static Roslynator.CSharp.Analyzers.UnusedMember.UnusedMemberAnalysis;
 
 namespace Roslynator.CSharp.Analyzers.UnusedMember
 {

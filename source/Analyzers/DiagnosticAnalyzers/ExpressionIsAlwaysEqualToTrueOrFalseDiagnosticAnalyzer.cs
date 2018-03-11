@@ -24,10 +24,10 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(LessThanExpression, SyntaxKind.LessThanExpression);
-            context.RegisterSyntaxNodeAction(LessThanOrEqualExpression, SyntaxKind.LessThanOrEqualExpression);
-            context.RegisterSyntaxNodeAction(GreaterThanExpression, SyntaxKind.GreaterThanExpression);
-            context.RegisterSyntaxNodeAction(GreaterThanOrEqualExpression, SyntaxKind.GreaterThanOrEqualExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeLessThanExpression, SyntaxKind.LessThanExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeLessThanOrEqualExpression, SyntaxKind.LessThanOrEqualExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeGreaterThanExpression, SyntaxKind.GreaterThanExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeGreaterThanOrEqualExpression, SyntaxKind.GreaterThanOrEqualExpression);
         }
     }
 }

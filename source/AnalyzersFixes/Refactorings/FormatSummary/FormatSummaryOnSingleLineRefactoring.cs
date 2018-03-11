@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings.FormatSummary
@@ -32,39 +31,6 @@ namespace Roslynator.CSharp.Refactorings.FormatSummary
             )?
             $
             ", RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture);
-
-        public static void AnalyzeSingleLineDocumentationCommentTrivia(SyntaxNodeAnalysisContext context)
-        {
-            var documentationComment = (DocumentationCommentTriviaSyntax)context.Node;
-
-            XmlElementSyntax summaryElement = documentationComment.SummaryElement();
-
-            if (summaryElement != null)
-            {
-                XmlElementStartTagSyntax startTag = summaryElement?.StartTag;
-
-                if (startTag?.IsMissing == false)
-                {
-                    XmlElementEndTagSyntax endTag = summaryElement.EndTag;
-
-                    if (endTag?.IsMissing == false
-                        && startTag.GetSpanEndLine() < endTag.GetSpanStartLine())
-                    {
-                        Match match = _regex.Match(
-                            summaryElement.ToString(),
-                            startTag.Span.End - summaryElement.SpanStart,
-                            endTag.SpanStart - startTag.Span.End);
-
-                        if (match.Success)
-                        {
-                            context.ReportDiagnostic(
-                                DiagnosticDescriptors.FormatDocumentationSummaryOnSingleLine,
-                                summaryElement);
-                        }
-                    }
-                }
-            }
-        }
 
         public static async Task<Document> RefactorAsync(
             Document document,

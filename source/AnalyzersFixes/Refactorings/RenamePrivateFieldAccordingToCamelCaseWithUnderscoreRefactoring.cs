@@ -3,7 +3,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
 
@@ -11,22 +10,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class RenamePrivateFieldAccordingToCamelCaseWithUnderscoreRefactoring
     {
-        public static void AnalyzeFieldSymbol(SymbolAnalysisContext context)
-        {
-            var fieldSymbol = (IFieldSymbol)context.Symbol;
-
-            if (!fieldSymbol.IsConst
-                && !fieldSymbol.IsImplicitlyDeclared
-                && fieldSymbol.DeclaredAccessibility == Accessibility.Private
-                && !string.IsNullOrEmpty(fieldSymbol.Name)
-                && !StringUtility.IsCamelCasePrefixedWithUnderscore(fieldSymbol.Name))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.RenamePrivateFieldAccordingToCamelCaseWithUnderscore,
-                    fieldSymbol.Locations[0]);
-            }
-        }
-
         public static Task<Solution> RefactorAsync(
             Document document,
             ISymbol symbol,

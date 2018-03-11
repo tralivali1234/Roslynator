@@ -10,7 +10,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AvoidBoxingOfValueTypeRefactoring
     {
-        public static void AddExpression(SyntaxNodeAnalysisContext context)
+        public static void AnalyzeAddExpression(SyntaxNodeAnalysisContext context)
         {
             var addExpression = (BinaryExpressionSyntax)context.Node;
 

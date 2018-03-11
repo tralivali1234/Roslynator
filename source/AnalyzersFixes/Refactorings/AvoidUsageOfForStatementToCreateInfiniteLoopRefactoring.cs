@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -15,23 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class AvoidUsageOfForStatementToCreateInfiniteLoopRefactoring
     {
-        public static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
-        {
-            var forStatement = (ForStatementSyntax)context.Node;
-
-            if (forStatement.Declaration == null
-                && forStatement.Condition == null
-                && forStatement.Incrementors.Count == 0
-                && forStatement.Initializers.Count == 0
-                && !forStatement.OpenParenToken.ContainsDirectives
-                && !forStatement.FirstSemicolonToken.ContainsDirectives
-                && !forStatement.SecondSemicolonToken.ContainsDirectives
-                && !forStatement.CloseParenToken.ContainsDirectives)
-            {
-                context.ReportDiagnostic(DiagnosticDescriptors.AvoidUsageOfForStatementToCreateInfiniteLoop, forStatement.ForKeyword);
-            }
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ForStatementSyntax forStatement,

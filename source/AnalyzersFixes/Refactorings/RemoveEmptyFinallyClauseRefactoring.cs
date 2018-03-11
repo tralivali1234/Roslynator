@@ -3,44 +3,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveEmptyFinallyClauseRefactoring
     {
-        public static void AnalyzeFinallyClause(SyntaxNodeAnalysisContext context)
-        {
-            var finallyClause = (FinallyClauseSyntax)context.Node;
-
-            if (!(finallyClause.Parent is TryStatementSyntax tryStatement))
-                return;
-
-            if (!tryStatement.Catches.Any())
-                return;
-
-            BlockSyntax block = finallyClause.Block;
-
-            if (block?.Statements.Any() != false)
-                return;
-
-            if (!finallyClause.FinallyKeyword.TrailingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            if (!block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            if (!block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            if (!block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyFinallyClause, finallyClause);
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             FinallyClauseSyntax finallyClause,

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -12,22 +11,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseAttributeUsageAttributeRefactoring
     {
-        public static void AnalyzerNamedTypeSymbol(
-            SymbolAnalysisContext context,
-            INamedTypeSymbol attributeSymbol,
-            INamedTypeSymbol attributeUsageAttributeSymbol)
-        {
-            var symbol = (INamedTypeSymbol)context.Symbol;
-
-            if (symbol.InheritsFrom(attributeSymbol)
-                && !symbol.HasAttribute(attributeUsageAttributeSymbol))
-            {
-                context.ReportDiagnostic(
-                    DiagnosticDescriptors.UseAttributeUsageAttribute,
-                    ((ClassDeclarationSyntax)symbol.GetSyntax()).Identifier);
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             ClassDeclarationSyntax classDeclaration,

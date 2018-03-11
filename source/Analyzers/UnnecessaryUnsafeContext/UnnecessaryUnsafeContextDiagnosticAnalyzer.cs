@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext.UnnecessaryUnsafeContextRefactoring;
+using static Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext.UnnecessaryUnsafeContextAnalysis;
 
 namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
 {

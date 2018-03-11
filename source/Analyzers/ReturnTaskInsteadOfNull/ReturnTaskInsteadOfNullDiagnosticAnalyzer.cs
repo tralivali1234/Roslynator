@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull.ReturnTaskInsteadOfNullRefactoring;
+using static Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull.ReturnTaskInsteadOfNullAnalysis;
 
 namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 {

@@ -6,58 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class DeclareTypeInsideNamespaceRefactoring
     {
-        public static void AnalyzeNamedType(SymbolAnalysisContext context)
-        {
-            var symbol = (INamedTypeSymbol)context.Symbol;
-
-            if (symbol.ContainingNamespace?.IsGlobalNamespace != true)
-                return;
-
-            foreach (SyntaxReference syntaxReference in symbol.DeclaringSyntaxReferences)
-            {
-                SyntaxNode node = syntaxReference.GetSyntax(context.CancellationToken);
-
-                SyntaxToken identifier = GetDeclarationIdentifier(symbol, node);
-
-                if (identifier != default(SyntaxToken))
-                {
-                    context.ReportDiagnostic(
-                        DiagnosticDescriptors.DeclareTypeInsideNamespace,
-                        identifier,
-                        identifier.ValueText);
-                }
-            }
-        }
-
-        private static SyntaxToken GetDeclarationIdentifier(INamedTypeSymbol symbol, SyntaxNode node)
-        {
-            switch (symbol.TypeKind)
-            {
-                case TypeKind.Class:
-                    return ((ClassDeclarationSyntax)node).Identifier;
-                case TypeKind.Struct:
-                    return ((StructDeclarationSyntax)node).Identifier;
-                case TypeKind.Interface:
-                    return ((InterfaceDeclarationSyntax)node).Identifier;
-                case TypeKind.Delegate:
-                    return ((DelegateDeclarationSyntax)node).Identifier;
-                case TypeKind.Enum:
-                    return ((EnumDeclarationSyntax)node).Identifier;
-                default:
-                    {
-                        Debug.Fail(symbol.TypeKind.ToString());
-                        return default(SyntaxToken);
-                    }
-            }
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             MemberDeclarationSyntax member,

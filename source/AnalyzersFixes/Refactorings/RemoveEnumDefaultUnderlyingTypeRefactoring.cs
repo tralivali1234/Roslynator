@@ -4,25 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveEnumDefaultUnderlyingTypeRefactoring
     {
-        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
-        {
-            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
-
-            TypeSyntax type = enumDeclaration.BaseList?.Types.SingleOrDefault(shouldThrow: false)?.Type;
-
-            if (type != null
-                && context.SemanticModel.GetTypeSymbol(type, context.CancellationToken).SpecialType == SpecialType.System_Int32)
-            {
-                context.ReportDiagnostic(DiagnosticDescriptors.RemoveEnumDefaultUnderlyingType, type);
-            }
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             BaseTypeSyntax baseType,

@@ -7,39 +7,12 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class RemoveEmptyInitializerRefactoring
     {
-        public static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
-        {
-            var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
-
-            if (objectCreationExpression.ContainsDiagnostics)
-                return;
-
-            TypeSyntax type = objectCreationExpression.Type;
-
-            if (type?.IsMissing != false)
-                return;
-
-            InitializerExpressionSyntax initializer = objectCreationExpression.Initializer;
-
-            if (initializer?.Expressions.Any() != false)
-                return;
-
-            if (!initializer.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            if (!initializer.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyInitializer, initializer);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ObjectCreationExpressionSyntax objectCreationExpression,

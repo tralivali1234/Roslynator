@@ -12,6 +12,7 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
 {
     internal static class DocumentationCommentRefactoring
     {
+        //TODO: ?
         public static ImmutableArray<string> GetAttributeValues(DocumentationCommentTriviaSyntax comment, string elementName1, string elementName2, string attributeName)
         {
             HashSet<string> values = null;

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -13,68 +12,7 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class SimplifyLogicalNegationRefactoring
     {
-        public static void AnalyzeLogicalNotExpression(SyntaxNodeAnalysisContext context)
-        {
-            var logicalNot = (PrefixUnaryExpressionSyntax)context.Node;
-
-            ExpressionSyntax expression = logicalNot.Operand?.WalkDownParentheses();
-
-            if (expression?.IsMissing != false)
-                return;
-
-            switch (expression.Kind())
-            {
-                case SyntaxKind.TrueLiteralExpression:
-                case SyntaxKind.FalseLiteralExpression:
-                case SyntaxKind.LogicalNotExpression:
-                    {
-                        context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, logicalNot);
-                        break;
-                    }
-                case SyntaxKind.EqualsExpression:
-                    {
-                        MemberDeclarationSyntax memberDeclaration = logicalNot.FirstAncestor<MemberDeclarationSyntax>();
-
-                        if (memberDeclaration is OperatorDeclarationSyntax operatorDeclaration
-                            && operatorDeclaration.OperatorToken.Kind() == SyntaxKind.ExclamationEqualsToken)
-                        {
-                            return;
-                        }
-
-                        context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, logicalNot);
-                        break;
-                    }
-            }
-        }
-
-        public static void Analyze(SyntaxNodeAnalysisContext context, MemberInvocationExpressionInfo invocationInfo)
-        {
-            SyntaxNode parent = invocationInfo.InvocationExpression.WalkUpParentheses().Parent;
-
-            if (parent.Kind() != SyntaxKind.LogicalNotExpression)
-                return;
-
-            SingleParameterLambdaExpressionInfo lambdaInfo = SyntaxInfo.SingleParameterLambdaExpressionInfo(invocationInfo.Arguments.First().Expression.WalkDownParentheses());
-
-            if (!lambdaInfo.Success)
-                return;
-
-            ExpressionSyntax expression = GetReturnExpression(lambdaInfo.Body)?.WalkDownParentheses();
-
-            if (expression?.IsKind(SyntaxKind.LogicalNotExpression) != true)
-                return;
-
-            IMethodSymbol methodSymbol = context.SemanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, context.CancellationToken).Symbol;
-
-            if (methodSymbol == null)
-                return;
-
-            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithPredicate(methodSymbol, context.SemanticModel))
-                return;
-
-            context.ReportDiagnostic(DiagnosticDescriptors.SimplifyLogicalNegation, parent);
-        }
-
+        //TODO: ?
         private static ExpressionSyntax GetReturnExpression(CSharpSyntaxNode node)
         {
             if (node is BlockSyntax block)

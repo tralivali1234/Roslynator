@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
 {
-    internal static class UnnecessaryUnsafeContextRefactoring
+    internal static class UnnecessaryUnsafeContextAnalysis
     {
         public static void AnalyzeUnsafeStatement(SyntaxNodeAnalysisContext context)
         {
