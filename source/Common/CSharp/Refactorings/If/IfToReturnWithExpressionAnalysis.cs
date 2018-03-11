@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfToReturnWithExpression : IfAnalysis
+    internal class IfToReturnWithExpressionAnalysis : IfAnalysis
     {
-        public IfToReturnWithExpression(
+        public IfToReturnWithExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax expression,
             bool isYield,

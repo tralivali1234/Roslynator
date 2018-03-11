@@ -38,13 +38,13 @@ namespace Roslynator.CSharp.Refactorings
 
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.CallExtensionMethodAsInstanceMethod))
                     {
-                        SyntaxNodeOrToken nodeOrToken = CallExtensionMethodAsInstanceMethodRefactoring.GetNodeOrToken(expression);
+                        SyntaxNodeOrToken nodeOrToken = CallExtensionMethodAsInstanceMethodAnalysis.GetNodeOrToken(expression);
 
                         if (nodeOrToken.Span.Contains(context.Span))
                         {
                             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            CallExtensionMethodAsInstanceMethodAnalysisResult analysis = CallExtensionMethodAsInstanceMethodRefactoring.Analyze(invocationExpression, semanticModel, allowAnyExpression: true, cancellationToken: context.CancellationToken);
+                            CallExtensionMethodAsInstanceMethodAnalysisResult analysis = CallExtensionMethodAsInstanceMethodAnalysis.Analyze(invocationExpression, semanticModel, allowAnyExpression: true, cancellationToken: context.CancellationToken);
 
                             if (analysis.Success)
                             {
@@ -73,7 +73,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (UseBitwiseOperationInsteadOfCallingHasFlagRefactoring.CanRefactor(invocationExpression, semanticModel, context.CancellationToken))
+                if (UseBitwiseOperationInsteadOfCallingHasFlagAnalysis.CanRefactor(invocationExpression, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         UseBitwiseOperationInsteadOfCallingHasFlagRefactoring.Title,

@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class AssignmentAndIfElseToAssignmentWithConditionalExpression : ToAssignmentWithConditionalExpression<ExpressionStatementSyntax>
+    internal class AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis : ToAssignmentWithConditionalExpressionAnalysis<ExpressionStatementSyntax>
     {
-        internal AssignmentAndIfElseToAssignmentWithConditionalExpression(
+        internal AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis(
             ExpressionStatementSyntax statement,
             ExpressionSyntax right,
             IfStatementSyntax ifStatement,
@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         protected override ExpressionStatementSyntax CreateNewStatement()
         {
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
 
             return Statement.ReplaceNode(Left, conditionalExpression);
         }

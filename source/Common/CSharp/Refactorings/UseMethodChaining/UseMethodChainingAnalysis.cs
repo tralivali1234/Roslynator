@@ -108,16 +108,16 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             return j > i;
         }
 
-        protected abstract bool IsFixableStatement(
+        //TODO: 
+        public abstract bool IsFixableStatement(
             StatementSyntax statement,
             string name,
             ITypeSymbol typeSymbol,
             SemanticModel semanticModel,
             CancellationToken cancellationToken);
 
-        protected abstract InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement);
-
-        protected static MemberInvocationExpressionInfo WalkDownMethodChain(MemberInvocationExpressionInfo invocationInfo)
+        //TODO: 
+        public static MemberInvocationExpressionInfo WalkDownMethodChain(MemberInvocationExpressionInfo invocationInfo)
         {
             while (true)
             {

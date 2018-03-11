@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
             int index = statements.IndexOf(IfStatement);
 
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, Expression1, Expression2);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, Expression1, Expression2);
 
             StatementSyntax newStatement = CreateStatement(conditionalExpression)
                 .WithLeadingTrivia(IfStatement.GetLeadingTrivia())

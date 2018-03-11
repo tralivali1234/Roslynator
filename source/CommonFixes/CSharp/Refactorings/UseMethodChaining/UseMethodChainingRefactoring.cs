@@ -11,133 +11,12 @@ using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 {
+    //TODO: 
     internal abstract class UseMethodChainingRefactoring
     {
-        public static MethodChainingWithoutAssignmentRefactoring WithoutAssignment { get; } = new MethodChainingWithoutAssignmentRefactoring();
-
-        public static MethodChainingWithAssignmentRefactoring WithAssignment { get; } = new MethodChainingWithAssignmentRefactoring();
-
-        public static bool IsFixable(
-            MemberInvocationExpressionInfo invocationInfo,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-        {
-            InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
-
-            SyntaxNode parent = invocationExpression.Parent;
-
-            switch (parent?.Kind())
-            {
-                case SyntaxKind.ExpressionStatement:
-                    {
-                        var expressionStatement = (ExpressionStatementSyntax)parent;
-
-                        if (!(WalkDownMethodChain(invocationInfo).Expression is IdentifierNameSyntax identifierName))
-                            break;
-
-                        string name = identifierName.Identifier.ValueText;
-
-                        return WithoutAssignment.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
-                    }
-                case SyntaxKind.SimpleAssignmentExpression:
-                    {
-                        var assinmentExpression = (AssignmentExpressionSyntax)parent;
-
-                        if (!(assinmentExpression.Left is IdentifierNameSyntax identifierName))
-                            break;
-
-                        if (assinmentExpression.Right != invocationExpression)
-                            break;
-
-                        if (!(assinmentExpression.Parent is ExpressionStatementSyntax expressionStatement))
-                            break;
-
-                        string name = identifierName.Identifier.ValueText;
-
-                        if (name != (WalkDownMethodChain(invocationInfo).Expression as IdentifierNameSyntax)?.Identifier.ValueText)
-                            break;
-
-                        return WithAssignment.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
-                    }
-            }
-
-            return false;
-        }
-
-        public bool Analyze(
-            MemberInvocationExpressionInfo invocationInfo,
-            StatementSyntax statement,
-            string name,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-        {
-            if (statement.SpanOrTrailingTriviaContainsDirectives())
-                return false;
-
-            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(statement);
-
-            if (!statementsInfo.Success)
-                return false;
-
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
-
-            if (statements.Count == 1)
-                return false;
-
-            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationInfo.InvocationExpression, cancellationToken);
-
-            if (methodSymbol == null)
-                return false;
-
-            ITypeSymbol returnType = methodSymbol.ReturnType;
-
-            int i = statements.IndexOf(statement);
-
-            if (i != 0
-                && IsFixableStatement(statements[i - 1], name, returnType, semanticModel, cancellationToken))
-            {
-                return false;
-            }
-
-            int j = i;
-            while (j < statements.Count - 1)
-            {
-                if (!IsFixableStatement(statements[j + 1], name, returnType, semanticModel, cancellationToken))
-                    break;
-
-                j++;
-            }
-
-            return j > i;
-        }
-
-        protected abstract bool IsFixableStatement(
-            StatementSyntax statement,
-            string name,
-            ITypeSymbol typeSymbol,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken);
+        public UseMethodChainingAnalysis Analysis { get; }
 
         protected abstract InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement);
-
-        protected static MemberInvocationExpressionInfo WalkDownMethodChain(MemberInvocationExpressionInfo invocationInfo)
-        {
-            while (true)
-            {
-                MemberInvocationExpressionInfo invocationInfo2 = SyntaxInfo.MemberInvocationExpressionInfo(invocationInfo.Expression);
-
-                if (invocationInfo2.Success)
-                {
-                    invocationInfo = invocationInfo2;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return invocationInfo;
-        }
 
         public async Task<Document> RefactorAsync(
             Document document,
@@ -152,7 +31,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 
             ITypeSymbol returnType = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken).ReturnType;
 
-            string name = ((IdentifierNameSyntax)WalkDownMethodChain(invocationInfo).Expression).Identifier.ValueText;
+            string name = ((IdentifierNameSyntax)UseMethodChainingAnalysis.WalkDownMethodChain(invocationInfo).Expression).Identifier.ValueText;
 
             StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(expressionStatement);
 
@@ -169,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             {
                 StatementSyntax statement = statements[j + 1];
 
-                if (!IsFixableStatement(statement, name, returnType, semanticModel, cancellationToken))
+                if (!Analysis.IsFixableStatement(statement, name, returnType, semanticModel, cancellationToken))
                     break;
 
                 sb.AppendLine();
@@ -213,7 +92,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
         {
             MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(GetInvocationExpression(expressionStatement));
 
-            MemberInvocationExpressionInfo firstMemberInvocation = WalkDownMethodChain(invocationInfo);
+            MemberInvocationExpressionInfo firstMemberInvocation = UseMethodChainingAnalysis.WalkDownMethodChain(invocationInfo);
 
             InvocationExpressionSyntax invocationExpression = invocationInfo.InvocationExpression;
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -15,27 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseElementAccessInsteadOfLastRefactoring
     {
-        public static bool CanRefactor(
-            MemberInvocationExpressionInfo invocationInfo,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken)
-        {
-            if (invocationInfo.Expression?.IsMissing != false)
-                return false;
-
-            IMethodSymbol methodSymbol = semanticModel.GetReducedExtensionMethodInfo(invocationInfo.InvocationExpression, cancellationToken).Symbol;
-
-            if (methodSymbol == null)
-                return false;
-
-            if (!SymbolUtility.IsLinqExtensionOfIEnumerableOfTWithoutParameters(methodSymbol, "Last", semanticModel, allowImmutableArrayExtension: true))
-                return false;
-
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(invocationInfo.Expression, cancellationToken);
-
-            return SymbolUtility.HasAccessibleIndexer(typeSymbol, semanticModel, invocationInfo.InvocationExpression.SpanStart);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             InvocationExpressionSyntax invocation,

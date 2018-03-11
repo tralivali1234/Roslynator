@@ -11,14 +11,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReplaceInterpolatedStringWithStringLiteralRefactoring
     {
-        public static bool CanRefactor(InterpolatedStringExpressionSyntax interpolatedString)
-        {
-            SyntaxList<InterpolatedStringContentSyntax> contents = interpolatedString.Contents;
-
-            return contents.Count == 0
-                || (contents.Count == 1 && contents[0].Kind() == SyntaxKind.InterpolatedStringText);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             InterpolatedStringExpressionSyntax interpolatedString,

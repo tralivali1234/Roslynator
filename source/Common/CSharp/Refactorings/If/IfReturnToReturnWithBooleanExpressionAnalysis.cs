@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Roslynator.CSharp.CSharpFactory;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToYieldReturnWithConditionalExpression : IfToReturnWithConditionalExpression
+    internal class IfReturnToReturnWithBooleanExpressionAnalysis : IfToReturnWithBooleanExpressionAnalysis
     {
-        public IfElseToYieldReturnWithConditionalExpression(
+        public IfReturnToReturnWithBooleanExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax expression1,
             ExpressionSyntax expression2) : base(ifStatement, expression1, expression2)
@@ -16,17 +16,17 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public override IfRefactoringKind Kind
         {
-            get { return IfRefactoringKind.IfElseToYieldReturnWithConditionalExpression; }
+            get { return IfRefactoringKind.IfReturnToReturnWithBooleanExpression; }
         }
 
         public override string Title
         {
-            get { return "Use conditional expression"; }
+            get { return "Simplify if-return"; }
         }
 
-        protected override StatementSyntax CreateStatement(ExpressionSyntax expression)
+        public override StatementSyntax CreateStatement(ExpressionSyntax expression)
         {
-            return YieldReturnStatement(expression);
+            return ReturnStatement(expression);
         }
     }
 }

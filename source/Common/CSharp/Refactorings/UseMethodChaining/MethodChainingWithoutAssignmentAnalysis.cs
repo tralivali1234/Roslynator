@@ -9,7 +9,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 {
     internal class MethodChainingWithoutAssignmentAnalysis : UseMethodChainingAnalysis
     {
-        protected override bool IsFixableStatement(
+        public override bool IsFixableStatement(
             StatementSyntax statement,
             string name,
             ITypeSymbol typeSymbol,
@@ -38,11 +38,6 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             return methodSymbol?.IsStatic == false
                 && methodSymbol.ContainingType?.Equals(typeSymbol) == true
                 && methodSymbol.ReturnType.Equals(typeSymbol);
-        }
-
-        protected override InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement)
-        {
-            return expressionStatement.Expression as InvocationExpressionSyntax;
         }
     }
 }

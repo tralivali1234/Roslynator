@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal abstract class IfToReturnWithBooleanExpression : IfAnalysis
+    internal abstract class IfToReturnWithConditionalExpressionAnalysis : IfAnalysis
     {
-        protected IfToReturnWithBooleanExpression(
+        protected IfToReturnWithConditionalExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax expression1,
             ExpressionSyntax expression2) : base(ifStatement)
@@ -19,21 +19,21 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public ExpressionSyntax Expression2 { get; }
 
-        public abstract StatementSyntax CreateStatement(ExpressionSyntax expression);
+        protected abstract StatementSyntax CreateStatement(ExpressionSyntax expression);
 
-        public static IfToReturnWithBooleanExpression Create(IfStatementSyntax ifStatement, ExpressionSyntax expression1, ExpressionSyntax expression2, bool isYield)
+        public static IfToReturnWithConditionalExpressionAnalysis Create(IfStatementSyntax ifStatement, ExpressionSyntax expression1, ExpressionSyntax expression2, bool isYield)
         {
             if (isYield)
             {
-                return new IfElseToYieldReturnWithBooleanExpression(ifStatement, expression1, expression2);
+                return new IfElseToYieldReturnWithConditionalExpressionAnalysis(ifStatement, expression1, expression2);
             }
             else if (ifStatement.IsSimpleIf())
             {
-                return new IfReturnToReturnWithBooleanExpression(ifStatement, expression1, expression2);
+                return new IfReturnToReturnWithConditionalExpressionAnalysis(ifStatement, expression1, expression2);
             }
             else
             {
-                return new IfElseToReturnWithBooleanExpression(ifStatement, expression1, expression2);
+                return new IfElseToReturnWithConditionalExpressionAnalysis(ifStatement, expression1, expression2);
             }
         }
     }

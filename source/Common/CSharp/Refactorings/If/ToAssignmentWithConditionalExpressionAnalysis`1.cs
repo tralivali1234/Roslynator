@@ -4,10 +4,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal abstract class ToAssignmentWithConditionalExpression<TStatement> : ToAssignmentWithConditionalExpression
+    internal abstract class ToAssignmentWithConditionalExpressionAnalysis<TStatement> : ToAssignmentWithConditionalExpressionAnalysis
         where TStatement : StatementSyntax
     {
-        protected ToAssignmentWithConditionalExpression(
+        protected ToAssignmentWithConditionalExpressionAnalysis(
             TStatement statement,
             IfStatementSyntax ifStatement,
             ExpressionSyntax whenTrue,

@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
                 ArrowExpressionClauseSyntax arrowExpressionClause = GetArrowExpressionClause(semicolonToken);
 
                 if (arrowExpressionClause?.IsMissing == false
-                    && ExpandExpressionBodyRefactoring.CanRefactor(arrowExpressionClause))
+                    && ExpandExpressionBodyAnalysis.CanRefactor(arrowExpressionClause))
                 {
                     context.RegisterRefactoring(
                         "Expand expression body",

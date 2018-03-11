@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ChangeAccessibility))
             {
-                Accessibilities validAccessibilities = ChangeAccessibilityRefactoring.GetValidAccessibilities(selectedMembers, allowOverride: true);
+                Accessibilities validAccessibilities = ChangeAccessibilityAnalysis.GetValidAccessibilities(selectedMembers, allowOverride: true);
 
                 if (validAccessibilities != Accessibilities.None)
                 {

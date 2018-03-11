@@ -27,76 +27,7 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        public static Accessibilities GetValidAccessibilities(MemberDeclarationListSelection selectedMembers, bool allowOverride = false)
-        {
-            if (selectedMembers.Count < 2)
-                return Accessibilities.None;
-
-            var all = Accessibilities.None;
-
-            Accessibilities valid = Accessibilities.Public
-                | Accessibilities.Internal
-                | Accessibilities.Protected
-                | Accessibilities.Private;
-
-            foreach (MemberDeclarationSyntax member in selectedMembers)
-            {
-                Accessibility accessibility = SyntaxAccessibility.GetExplicitAccessibility(member);
-
-                if (accessibility == Accessibility.NotApplicable)
-                {
-                    accessibility = SyntaxAccessibility.GetDefaultExplicitAccessibility(member);
-
-                    if (accessibility == Accessibility.NotApplicable)
-                        return Accessibilities.None;
-                }
-
-                Accessibilities accessibilities = accessibility.GetAccessibilities();
-
-                switch (accessibility)
-                {
-                    case Accessibility.Private:
-                    case Accessibility.Protected:
-                    case Accessibility.ProtectedAndInternal:
-                    case Accessibility.ProtectedOrInternal:
-                    case Accessibility.Internal:
-                    case Accessibility.Public:
-                        {
-                            all |= accessibilities;
-                            break;
-                        }
-                    default:
-                        {
-                            Debug.Fail(accessibility.ToString());
-                            return Accessibilities.None;
-                        }
-                }
-
-                foreach (Accessibility accessibility2 in AvailableAccessibilities)
-                {
-                    if (accessibility != accessibility2
-                        && !SyntaxAccessibility.IsValidAccessibility(member, accessibility2, ignoreOverride: allowOverride))
-                    {
-                        valid &= ~accessibility2.GetAccessibilities();
-                    }
-                }
-            }
-
-            switch (all)
-            {
-                case Accessibilities.Private:
-                case Accessibilities.Protected:
-                case Accessibilities.Internal:
-                case Accessibilities.Public:
-                    {
-                        valid &= ~all;
-                        break;
-                    }
-            }
-
-            return valid;
-        }
-
+        //TODO: ?
         public static ISymbol GetBaseSymbolOrDefault(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             ISymbol symbol = GetDeclaredSymbol();

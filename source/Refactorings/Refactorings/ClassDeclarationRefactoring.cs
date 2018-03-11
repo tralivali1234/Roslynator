@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                List<IMethodSymbol> constructors = GenerateBaseConstructorsRefactoring.GetMissingBaseConstructors(classDeclaration, semanticModel, context.CancellationToken);
+                List<IMethodSymbol> constructors = GenerateBaseConstructorsAnalysis.GetMissingBaseConstructors(classDeclaration, semanticModel, context.CancellationToken);
 
                 if (constructors?.Count > 0)
                 {

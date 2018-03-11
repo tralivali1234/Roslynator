@@ -7,8 +7,8 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    //TODO: 
-    internal static class IfRefactoringHelper
+    //TODO: del
+    internal static class IfAnalysisHelper
     {
         public static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
         {

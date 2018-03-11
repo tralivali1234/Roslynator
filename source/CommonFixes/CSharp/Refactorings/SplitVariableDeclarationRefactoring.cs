@@ -14,12 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class SplitVariableDeclarationRefactoring
     {
-        public static bool CanRefactor(VariableDeclarationSyntax variableDeclaration)
-        {
-            return variableDeclaration.IsParentKind(SyntaxKind.LocalDeclarationStatement, SyntaxKind.FieldDeclaration, SyntaxKind.EventFieldDeclaration)
-                && variableDeclaration.Variables.Count > 1;
-        }
-
         public static string GetTitle(VariableDeclarationSyntax variableDeclaration)
         {
             return $"Split {GetName()} declaration";

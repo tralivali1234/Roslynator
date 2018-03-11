@@ -3,33 +3,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseEmptyStringLiteralInsteadOfStringEmptyRefactoring
     {
-        public static bool CanRefactor(
-            MemberAccessExpressionSyntax memberAccess,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression))
-                return false;
-
-            if (memberAccess.Expression == null)
-                return false;
-
-            if (memberAccess.Name?.Identifier.ValueText != "Empty")
-                return false;
-
-            var fieldSymbol = semanticModel.GetSymbol(memberAccess.Name, cancellationToken) as IFieldSymbol;
-
-            return SymbolUtility.IsPublicStaticReadOnly(fieldSymbol)
-                && fieldSymbol.ContainingType?.SpecialType == SpecialType.System_String;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             MemberAccessExpressionSyntax node,

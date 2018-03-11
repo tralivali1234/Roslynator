@@ -12,51 +12,9 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
+    //TODO: 
     internal static class UseExpressionBodiedMemberRefactoring
     {
-        public static bool CanRefactor(MethodDeclarationSyntax declaration)
-        {
-            return declaration.ExpressionBody == null
-                && GetExpression(declaration.Body) != null;
-        }
-
-        public static bool CanRefactor(ConstructorDeclarationSyntax declaration)
-        {
-            return declaration.ExpressionBody == null
-                && GetExpression(declaration.Body) != null;
-        }
-
-        public static bool CanRefactor(DestructorDeclarationSyntax declaration)
-        {
-            return declaration.ExpressionBody == null
-                && GetExpression(declaration.Body) != null;
-        }
-
-        public static bool CanRefactor(LocalFunctionStatementSyntax localFunctionStatement)
-        {
-            return localFunctionStatement.ExpressionBody == null
-                && GetExpression(localFunctionStatement.Body) != null;
-        }
-
-        public static bool CanRefactor(OperatorDeclarationSyntax declaration)
-        {
-            return declaration.ExpressionBody == null
-                && GetReturnExpression(declaration.Body) != null;
-        }
-
-        public static bool CanRefactor(ConversionOperatorDeclarationSyntax declaration)
-        {
-            return declaration.ExpressionBody == null
-                && GetReturnExpression(declaration.Body) != null;
-        }
-
-        public static bool CanRefactor(AccessorDeclarationSyntax accessor)
-        {
-            return accessor.ExpressionBody == null
-                && !accessor.AttributeLists.Any()
-                && GetExpression(accessor.Body) != null;
-        }
-
         public static ExpressionSyntax GetReturnExpression(AccessorListSyntax accessorList)
         {
             AccessorDeclarationSyntax accessor = accessorList?.Accessors.SingleOrDefault(shouldThrow: false);

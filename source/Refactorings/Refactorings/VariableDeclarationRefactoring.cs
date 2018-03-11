@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.Refactorings
                 await CheckExpressionForNullRefactoring.ComputeRefactoringAsync(context, variableDeclaration).ConfigureAwait(false);
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.SplitVariableDeclaration)
-                && SplitVariableDeclarationRefactoring.CanRefactor(variableDeclaration))
+                && SplitVariableDeclarationAnalysis.CanRefactor(variableDeclaration))
             {
                 context.RegisterRefactoring(
                     SplitVariableDeclarationRefactoring.GetTitle(variableDeclaration),

@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.SimplifyLambdaExpression)
-                && SimplifyLambdaExpressionRefactoring.CanRefactor(lambda))
+                && SimplifyLambdaExpressionAnalysis.CanRefactor(lambda))
             {
                 context.RegisterRefactoring(
                     "Simplify lambda expression",

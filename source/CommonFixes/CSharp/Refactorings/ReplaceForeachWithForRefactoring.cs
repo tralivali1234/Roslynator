@@ -14,16 +14,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReplaceForEachWithForRefactoring
     {
-        public static bool CanRefactor(
-            ForEachStatementSyntax forEachStatement,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(forEachStatement.Expression, cancellationToken);
-
-            return SymbolUtility.HasAccessibleIndexer(typeSymbol, semanticModel, forEachStatement.SpanStart);
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ForEachStatementSyntax forEachStatement,

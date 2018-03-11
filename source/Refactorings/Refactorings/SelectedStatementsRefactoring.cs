@@ -52,12 +52,13 @@ namespace Roslynator.CSharp.Refactorings
                     useBooleanExpression: context.IsRefactoringEnabled(RefactoringIdentifiers.SimplifyIf),
                     useExpression: false);
 
-                foreach (IfAnalysis refactoring in IfAnalysis.Analyze(selectedStatements, options, semanticModel, context.CancellationToken))
-                {
-                    context.RegisterRefactoring(
-                        refactoring.Title,
-                        cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken));
-                }
+                //TODO: refactoring
+                //foreach (IfAnalysis refactoring in IfAnalysis.Analyze(selectedStatements, options, semanticModel, context.CancellationToken))
+                //{
+                //    context.RegisterRefactoring(
+                //        refactoring.Title,
+                //        cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken));
+                //}
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.MergeLocalDeclarations))

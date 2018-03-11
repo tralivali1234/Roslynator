@@ -3,7 +3,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -12,24 +11,6 @@ namespace Roslynator.CSharp.Refactorings
     internal static class AddBracesToSwitchSectionRefactoring
     {
         public const string Title = "Add braces to section";
-
-        public static bool CanAddBraces(SwitchSectionSyntax section)
-        {
-            SyntaxList<StatementSyntax> statements = section.Statements;
-
-            if (statements.Count > 1)
-            {
-                return true;
-            }
-            else if (statements.Count == 1 && statements[0].Kind() != SyntaxKind.Block)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         public static Task<Document> RefactorAsync(
             Document document,

@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (ReplaceForEachWithForRefactoring.CanRefactor(forEachStatement, semanticModel, context.CancellationToken))
+                if (ReplaceForEachWithForAnalysis.CanRefactor(forEachStatement, semanticModel, context.CancellationToken))
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceForEachWithFor))
                     {

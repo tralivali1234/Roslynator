@@ -14,7 +14,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandAssignmentExpression)
                 && assignmentExpression.OperatorToken.Span.Contains(context.Span)
-                && ExpandAssignmentExpressionRefactoring.CanRefactor(assignmentExpression))
+                && ExpandAssignmentExpressionAnalysis.CanRefactor(assignmentExpression))
             {
                 context.RegisterRefactoring(
                     "Expand assignment",

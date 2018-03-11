@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Any())
                             break;
 
-                        if (!UseElementAccessInsteadOfFirstRefactoring.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfFirstAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         context.RegisterRefactoring(
@@ -41,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Any())
                             break;
 
-                        if (!UseElementAccessInsteadOfLastRefactoring.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfLastAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         string propertyName = CSharpUtility.GetCountOrLengthPropertyName(invocationInfo.Expression, semanticModel, context.CancellationToken);
@@ -62,7 +62,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Count != 1)
                             break;
 
-                        if (!UseElementAccessInsteadOfElementAtRefactoring.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfElementAtAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         context.RegisterRefactoring(

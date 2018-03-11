@@ -5,9 +5,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfReturnToReturnWithBooleanExpression : IfToReturnWithBooleanExpression
+    internal class IfElseToReturnWithBooleanExpressionAnalysis : IfToReturnWithBooleanExpressionAnalysis
     {
-        public IfReturnToReturnWithBooleanExpression(
+        public IfElseToReturnWithBooleanExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax expression1,
             ExpressionSyntax expression2) : base(ifStatement, expression1, expression2)
@@ -16,12 +16,12 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public override IfRefactoringKind Kind
         {
-            get { return IfRefactoringKind.IfReturnToReturnWithBooleanExpression; }
+            get { return IfRefactoringKind.IfElseToReturnWithBooleanExpression; }
         }
 
         public override string Title
         {
-            get { return "Simplify if-return"; }
+            get { return "Simplify if-else"; }
         }
 
         public override StatementSyntax CreateStatement(ExpressionSyntax expression)

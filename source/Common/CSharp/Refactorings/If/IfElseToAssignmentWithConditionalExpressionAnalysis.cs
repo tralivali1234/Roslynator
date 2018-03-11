@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToAssignmentWithConditionalExpression : ToAssignmentWithConditionalExpression
+    internal class IfElseToAssignmentWithConditionalExpressionAnalysis : ToAssignmentWithConditionalExpressionAnalysis
     {
-        internal IfElseToAssignmentWithConditionalExpression(
+        internal IfElseToAssignmentWithConditionalExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax left,
             ExpressionSyntax right1,

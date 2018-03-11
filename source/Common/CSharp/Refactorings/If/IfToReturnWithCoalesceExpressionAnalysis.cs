@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfToReturnWithCoalesceExpression : IfAnalysis
+    internal class IfToReturnWithCoalesceExpressionAnalysis : IfAnalysis
     {
-        public IfToReturnWithCoalesceExpression(
+        public IfToReturnWithCoalesceExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax left,
             ExpressionSyntax right,

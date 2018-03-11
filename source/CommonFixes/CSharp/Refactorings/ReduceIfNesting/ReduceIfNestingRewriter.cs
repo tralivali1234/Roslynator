@@ -90,7 +90,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
 
                 IfStatementSyntax ifStatement = FindFixableIfStatement(_statementsInfo.Statements, _jumpKind);
 
-                if (IsFixable(ifStatement))
+                if (ReduceIfNestingAnalysis.IsFixable(ifStatement))
                     return Rewrite(_statementsInfo, ifStatement);
 
                 return node;
@@ -113,7 +113,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 {
                     return ifStatement;
                 }
-                else if (GetJumpKind(statements[i]) == jumpKind)
+                else if (ReduceIfNestingAnalysis.GetJumpKind(statements[i]) == jumpKind)
                 {
                     i--;
 

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,14 +13,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ExpandExpressionBodyRefactoring
     {
-        public static bool CanRefactor(ArrowExpressionClauseSyntax arrowExpressionClause)
-        {
-            SyntaxNode parent = arrowExpressionClause.Parent;
-
-            return parent != null
-                && CSharpFacts.CanHaveExpressionBody(parent.Kind());
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             ArrowExpressionClauseSyntax arrowExpressionClause,

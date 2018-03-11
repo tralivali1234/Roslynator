@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 INamedTypeSymbol exceptionSymbol = semanticModel.GetTypeByMetadataName(MetadataNames.System_Exception);
 
-                AddExceptionToDocumentationCommentAnalysisResult analysis = AddExceptionToDocumentationCommentRefactoring.Analyze(throwExpression, exceptionSymbol, semanticModel, context.CancellationToken);
+                AddExceptionToDocumentationCommentAnalysisResult analysis = AddExceptionToDocumentationCommentAnalysis.Analyze(throwExpression, exceptionSymbol, semanticModel, context.CancellationToken);
 
                 if (analysis.Success)
                 {

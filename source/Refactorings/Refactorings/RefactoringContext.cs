@@ -279,7 +279,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         if (IsRefactoringEnabled(RefactoringIdentifiers.ReplaceCommentWithDocumentationComment))
                         {
-                            TextSpan fixableSpan = ReplaceCommentWithDocumentationCommentRefactoring.GetFixableSpan(trivia);
+                            TextSpan fixableSpan = ReplaceCommentWithDocumentationCommentAnalysis.GetFixableSpan(trivia);
 
                             if (!fixableSpan.IsEmpty)
                             {

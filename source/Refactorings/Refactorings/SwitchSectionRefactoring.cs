@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
                     }
 
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.AddBracesToSwitchSections)
-                        && sections.Any(f => f != switchSection && AddBracesToSwitchSectionRefactoring.CanAddBraces(f)))
+                        && sections.Any(f => f != switchSection && AddBracesToSwitchSectionAnalysis.CanAddBraces(f)))
                     {
                         context.RegisterRefactoring(
                             AddBracesToSwitchSectionsRefactoring.Title,

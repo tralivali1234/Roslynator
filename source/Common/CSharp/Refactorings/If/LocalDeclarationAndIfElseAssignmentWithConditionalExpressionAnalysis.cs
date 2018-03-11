@@ -6,9 +6,9 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class LocalDeclarationAndIfElseAssignmentWithConditionalExpression : ToAssignmentWithConditionalExpression<LocalDeclarationStatementSyntax>
+    internal class LocalDeclarationAndIfElseAssignmentWithConditionalExpressionAnalysis : ToAssignmentWithConditionalExpressionAnalysis<LocalDeclarationStatementSyntax>
     {
-        internal LocalDeclarationAndIfElseAssignmentWithConditionalExpression(
+        internal LocalDeclarationAndIfElseAssignmentWithConditionalExpressionAnalysis(
             LocalDeclarationStatementSyntax statement,
             IfStatementSyntax ifStatement,
             ExpressionSyntax whenTrue,
@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         protected override LocalDeclarationStatementSyntax CreateNewStatement()
         {
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
 
             VariableDeclaratorSyntax declarator = Statement.Declaration.Variables[0];
 

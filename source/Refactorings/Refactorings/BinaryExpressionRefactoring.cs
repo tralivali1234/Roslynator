@@ -69,7 +69,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (ReplaceAsWithCastRefactoring.CanRefactor(binaryExpression, semanticModel, context.CancellationToken))
+                if (ReplaceAsWithCastAnalysis.CanRefactor(binaryExpression, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         "Replace as with cast",

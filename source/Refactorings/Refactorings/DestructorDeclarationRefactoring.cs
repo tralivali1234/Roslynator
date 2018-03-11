@@ -11,7 +11,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && destructorDeclaration.Body?.Span.Contains(context.Span) == true
                 && context.SupportsCSharp6
-                && UseExpressionBodiedMemberRefactoring.CanRefactor(destructorDeclaration))
+                && UseExpressionBodiedMemberAnalysis.CanRefactor(destructorDeclaration))
             {
                 context.RegisterRefactoring(
                     "Use expression-bodied member",

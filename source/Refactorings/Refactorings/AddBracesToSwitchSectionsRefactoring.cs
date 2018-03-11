@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                 .Select(section =>
                 {
                     if ((sections == null || Array.IndexOf(sections, section) != -1)
-                        && AddBracesToSwitchSectionRefactoring.CanAddBraces(section))
+                        && AddBracesToSwitchSectionAnalysis.CanAddBraces(section))
                     {
                         return section.WithStatements(SingletonList<StatementSyntax>(Block(section.Statements)));
                     }

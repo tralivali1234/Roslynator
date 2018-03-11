@@ -18,7 +18,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         protected override LocalDeclarationStatementSyntax CreateNewStatement()
         {
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
 
             VariableDeclaratorSyntax declarator = Statement.Declaration.Variables[0];
 

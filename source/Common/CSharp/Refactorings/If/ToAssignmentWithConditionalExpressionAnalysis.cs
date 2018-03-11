@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal abstract class ToAssignmentWithConditionalExpression : IfAnalysis
+    internal abstract class ToAssignmentWithConditionalExpressionAnalysis : IfAnalysis
     {
-        protected ToAssignmentWithConditionalExpression(
+        protected ToAssignmentWithConditionalExpressionAnalysis(
             IfStatementSyntax ifStatement,
             ExpressionSyntax whenTrue,
             ExpressionSyntax whenFalse) : base(ifStatement)

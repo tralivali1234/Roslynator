@@ -23,7 +23,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public override Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
         {
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(Left, conditionalExpression)
                 .WithTriviaFrom(IfStatement)

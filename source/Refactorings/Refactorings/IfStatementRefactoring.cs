@@ -28,12 +28,13 @@ namespace Roslynator.CSharp.Refactorings
                         useBooleanExpression: context.IsRefactoringEnabled(RefactoringIdentifiers.SimplifyIf),
                         useExpression: false);
 
-                    foreach (IfAnalysis refactoring in IfAnalysis.Analyze(ifStatement, options, semanticModel, context.CancellationToken))
-                    {
-                        context.RegisterRefactoring(
-                            refactoring.Title,
-                            cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken));
-                    }
+                    //TODO: refactoring
+                    //foreach (IfAnalysis refactoring in IfAnalysis.Analyze(ifStatement, options, semanticModel, context.CancellationToken))
+                    //{
+                    //    context.RegisterRefactoring(
+                    //        refactoring.Title,
+                    //        cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken));
+                    //}
                 }
 
                 if (context.IsRefactoringEnabled(RefactoringIdentifiers.SwapIfElse))
@@ -57,7 +58,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                ReduceIfNestingAnalysisResult analysis = ReduceIfNestingRefactoring.Analyze(
+                ReduceIfNestingAnalysisResult analysis = ReduceIfNestingAnalysis.Analyze(
                     ifStatement,
                     semanticModel,
                     options: ReduceIfNestingOptions.AllowNestedFix
@@ -73,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings
                         "Reduce if nesting",
                         cancellationToken => ReduceIfNestingRefactoring.RefactorAsync(context.Document, ifStatement, analysis.JumpKind, false, cancellationToken));
 
-                    if (ReduceIfNestingRefactoring.IsFixableRecursively(ifStatement, analysis.JumpKind))
+                    if (ReduceIfNestingAnalysis.IsFixableRecursively(ifStatement, analysis.JumpKind))
                     {
                         context.RegisterRefactoring(
                             "Reduce if nesting (recursively)",

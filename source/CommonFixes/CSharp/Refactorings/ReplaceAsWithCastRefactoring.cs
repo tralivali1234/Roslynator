@@ -4,34 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReplaceAsWithCastRefactoring
     {
-        public static bool CanRefactor(
-            BinaryExpressionSyntax binaryExpression,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            AsExpressionInfo info = SyntaxInfo.AsExpressionInfo(binaryExpression);
-
-            if (!info.Success)
-                return false;
-
-            ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(info.Type, cancellationToken);
-
-            if (typeSymbol == null)
-                return false;
-
-            if (!semanticModel.IsExplicitConversion(info.Expression, typeSymbol))
-                return false;
-
-            return true;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             BinaryExpressionSyntax binaryExpression,

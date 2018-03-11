@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -14,33 +13,6 @@ namespace Roslynator.CSharp.Refactorings
     internal static class UseBitwiseOperationInsteadOfCallingHasFlagRefactoring
     {
         public const string Title = "Use bitwise operation instead of calling 'HasFlag'";
-
-        public static bool CanRefactor(
-            InvocationExpressionSyntax invocation,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(invocation);
-
-            if (!invocationInfo.Success)
-                return false;
-
-            if (invocationInfo.Arguments.Count != 1)
-                return false;
-
-            MemberAccessExpressionSyntax memberAccess = GetTopmostMemberAccessExpression(invocationInfo.MemberAccessExpression);
-
-            if (invocationInfo.NameText != "HasFlag")
-                return false;
-
-            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(memberAccess, cancellationToken);
-
-            return methodSymbol?.Name == "HasFlag"
-                && !methodSymbol.IsStatic
-                && methodSymbol.IsReturnType(SpecialType.System_Boolean)
-                && methodSymbol.HasSingleParameter(SpecialType.System_Enum)
-                && methodSymbol.IsContainingType(SpecialType.System_Enum);
-        }
 
         public static Task<Document> RefactorAsync(
             Document document,
@@ -94,14 +66,6 @@ namespace Roslynator.CSharp.Refactorings
                 .WithFormatterAnnotation();
 
             return document.ReplaceNodeAsync(nodeToReplace, newNode, cancellationToken);
-        }
-
-        private static MemberAccessExpressionSyntax GetTopmostMemberAccessExpression(MemberAccessExpressionSyntax memberAccess)
-        {
-            while (memberAccess.IsParentKind(SyntaxKind.SimpleMemberAccessExpression))
-                memberAccess = (MemberAccessExpressionSyntax)memberAccess.Parent;
-
-            return memberAccess;
         }
     }
 }

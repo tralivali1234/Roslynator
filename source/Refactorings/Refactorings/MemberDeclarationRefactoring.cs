@@ -179,7 +179,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && operatorDeclaration.Body?.Span.Contains(context.Span) == true
                 && context.SupportsCSharp6
-                && UseExpressionBodiedMemberRefactoring.CanRefactor(operatorDeclaration))
+                && UseExpressionBodiedMemberAnalysis.CanRefactor(operatorDeclaration))
             {
                 context.RegisterRefactoring(
                     "Use expression-bodied member",
@@ -192,7 +192,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && operatorDeclaration.Body?.Span.Contains(context.Span) == true
                 && context.SupportsCSharp6
-                && UseExpressionBodiedMemberRefactoring.CanRefactor(operatorDeclaration))
+                && UseExpressionBodiedMemberAnalysis.CanRefactor(operatorDeclaration))
             {
                 context.RegisterRefactoring(
                     "Use expression-bodied member",

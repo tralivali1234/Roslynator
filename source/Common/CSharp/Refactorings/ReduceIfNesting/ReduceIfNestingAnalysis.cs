@@ -345,7 +345,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
             return kind == kind2;
         }
 
-        private static SyntaxKind GetJumpKind(StatementSyntax statement)
+        internal static SyntaxKind GetJumpKind(StatementSyntax statement)
         {
             switch (statement)
             {
@@ -412,7 +412,8 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 && IsFixable(ifStatement3);
         }
 
-        private static bool IsFixable(IfStatementSyntax ifStatement)
+        //TODO: private
+        public static bool IsFixable(IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
                 return false;

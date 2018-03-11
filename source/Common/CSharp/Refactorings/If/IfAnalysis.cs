@@ -164,7 +164,7 @@ namespace Roslynator.CSharp.Refactorings.If
                             return Empty;
                         }
 
-                        return new IfToReturnWithExpression(ifStatement, condition, isYield, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
+                        return new IfToReturnWithExpressionAnalysis(ifStatement, condition, isYield, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
                     }
 
                     return Empty;
@@ -189,22 +189,22 @@ namespace Roslynator.CSharp.Refactorings.If
                 }
             }
 
-            IfToReturnWithBooleanExpression ifToReturnWithBooleanExpression = null;
+            IfToReturnWithBooleanExpressionAnalysis ifToReturnWithBooleanExpression = null;
 
             if (options.UseBooleanExpression
                 && (IsBooleanLiteralExpression(expression1.Kind()) || IsBooleanLiteralExpression(expression2.Kind()))
                 && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.SpecialType == SpecialType.System_Boolean
                 && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.SpecialType == SpecialType.System_Boolean)
             {
-                ifToReturnWithBooleanExpression = IfToReturnWithBooleanExpression.Create(ifStatement, expression1, expression2, isYield);
+                ifToReturnWithBooleanExpression = IfToReturnWithBooleanExpressionAnalysis.Create(ifStatement, expression1, expression2, isYield);
             }
 
-            IfToReturnWithConditionalExpression ifToReturnWithConditionalExpression = null;
+            IfToReturnWithConditionalExpressionAnalysis ifToReturnWithConditionalExpression = null;
 
             if (options.UseConditionalExpression
                 && (!IsBooleanLiteralExpression(expression1.Kind()) || !IsBooleanLiteralExpression(expression2.Kind())))
             {
-                ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpression.Create(ifStatement, expression1, expression2, isYield);
+                ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpressionAnalysis.Create(ifStatement, expression1, expression2, isYield);
             }
 
             return ToImmutableArray(ifToReturnWithBooleanExpression, ifToReturnWithConditionalExpression);
@@ -246,11 +246,11 @@ namespace Roslynator.CSharp.Refactorings.If
                 && expression2.Kind() == SyntaxKind.NullLiteralExpression)
             {
                 if (options.UseExpression)
-                    return new IfToReturnWithExpression(ifStatement, expression1, isYield);
+                    return new IfToReturnWithExpressionAnalysis(ifStatement, expression1, isYield);
             }
             else if (options.UseCoalesceExpression)
             {
-                return new IfToReturnWithCoalesceExpression(ifStatement, expression1, expression2, isYield);
+                return new IfToReturnWithCoalesceExpressionAnalysis(ifStatement, expression1, expression2, isYield);
             }
 
             return null;
@@ -294,7 +294,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)
-                        return new IfElseToAssignmentWithCondition(ifStatement, left1, condition, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
+                        return new IfElseToAssignmentWithConditionAnalysis(ifStatement, left1, condition, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
 
                     return Empty;
                 }
@@ -319,7 +319,7 @@ namespace Roslynator.CSharp.Refactorings.If
             }
 
             if (options.UseConditionalExpression)
-                return new IfElseToAssignmentWithConditionalExpression(ifStatement, left1, right1, right2).ToImmutableArray();
+                return new IfElseToAssignmentWithConditionalExpressionAnalysis(ifStatement, left1, right1, right2).ToImmutableArray();
 
             return Empty;
         }
@@ -360,11 +360,11 @@ namespace Roslynator.CSharp.Refactorings.If
                 && expression2.Kind() == SyntaxKind.NullLiteralExpression)
             {
                 if (options.UseExpression)
-                    return new IfElseToAssignmentWithExpression(ifStatement, expression1.FirstAncestor<ExpressionStatementSyntax>());
+                    return new IfElseToAssignmentWithExpressionAnalysis(ifStatement, expression1.FirstAncestor<ExpressionStatementSyntax>());
             }
             else if (options.UseCoalesceExpression)
             {
-                return new IfElseToAssignmentWithCoalesceExpression(ifStatement, left, expression1, expression2);
+                return new IfElseToAssignmentWithCoalesceExpressionAnalysis(ifStatement, left, expression1, expression2);
             }
 
             return null;
@@ -474,7 +474,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(localDeclarationStatement.SpanStart, ifStatement.Span.End)))
                 return Empty;
 
-            return new LocalDeclarationAndIfElseAssignmentWithConditionalExpression(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
+            return new LocalDeclarationAndIfElseAssignmentWithConditionalExpressionAnalysis(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(
@@ -508,7 +508,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(expressionStatement.SpanStart, ifStatement.Span.End)))
                 return Empty;
 
-            return new AssignmentAndIfElseToAssignmentWithConditionalExpression(expressionStatement, assignment.Right, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
+            return new AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis(expressionStatement, assignment.Right, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(

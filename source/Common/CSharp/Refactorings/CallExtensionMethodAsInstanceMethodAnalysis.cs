@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!methodSymbol.IsOrdinaryExtensionMethod())
                 return Fail;
 
-            InvocationExpressionSyntax newInvocationExpression = GetNewInvocationForAnalysis(invocationExpression);
+            InvocationExpressionSyntax newInvocationExpression = GetNewInvocation(invocationExpression);
 
             if (newInvocationExpression == null)
                 return Fail;
@@ -88,7 +88,7 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        private static InvocationExpressionSyntax GetNewInvocationForAnalysis(InvocationExpressionSyntax invocation)
+        private static InvocationExpressionSyntax GetNewInvocation(InvocationExpressionSyntax invocation)
         {
             ExpressionSyntax expression = invocation.Expression;
             ArgumentListSyntax argumentList = invocation.ArgumentList;

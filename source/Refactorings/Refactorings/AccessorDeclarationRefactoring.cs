@@ -44,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(accessor)
                 && context.SupportsCSharp6
-                && UseExpressionBodiedMemberRefactoring.CanRefactor(accessor))
+                && UseExpressionBodiedMemberAnalysis.CanRefactor(accessor))
             {
                 SyntaxNode node = accessor;
 

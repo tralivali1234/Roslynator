@@ -21,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         protected override ExpressionStatementSyntax CreateNewStatement()
         {
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
+            ConditionalExpressionSyntax conditionalExpression = IfAnalysisHelper.CreateConditionalExpression(IfStatement.Condition, WhenTrue, WhenFalse);
 
             return Statement.ReplaceNode(Left, conditionalExpression);
         }

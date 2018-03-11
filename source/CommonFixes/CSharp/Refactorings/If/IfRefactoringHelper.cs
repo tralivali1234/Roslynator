@@ -5,23 +5,11 @@ using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
     internal static class IfRefactoringHelper
     {
-        public static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
-        {
-            if (condition.Kind() != SyntaxKind.ParenthesizedExpression)
-            {
-                condition = ParenthesizedExpression(condition.WithoutTrivia())
-                    .WithTriviaFrom(condition);
-            }
-
-            return ConditionalExpression(condition, whenTrue, whenFalse);
-        }
-
         public static ExpressionSyntax GetBooleanExpression(
             ExpressionSyntax condition,
             ExpressionSyntax expression1,
