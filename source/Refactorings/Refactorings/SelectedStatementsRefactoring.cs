@@ -52,7 +52,7 @@ namespace Roslynator.CSharp.Refactorings
                     useBooleanExpression: context.IsRefactoringEnabled(RefactoringIdentifiers.SimplifyIf),
                     useExpression: false);
 
-                foreach (IfRefactoring refactoring in IfRefactoring.Analyze(selectedStatements, options, semanticModel, context.CancellationToken))
+                foreach (IfAnalysis refactoring in IfAnalysis.Analyze(selectedStatements, options, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         refactoring.Title,

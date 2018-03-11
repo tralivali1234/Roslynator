@@ -1,10 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
@@ -31,28 +27,6 @@ namespace Roslynator.CSharp.Refactorings.If
         protected override StatementSyntax CreateStatement(ExpressionSyntax expression)
         {
             return ReturnStatement(expression);
-        }
-
-        public override Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(IfStatement);
-
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
-
-            int index = statements.IndexOf(IfStatement);
-
-            ConditionalExpressionSyntax conditionalExpression = IfRefactoringHelper.CreateConditionalExpression(IfStatement.Condition, Expression1, Expression2);
-
-            StatementSyntax newStatement = CreateStatement(conditionalExpression)
-                .WithLeadingTrivia(IfStatement.GetLeadingTrivia())
-                .WithTrailingTrivia(statements[index + 1].GetTrailingTrivia())
-                .WithFormatterAnnotation();
-
-            SyntaxList<StatementSyntax> newStatements = statements
-                .RemoveAt(index)
-                .ReplaceAt(index, newStatement);
-
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
         }
     }
 }

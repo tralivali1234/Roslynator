@@ -1,13 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToAssignmentWithExpression : IfRefactoring
+    internal class IfElseToAssignmentWithExpression : IfAnalysis
     {
         public IfElseToAssignmentWithExpression(
             IfStatementSyntax ifStatement,
@@ -27,14 +24,5 @@ namespace Roslynator.CSharp.Refactorings.If
         }
 
         public ExpressionStatementSyntax ExpressionStatement { get; }
-
-        public override Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ExpressionStatementSyntax newNode = ExpressionStatement
-                .WithTriviaFrom(IfStatement)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(IfStatement, newNode, cancellationToken);
-        }
     }
 }

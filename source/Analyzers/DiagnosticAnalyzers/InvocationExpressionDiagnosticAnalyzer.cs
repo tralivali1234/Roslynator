@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 if (!invocation.SpanContainsDirectives())
                 {
-                    CallExtensionMethodAsInstanceMethodAnalysis analysis = CallExtensionMethodAsInstanceMethodRefactoring.Analyze(invocation, context.SemanticModel, allowAnyExpression: false, cancellationToken: context.CancellationToken);
+                    CallExtensionMethodAsInstanceMethodAnalysisResult analysis = CallExtensionMethodAsInstanceMethodRefactoring.Analyze(invocation, context.SemanticModel, allowAnyExpression: false, cancellationToken: context.CancellationToken);
 
                     if (analysis.Success
                         && context.SemanticModel

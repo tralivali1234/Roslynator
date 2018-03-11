@@ -47,7 +47,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            foreach (IfRefactoring refactoring in IfRefactoring.Analyze(ifStatement, AnalysisOptions, context.SemanticModel, context.CancellationToken))
+            foreach (IfAnalysis refactoring in IfAnalysis.Analyze(ifStatement, AnalysisOptions, context.SemanticModel, context.CancellationToken))
             {
                 Debug.Assert(refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression
                     || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithExpression

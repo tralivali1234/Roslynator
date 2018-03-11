@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var throwStatement = (ThrowStatementSyntax)context.Node;
 
-            AddExceptionToDocumentationCommentAnalysis analysis = Analyze(throwStatement, exceptionSymbol, context.SemanticModel, context.CancellationToken);
+            AddExceptionToDocumentationCommentAnalysisResult analysis = Analyze(throwStatement, exceptionSymbol, context.SemanticModel, context.CancellationToken);
 
             if (!analysis.Success)
                 return;
@@ -55,7 +55,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var throwExpression = (ThrowExpressionSyntax)context.Node;
 
-            AddExceptionToDocumentationCommentAnalysis analysis = Analyze(throwExpression, exceptionSymbol, context.SemanticModel, context.CancellationToken);
+            AddExceptionToDocumentationCommentAnalysisResult analysis = Analyze(throwExpression, exceptionSymbol, context.SemanticModel, context.CancellationToken);
 
             if (!analysis.Success)
                 return;

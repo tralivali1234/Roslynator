@@ -68,7 +68,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            IfRefactoring refactoring = IfRefactoring.Analyze(
+                            IfAnalysis refactoring = IfAnalysis.Analyze(
                                 ifStatement,
                                 IfStatementDiagnosticAnalyzer.AnalysisOptions,
                                 semanticModel,

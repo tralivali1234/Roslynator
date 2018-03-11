@@ -28,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
                         useBooleanExpression: context.IsRefactoringEnabled(RefactoringIdentifiers.SimplifyIf),
                         useExpression: false);
 
-                    foreach (IfRefactoring refactoring in IfRefactoring.Analyze(ifStatement, options, semanticModel, context.CancellationToken))
+                    foreach (IfAnalysis refactoring in IfAnalysis.Analyze(ifStatement, options, semanticModel, context.CancellationToken))
                     {
                         context.RegisterRefactoring(
                             refactoring.Title,
@@ -57,7 +57,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                ReduceIfNestingAnalysis analysis = ReduceIfNestingRefactoring.Analyze(
+                ReduceIfNestingAnalysisResult analysis = ReduceIfNestingRefactoring.Analyze(
                     ifStatement,
                     semanticModel,
                     options: ReduceIfNestingOptions.AllowNestedFix

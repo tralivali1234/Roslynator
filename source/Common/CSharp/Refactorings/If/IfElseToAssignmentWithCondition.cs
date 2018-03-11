@@ -1,14 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToAssignmentWithCondition : IfRefactoring
+    internal class IfElseToAssignmentWithCondition : IfAnalysis
     {
         public IfElseToAssignmentWithCondition(
             IfStatementSyntax ifStatement,
@@ -36,23 +32,5 @@ namespace Roslynator.CSharp.Refactorings.If
         public ExpressionSyntax Right { get; }
 
         public bool Negate { get; }
-
-        public override async Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ExpressionSyntax right = Right.WithoutTrivia();
-
-            if (Negate)
-            {
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-                right = Negation.LogicallyNegate(right, semanticModel, cancellationToken);
-            }
-
-            ExpressionStatementSyntax newNode = SimpleAssignmentStatement(Left.WithoutTrivia(), right)
-                .WithTriviaFrom(IfStatement)
-                .WithFormatterAnnotation();
-
-            return await document.ReplaceNodeAsync(IfStatement, newNode, cancellationToken).ConfigureAwait(false);
-        }
     }
 }

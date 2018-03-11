@@ -1,13 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal abstract class IfToReturnWithBooleanExpression : IfRefactoring
+    internal abstract class IfToReturnWithBooleanExpression : IfAnalysis
     {
         protected IfToReturnWithBooleanExpression(
             IfStatementSyntax ifStatement,
@@ -38,19 +35,6 @@ namespace Roslynator.CSharp.Refactorings.If
             {
                 return new IfElseToReturnWithBooleanExpression(ifStatement, expression1, expression2);
             }
-        }
-
-        public override async Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            ExpressionSyntax expression = IfRefactoringHelper.GetBooleanExpression(IfStatement.Condition, Expression1, Expression2, semanticModel, cancellationToken);
-
-            StatementSyntax newNode = CreateStatement(expression)
-                .WithTriviaFrom(IfStatement)
-                .WithFormatterAnnotation();
-
-            return await document.ReplaceNodeAsync(IfStatement, newNode, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.CodeFixes
                 $"Use \"\" instead of '{memberAccess}'",
                 cancellationToken =>
                 {
-                    return UseEmptyStringLiteralInsteadOfStringEmptyRefactoring.RefactorAsync(
+                    return UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.RefactorAsync(
                         context.Document,
                         memberAccess,
                         cancellationToken);

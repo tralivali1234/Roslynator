@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var memberAccess = (MemberAccessExpressionSyntax)context.Node;
 
-            if (UseEmptyStringLiteralInsteadOfStringEmptyRefactoring.CanRefactor(memberAccess, context.SemanticModel, context.CancellationToken))
+            if (UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.CanRefactor(memberAccess, context.SemanticModel, context.CancellationToken))
                 context.ReportDiagnostic(DiagnosticDescriptors.UseEmptyStringLiteralInsteadOfStringEmpty, memberAccess);
         }
     }

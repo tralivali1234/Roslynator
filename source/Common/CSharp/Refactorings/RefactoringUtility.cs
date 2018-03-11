@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -14,6 +13,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
+    //TODO: ?
     internal static class RefactoringUtility
     {
         public static InvocationExpressionSyntax ChangeInvokedMethodName(InvocationExpressionSyntax invocation, string newName)
@@ -71,25 +71,6 @@ namespace Roslynator.CSharp
                         newName,
                         simpleName.GetTrailingTrivia()));
             }
-        }
-
-        public static BinaryExpressionSyntax CreateCoalesceExpression(
-            ITypeSymbol targetType,
-            ExpressionSyntax left,
-            ExpressionSyntax right,
-            int position,
-            SemanticModel semanticModel)
-        {
-            if (targetType?.SupportsExplicitDeclaration() == true)
-            {
-                right = CastExpression(
-                    targetType.ToMinimalTypeSyntax(semanticModel, position),
-                    right.Parenthesize()).WithSimplifierAnnotation();
-            }
-
-            return CSharpFactory.CoalesceExpression(
-                left.Parenthesize(),
-                right.Parenthesize());
         }
 
         public static bool ContainsOutArgumentWithLocal(
@@ -185,27 +166,6 @@ namespace Roslynator.CSharp
                         throw new ArgumentException("", nameof(content));
                     }
             }
-        }
-
-        public static ExpressionSyntax RemoveInvocation(InvocationExpressionSyntax invocation)
-        {
-            var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
-
-            ArgumentListSyntax argumentList = invocation.ArgumentList;
-
-            SyntaxToken closeParen = argumentList.CloseParenToken;
-
-            ExpressionSyntax newExpression = memberAccess.Expression
-                .AppendToTrailingTrivia(
-                    memberAccess.OperatorToken.GetAllTrivia()
-                        .Concat(memberAccess.Name.GetLeadingAndTrailingTrivia())
-                        .Concat(argumentList.OpenParenToken.GetAllTrivia())
-                        .Concat(closeParen.LeadingTrivia)
-                        .ToSyntaxTriviaList()
-                        .EmptyIfWhitespace()
-                        .AddRange(closeParen.TrailingTrivia));
-
-            return newExpression.WithFormatterAnnotation();
         }
     }
 }

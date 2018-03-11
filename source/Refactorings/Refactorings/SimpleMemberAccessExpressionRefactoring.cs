@@ -29,13 +29,13 @@ namespace Roslynator.CSharp.Refactorings
         {
             while (memberAccess != null)
             {
-                if (UseEmptyStringLiteralInsteadOfStringEmptyRefactoring.CanRefactor(memberAccess, semanticModel, context.CancellationToken))
+                if (UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.CanRefactor(memberAccess, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         $"Use \"\" instead of '{memberAccess}'",
                         cancellationToken =>
                         {
-                            return UseEmptyStringLiteralInsteadOfStringEmptyRefactoring.RefactorAsync(
+                            return UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.RefactorAsync(
                                 context.Document,
                                 memberAccess,
                                 cancellationToken);
