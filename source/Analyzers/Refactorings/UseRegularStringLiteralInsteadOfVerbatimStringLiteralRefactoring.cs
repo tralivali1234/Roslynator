@@ -2,14 +2,10 @@
 
 using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -96,21 +92,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return false;
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            SyntaxNode node,
-            CancellationToken cancellationToken)
-        {
-            int start = node.SpanStart;
-
-            if (node.IsKind(SyntaxKind.InterpolatedStringExpression))
-                start++;
-
-            ExpressionSyntax newNode = SyntaxFactory.ParseExpression(node.ToFullString().Remove(start - node.FullSpan.Start, 1));
-
-            return document.ReplaceNodeAsync(node, newNode, cancellationToken);
         }
     }
 }

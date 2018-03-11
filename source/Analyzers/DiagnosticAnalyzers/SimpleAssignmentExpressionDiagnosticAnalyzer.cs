@@ -37,11 +37,11 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var assignment = (AssignmentExpressionSyntax)context.Node;
 
-            if (UseCompoundAssignmentRefactoring.CanRefactor(assignment))
+            if (UseCompoundAssignmentAnalysis.CanRefactor(assignment))
             {
                 var binaryExpression = (BinaryExpressionSyntax)assignment.Right;
 
-                context.ReportDiagnostic(DiagnosticDescriptors.UseCompoundAssignment, assignment, UseCompoundAssignmentRefactoring.GetCompoundOperatorText(binaryExpression));
+                context.ReportDiagnostic(DiagnosticDescriptors.UseCompoundAssignment, assignment, UseCompoundAssignmentAnalysis.GetCompoundOperatorText(binaryExpression));
                 context.ReportNode(DiagnosticDescriptors.UseCompoundAssignmentFadeOut, binaryExpression.Left);
             }
         }

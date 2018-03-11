@@ -32,13 +32,5 @@ namespace Roslynator.CSharp.Refactorings
                 }
             }
         }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            TextSpan span,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return document.WithTextChangeAsync(new TextChange(span, "\n"), cancellationToken);
-        }
     }
 }

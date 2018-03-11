@@ -2,15 +2,12 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -94,28 +91,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return null;
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            InvocationExpressionSyntax invocationExpression,
-            CancellationToken cancellationToken)
-        {
-            var memberAccessExpression = (MemberAccessExpressionSyntax)invocationExpression.Expression;
-
-            ArgumentSyntax lastArgument = invocationExpression.ArgumentList.Arguments.Last();
-
-            var lambdaExpression = (LambdaExpressionSyntax)lastArgument.Expression;
-
-            GenericNameSyntax newName = GenericName(
-                Identifier("Cast"),
-                GetCastExpression(lambdaExpression.Body).Type);
-
-            InvocationExpressionSyntax newInvocationExpression = invocationExpression
-                .RemoveNode(lastArgument)
-                .WithExpression(memberAccessExpression.WithName(newName));
-
-            return document.ReplaceNodeAsync(invocationExpression, newInvocationExpression, cancellationToken);
         }
     }
 }

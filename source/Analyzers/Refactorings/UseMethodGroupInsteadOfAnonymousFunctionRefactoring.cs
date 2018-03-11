@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -488,27 +487,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             context.ReportNode(DiagnosticDescriptors.UseMethodGroupInsteadOfAnonymousFunctionFadeOut, argumentList);
-        }
-
-        public static async Task<Document> RefactorAsync(
-            Document document,
-            AnonymousFunctionExpressionSyntax anonymousFunction,
-            CancellationToken cancellationToken)
-        {
-            InvocationExpressionSyntax invocationExpression = GetInvocationExpression(anonymousFunction.Body);
-
-            ExpressionSyntax newNode = invocationExpression.Expression;
-
-            SemanticModel semanticModel = await document.GetSemanticModelAsync().ConfigureAwait(false);
-
-            var methodSymbol = (IMethodSymbol)semanticModel.GetSymbol(invocationExpression, cancellationToken);
-
-            if (methodSymbol.IsReducedExtensionMethod())
-                newNode = ((MemberAccessExpressionSyntax)newNode).Name;
-
-            newNode = newNode.WithTriviaFrom(anonymousFunction);
-
-            return await document.ReplaceNodeAsync(anonymousFunction, newNode, cancellationToken).ConfigureAwait(false);
         }
     }
 }

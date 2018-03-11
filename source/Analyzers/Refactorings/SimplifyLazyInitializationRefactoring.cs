@@ -2,14 +2,12 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -142,59 +140,6 @@ namespace Roslynator.CSharp.Refactorings
         private static bool IdentifierNameEquals(IdentifierNameSyntax identifierName1, IdentifierNameSyntax identifierName2)
         {
             return string.Equals(identifierName1?.Identifier.ValueText, identifierName2?.Identifier.ValueText, StringComparison.Ordinal);
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            BlockSyntax block,
-            CancellationToken cancellationToken)
-        {
-            SyntaxList<StatementSyntax> statements = block.Statements;
-
-            var ifStatement = (IfStatementSyntax)statements[0];
-
-            var returnStatement = (ReturnStatementSyntax)statements[1];
-
-            var expressionStatement = (ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault();
-
-            var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
-
-            ExpressionSyntax expression = returnStatement.Expression;
-
-            IdentifierNameSyntax valueName = null;
-
-            if (expression.Kind() == SyntaxKind.SimpleMemberAccessExpression)
-            {
-                var memberAccess = (MemberAccessExpressionSyntax)expression;
-
-                if ((memberAccess.Name is IdentifierNameSyntax identifierName)
-                    && string.Equals(identifierName.Identifier.ValueText, "Value", StringComparison.Ordinal))
-                {
-                    expression = memberAccess.Expression;
-                    valueName = identifierName;
-                }
-            }
-
-            expression = expression.WithoutTrivia();
-
-            ExpressionSyntax right = SimpleAssignmentExpression(expression, assignment.Right.WithoutTrivia()).Parenthesize();
-
-            if (valueName != null)
-                right = SimpleMemberAccessExpression(right.Parenthesize(), valueName);
-
-            BinaryExpressionSyntax coalesceExpression = CoalesceExpression(expression, right);
-
-            ReturnStatementSyntax newReturnStatement = returnStatement
-                .WithExpression(coalesceExpression)
-                .WithLeadingTrivia(ifStatement.GetLeadingTrivia());
-
-            SyntaxList<StatementSyntax> newStatements = statements
-                .Replace(returnStatement, newReturnStatement)
-                .RemoveAt(0);
-
-            BlockSyntax newBlock = block.WithStatements(newStatements);
-
-            return document.ReplaceNodeAsync(block, newBlock, cancellationToken);
         }
     }
 }

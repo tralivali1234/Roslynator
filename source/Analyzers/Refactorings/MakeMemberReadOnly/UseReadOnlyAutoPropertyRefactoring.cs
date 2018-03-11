@@ -3,8 +3,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -67,18 +65,6 @@ namespace Roslynator.CSharp.Refactorings.MakeMemberReadOnly
                 if (!setter.SpanContainsDirectives())
                     context.ReportDiagnostic(DiagnosticDescriptors.UseReadOnlyAutoProperty, setter);
             }
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            PropertyDeclarationSyntax propertyDeclaration,
-            CancellationToken cancellationToken)
-        {
-            PropertyDeclarationSyntax newNode = propertyDeclaration
-                .RemoveNode(propertyDeclaration.Setter(), SyntaxRemoveOptions.KeepExteriorTrivia)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(propertyDeclaration, newNode, cancellationToken);
         }
     }
 }

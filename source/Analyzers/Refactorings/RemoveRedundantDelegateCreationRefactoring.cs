@@ -1,13 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -65,31 +62,6 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportToken(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.NewKeyword);
             context.ReportNode(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.Type);
             context.ReportParentheses(DiagnosticDescriptors.RemoveRedundantDelegateCreationFadeOut, objectCreation.ArgumentList);
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            ObjectCreationExpressionSyntax objectCreation,
-            CancellationToken cancellationToken)
-        {
-            ExpressionSyntax expression = objectCreation
-                .ArgumentList
-                .Arguments
-                .First()
-                .Expression;
-
-            IEnumerable<SyntaxTrivia> leadingTrivia = objectCreation
-                .DescendantTrivia(TextSpan.FromBounds(objectCreation.FullSpan.Start, expression.SpanStart));
-
-            IEnumerable<SyntaxTrivia> trailingTrivia = objectCreation
-                .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, objectCreation.FullSpan.End));
-
-            ExpressionSyntax newExpression = expression
-                .WithLeadingTrivia(leadingTrivia)
-                .WithTrailingTrivia(trailingTrivia)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(objectCreation, newExpression, cancellationToken);
         }
     }
 }

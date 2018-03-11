@@ -33,7 +33,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var interpolatedString = (InterpolatedStringExpressionSyntax)context.Node;
 
-            if (ReplaceInterpolatedStringWithStringLiteralRefactoring.CanRefactor(interpolatedString))
+            if (ReplaceInterpolatedStringWithStringLiteralAnalysis.CanRefactor(interpolatedString))
             {
                 context.ReportDiagnostic(
                     DiagnosticDescriptors.AvoidInterpolatedStringWithNoInterpolation,

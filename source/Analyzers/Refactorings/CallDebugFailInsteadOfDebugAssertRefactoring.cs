@@ -104,16 +104,6 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static Task<Document> RefactorAsync(
-            Document document,
-            InvocationExpressionSyntax invocation,
-            CancellationToken cancellationToken)
-        {
-            InvocationExpressionSyntax newNode = GetNewInvocation(invocation).WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(invocation, newNode, cancellationToken);
-        }
-
         private static InvocationExpressionSyntax GetNewInvocation(InvocationExpressionSyntax invocation)
         {
             ArgumentListSyntax argumentList = invocation.ArgumentList;
@@ -129,8 +119,11 @@ namespace Roslynator.CSharp.Refactorings
                 arguments = arguments.RemoveAt(0);
             }
 
-            return RefactoringUtility.ChangeInvokedMethodName(invocation, "Fail")
-                .WithArgumentList(argumentList.WithArguments(arguments));
+            //TODO: 
+            //return RefactoringUtility.ChangeInvokedMethodName(invocation, "Fail")
+            //    .WithArgumentList(argumentList.WithArguments(arguments));
+
+            return null;
         }
     }
 }

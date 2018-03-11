@@ -53,7 +53,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 BlockSyntax body = method.Body;
 
-                ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetExpression(body);
+                ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetExpression(body);
 
                 if (expression != null)
                     AnalyzeExpression(context, body, expression);
@@ -84,7 +84,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 BlockSyntax body = declaration.Body;
 
-                ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetExpression(body);
+                ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetExpression(body);
 
                 if (expression != null)
                     AnalyzeExpression(context, body, expression);
@@ -99,7 +99,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 BlockSyntax body = declaration.Body;
 
-                ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetExpression(body);
+                ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetExpression(body);
 
                 if (expression != null)
                     AnalyzeExpression(context, body, expression);
@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 BlockSyntax body = localFunctionStatement.Body;
 
-                ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetExpression(body);
+                ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetExpression(body);
 
                 if (expression != null)
                     AnalyzeExpression(context, body, expression);
@@ -130,7 +130,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 BlockSyntax body = accessor.Body;
 
-                ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetExpression(body);
+                ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetExpression(body);
 
                 if (expression?.IsSingleLine() == true)
                 {
@@ -160,7 +160,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
         private static void AnalyzeBody(SyntaxNodeAnalysisContext context, BlockSyntax body)
         {
-            ExpressionSyntax expression = UseExpressionBodiedMemberRefactoring.GetReturnExpression(body);
+            ExpressionSyntax expression = UseExpressionBodiedMemberAnalysis.GetReturnExpression(body);
 
             if (expression != null)
                 AnalyzeExpression(context, body, expression);

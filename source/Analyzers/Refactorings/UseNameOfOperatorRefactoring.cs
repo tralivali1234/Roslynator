@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -12,7 +10,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -188,33 +185,6 @@ namespace Roslynator.CSharp.Refactorings
                     DiagnosticDescriptors.UseNameOfOperatorFadeOut,
                     Location.Create(syntaxTree, new TextSpan(span.End - 1, 1)));
             }
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            LiteralExpressionSyntax literalExpression,
-            string identifier,
-            CancellationToken cancellationToken)
-        {
-            InvocationExpressionSyntax newNode = NameOfExpression(identifier)
-                .WithTriviaFrom(literalExpression)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(literalExpression, newNode, cancellationToken);
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            InvocationExpressionSyntax invocationExpression,
-            CancellationToken cancellationToken)
-        {
-            var memberAccessExpression = (MemberAccessExpressionSyntax)invocationExpression.Expression;
-
-            InvocationExpressionSyntax newNode = NameOfExpression(memberAccessExpression.Expression)
-                .WithTriviaFrom(invocationExpression)
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(invocationExpression, newNode, cancellationToken);
         }
 
         private readonly struct ParameterInfo

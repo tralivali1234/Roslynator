@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var variableDeclaration = (VariableDeclarationSyntax)context.Node;
 
-            if (SplitVariableDeclarationRefactoring.CanRefactor(variableDeclaration))
+            if (SplitVariableDeclarationAnalysis.CanRefactor(variableDeclaration))
             {
                 SeparatedSyntaxList<VariableDeclaratorSyntax> variables = variableDeclaration.Variables;
 

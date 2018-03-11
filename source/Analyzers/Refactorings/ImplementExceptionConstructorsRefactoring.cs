@@ -35,24 +35,13 @@ namespace Roslynator.CSharp.Refactorings
             if (!baseType.EqualsOrInheritsFrom(exceptionSymbol))
                 return;
 
-            if (!GenerateBaseConstructorsRefactoring.IsAnyBaseConstructorMissing(symbol, baseType))
-                return;
+            //TODO: 
+            //if (!GenerateBaseConstructorsRefactoring.IsAnyBaseConstructorMissing(symbol, baseType))
+            //    return;
 
             var classDeclaration = (ClassDeclarationSyntax)symbol.GetSyntax(context.CancellationToken);
 
             context.ReportDiagnostic(DiagnosticDescriptors.ImplementExceptionConstructors, classDeclaration.Identifier);
-        }
-
-        public static async Task<Document> RefactorAsync(
-            Document document,
-            ClassDeclarationSyntax classDeclaration,
-            CancellationToken cancellationToken)
-        {
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            List<IMethodSymbol> constructors = GenerateBaseConstructorsRefactoring.GetMissingBaseConstructors(classDeclaration, semanticModel, cancellationToken);
-
-            return await GenerateBaseConstructorsRefactoring.RefactorAsync(document, classDeclaration, constructors.ToArray(), semanticModel, cancellationToken).ConfigureAwait(false);
         }
     }
 }

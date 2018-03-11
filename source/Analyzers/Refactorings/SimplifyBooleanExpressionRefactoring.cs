@@ -2,13 +2,10 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp;
 using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -102,35 +99,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return false;
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            BinaryExpressionSyntax logicalAnd,
-            CancellationToken cancellationToken)
-        {
-            ExpressionSyntax left = logicalAnd.Left;
-            ExpressionSyntax right = logicalAnd.Right;
-
-            var memberAccessExpression = (MemberAccessExpressionSyntax)left.WalkDownParentheses();
-            ExpressionSyntax expression = memberAccessExpression.Expression;
-
-            SyntaxTriviaList trailingTrivia = logicalAnd
-                .DescendantTrivia(TextSpan.FromBounds(expression.Span.End, left.Span.End))
-                .ToSyntaxTriviaList()
-                .EmptyIfWhitespace()
-                .AddRange(left.GetTrailingTrivia());
-
-            BinaryExpressionSyntax equalsExpression = EqualsExpression(
-                expression
-                    .WithLeadingTrivia(left.GetLeadingTrivia())
-                    .WithTrailingTrivia(trailingTrivia),
-                EqualsEqualsToken().WithTriviaFrom(logicalAnd.OperatorToken),
-                (right.WalkDownParentheses().IsKind(SyntaxKind.LogicalNotExpression, SyntaxKind.EqualsExpression))
-                    ? FalseLiteralExpression()
-                    : TrueLiteralExpression().WithTriviaFrom(right));
-
-            return document.ReplaceNodeAsync(logicalAnd, equalsExpression, cancellationToken);
         }
     }
 }

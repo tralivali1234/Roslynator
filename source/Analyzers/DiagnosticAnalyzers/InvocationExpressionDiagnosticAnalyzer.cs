@@ -64,7 +64,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var invocation = (InvocationExpressionSyntax)context.Node;
 
-            if (UseBitwiseOperationInsteadOfCallingHasFlagRefactoring.CanRefactor(invocation, context.SemanticModel, context.CancellationToken)
+            if (UseBitwiseOperationInsteadOfCallingHasFlagAnalysis.CanRefactor(invocation, context.SemanticModel, context.CancellationToken)
                 && !invocation.SpanContainsDirectives())
             {
                 context.ReportDiagnostic(DiagnosticDescriptors.UseBitwiseOperationInsteadOfCallingHasFlag, invocation);
@@ -78,7 +78,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             {
                 if (!invocation.SpanContainsDirectives())
                 {
-                    CallExtensionMethodAsInstanceMethodAnalysisResult analysis = CallExtensionMethodAsInstanceMethodRefactoring.Analyze(invocation, context.SemanticModel, allowAnyExpression: false, cancellationToken: context.CancellationToken);
+                    CallExtensionMethodAsInstanceMethodAnalysisResult analysis = CallExtensionMethodAsInstanceMethodAnalysis.Analyze(invocation, context.SemanticModel, allowAnyExpression: false, cancellationToken: context.CancellationToken);
 
                     if (analysis.Success
                         && context.SemanticModel
@@ -132,7 +132,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "First":
                                         {
                                             if (!invocationInfo.Expression.IsKind(SyntaxKind.InvocationExpression)
-                                                && UseElementAccessInsteadOfFirstRefactoring.CanRefactor(invocationInfo, context.SemanticModel, context.CancellationToken))
+                                                && UseElementAccessInsteadOfFirstAnalysis.CanRefactor(invocationInfo, context.SemanticModel, context.CancellationToken))
                                             {
                                                 context.ReportDiagnostic(DiagnosticDescriptors.UseElementAccessInsteadOfFirst, invocationInfo.Name);
                                             }
@@ -181,7 +181,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "ElementAt":
                                         {
                                             if (!invocationInfo.Expression.IsKind(SyntaxKind.InvocationExpression)
-                                                && UseElementAccessInsteadOfElementAtRefactoring.CanRefactor(invocationInfo, context.SemanticModel, context.CancellationToken))
+                                                && UseElementAccessInsteadOfElementAtAnalysis.CanRefactor(invocationInfo, context.SemanticModel, context.CancellationToken))
                                             {
                                                 context.ReportDiagnostic(DiagnosticDescriptors.UseElementAccessInsteadOfElementAt, invocationInfo.Name);
                                             }
@@ -238,7 +238,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                             }
                     }
 
-                    if (UseMethodChainingRefactoring.IsFixable(invocationInfo, context.SemanticModel, context.CancellationToken))
+                    if (UseMethodChainingAnalysis.IsFixable(invocationInfo, context.SemanticModel, context.CancellationToken))
                         context.ReportDiagnostic(DiagnosticDescriptors.UseMethodChaining, invocationInfo.InvocationExpression);
                 }
             }

@@ -1,16 +1,12 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -110,63 +106,6 @@ namespace Roslynator.CSharp.Refactorings
                 DiagnosticDescriptors.UsePostfixUnaryOperatorInsteadOfAssignment,
                 assignment,
                 operatorText);
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            AssignmentExpressionSyntax assignment,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            SyntaxKind kind = GetPostfixUnaryOperatorKind(assignment);
-
-            PostfixUnaryExpressionSyntax postfixUnary = PostfixUnaryExpression(kind, assignment.Left)
-                .WithTrailingTrivia(GetTrailingTrivia(assignment))
-                .WithFormatterAnnotation();
-
-            return document.ReplaceNodeAsync(assignment, postfixUnary, cancellationToken);
-        }
-
-        private static List<SyntaxTrivia> GetTrailingTrivia(AssignmentExpressionSyntax assignment)
-        {
-            var trivia = new List<SyntaxTrivia>();
-
-            ExpressionSyntax right = assignment.Right;
-
-            switch (assignment.Kind())
-            {
-                case SyntaxKind.AddAssignmentExpression:
-                case SyntaxKind.SubtractAssignmentExpression:
-                    {
-                        trivia.AddRange(assignment.OperatorToken.GetAllTrivia());
-
-                        if (right?.IsMissing == false)
-                            trivia.AddRange(right.GetLeadingAndTrailingTrivia());
-
-                        return trivia;
-                    }
-            }
-
-            switch (right?.Kind())
-            {
-                case SyntaxKind.AddExpression:
-                case SyntaxKind.SubtractExpression:
-                    {
-                        trivia.AddRange(assignment.OperatorToken.GetAllTrivia());
-
-                        if (right?.IsMissing == false)
-                        {
-                            var binaryExpression = (BinaryExpressionSyntax)right;
-
-                            trivia.AddRange(binaryExpression.DescendantTrivia());
-                        }
-
-                        return trivia;
-                    }
-            }
-
-            Debug.Fail(assignment.Kind().ToString());
-
-            return trivia;
         }
 
         public static SyntaxKind GetPostfixUnaryOperatorKind(AssignmentExpressionSyntax assignment)

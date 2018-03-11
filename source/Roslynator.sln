@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "Tools\TestCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonFixes", "CommonFixes\CommonFixes.csproj", "{D6B3FAF2-C92D-4B2D-82DF-D6B3DD7F4107}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalyzersFixes", "AnalyzersFixes\AnalyzersFixes.csproj", "{3B0653F4-919D-4049-84A8-B1CC173415D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -199,6 +201,14 @@ Global
 		{D6B3FAF2-C92D-4B2D-82DF-D6B3DD7F4107}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D6B3FAF2-C92D-4B2D-82DF-D6B3DD7F4107}.ReleaseTools|Any CPU.ActiveCfg = Release|Any CPU
 		{D6B3FAF2-C92D-4B2D-82DF-D6B3DD7F4107}.ReleaseTools|Any CPU.Build.0 = Release|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.DebugRoslynator|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.DebugRoslynator|Any CPU.Build.0 = Debug|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.ReleaseTools|Any CPU.ActiveCfg = Release|Any CPU
+		{3B0653F4-919D-4049-84A8-B1CC173415D7}.ReleaseTools|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

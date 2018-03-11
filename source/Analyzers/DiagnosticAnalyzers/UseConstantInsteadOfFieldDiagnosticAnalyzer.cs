@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             var fieldDeclaration = (FieldDeclarationSyntax)context.Node;
 
-            if (!UseConstantInsteadOfFieldRefactoring.CanRefactor(fieldDeclaration, context.SemanticModel, onlyPrivate: true, cancellationToken: context.CancellationToken))
+            if (!UseConstantInsteadOfFieldAnalysis.CanRefactor(fieldDeclaration, context.SemanticModel, onlyPrivate: true, cancellationToken: context.CancellationToken))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.UseConstantInsteadOfField, fieldDeclaration);

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
-using static Roslynator.CSharp.Refactorings.ReplaceCommentWithDocumentationCommentRefactoring;
+using static Roslynator.CSharp.Refactorings.ReplaceCommentWithDocumentationCommentAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

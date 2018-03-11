@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -91,28 +90,6 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.SimplifyLinqMethodChain,
                 Location.Create(invocationExpression.SyntaxTree, TextSpan.FromBounds(invocationInfo2.Name.SpanStart, invocationExpression.Span.End)));
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            InvocationExpressionSyntax invocationExpression,
-            CancellationToken cancellationToken)
-        {
-            MemberInvocationExpressionInfo invocationInfo = MemberInvocationExpressionInfo(invocationExpression);
-            MemberInvocationExpressionInfo invocationInfo2 = MemberInvocationExpressionInfo(invocationInfo.Expression);
-
-            SingleParameterLambdaExpressionInfo lambda = SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo.Arguments.First().Expression);
-            SingleParameterLambdaExpressionInfo lambda2 = SingleParameterLambdaExpressionInfo((LambdaExpressionSyntax)invocationInfo2.Arguments.First().Expression);
-
-            BinaryExpressionSyntax logicalAnd = CSharpFactory.LogicalAndExpression(
-                ((ExpressionSyntax)lambda2.Body).Parenthesize(),
-                ((ExpressionSyntax)lambda.Body).Parenthesize());
-
-            InvocationExpressionSyntax newNode = invocationInfo2.InvocationExpression
-                .ReplaceNode(invocationInfo2.Name, invocationInfo.Name.WithTriviaFrom(invocationInfo2.Name))
-                .WithArgumentList(invocationInfo2.ArgumentList.ReplaceNode((ExpressionSyntax)lambda2.Body, logicalAnd));
-
-            return document.ReplaceNodeAsync(invocationExpression, newNode, cancellationToken);
         }
     }
 }

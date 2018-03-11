@@ -3,14 +3,9 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -217,29 +212,6 @@ namespace Roslynator.CSharp.Refactorings
                 enumMember.GetLocation(),
                 ImmutableDictionary.CreateRange(new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Value", value) }),
                 value);
-        }
-
-        public static async Task<Document> RefactorAsync(
-            Document document,
-            EnumDeclarationSyntax enumDeclaration,
-            string value,
-            CancellationToken cancellationToken)
-        {
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            INamedTypeSymbol symbol = semanticModel.GetDeclaredSymbol(enumDeclaration, cancellationToken);
-
-            string name = NameGenerator.Default.EnsureUniqueMemberName(DefaultNames.EnumMember, symbol);
-
-            EnumMemberDeclarationSyntax enumMember = EnumMemberDeclaration(
-                Identifier(name).WithRenameAnnotation(),
-                ParseExpression(value));
-
-            enumMember = enumMember.WithTrailingTrivia(NewLine());
-
-            EnumDeclarationSyntax newNode = enumDeclaration.WithMembers(enumDeclaration.Members.Add(enumMember));
-
-            return await document.ReplaceNodeAsync(enumDeclaration, newNode, cancellationToken).ConfigureAwait(false);
         }
     }
 }

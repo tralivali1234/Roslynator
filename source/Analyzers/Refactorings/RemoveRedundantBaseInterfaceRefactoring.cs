@@ -3,8 +3,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -114,30 +112,6 @@ namespace Roslynator.CSharp.Refactorings
                     }
                 }
             }
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            BaseTypeSyntax baseType,
-            CancellationToken cancellationToken)
-        {
-            SyntaxRemoveOptions removeOptions = SyntaxRemover.DefaultRemoveOptions;
-
-            if (baseType.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
-                removeOptions &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
-
-            if (baseType.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
-            {
-                var baseList = (BaseListSyntax)baseType.Parent;
-
-                if (baseList.Types.IsLast(baseType)
-                    && !SyntaxInfo.GenericInfo(baseList.Parent).ConstraintClauses.Any())
-                {
-                    removeOptions &= ~SyntaxRemoveOptions.KeepTrailingTrivia;
-                }
-            }
-
-            return document.RemoveNodeAsync(baseType, removeOptions, cancellationToken);
         }
 
         private readonly struct SymbolInterfaceInfo

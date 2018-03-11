@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Immutable;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
@@ -31,14 +28,6 @@ namespace Roslynator.CSharp.Refactorings
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, regionDirective.GetLocation());
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyRegionFadeOut, region.EndDirective.GetLocation());
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            RegionInfo region,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            return document.RemoveRegionAsync(region, cancellationToken);
         }
     }
 }

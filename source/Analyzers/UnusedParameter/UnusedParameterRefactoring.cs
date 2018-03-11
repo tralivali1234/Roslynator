@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -432,29 +429,6 @@ namespace Roslynator.CSharp.Analyzers.UnusedParameter
             }
 
             return false;
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            TypeParameterSyntax typeParameter,
-            CancellationToken cancellationToken)
-        {
-            SyntaxNode node = typeParameter;
-
-            var typeParameterList = (TypeParameterListSyntax)typeParameter.Parent;
-
-            if (typeParameterList.Parameters.Count == 1)
-                node = typeParameterList;
-
-            SyntaxRemoveOptions options = SyntaxRemover.DefaultRemoveOptions;
-
-            if (node.GetLeadingTrivia().All(f => f.IsWhitespaceTrivia()))
-                options &= ~SyntaxRemoveOptions.KeepLeadingTrivia;
-
-            if (node.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
-                options &= ~SyntaxRemoveOptions.KeepTrailingTrivia;
-
-            return document.RemoveNodeAsync(node, options, cancellationToken);
         }
     }
 }

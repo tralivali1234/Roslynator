@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             var lambda = (LambdaExpressionSyntax)context.Node;
 
             if (!lambda.ContainsDiagnostics
-                && SimplifyLambdaExpressionRefactoring.CanRefactor(lambda))
+                && SimplifyLambdaExpressionAnalysis.CanRefactor(lambda))
             {
                 CSharpSyntaxNode body = lambda.Body;
 

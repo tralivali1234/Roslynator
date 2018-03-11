@@ -59,21 +59,5 @@ namespace Roslynator.CSharp.Refactorings
                 DiagnosticDescriptors.AddEmptyLineAfterLastStatementInDoStatement,
                 Location.Create(doStatement.SyntaxTree, trivia.Span));
         }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            StatementSyntax statement,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            SyntaxTriviaList trailingTrivia = statement.GetTrailingTrivia();
-
-            int index = trailingTrivia.IndexOf(SyntaxKind.EndOfLineTrivia);
-
-            SyntaxTriviaList newTrailingTrivia = trailingTrivia.Insert(index, CSharpFactory.NewLine());
-
-            StatementSyntax newStatement = statement.WithTrailingTrivia(newTrailingTrivia);
-
-            return document.ReplaceNodeAsync(statement, newStatement, cancellationToken);
-        }
     }
 }

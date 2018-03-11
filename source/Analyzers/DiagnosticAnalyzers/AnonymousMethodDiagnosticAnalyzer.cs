@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var anonymousMethod = (AnonymousMethodExpressionSyntax)context.Node;
 
-            if (UseLambdaExpressionInsteadOfAnonymousMethodRefactoring.CanRefactor(anonymousMethod))
+            if (UseLambdaExpressionInsteadOfAnonymousMethodAnalysis.CanRefactor(anonymousMethod))
             {
                 context.ReportDiagnostic(
                     DiagnosticDescriptors.UseLambdaExpressionInsteadOfAnonymousMethod,

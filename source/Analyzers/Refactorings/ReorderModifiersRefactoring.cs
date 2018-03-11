@@ -1,12 +1,8 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -124,23 +120,6 @@ namespace Roslynator.CSharp.Refactorings
             context.ReportDiagnostic(
                 DiagnosticDescriptors.ReorderModifiers,
                 Location.Create(context.Node.SyntaxTree, modifiers.Span));
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            MemberDeclarationSyntax declaration,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ModifierListInfo info = SyntaxInfo.ModifierListInfo(declaration);
-
-            SyntaxTokenList modifiers = info.Modifiers;
-
-            SyntaxToken[] newModifiers = modifiers.OrderBy(f => f, ModifierComparer.Instance).ToArray();
-
-            for (int i = 0; i < modifiers.Count; i++)
-                newModifiers[i] = newModifiers[i].WithTriviaFrom(modifiers[i]);
-
-            return document.ReplaceModifiersAsync(info, newModifiers, cancellationToken);
         }
     }
 }

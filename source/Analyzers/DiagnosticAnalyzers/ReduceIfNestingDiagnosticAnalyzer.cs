@@ -38,7 +38,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var ifStatement = (IfStatementSyntax)context.Node;
 
-            ReduceIfNestingAnalysisResult analysis = ReduceIfNestingRefactoring.Analyze(
+            ReduceIfNestingAnalysisResult analysis = ReduceIfNestingAnalysis.Analyze(
                 ifStatement,
                 context.SemanticModel,
                 options: ReduceIfNestingOptions.None,
