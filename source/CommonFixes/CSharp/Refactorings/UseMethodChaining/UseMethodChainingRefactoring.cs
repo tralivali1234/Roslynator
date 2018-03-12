@@ -13,7 +13,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 {
     internal abstract class UseMethodChainingRefactoring
     {
-        //TODO: x
+        //TODO: UseMethodChainingAnalysis
         public UseMethodChainingAnalysis Analysis { get; }
 
         protected abstract InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement);

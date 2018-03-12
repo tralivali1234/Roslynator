@@ -9,8 +9,9 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Refactorings;
 
-namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
+namespace Roslynator.CSharp.CodeFixes
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MarkLocalVariableAsConstCodeFixProvider))]
     [Shared]

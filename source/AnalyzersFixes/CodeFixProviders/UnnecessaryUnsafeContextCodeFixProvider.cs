@@ -11,8 +11,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.CodeFixes;
+using Roslynator.CSharp.Refactorings;
 
-namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
+namespace Roslynator.CSharp.CodeFixes
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UnnecessaryUnsafeContextCodeFixProvider))]
     [Shared]

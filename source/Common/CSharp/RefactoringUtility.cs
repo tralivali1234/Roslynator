@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.CodeAnalysis;
@@ -13,8 +14,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp
 {
-    //TODO: RefactoringUtility2
-    internal static class RefactoringUtility2
+    internal static class RefactoringUtility
     {
         public static InvocationExpressionSyntax ChangeInvokedMethodName(InvocationExpressionSyntax invocation, string newName)
         {
@@ -166,6 +166,25 @@ namespace Roslynator.CSharp
                         throw new ArgumentException("", nameof(content));
                     }
             }
+        }
+
+        public static ExpressionSyntax RemoveInvocation(InvocationExpressionSyntax invocation)
+        {
+            var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
+
+            ArgumentListSyntax argumentList = invocation.ArgumentList;
+
+            SyntaxToken closeParen = argumentList.CloseParenToken;
+
+            return memberAccess.Expression
+                .AppendToTrailingTrivia(
+                    memberAccess.OperatorToken.GetAllTrivia()
+                        .Concat(memberAccess.Name.GetLeadingAndTrailingTrivia())
+                        .Concat(argumentList.OpenParenToken.GetAllTrivia())
+                        .Concat(closeParen.LeadingTrivia)
+                        .ToSyntaxTriviaList()
+                        .EmptyIfWhitespace()
+                        .AddRange(closeParen.TrailingTrivia));
         }
     }
 }

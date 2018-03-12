@@ -74,7 +74,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 semanticModel,
                                 context.CancellationToken).First();
 
-                            //TODO: x
+                            //TODO: IfAnalysis
                             //CodeAction codeAction = CodeAction.Create(
                             //    refactoring.Title,
                             //    cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken),

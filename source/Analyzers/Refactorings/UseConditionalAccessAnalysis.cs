@@ -71,7 +71,7 @@ namespace Roslynator.CSharp.Refactorings
             if (!ValidateRightExpression(right, context.SemanticModel, context.CancellationToken))
                 return;
 
-            if (RefactoringUtility2.ContainsOutArgumentWithLocal(right, context.SemanticModel, context.CancellationToken))
+            if (RefactoringUtility.ContainsOutArgumentWithLocal(right, context.SemanticModel, context.CancellationToken))
                 return;
 
             ExpressionSyntax expression2 = FindExpressionThatCanBeConditionallyAccessed(expression, right);

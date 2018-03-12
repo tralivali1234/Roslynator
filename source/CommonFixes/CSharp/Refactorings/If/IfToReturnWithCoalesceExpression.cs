@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
             ITypeSymbol targetType = GetTargetType(position, semanticModel, cancellationToken);
 
-            BinaryExpressionSyntax coalesceExpression = RefactoringUtility.CreateCoalesceExpression(
+            BinaryExpressionSyntax coalesceExpression = CodeFixesUtility.CreateCoalesceExpression(
                 targetType,
                 Left.WithoutTrivia(),
                 Right.WithoutTrivia(),

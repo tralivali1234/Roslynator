@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp;
 using Roslynator.CSharp.Refactorings;
-using Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod;
 using Roslynator.CSharp.Refactorings.UseMethodChaining;
 using Roslynator.CSharp.Syntax;
 

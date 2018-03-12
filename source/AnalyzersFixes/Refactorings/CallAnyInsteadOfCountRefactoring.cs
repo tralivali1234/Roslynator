@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.RefactoringUtility;
 
-namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class CallAnyInsteadOfCountRefactoring
     {

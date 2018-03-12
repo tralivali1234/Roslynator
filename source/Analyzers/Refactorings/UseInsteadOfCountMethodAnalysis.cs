@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseInsteadOfCountMethodAnalysis
     {

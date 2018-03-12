@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Roslynator.CSharp.Refactorings.FormatSummary
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatSummaryOnSingleLineRefactoring
     {

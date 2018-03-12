@@ -122,7 +122,8 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var expressionStatement = (ExpressionStatementSyntax)statement;
 
-                            //TODO: x
+                            //TODO: UseMethodChainingAnalysis
+                            //Func<CancellationToken, Task<Document>> createChangedDocument;
                             Func<CancellationToken, Task<Document>> createChangedDocument = null;
                             if (expressionStatement.Expression.IsKind(SyntaxKind.InvocationExpression))
                             {

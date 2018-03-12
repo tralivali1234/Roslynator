@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Analyzers.UnusedParameter
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class UnusedParameterRefactoring
     {

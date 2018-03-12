@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using System.Collections.Generic;
 
-namespace Roslynator.CSharp.Refactorings.UseInsteadOfCountMethod
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseCountOrLengthPropertyInsteadOfCountMethodRefactoring
     {
