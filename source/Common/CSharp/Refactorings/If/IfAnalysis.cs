@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp.Syntax;
+using static Roslynator.CSharp.CSharpFactory;
 using static Roslynator.CSharp.CSharpFacts;
 
 namespace Roslynator.CSharp.Refactorings.If
@@ -22,16 +23,19 @@ namespace Roslynator.CSharp.Refactorings.If
             get { return ImmutableArray<IfAnalysis>.Empty; }
         }
 
-        protected IfAnalysis(IfStatementSyntax ifStatement)
+        protected IfAnalysis(IfStatementSyntax ifStatement, SemanticModel semanticModel)
         {
             IfStatement = ifStatement;
+            SemanticModel = semanticModel;
         }
 
-        public abstract IfRefactoringKind Kind { get; }
+        public abstract IfAnalysisKind Kind { get; }
 
         public abstract string Title { get; }
 
         public IfStatementSyntax IfStatement { get; }
+
+        public SemanticModel SemanticModel { get; }
 
         public static ImmutableArray<IfAnalysis> Analyze(
             IfStatementSyntax ifStatement,
@@ -164,7 +168,7 @@ namespace Roslynator.CSharp.Refactorings.If
                             return Empty;
                         }
 
-                        return new IfToReturnWithExpressionAnalysis(ifStatement, condition, isYield, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
+                        return new IfToReturnWithExpressionAnalysis(ifStatement, condition, isYield, negate: kind1 == SyntaxKind.FalseLiteralExpression, semanticModel: semanticModel).ToImmutableArray();
                     }
 
                     return Empty;
@@ -196,7 +200,7 @@ namespace Roslynator.CSharp.Refactorings.If
                 && semanticModel.GetTypeSymbol(expression1, cancellationToken)?.SpecialType == SpecialType.System_Boolean
                 && semanticModel.GetTypeSymbol(expression2, cancellationToken)?.SpecialType == SpecialType.System_Boolean)
             {
-                ifToReturnWithBooleanExpression = IfToReturnWithBooleanExpressionAnalysis.Create(ifStatement, expression1, expression2, isYield);
+                ifToReturnWithBooleanExpression = IfToReturnWithBooleanExpressionAnalysis.Create(ifStatement, expression1, expression2, semanticModel, isYield);
             }
 
             IfToReturnWithConditionalExpressionAnalysis ifToReturnWithConditionalExpression = null;
@@ -204,7 +208,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (options.UseConditionalExpression
                 && (!IsBooleanLiteralExpression(expression1.Kind()) || !IsBooleanLiteralExpression(expression2.Kind())))
             {
-                ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpressionAnalysis.Create(ifStatement, expression1, expression2, isYield);
+                ifToReturnWithConditionalExpression = IfToReturnWithConditionalExpressionAnalysis.Create(ifStatement, expression1, expression2, semanticModel, isYield);
             }
 
             return ToImmutableArray(ifToReturnWithBooleanExpression, ifToReturnWithConditionalExpression);
@@ -221,39 +225,33 @@ namespace Roslynator.CSharp.Refactorings.If
             CancellationToken cancellationToken)
         {
             if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
-                && CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
+                && AreEquivalent(nullCheck.Expression, expression1))
             {
-                return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: false);
+                return CreateIfToReturnStatement(isNullable: false);
             }
 
             expression1 = GetNullableOfTValueProperty(expression1, semanticModel, cancellationToken);
 
-            if (CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
-                return CreateIfToReturnStatement(ifStatement, expression1, expression2, options, isYield, isNullable: true);
+            if (AreEquivalent(nullCheck.Expression, expression1))
+                return CreateIfToReturnStatement(isNullable: true);
 
             return null;
-        }
 
-        private static IfAnalysis CreateIfToReturnStatement(
-            IfStatementSyntax ifStatement,
-            ExpressionSyntax expression1,
-            ExpressionSyntax expression2,
-            IfAnalysisOptions options,
-            bool isYield,
-            bool isNullable)
-        {
-            if (!isNullable
-                && expression2.Kind() == SyntaxKind.NullLiteralExpression)
+            IfAnalysis CreateIfToReturnStatement(bool isNullable)
             {
-                if (options.UseExpression)
-                    return new IfToReturnWithExpressionAnalysis(ifStatement, expression1, isYield);
-            }
-            else if (options.UseCoalesceExpression)
-            {
-                return new IfToReturnWithCoalesceExpressionAnalysis(ifStatement, expression1, expression2, isYield);
-            }
+                if (!isNullable
+                    && expression2.Kind() == SyntaxKind.NullLiteralExpression)
+                {
+                    if (options.UseExpression)
+                        return new IfToReturnWithExpressionAnalysis(ifStatement, expression1, isYield, false, semanticModel);
+                }
+                else if (options.UseCoalesceExpression)
+                {
+                    return new IfToReturnWithCoalesceExpressionAnalysis(ifStatement, expression1, expression2, semanticModel, isYield);
+                }
 
-            return null;
+                return null;
+            }
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(
@@ -280,7 +278,7 @@ namespace Roslynator.CSharp.Refactorings.If
             ExpressionSyntax right1 = assignment1.Right;
             ExpressionSyntax right2 = assignment2.Right;
 
-            if (!CSharpFactory.AreEquivalent(left1, left2))
+            if (!AreEquivalent(left1, left2))
                 return Empty;
 
             if (options.UseCoalesceExpression
@@ -294,7 +292,7 @@ namespace Roslynator.CSharp.Refactorings.If
                     && kind1 != kind2)
                 {
                     if (options.UseExpression)
-                        return new IfElseToAssignmentWithConditionAnalysis(ifStatement, left1, condition, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
+                        return new IfElseToAssignmentWithConditionAnalysis(ifStatement, left1, condition, semanticModel, negate: kind1 == SyntaxKind.FalseLiteralExpression).ToImmutableArray();
 
                     return Empty;
                 }
@@ -319,7 +317,7 @@ namespace Roslynator.CSharp.Refactorings.If
             }
 
             if (options.UseConditionalExpression)
-                return new IfElseToAssignmentWithConditionalExpressionAnalysis(ifStatement, left1, right1, right2).ToImmutableArray();
+                return new IfElseToAssignmentWithConditionalExpressionAnalysis(ifStatement, left1, right1, right2, semanticModel).ToImmutableArray();
 
             return Empty;
         }
@@ -335,39 +333,33 @@ namespace Roslynator.CSharp.Refactorings.If
             CancellationToken cancellationToken)
         {
             if ((nullCheck.Style & NullCheckStyles.ComparisonToNull) != 0
-                && CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
+                && AreEquivalent(nullCheck.Expression, expression1))
             {
-                return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: false);
+                return CreateIfToAssignment(isNullable: false);
             }
 
             expression1 = GetNullableOfTValueProperty(expression1, semanticModel, cancellationToken);
 
-            if (CSharpFactory.AreEquivalent(nullCheck.Expression, expression1))
-                return CreateIfToAssignment(ifStatement, left, expression1, expression2, options, isNullable: true);
+            if (AreEquivalent(nullCheck.Expression, expression1))
+                return CreateIfToAssignment(isNullable: true);
 
             return null;
-        }
 
-        private static IfAnalysis CreateIfToAssignment(
-            IfStatementSyntax ifStatement,
-            ExpressionSyntax left,
-            ExpressionSyntax expression1,
-            ExpressionSyntax expression2,
-            IfAnalysisOptions options,
-            bool isNullable)
-        {
-            if (!isNullable
-                && expression2.Kind() == SyntaxKind.NullLiteralExpression)
+            IfAnalysis CreateIfToAssignment(bool isNullable)
             {
-                if (options.UseExpression)
-                    return new IfElseToAssignmentWithExpressionAnalysis(ifStatement, expression1.FirstAncestor<ExpressionStatementSyntax>());
-            }
-            else if (options.UseCoalesceExpression)
-            {
-                return new IfElseToAssignmentWithCoalesceExpressionAnalysis(ifStatement, left, expression1, expression2);
-            }
+                if (!isNullable
+                    && expression2.Kind() == SyntaxKind.NullLiteralExpression)
+                {
+                    if (options.UseExpression)
+                        return new IfElseToAssignmentWithExpressionAnalysis(ifStatement, expression1.FirstAncestor<ExpressionStatementSyntax>(), semanticModel);
+                }
+                else if (options.UseCoalesceExpression)
+                {
+                    return new IfElseToAssignmentWithCoalesceExpressionAnalysis(ifStatement, left, expression1, expression2, semanticModel);
+                }
 
-            return null;
+                return null;
+            }
         }
 
         public static ImmutableArray<IfAnalysis> Analyze(
@@ -416,12 +408,12 @@ namespace Roslynator.CSharp.Refactorings.If
                 if (kind1 == SyntaxKind.LocalDeclarationStatement)
                 {
                     if (kind2 == SyntaxKind.IfStatement)
-                        return Analyze((LocalDeclarationStatementSyntax)statement1, (IfStatementSyntax)statement2, options);
+                        return Analyze((LocalDeclarationStatementSyntax)statement1, (IfStatementSyntax)statement2, options, semanticModel);
                 }
                 else if (kind1 == SyntaxKind.ExpressionStatement
                     && kind2 == SyntaxKind.IfStatement)
                 {
-                    return Analyze((ExpressionStatementSyntax)statement1, (IfStatementSyntax)statement2, options);
+                    return Analyze((ExpressionStatementSyntax)statement1, (IfStatementSyntax)statement2, options, semanticModel);
                 }
             }
 
@@ -431,7 +423,8 @@ namespace Roslynator.CSharp.Refactorings.If
         private static ImmutableArray<IfAnalysis> Analyze(
             LocalDeclarationStatementSyntax localDeclarationStatement,
             IfStatementSyntax ifStatement,
-            IfAnalysisOptions options)
+            IfAnalysisOptions options,
+            SemanticModel semanticModel)
         {
             VariableDeclaratorSyntax declarator = localDeclarationStatement
                 .Declaration?
@@ -474,13 +467,14 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(localDeclarationStatement.SpanStart, ifStatement.Span.End)))
                 return Empty;
 
-            return new LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
+            return new LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right, semanticModel).ToImmutableArray();
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(
             ExpressionStatementSyntax expressionStatement,
             IfStatementSyntax ifStatement,
-            IfAnalysisOptions options)
+            IfAnalysisOptions options,
+            SemanticModel semanticModel)
         {
             SimpleAssignmentStatementInfo assignment = SyntaxInfo.SimpleAssignmentStatementInfo(expressionStatement);
 
@@ -502,13 +496,13 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!assignment2.Success)
                 return Empty;
 
-            if (!CSharpFactory.AreEquivalent(assignment1.Left, assignment2.Left, assignment.Left))
+            if (!AreEquivalent(assignment1.Left, assignment2.Left, assignment.Left))
                 return Empty;
 
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(expressionStatement.SpanStart, ifStatement.Span.End)))
                 return Empty;
 
-            return new AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis(expressionStatement, assignment.Right, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
+            return new AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis(expressionStatement, assignment.Right, ifStatement, assignment1.Right, assignment2.Right, semanticModel).ToImmutableArray();
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(
@@ -568,7 +562,10 @@ namespace Roslynator.CSharp.Refactorings.If
             return Empty;
         }
 
-        private static ExpressionSyntax GetNullableOfTValueProperty(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+        private static ExpressionSyntax GetNullableOfTValueProperty(
+            ExpressionSyntax expression,
+            SemanticModel semanticModel,
+            CancellationToken cancellationToken)
         {
             if (expression.Kind() != SyntaxKind.SimpleMemberAccessExpression)
                 return null;

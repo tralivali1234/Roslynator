@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
@@ -10,16 +11,17 @@ namespace Roslynator.CSharp.Refactorings.If
             IfStatementSyntax ifStatement,
             ExpressionSyntax left,
             ExpressionSyntax right1,
-            ExpressionSyntax right2) : base(ifStatement)
+            ExpressionSyntax right2,
+            SemanticModel semanticModel) : base(ifStatement, semanticModel)
         {
             Left = left;
             Right1 = right1;
             Right2 = right2;
         }
 
-        public override IfRefactoringKind Kind
+        public override IfAnalysisKind Kind
         {
-            get { return IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression; }
+            get { return IfAnalysisKind.IfElseToAssignmentWithCoalesceExpression; }
         }
 
         public override string Title

@@ -49,35 +49,35 @@ namespace Roslynator.CSharp.Analyzers
 
             foreach (IfAnalysis refactoring in IfAnalysis.Analyze(ifStatement, AnalysisOptions, context.SemanticModel, context.CancellationToken))
             {
-                Debug.Assert(refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression
-                    || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithExpression
-                    || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCondition
-                    || refactoring.Kind == IfRefactoringKind.IfElseToReturnWithCoalesceExpression
-                    || refactoring.Kind == IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression
-                    || refactoring.Kind == IfRefactoringKind.IfReturnToReturnWithCoalesceExpression
-                    || refactoring.Kind == IfRefactoringKind.IfElseToReturnWithExpression
-                    || refactoring.Kind == IfRefactoringKind.IfElseToYieldReturnWithExpression
-                    || refactoring.Kind == IfRefactoringKind.IfReturnToReturnWithExpression, refactoring.Kind.ToString());
+                Debug.Assert(refactoring.Kind == IfAnalysisKind.IfElseToAssignmentWithCoalesceExpression
+                    || refactoring.Kind == IfAnalysisKind.IfElseToAssignmentWithExpression
+                    || refactoring.Kind == IfAnalysisKind.IfElseToAssignmentWithCondition
+                    || refactoring.Kind == IfAnalysisKind.IfElseToReturnWithCoalesceExpression
+                    || refactoring.Kind == IfAnalysisKind.IfElseToYieldReturnWithCoalesceExpression
+                    || refactoring.Kind == IfAnalysisKind.IfReturnToReturnWithCoalesceExpression
+                    || refactoring.Kind == IfAnalysisKind.IfElseToReturnWithExpression
+                    || refactoring.Kind == IfAnalysisKind.IfElseToYieldReturnWithExpression
+                    || refactoring.Kind == IfAnalysisKind.IfReturnToReturnWithExpression, refactoring.Kind.ToString());
 
                 switch (refactoring.Kind)
                 {
-                    case IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression:
-                    case IfRefactoringKind.IfElseToReturnWithCoalesceExpression:
-                    case IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression:
-                    case IfRefactoringKind.IfReturnToReturnWithCoalesceExpression:
+                    case IfAnalysisKind.IfElseToAssignmentWithCoalesceExpression:
+                    case IfAnalysisKind.IfElseToReturnWithCoalesceExpression:
+                    case IfAnalysisKind.IfElseToYieldReturnWithCoalesceExpression:
+                    case IfAnalysisKind.IfReturnToReturnWithCoalesceExpression:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.UseCoalesceExpressionInsteadOfIf, ifStatement);
                             break;
                         }
-                    case IfRefactoringKind.IfElseToReturnWithExpression:
-                    case IfRefactoringKind.IfElseToYieldReturnWithExpression:
-                    case IfRefactoringKind.IfReturnToReturnWithExpression:
+                    case IfAnalysisKind.IfElseToReturnWithExpression:
+                    case IfAnalysisKind.IfElseToYieldReturnWithExpression:
+                    case IfAnalysisKind.IfReturnToReturnWithExpression:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.ReplaceIfStatementWithReturnStatement, ifStatement);
                             break;
                         }
-                    case IfRefactoringKind.IfElseToAssignmentWithExpression:
-                    case IfRefactoringKind.IfElseToAssignmentWithCondition:
+                    case IfAnalysisKind.IfElseToAssignmentWithExpression:
+                    case IfAnalysisKind.IfElseToAssignmentWithCondition:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.ReplaceIfStatementWithAssignment, ifStatement);
                             break;

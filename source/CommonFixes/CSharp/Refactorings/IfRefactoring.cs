@@ -14,23 +14,21 @@ using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    internal abstract class IfRefactoring
+    internal static class IfRefactoring
     {
-        public abstract Task<Document> RefactorAsync(Document document, CancellationToken cancellationToken = default(CancellationToken));
-
         public static Task<Document> RefactorAsync(Document document, IfAnalysis ifAnalysis, CancellationToken cancellationToken = default(CancellationToken))
         {
             switch (ifAnalysis.Kind)
             {
-                case IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression:
+                case IfAnalysisKind.IfElseToAssignmentWithCoalesceExpression:
                     {
                         return IfElseToAssignmentWithCoalesceExpressionAsync(document, (IfElseToAssignmentWithCoalesceExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToAssignmentWithConditionalExpression:
+                case IfAnalysisKind.IfElseToAssignmentWithConditionalExpression:
                     {
                         return IfElseToAssignmentWithConditionalExpressionAsync(document, (IfElseToAssignmentWithConditionalExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.AssignmentAndIfElseToAssignmentWithConditionalExpression:
+                case IfAnalysisKind.AssignmentAndIfElseToAssignmentWithConditionalExpression:
                     {
                         var analysis = (AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis)ifAnalysis;
 
@@ -40,7 +38,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         return ToAssignmentWithConditionalExpressionAsync(document, analysis, newStatement, cancellationToken);
                     }
-                case IfRefactoringKind.LocalDeclarationAndIfElseAssignmentWithConditionalExpression:
+                case IfAnalysisKind.LocalDeclarationAndIfElseAssignmentWithConditionalExpression:
                     {
                         var analysis = (LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis)ifAnalysis;
 
@@ -58,47 +56,47 @@ namespace Roslynator.CSharp.Refactorings
 
                         return ToAssignmentWithConditionalExpressionAsync(document, analysis, newStatement, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToAssignmentWithExpression:
+                case IfAnalysisKind.IfElseToAssignmentWithExpression:
                     {
                         return IfElseToAssignmentWithExpressionAsync(document, (IfElseToAssignmentWithExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToAssignmentWithCondition:
+                case IfAnalysisKind.IfElseToAssignmentWithCondition:
                     {
                         return IfElseToAssignmentWithConditionAsync(document, (IfElseToAssignmentWithConditionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToReturnWithCoalesceExpression:
-                case IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression:
-                case IfRefactoringKind.IfReturnToReturnWithCoalesceExpression:
+                case IfAnalysisKind.IfElseToReturnWithCoalesceExpression:
+                case IfAnalysisKind.IfElseToYieldReturnWithCoalesceExpression:
+                case IfAnalysisKind.IfReturnToReturnWithCoalesceExpression:
                     {
                         return IfToReturnWithCoalesceExpressionAsync(document, (IfToReturnWithCoalesceExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToReturnWithConditionalExpression:
+                case IfAnalysisKind.IfElseToReturnWithConditionalExpression:
                     {
                         return IfElseToReturnWithConditionalExpressionAsync(document, (IfElseToReturnWithConditionalExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToReturnWithBooleanExpression:
+                case IfAnalysisKind.IfElseToReturnWithBooleanExpression:
                     {
                         return IfElseToReturnWithBooleanExpressionAsync(document, (IfElseToReturnWithBooleanExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToReturnWithExpression:
-                case IfRefactoringKind.IfElseToYieldReturnWithExpression:
-                case IfRefactoringKind.IfReturnToReturnWithExpression:
+                case IfAnalysisKind.IfElseToReturnWithExpression:
+                case IfAnalysisKind.IfElseToYieldReturnWithExpression:
+                case IfAnalysisKind.IfReturnToReturnWithExpression:
                     {
                         return IfToReturnWithExpressionAsync(document, (IfToReturnWithExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToYieldReturnWithConditionalExpression:
+                case IfAnalysisKind.IfElseToYieldReturnWithConditionalExpression:
                     {
                         return IfElseToYieldReturnWithConditionalExpressionAsync(document, (IfElseToYieldReturnWithConditionalExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfElseToYieldReturnWithBooleanExpression:
+                case IfAnalysisKind.IfElseToYieldReturnWithBooleanExpression:
                     {
                         return IfElseToYieldReturnWithBooleanExpressionAsync(document, (IfElseToYieldReturnWithBooleanExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfReturnToReturnWithConditionalExpression:
+                case IfAnalysisKind.IfReturnToReturnWithConditionalExpression:
                     {
                         return IfReturnToReturnWithConditionalExpressionAsync(document, (IfReturnToReturnWithConditionalExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
-                case IfRefactoringKind.IfReturnToReturnWithBooleanExpression:
+                case IfAnalysisKind.IfReturnToReturnWithBooleanExpression:
                     {
                         return IfReturnToReturnWithBooleanExpressionAsync(document, (IfReturnToReturnWithBooleanExpressionAnalysis)ifAnalysis, cancellationToken);
                     }
@@ -109,42 +107,44 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static async Task<Document> IfElseToAssignmentWithCoalesceExpressionAsync(
+        private static Task<Document> IfElseToAssignmentWithCoalesceExpressionAsync(
             Document document,
             IfElseToAssignmentWithCoalesceExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
+            IfStatementSyntax ifStatement = analysis.IfStatement;
 
             BinaryExpressionSyntax coalesceExpression = CodeFixesUtility.CreateCoalesceExpression(
-                semanticModel.GetTypeSymbol(analysis.Left, cancellationToken),
+                analysis.SemanticModel.GetTypeSymbol(analysis.Left, cancellationToken),
                 analysis.Right1.WithoutTrivia(),
                 analysis.Right2.WithoutTrivia(),
-                analysis.IfStatement.SpanStart,
-                semanticModel);
+                ifStatement.SpanStart,
+                analysis.SemanticModel);
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(analysis.Left.WithoutTrivia(), coalesceExpression)
-                .WithTriviaFrom(analysis.IfStatement)
+                .WithTriviaFrom(ifStatement)
                 .WithFormatterAnnotation();
 
-            return await document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken).ConfigureAwait(false);
+            return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static Task<Document> IfElseToAssignmentWithConditionalExpressionAsync(
+        private static Task<Document> IfElseToAssignmentWithConditionalExpressionAsync(
             Document document,
             IfElseToAssignmentWithConditionalExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ConditionalExpressionSyntax conditionalExpression = CreateConditionalExpression(analysis.IfStatement.Condition, analysis.WhenTrue, analysis.WhenFalse);
+            IfStatementSyntax ifStatement = analysis.IfStatement;
+
+            ConditionalExpressionSyntax conditionalExpression = CreateConditionalExpression(ifStatement.Condition, analysis.WhenTrue, analysis.WhenFalse);
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(analysis.Left, conditionalExpression)
-                .WithTriviaFrom(analysis.IfStatement)
+                .WithTriviaFrom(ifStatement)
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static Task<Document> ToAssignmentWithConditionalExpressionAsync(
+        private static Task<Document> ToAssignmentWithConditionalExpressionAsync(
             Document document,
             ToAssignmentWithConditionalExpressionAnalysis analysis,
             StatementSyntax newStatement,
@@ -157,13 +157,13 @@ namespace Roslynator.CSharp.Refactorings
             int index = statements.IndexOf(analysis.IfStatement);
 
             SyntaxList<StatementSyntax> newStatements = statements
-            .RemoveAt(index)
-            .ReplaceAt(index - 1, newStatement);
+                .RemoveAt(index)
+                .ReplaceAt(index - 1, newStatement);
 
             return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
         }
 
-        public static Task<Document> IfElseToAssignmentWithExpressionAsync(
+        private static Task<Document> IfElseToAssignmentWithExpressionAsync(
             Document document,
             IfElseToAssignmentWithExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -175,7 +175,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken);
         }
 
-        public static async Task<Document> IfElseToAssignmentWithConditionAsync(
+        private static Task<Document> IfElseToAssignmentWithConditionAsync(
             Document document,
             IfElseToAssignmentWithConditionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -183,23 +183,20 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax right = analysis.Right.WithoutTrivia();
 
             if (analysis.Negate)
-            {
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-                right = Negation.LogicallyNegate(right, semanticModel, cancellationToken);
-            }
+                right = Negation.LogicallyNegate(right, analysis.SemanticModel, cancellationToken);
 
             ExpressionStatementSyntax newNode = SimpleAssignmentStatement(analysis.Left.WithoutTrivia(), right)
                 .WithTriviaFrom(analysis.IfStatement)
                 .WithFormatterAnnotation();
 
-            return await document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken).ConfigureAwait(false);
+            return document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken);
         }
 
-        public static async Task<Document> IfToReturnWithCoalesceExpressionAsync(Document document, IfToReturnWithCoalesceExpressionAnalysis analysis, CancellationToken cancellationToken = default(CancellationToken))
+        private static Task<Document> IfToReturnWithCoalesceExpressionAsync(
+            Document document,
+            IfToReturnWithCoalesceExpressionAnalysis analysis,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
             IfStatementSyntax ifStatement = analysis.IfStatement;
             int position = ifStatement.SpanStart;
 
@@ -210,7 +207,7 @@ namespace Roslynator.CSharp.Refactorings
                 analysis.Left.WithoutTrivia(),
                 analysis.Right.WithoutTrivia(),
                 position,
-                semanticModel);
+                analysis.SemanticModel);
 
             StatementSyntax statement;
             if (analysis.IsYield)
@@ -239,7 +236,7 @@ namespace Roslynator.CSharp.Refactorings
                     .RemoveAt(index)
                     .ReplaceAt(index, newNode);
 
-                return await document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken).ConfigureAwait(false);
+                return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
             }
             else
             {
@@ -247,12 +244,12 @@ namespace Roslynator.CSharp.Refactorings
                     .WithTriviaFrom(ifStatement)
                     .WithFormatterAnnotation();
 
-                return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
+                return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
             }
 
             ITypeSymbol GetTargetType()
             {
-                IMethodSymbol methodSymbol = semanticModel.GetEnclosingSymbol<IMethodSymbol>(position, cancellationToken);
+                IMethodSymbol methodSymbol = analysis.SemanticModel.GetEnclosingSymbol<IMethodSymbol>(position, cancellationToken);
 
                 Debug.Assert(methodSymbol != null, "");
 
@@ -265,7 +262,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (methodSymbol.IsAsync)
                         {
                             if (returnType is INamedTypeSymbol namedTypeSymbol
-                                && namedTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)))
+                                && namedTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(analysis.SemanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)))
                             {
                                 return namedTypeSymbol.TypeArguments[0];
                             }
@@ -276,7 +273,7 @@ namespace Roslynator.CSharp.Refactorings
                         }
                         else if (returnType.IsIEnumerable())
                         {
-                            return semanticModel.Compilation.ObjectType;
+                            return analysis.SemanticModel.Compilation.ObjectType;
                         }
                         else if (returnType.IsConstructedFromIEnumerableOfT())
                         {
@@ -289,39 +286,39 @@ namespace Roslynator.CSharp.Refactorings
             }
         }
 
-        public static Task<Document> IfElseToReturnWithConditionalExpressionAsync(
+        private static Task<Document> IfElseToReturnWithConditionalExpressionAsync(
             Document document,
             IfElseToReturnWithConditionalExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            ConditionalExpressionSyntax conditionalExpression = CreateConditionalExpression(analysis.IfStatement.Condition, analysis.Expression1, analysis.Expression2);
+            IfStatementSyntax ifStatement = analysis.IfStatement;
+
+            ConditionalExpressionSyntax conditionalExpression = CreateConditionalExpression(ifStatement.Condition, analysis.Expression1, analysis.Expression2);
 
             StatementSyntax newNode = ReturnStatement(conditionalExpression)
-                .WithTriviaFrom(analysis.IfStatement)
+                .WithTriviaFrom(ifStatement)
                 .WithFormatterAnnotation();
 
-            return document.ReplaceNodeAsync(analysis.IfStatement, newNode, cancellationToken);
+            return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static async Task<Document> IfElseToReturnWithBooleanExpressionAsync(
+        private static Task<Document> IfElseToReturnWithBooleanExpressionAsync(
             Document document,
             IfToReturnWithBooleanExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             IfStatementSyntax ifStatement = analysis.IfStatement;
 
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            ExpressionSyntax expression = GetBooleanExpression(ifStatement.Condition, analysis.Expression1, analysis.Expression2, semanticModel, cancellationToken);
+            ExpressionSyntax expression = GetBooleanExpression(ifStatement.Condition, analysis.Expression1, analysis.Expression2, analysis.SemanticModel, cancellationToken);
 
             StatementSyntax newNode = ReturnStatement(expression)
                 .WithTriviaFrom(ifStatement)
                 .WithFormatterAnnotation();
 
-            return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
+            return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static async Task<Document> IfToReturnWithExpressionAsync(
+        private static Task<Document> IfToReturnWithExpressionAsync(
             Document document,
             IfToReturnWithExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -329,11 +326,7 @@ namespace Roslynator.CSharp.Refactorings
             ExpressionSyntax expression = analysis.Expression;
 
             if (analysis.Negate)
-            {
-                SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-                expression = Negation.LogicallyNegate(expression, semanticModel, cancellationToken);
-            }
+                expression = Negation.LogicallyNegate(expression, analysis.SemanticModel, cancellationToken);
 
             StatementSyntax statement;
             if (analysis.IsYield)
@@ -364,7 +357,7 @@ namespace Roslynator.CSharp.Refactorings
                     .RemoveAt(index)
                     .ReplaceAt(index, newNode);
 
-                return await document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken).ConfigureAwait(false);
+                return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
             }
             else
             {
@@ -372,11 +365,11 @@ namespace Roslynator.CSharp.Refactorings
                     .WithTriviaFrom(ifStatement)
                     .WithFormatterAnnotation();
 
-                return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
+                return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
             }
         }
 
-        public static Task<Document> IfElseToYieldReturnWithConditionalExpressionAsync(
+        private static Task<Document> IfElseToYieldReturnWithConditionalExpressionAsync(
             Document document,
             IfElseToYieldReturnWithConditionalExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -391,25 +384,23 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static async Task<Document> IfElseToYieldReturnWithBooleanExpressionAsync(
+        private static Task<Document> IfElseToYieldReturnWithBooleanExpressionAsync(
             Document document,
             IfToReturnWithBooleanExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             IfStatementSyntax ifStatement = analysis.IfStatement;
 
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
-            ExpressionSyntax expression = GetBooleanExpression(ifStatement.Condition, analysis.Expression1, analysis.Expression2, semanticModel, cancellationToken);
+            ExpressionSyntax expression = GetBooleanExpression(ifStatement.Condition, analysis.Expression1, analysis.Expression2, analysis.SemanticModel, cancellationToken);
 
             StatementSyntax newNode = YieldReturnStatement(expression)
                 .WithTriviaFrom(ifStatement)
                 .WithFormatterAnnotation();
 
-            return await document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken).ConfigureAwait(false);
+            return document.ReplaceNodeAsync(ifStatement, newNode, cancellationToken);
         }
 
-        public static Task<Document> IfReturnToReturnWithConditionalExpressionAsync(
+        private static Task<Document> IfReturnToReturnWithConditionalExpressionAsync(
             Document document,
             IfReturnToReturnWithConditionalExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -436,7 +427,7 @@ namespace Roslynator.CSharp.Refactorings
             return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
         }
 
-        public static async Task<Document> IfReturnToReturnWithBooleanExpressionAsync(
+        private static Task<Document> IfReturnToReturnWithBooleanExpressionAsync(
             Document document,
             IfReturnToReturnWithBooleanExpressionAnalysis analysis,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -447,13 +438,11 @@ namespace Roslynator.CSharp.Refactorings
 
             int index = statements.IndexOf(analysis.IfStatement);
 
-            SemanticModel semanticModel = await document.GetSemanticModelAsync(cancellationToken).ConfigureAwait(false);
-
             ExpressionSyntax expression = GetBooleanExpression(
                 analysis.IfStatement.Condition,
                 analysis.Expression1,
                 analysis.Expression2,
-                semanticModel,
+                analysis.SemanticModel,
                 cancellationToken);
 
             StatementSyntax newStatement = ReturnStatement(expression)
@@ -465,7 +454,7 @@ namespace Roslynator.CSharp.Refactorings
                 .RemoveAt(index)
                 .ReplaceAt(index, newStatement);
 
-            return await document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken).ConfigureAwait(false);
+            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
         }
 
         private static ConditionalExpressionSyntax CreateConditionalExpression(ExpressionSyntax condition, ExpressionSyntax whenTrue, ExpressionSyntax whenFalse)
@@ -525,20 +514,20 @@ namespace Roslynator.CSharp.Refactorings
                         }
                     }
             }
-        }
 
-        private static BinaryExpressionSyntax LogicalAndExpression(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return CSharpFactory.LogicalAndExpression(
-                left.Parenthesize(),
-                right.Parenthesize());
-        }
+            BinaryExpressionSyntax LogicalAndExpression(ExpressionSyntax left, ExpressionSyntax right)
+            {
+                return CSharpFactory.LogicalAndExpression(
+                    left.Parenthesize(),
+                    right.Parenthesize());
+            }
 
-        private static BinaryExpressionSyntax LogicalOrExpression(ExpressionSyntax left, ExpressionSyntax right)
-        {
-            return CSharpFactory.LogicalOrExpression(
-                left.Parenthesize(),
-                right.Parenthesize());
+            BinaryExpressionSyntax LogicalOrExpression(ExpressionSyntax left, ExpressionSyntax right)
+            {
+                return CSharpFactory.LogicalOrExpression(
+                    left.Parenthesize(),
+                    right.Parenthesize());
+            }
         }
     }
 }

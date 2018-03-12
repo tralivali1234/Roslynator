@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
@@ -11,16 +12,17 @@ namespace Roslynator.CSharp.Refactorings.If
             ExpressionSyntax right,
             IfStatementSyntax ifStatement,
             ExpressionSyntax whenTrue,
-            ExpressionSyntax whenFalse) : base(statement, ifStatement, whenTrue, whenFalse)
+            ExpressionSyntax whenFalse,
+            SemanticModel semanticModel) : base(statement, ifStatement, whenTrue, whenFalse, semanticModel)
         {
             Left = right;
         }
 
         public ExpressionSyntax Left { get; }
 
-        public override IfRefactoringKind Kind
+        public override IfAnalysisKind Kind
         {
-            get { return IfRefactoringKind.AssignmentAndIfElseToAssignmentWithConditionalExpression; }
+            get { return IfAnalysisKind.AssignmentAndIfElseToAssignmentWithConditionalExpression; }
         }
     }
 }
