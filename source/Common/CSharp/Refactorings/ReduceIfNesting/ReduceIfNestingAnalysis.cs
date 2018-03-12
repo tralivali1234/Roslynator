@@ -412,8 +412,7 @@ namespace Roslynator.CSharp.Refactorings.ReduceIfNesting
                 && IsFixable(ifStatement3);
         }
 
-        //TODO: private
-        public static bool IsFixable(IfStatementSyntax ifStatement)
+        internal static bool IsFixable(IfStatementSyntax ifStatement)
         {
             if (ifStatement == null)
                 return false;

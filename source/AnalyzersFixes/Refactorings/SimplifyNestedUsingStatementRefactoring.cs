@@ -10,17 +10,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class SimplifyNestedUsingStatementRefactoring
     {
-        //TODO: ?
-        public static bool ContainsEmbeddableUsingStatement(UsingStatementSyntax usingStatement)
-        {
-            return usingStatement.Statement is BlockSyntax block
-                && block.Statements.SingleOrDefault(shouldThrow: false) is UsingStatementSyntax usingStatement2
-                && block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
-                && block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
-                && usingStatement2.GetLeadingTrivia().IsEmptyOrWhitespace()
-                && usingStatement2.GetTrailingTrivia().IsEmptyOrWhitespace();
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             UsingStatementSyntax usingStatement,
@@ -38,7 +27,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             public override SyntaxNode VisitUsingStatement(UsingStatementSyntax node)
             {
-                if (ContainsEmbeddableUsingStatement(node))
+                if (SimplifyNestedUsingStatementAnalysis.ContainsEmbeddableUsingStatement(node))
                 {
                     var block = (BlockSyntax)node.Statement;
 

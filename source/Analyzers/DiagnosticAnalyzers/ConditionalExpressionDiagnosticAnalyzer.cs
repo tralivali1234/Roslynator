@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(SimplifyNullCheckRefactoring.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
+            context.RegisterSyntaxNodeAction(SimplifyNullCheckAnalysis.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
         }
     }
 }

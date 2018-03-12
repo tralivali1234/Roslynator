@@ -70,9 +70,9 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 context.ReportDiagnostic(DiagnosticDescriptors.UseBitwiseOperationInsteadOfCallingHasFlag, invocation);
             }
 
-            RemoveRedundantStringToCharArrayCallRefactoring.Analyze(context, invocation);
+            RemoveRedundantStringToCharArrayCallAnalysis.Analyze(context, invocation);
 
-            CombineEnumerableWhereAndAnyRefactoring.AnalyzeInvocationExpression(context);
+            CombineEnumerableWhereAndAnyAnalysis.AnalyzeInvocationExpression(context);
 
             if (!invocation.ContainsDiagnostics)
             {
@@ -94,13 +94,13 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 if (invocationInfo.Success)
                 {
                     if (!invocation.SpanContainsDirectives())
-                        UseRegexInstanceInsteadOfStaticMethodRefactoring.Analyze(context, invocationInfo);
+                        UseRegexInstanceInsteadOfStaticMethodAnalysis.Analyze(context, invocationInfo);
 
                     string methodName = invocationInfo.NameText;
 
-                    AvoidNullReferenceExceptionRefactoring.Analyze(context, invocationInfo);
+                    AvoidNullReferenceExceptionAnalysis.Analyze(context, invocationInfo);
 
-                    CallStringConcatInsteadOfStringJoinRefactoring.Analyze(context, invocationInfo);
+                    CallStringConcatInsteadOfStringJoinAnalysis.Analyze(context, invocationInfo);
 
                     int argumentCount = invocationInfo.Arguments.Count;
 
@@ -112,21 +112,21 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                 {
                                     case "Any":
                                         {
-                                            UseCountOrLengthPropertyInsteadOfAnyMethodRefactoring.Analyze(context, invocationInfo);
+                                            UseCountOrLengthPropertyInsteadOfAnyMethodAnalysis.Analyze(context, invocationInfo);
 
-                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
+                                            SimplifyLinqMethodChainAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Cast":
                                         {
-                                            CallOfTypeInsteadOfWhereAndCastRefactoring.Analyze(context, invocationInfo);
-                                            RemoveRedundantCastRefactoring.Analyze(context, invocationInfo);
+                                            CallOfTypeInsteadOfWhereAndCastAnalysis.Analyze(context, invocationInfo);
+                                            RemoveRedundantCastAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Count":
                                         {
-                                            UseInsteadOfCountMethodRefactoring.Analyze(context, invocationInfo);
-                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
+                                            UseInsteadOfCountMethodAnalysis.Analyze(context, invocationInfo);
+                                            SimplifyLinqMethodChainAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "First":
@@ -137,13 +137,13 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                                 context.ReportDiagnostic(DiagnosticDescriptors.UseElementAccessInsteadOfFirst, invocationInfo.Name);
                                             }
 
-                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
+                                            SimplifyLinqMethodChainAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ToString":
                                         {
-                                            RemoveRedundantToStringCallRefactoring.Analyze(context, invocationInfo);
-                                            UseNameOfOperatorRefactoring.Analyze(context, invocationInfo);
+                                            RemoveRedundantToStringCallAnalysis.Analyze(context, invocationInfo);
+                                            UseNameOfOperatorAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ToLower":
@@ -151,7 +151,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "ToUpper":
                                     case "ToUpperInvariant":
                                         {
-                                            UseStringComparisonRefactoring.Analyze(context, invocationInfo);
+                                            UseStringComparisonAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "FirstOrDefault":
@@ -161,7 +161,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "Single":
                                     case "SingleOrDefault":
                                         {
-                                            SimplifyLinqMethodChainRefactoring.Analyze(context, invocationInfo);
+                                            SimplifyLinqMethodChainAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                 }
@@ -175,7 +175,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     case "All":
                                     case "Any":
                                         {
-                                            SimplifyLogicalNegationRefactoring.Analyze(context, invocationInfo);
+                                            SimplifyLogicalNegationAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ElementAt":
@@ -190,12 +190,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                         }
                                     case "FirstOrDefault":
                                         {
-                                            CallFindInsteadOfFirstOrDefaultRefactoring.Analyze(context, invocationInfo);
+                                            CallFindInsteadOfFirstOrDefaultAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Where":
                                         {
-                                            CombineEnumerableWhereMethodChainRefactoring.Analyze(context, invocationInfo);
+                                            CombineEnumerableWhereMethodChainAnalysis.Analyze(context, invocationInfo);
                                             break;
                                         }
                                 }
@@ -211,7 +211,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                         case "AppendFormat":
                         case "Insert":
                             {
-                                OptimizeStringBuilderAppendCallRefactoring.Analyze(context, invocationInfo);
+                                OptimizeStringBuilderAppendCallAnalysis.Analyze(context, invocationInfo);
                                 break;
                             }
                         case "Select":
@@ -219,7 +219,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                 if (argumentCount == 1
                                     || argumentCount == 2)
                                 {
-                                    CallCastInsteadOfSelectRefactoring.Analyze(context, invocationInfo);
+                                    CallCastInsteadOfSelectAnalysis.Analyze(context, invocationInfo);
                                 }
 
                                 break;
@@ -231,7 +231,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                                     || argumentCount == 2
                                     || argumentCount == 3)
                                 {
-                                    CallThenByInsteadOfOrderByRefactoring.Analyze(context, invocationInfo);
+                                    CallThenByInsteadOfOrderByAnalysis.Analyze(context, invocationInfo);
                                 }
 
                                 break;

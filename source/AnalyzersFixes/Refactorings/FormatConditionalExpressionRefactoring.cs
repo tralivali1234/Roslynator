@@ -12,43 +12,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatConditionalExpressionRefactoring
     {
-        //TODO: 
-        private static bool IsFixable(ExpressionSyntax expression, SyntaxToken token)
-        {
-            SyntaxTriviaList expressionTrailing = expression.GetTrailingTrivia();
-
-            if (expressionTrailing.IsEmptyOrWhitespace())
-            {
-                SyntaxTriviaList tokenLeading = token.LeadingTrivia;
-
-                if (tokenLeading.IsEmptyOrWhitespace())
-                {
-                    SyntaxTriviaList tokenTrailing = token.TrailingTrivia;
-
-                    int count = tokenTrailing.Count;
-
-                    if (count == 1)
-                    {
-                        if (tokenTrailing[0].IsEndOfLineTrivia())
-                            return true;
-                    }
-                    else if (count > 1)
-                    {
-                        for (int i = 0; i < count - 1; i++)
-                        {
-                            if (!tokenTrailing[i].IsWhitespaceTrivia())
-                                return false;
-                        }
-
-                        if (tokenTrailing.Last().IsEndOfLineTrivia())
-                            return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ConditionalExpressionSyntax conditionalExpression,
@@ -85,7 +48,7 @@ namespace Roslynator.CSharp.Refactorings
             string newText,
             SyntaxNodeTextBuilder builder)
         {
-            if (IsFixable(expression, token))
+            if (FormatConditionalExpressionAnalysis.IsFixable(expression, token))
             {
                 if (!expression.GetTrailingTrivia().IsEmptyOrWhitespace()
                     || !token.LeadingTrivia.IsEmptyOrWhitespace())

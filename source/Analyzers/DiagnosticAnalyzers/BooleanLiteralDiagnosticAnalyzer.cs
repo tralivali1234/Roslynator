@@ -128,12 +128,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 {
                     case AnalysisResult.Boolean:
                         {
-                            SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: true);
+                            SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: true);
                             break;
                         }
                     case AnalysisResult.LogicalNotWithNullableBoolean:
                         {
-                            SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
+                            SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
                             break;
                         }
                 }
@@ -144,12 +144,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 {
                     case AnalysisResult.Boolean:
                         {
-                            RemoveRedundantBooleanLiteralRefactoring.ReportDiagnostic(context, binaryExpression, left, right);
+                            RemoveRedundantBooleanLiteralAnalysis.ReportDiagnostic(context, binaryExpression, left, right);
                             break;
                         }
                     case AnalysisResult.LogicalNotWithNullableBoolean:
                         {
-                            SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
+                            SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
                             break;
                         }
                 }
@@ -164,12 +164,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     {
                         case AnalysisResult.Boolean:
                             {
-                                SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: true);
+                                SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: true);
                                 break;
                             }
                         case AnalysisResult.LogicalNotWithNullableBoolean:
                             {
-                                SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
+                                SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
                                 break;
                             }
                     }
@@ -180,12 +180,12 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     {
                         case AnalysisResult.Boolean:
                             {
-                                RemoveRedundantBooleanLiteralRefactoring.ReportDiagnostic(context, binaryExpression, left, right);
+                                RemoveRedundantBooleanLiteralAnalysis.ReportDiagnostic(context, binaryExpression, left, right);
                                 break;
                             }
                         case AnalysisResult.LogicalNotWithNullableBoolean:
                             {
-                                SimplifyBooleanComparisonRefactoring.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
+                                SimplifyBooleanComparisonAnalysis.ReportDiagnostic(context, binaryExpression, left, right, fadeOut: false);
                                 break;
                             }
                     }
@@ -203,7 +203,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (left.IsKind(kind)
                 || right.IsKind(kind))
             {
-                RemoveRedundantBooleanLiteralRefactoring.ReportDiagnostic(context, binaryExpression, left, right);
+                RemoveRedundantBooleanLiteralAnalysis.ReportDiagnostic(context, binaryExpression, left, right);
             }
         }
 

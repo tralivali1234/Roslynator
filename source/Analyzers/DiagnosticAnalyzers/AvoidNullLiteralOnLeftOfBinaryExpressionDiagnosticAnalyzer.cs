@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AvoidNullLiteralOnLeftOfBinaryExpressionRefactoring.AnalyzeBinaryExpression,
+            context.RegisterSyntaxNodeAction(AvoidNullLiteralOnLeftOfBinaryExpressionAnalysis.AnalyzeBinaryExpression,
                 SyntaxKind.EqualsExpression,
                 SyntaxKind.NotEqualsExpression);
         }

@@ -41,14 +41,5 @@ namespace Roslynator.CSharp.Refactorings
 
             return document.ReplaceNodeAsync(assignmentExpression, newNode, cancellationToken);
         }
-
-        public static string GetCompoundOperatorText(BinaryExpressionSyntax binaryExpression)
-        {
-            SyntaxKind compoundAssignmentKind = GetCompoundAssignmentKind(binaryExpression.Kind());
-
-            SyntaxKind compoundAssignmentOperatorKind = GetCompoundAssignmentOperatorKind(compoundAssignmentKind);
-
-            return SyntaxFacts.GetText(compoundAssignmentOperatorKind);
-        }
     }
 }

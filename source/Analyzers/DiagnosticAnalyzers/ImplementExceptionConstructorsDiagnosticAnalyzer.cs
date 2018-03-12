@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 if (exceptionSymbol == null)
                     return;
 
-                startContext.RegisterSymbolAction(f => ImplementExceptionConstructorsRefactoring.AnalyzeNamedType(f, exceptionSymbol), SymbolKind.NamedType);
+                startContext.RegisterSymbolAction(f => ImplementExceptionConstructorsAnalysis.AnalyzeNamedType(f, exceptionSymbol), SymbolKind.NamedType);
             });
         }
     }

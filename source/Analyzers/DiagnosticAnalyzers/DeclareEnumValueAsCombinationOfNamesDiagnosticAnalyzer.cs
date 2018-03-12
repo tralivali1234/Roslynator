@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 if (flagsAttribute != null)
                 {
                     startContext.RegisterSymbolAction(
-                        nodeContext => DeclareEnumValueAsCombinationOfNamesRefactoring.AnalyzeNamedType(nodeContext, flagsAttribute),
+                        nodeContext => DeclareEnumValueAsCombinationOfNamesAnalysis.AnalyzeNamedType(nodeContext, flagsAttribute),
                         SymbolKind.NamedType);
                 }
             });

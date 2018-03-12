@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(RemoveRedundantAssignmentRefactoring.AnalyzeSimpleAssignment, SyntaxKind.SimpleAssignmentExpression);
+            context.RegisterSyntaxNodeAction(RemoveRedundantAssignmentAnalysis.AnalyzeSimpleAssignment, SyntaxKind.SimpleAssignmentExpression);
         }
     }
 }

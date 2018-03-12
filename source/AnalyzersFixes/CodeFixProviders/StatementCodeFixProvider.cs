@@ -122,14 +122,15 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var expressionStatement = (ExpressionStatementSyntax)statement;
 
-                            Func<CancellationToken, Task<Document>> createChangedDocument;
+                            //TODO: x
+                            Func<CancellationToken, Task<Document>> createChangedDocument = null;
                             if (expressionStatement.Expression.IsKind(SyntaxKind.InvocationExpression))
                             {
-                                createChangedDocument = cancellationToken => UseMethodChainingRefactoring.WithoutAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
+                                //createChangedDocument = cancellationToken => UseMethodChainingAnalysis.WithoutAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
                             }
                             else
                             {
-                                createChangedDocument = cancellationToken => UseMethodChainingRefactoring.WithAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
+                                //createChangedDocument = cancellationToken => UseMethodChainingAnalysis.WithAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
                             }
 
                             CodeAction codeAction = CodeAction.Create(

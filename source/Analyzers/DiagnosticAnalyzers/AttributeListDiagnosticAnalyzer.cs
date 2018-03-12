@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
         {
             var attributeList = (AttributeListSyntax)context.Node;
 
-            if (DeclareEachAttributeSeparatelyRefactoring.CanRefactor(attributeList))
+            if (DeclareEachAttributeSeparatelyAnalysis.CanRefactor(attributeList))
                 context.ReportDiagnostic(DiagnosticDescriptors.DeclareEachAttributeSeparately, attributeList);
         }
     }

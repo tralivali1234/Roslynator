@@ -16,35 +16,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseConditionalAccessRefactoring
     {
-        //TODO: 
-        internal static ExpressionSyntax FindExpressionThatCanBeConditionallyAccessed(ExpressionSyntax expressionToFind, ExpressionSyntax expression)
-        {
-            if (expression.IsKind(SyntaxKind.LogicalNotExpression))
-                expression = ((PrefixUnaryExpressionSyntax)expression).Operand;
-
-            SyntaxKind kind = expressionToFind.Kind();
-
-            SyntaxToken firstToken = expression.GetFirstToken();
-
-            int start = firstToken.SpanStart;
-
-            SyntaxNode node = firstToken.Parent;
-
-            while (node?.SpanStart == start)
-            {
-                if (kind == node.Kind()
-                    && node.IsParentKind(SyntaxKind.SimpleMemberAccessExpression, SyntaxKind.ElementAccessExpression)
-                    && CSharpFactory.AreEquivalent(expressionToFind, node))
-                {
-                    return (ExpressionSyntax)node;
-                }
-
-                node = node.Parent;
-            }
-
-            return null;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             BinaryExpressionSyntax logicalAnd,
@@ -64,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax right = logicalAnd.Right?.WalkDownParentheses();
 
-            ExpressionSyntax expression2 = FindExpressionThatCanBeConditionallyAccessed(
+            ExpressionSyntax expression2 = UseConditionalAccessAnalysis.FindExpressionThatCanBeConditionallyAccessed(
                 expression,
                 right);
 

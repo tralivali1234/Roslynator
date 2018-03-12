@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.AvoidSemicolonAtEndOfDeclarationRefactoring;
+using static Roslynator.CSharp.Refactorings.AvoidSemicolonAtEndOfDeclarationAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

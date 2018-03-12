@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.RemoveRedundantStatement.RemoveRedundantStatementRefactoring;
+using static Roslynator.CSharp.Refactorings.RemoveRedundantStatement.RemoveRedundantStatementAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

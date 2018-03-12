@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(SimplifyConditionalExpressionRefactoring.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
+            context.RegisterSyntaxNodeAction(SimplifyConditionalExpressionAnalysis.AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
         }
     }
 }

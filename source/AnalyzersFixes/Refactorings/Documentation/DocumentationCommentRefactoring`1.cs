@@ -195,7 +195,7 @@ namespace Roslynator.CSharp.Refactorings.DocumentationComment
 
             foreach (XmlElementSyntax element in comment.Elements(ElementName, ElementNameUppercase))
             {
-                string name = DocumentationCommentRefactoring.GetAttributeValue(element, "name");
+                string name = DocumentationCommentAnalysis.GetAttributeValue(element, "name");
 
                 if (!dic.ContainsKey(name))
                     dic.Add(name, element);

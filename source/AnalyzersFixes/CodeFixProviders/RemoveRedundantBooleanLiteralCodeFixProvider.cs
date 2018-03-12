@@ -63,7 +63,7 @@ namespace Roslynator.CSharp.CodeFixes
                     {
                         var binaryExpression = (BinaryExpressionSyntax)node;
 
-                        TextSpan span = RemoveRedundantBooleanLiteralRefactoring.GetSpanToRemove(binaryExpression, binaryExpression.Left, binaryExpression.Right);
+                        TextSpan span = RemoveRedundantBooleanLiteralAnalysis.GetSpanToRemove(binaryExpression, binaryExpression.Left, binaryExpression.Right);
 
                         RegisterCodeFix(
                             context,

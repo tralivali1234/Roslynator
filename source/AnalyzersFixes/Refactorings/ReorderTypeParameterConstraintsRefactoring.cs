@@ -10,18 +10,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class ReorderTypeParameterConstraintsRefactoring
     {
-        //TODO: ?
-        private static int IndexOf(SyntaxList<TypeParameterConstraintClauseSyntax> constraintClauses, string name)
-        {
-            for (int i = 0; i < constraintClauses.Count; i++)
-            {
-                if (constraintClauses[i].Name.Identifier.ValueText == name)
-                    return i;
-            }
-
-            return -1;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             SyntaxNode node,
@@ -46,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 string name = typeParameters[i].Identifier.ValueText;
 
-                int index = IndexOf(constraintClauses, name);
+                int index = ReorderTypeParameterConstraintsAnalysis.IndexOf(constraintClauses, name);
 
                 if (index != -1)
                 {

@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(ReplaceDoWithWhileRefactoring.AnalyzeDoStatement, SyntaxKind.DoStatement);
+            context.RegisterSyntaxNodeAction(ReplaceDoWithWhileAnalysis.AnalyzeDoStatement, SyntaxKind.DoStatement);
         }
     }
 }

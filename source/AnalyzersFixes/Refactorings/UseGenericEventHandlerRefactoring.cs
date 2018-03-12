@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
             return await document.ReplaceNodeAsync(type, newNode, cancellationToken).ConfigureAwait(false);
         }
 
-        private static GenericNameSyntax CreateGenericEventHandler(TypeSyntax type, SemanticModel semanticModel, CancellationToken cancellationToken)
+        internal static GenericNameSyntax CreateGenericEventHandler(TypeSyntax type, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             var delegateSymbol = (INamedTypeSymbol)semanticModel.GetTypeSymbol(type, cancellationToken);
 

@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(
-                FormatInitializerWithSingleExpressionOnSingleLineRefactoring.AnalyzeInitializerExpression,
+                FormatInitializerWithSingleExpressionOnSingleLineAnalysis.AnalyzeInitializerExpression,
                 SyntaxKind.ArrayInitializerExpression,
                 SyntaxKind.ObjectInitializerExpression,
                 SyntaxKind.CollectionInitializerExpression);

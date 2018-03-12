@@ -1,12 +1,9 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -14,78 +11,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeSwitchSectionsRefactoring
     {
-        //TODO: 
-        private static bool AreEquivalent(SyntaxList<StatementSyntax> statements1, SyntaxList<StatementSyntax> statements2)
-        {
-            int count = statements1.Count;
-
-            if (count == 1)
-            {
-                return statements2.Count == 1
-                    && AreEquivalent(statements1[0], statements2[0]);
-            }
-            else if (count == 2)
-            {
-                return statements2.Count == 2
-                    && AreEquivalentJumpStatements(statements1[1], statements2[1])
-                    && AreEquivalent(statements1[0], statements2[0]);
-            }
-
-            return false;
-        }
-
-        private static bool AreEquivalent(StatementSyntax statement1, StatementSyntax statement2)
-        {
-            return statement1.Kind() == statement2.Kind()
-                && CSharpFactory.AreEquivalent(statement1, statement2)
-                && statement1.DescendantTrivia().All(f => f.IsWhitespaceOrEndOfLineTrivia())
-                && statement2.DescendantTrivia().All(f => f.IsWhitespaceOrEndOfLineTrivia());
-        }
-
-        private static bool AreEquivalentJumpStatements(StatementSyntax statement1, StatementSyntax statement2)
-        {
-            switch (statement1)
-            {
-                case BreakStatementSyntax breakStatement:
-                    {
-                        return statement2.Kind() == SyntaxKind.BreakStatement;
-                    }
-                case ReturnStatementSyntax returnStatement:
-                    {
-                        return returnStatement.Expression == null
-                            && (statement2 is ReturnStatementSyntax returnStatement2)
-                            && returnStatement2.Expression == null;
-                    }
-                case ThrowStatementSyntax throwStatement:
-                    {
-                        return throwStatement.Expression == null
-                            && (statement2 is ThrowStatementSyntax throwStatement2)
-                            && throwStatement2.Expression == null;
-                    }
-            }
-
-            return false;
-        }
-
-        private static SyntaxList<StatementSyntax> GetStatementsOrDefault(SwitchSectionSyntax section)
-        {
-            foreach (SwitchLabelSyntax label in section.Labels)
-            {
-                if (!label.Kind().Is(SyntaxKind.CaseSwitchLabel, SyntaxKind.DefaultSwitchLabel))
-                    return default(SyntaxList<StatementSyntax>);
-            }
-
-            SyntaxList<StatementSyntax> statements = section.Statements;
-
-            if (statements.Count == 1
-                && (statements[0] is BlockSyntax block))
-            {
-                return block.Statements;
-            }
-
-            return statements;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             SwitchSectionSyntax switchSection,
@@ -95,7 +20,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
-            SyntaxList<StatementSyntax> statements = GetStatementsOrDefault(switchSection);
+            SyntaxList<StatementSyntax> statements = MergeSwitchSectionsAnalysis.GetStatementsOrDefault(switchSection);
 
             int index = sections.IndexOf(switchSection);
 
@@ -103,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
 
             while (i < sections.Count - 1
                 && !sections[i].SpanOrLeadingTriviaContainsDirectives()
-                && AreEquivalent(statements, GetStatementsOrDefault(sections[i + 1])))
+                && AreEquivalent(statements, MergeSwitchSectionsAnalysis.GetStatementsOrDefault(sections[i + 1])))
             {
                 i++;
             }

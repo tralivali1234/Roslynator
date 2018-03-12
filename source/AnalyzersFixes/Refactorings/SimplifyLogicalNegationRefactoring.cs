@@ -12,19 +12,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class SimplifyLogicalNegationRefactoring
     {
-        //TODO: ?
-        private static ExpressionSyntax GetReturnExpression(CSharpSyntaxNode node)
-        {
-            if (node is BlockSyntax block)
-            {
-                StatementSyntax statement = block.Statements.SingleOrDefault(shouldThrow: false);
-
-                return (statement as ReturnStatementSyntax)?.Expression;
-            }
-
-            return node as ExpressionSyntax;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             PrefixUnaryExpressionSyntax logicalNot,
@@ -78,7 +65,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         SingleParameterLambdaExpressionInfo lambdaInfo = SyntaxInfo.SingleParameterLambdaExpressionInfo(lambdaExpression);
 
-                        var logicalNot2 = (PrefixUnaryExpressionSyntax)GetReturnExpression(lambdaInfo.Body).WalkDownParentheses();
+                        var logicalNot2 = (PrefixUnaryExpressionSyntax)SimplifyLogicalNegationAnalysis.GetReturnExpression(lambdaInfo.Body).WalkDownParentheses();
 
                         InvocationExpressionSyntax newNode = invocationExpression.ReplaceNode(logicalNot2, logicalNot2.Operand.WithTriviaFrom(logicalNot2));
 

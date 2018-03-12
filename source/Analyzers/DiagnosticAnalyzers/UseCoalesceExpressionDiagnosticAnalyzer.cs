@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                UseCoalesceExpressionRefactoring.AnalyzeIfStatement,
+                UseCoalesceExpressionAnalysis.AnalyzeIfStatement,
                 SyntaxKind.IfStatement);
         }
     }

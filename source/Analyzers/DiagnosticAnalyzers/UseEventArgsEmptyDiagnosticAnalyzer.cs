@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 if (eventArgsSymbol != null)
                 {
                     startContext.RegisterSyntaxNodeAction(
-                        nodeContext => UseEventArgsEmptyRefactoring.AnalyzeObjectCreationExpression(nodeContext, eventArgsSymbol),
+                        nodeContext => UseEventArgsEmptyAnalysis.AnalyzeObjectCreationExpression(nodeContext, eventArgsSymbol),
                         SyntaxKind.ObjectCreationExpression);
                 }
             });

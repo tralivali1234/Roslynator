@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                RemoveRedundantBaseConstructorCallRefactoring.AnalyzeConstructorDeclaration,
+                RemoveRedundantBaseConstructorCallAnalysis.AnalyzeConstructorDeclaration,
                 SyntaxKind.ConstructorDeclaration);
         }
     }

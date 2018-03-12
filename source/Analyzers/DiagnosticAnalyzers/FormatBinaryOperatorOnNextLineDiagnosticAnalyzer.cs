@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                FormatBinaryOperatorOnNextLineRefactoring.AnalyzeBinaryExpression,
+                FormatBinaryOperatorOnNextLineAnalysis.AnalyzeBinaryExpression,
                 SyntaxKind.AddExpression,
                 SyntaxKind.SubtractExpression,
                 SyntaxKind.MultiplyExpression,

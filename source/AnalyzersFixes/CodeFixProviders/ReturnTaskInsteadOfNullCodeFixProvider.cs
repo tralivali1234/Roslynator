@@ -29,7 +29,7 @@ namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            InvocationExpressionSyntax newExpression = ReturnTaskInsteadOfNullRefactoring.CreateNewExpression(expression, semanticModel, context.CancellationToken);
+            InvocationExpressionSyntax newExpression = ReturnTaskInsteadOfNullAnalysis.CreateNewExpression(expression, semanticModel, context.CancellationToken);
 
             Diagnostic diagnostic = context.Diagnostics[0];
 

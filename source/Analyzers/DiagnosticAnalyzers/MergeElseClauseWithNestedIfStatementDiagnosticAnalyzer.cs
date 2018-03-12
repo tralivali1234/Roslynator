@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                MergeElseClauseWithNestedIfStatementRefactoring.AnalyzeElseClause,
+                MergeElseClauseWithNestedIfStatementAnalysis.AnalyzeElseClause,
                 SyntaxKind.ElseClause);
         }
     }

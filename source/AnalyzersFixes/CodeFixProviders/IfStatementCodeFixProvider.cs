@@ -74,12 +74,13 @@ namespace Roslynator.CSharp.CodeFixes
                                 semanticModel,
                                 context.CancellationToken).First();
 
-                            CodeAction codeAction = CodeAction.Create(
-                                refactoring.Title,
-                                cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken),
-                                GetEquivalenceKey(diagnostic));
+                            //TODO: x
+                            //CodeAction codeAction = CodeAction.Create(
+                            //    refactoring.Title,
+                            //    cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken),
+                            //    GetEquivalenceKey(diagnostic));
 
-                            context.RegisterCodeFix(codeAction, diagnostic);
+                            //context.RegisterCodeFix(codeAction, diagnostic);
                             break;
                         }
                     case DiagnosticIdentifiers.ReduceIfNesting:

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -14,41 +13,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class FormatAccessorListRefactoring
     {
-        //TODO: 
-        private static bool ShouldBeFormatted(AccessorDeclarationSyntax accessor)
-        {
-            BlockSyntax body = accessor.Body;
-
-            if (body != null)
-            {
-                SyntaxList<StatementSyntax> statements = body.Statements;
-
-                if (statements.Count <= 1
-                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.SpanStart, accessor.Span.End))
-                    && (statements.Count == 0 || statements[0].IsSingleLine()))
-                {
-                    return accessor
-                       .DescendantTrivia(accessor.Span, descendIntoTrivia: true)
-                       .All(f => f.IsWhitespaceOrEndOfLineTrivia());
-                }
-            }
-            else
-            {
-                ArrowExpressionClauseSyntax expressionBody = accessor.ExpressionBody;
-
-                if (expressionBody != null
-                    && accessor.SyntaxTree.IsMultiLineSpan(TextSpan.FromBounds(accessor.Keyword.SpanStart, accessor.Span.End))
-                    && expressionBody.Expression?.IsSingleLine() == true)
-                {
-                    return accessor
-                       .DescendantTrivia(accessor.Span, descendIntoTrivia: true)
-                       .All(f => f.IsWhitespaceOrEndOfLineTrivia());
-                }
-            }
-
-            return false;
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             AccessorListSyntax accessorList,
@@ -141,7 +105,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 return accessorList.ReplaceNodes(accessorList.Accessors, (f, g) =>
                 {
-                    if (ShouldBeFormatted(f))
+                    if (FormatAccessorListAnalysis.ShouldBeFormatted(f))
                     {
                         return f.RemoveWhitespace(f.Span);
                     }

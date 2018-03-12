@@ -11,28 +11,12 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class MergeIfStatementWithNestedIfStatementRefactoring
     {
-        //TODO: 
-        private static IfStatementSyntax GetNestedIfStatement(IfStatementSyntax ifStatement)
-        {
-            StatementSyntax statement = ifStatement.Statement;
-
-            switch (statement?.Kind())
-            {
-                case SyntaxKind.Block:
-                    return ((BlockSyntax)statement).Statements.SingleOrDefault(shouldThrow: false) as IfStatementSyntax;
-                case SyntaxKind.IfStatement:
-                    return (IfStatementSyntax)statement;
-            }
-
-            return null;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            IfStatementSyntax nestedIf = GetNestedIfStatement(ifStatement);
+            IfStatementSyntax nestedIf = MergeIfStatementWithNestedIfStatementAnalysis.GetNestedIfStatement(ifStatement);
 
             ExpressionSyntax left = ifStatement.Condition.Parenthesize();
             ExpressionSyntax right = nestedIf.Condition;

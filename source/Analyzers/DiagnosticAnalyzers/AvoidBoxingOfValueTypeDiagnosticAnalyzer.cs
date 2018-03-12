@@ -25,8 +25,8 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
             context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(AvoidBoxingOfValueTypeRefactoring.AnalyzeAddExpression, SyntaxKind.AddExpression);
-            context.RegisterSyntaxNodeAction(AvoidBoxingOfValueTypeRefactoring.AnalyzeInterpolation, SyntaxKind.Interpolation);
+            context.RegisterSyntaxNodeAction(AvoidBoxingOfValueTypeAnalysis.AnalyzeAddExpression, SyntaxKind.AddExpression);
+            context.RegisterSyntaxNodeAction(AvoidBoxingOfValueTypeAnalysis.AnalyzeInterpolation, SyntaxKind.Interpolation);
         }
     }
 }

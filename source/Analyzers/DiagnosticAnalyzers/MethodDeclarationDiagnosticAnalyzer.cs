@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                NonAsynchronousMethodNameShouldNotEndWithAsyncRefactoring.AnalyzeMethodDeclaration,
+                NonAsynchronousMethodNameShouldNotEndWithAsyncAnalysis.AnalyzeMethodDeclaration,
                 SyntaxKind.MethodDeclaration);
         }
     }

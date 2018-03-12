@@ -35,7 +35,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             if (elseClause.ContainsDiagnostics)
                 return;
 
-            if (!RemoveUnnecessaryElseClauseRefactoring.IsFixable(elseClause))
+            if (!RemoveUnnecessaryElseClauseAnalysis.IsFixable(elseClause))
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnnecessaryElseClause, elseClause.ElseKeyword);

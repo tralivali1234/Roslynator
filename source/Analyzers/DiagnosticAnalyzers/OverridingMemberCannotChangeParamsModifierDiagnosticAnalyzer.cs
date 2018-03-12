@@ -4,7 +4,7 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.OverridingMemberCannotChangeParamsModifierRefactoring;
+using static Roslynator.CSharp.Refactorings.OverridingMemberCannotChangeParamsModifierAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

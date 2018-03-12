@@ -27,7 +27,6 @@ namespace Roslynator.CSharp.Refactorings
             return $"Change accessibility to '{SyntaxFacts.GetText(accessibility)}'";
         }
 
-        //TODO: ?
         public static ISymbol GetBaseSymbolOrDefault(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             ISymbol symbol = GetDeclaredSymbol();

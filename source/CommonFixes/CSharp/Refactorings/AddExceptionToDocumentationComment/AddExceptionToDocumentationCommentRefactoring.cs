@@ -15,7 +15,6 @@ using Roslynator.Text;
 
 namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 {
-    //TODO: 
     internal static class AddExceptionToDocumentationCommentRefactoring
     {
         private static IEnumerable<ThrowInfo> GetOtherUndocumentedExceptions(
@@ -195,32 +194,6 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
             return false;
         }
 
-        internal static ISymbol GetDeclarationSymbol(
-            int position,
-            SemanticModel semanticModel,
-            CancellationToken cancellationToken = default(CancellationToken))
-        {
-            ISymbol symbol = semanticModel.GetEnclosingSymbol(position, cancellationToken);
-
-            return GetDeclarationSymbol(symbol);
-        }
-
-        private static ISymbol GetDeclarationSymbol(ISymbol symbol)
-        {
-            if (!(symbol is IMethodSymbol methodSymbol))
-                return null;
-
-            MethodKind methodKind = methodSymbol.MethodKind;
-
-            if (methodKind == MethodKind.Ordinary)
-                return methodSymbol.PartialImplementationPart ?? methodSymbol;
-
-            if (methodKind == MethodKind.LocalFunction)
-                return GetDeclarationSymbol(methodSymbol.ContainingSymbol);
-
-            return methodSymbol.AssociatedSymbol;
-        }
-
         public static Task<Document> RefactorAsync(
             Document document,
             ThrowExpressionSyntax throwExpression,
@@ -254,7 +227,7 @@ namespace Roslynator.CSharp.Refactorings.AddExceptionToDocumentationComment
 
             ITypeSymbol exceptionSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken);
 
-            ISymbol declarationSymbol = GetDeclarationSymbol(node.SpanStart, semanticModel, cancellationToken);
+            ISymbol declarationSymbol = AddExceptionToDocumentationCommentAnalysis.GetDeclarationSymbol(node.SpanStart, semanticModel, cancellationToken);
 
             var memberDeclaration = (MemberDeclarationSyntax)await declarationSymbol
                 .GetSyntaxAsync(cancellationToken)

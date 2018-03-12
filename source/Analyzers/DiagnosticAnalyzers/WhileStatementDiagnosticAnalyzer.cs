@@ -26,7 +26,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                f => AvoidUsageOfWhileStatementToCreateInfiniteLoopRefactoring.Analyze(f, (WhileStatementSyntax)f.Node),
+                f => AvoidUsageOfWhileStatementToCreateInfiniteLoopAnalysis.Analyze(f, (WhileStatementSyntax)f.Node),
                 SyntaxKind.WhileStatement);
         }
     }

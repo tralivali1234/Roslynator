@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(RemoveUnnecessaryCaseLabelRefactoring.AnalyzeSwitchSection, SyntaxKind.SwitchSection);
+            context.RegisterSyntaxNodeAction(RemoveUnnecessaryCaseLabelAnalysis.AnalyzeSwitchSection, SyntaxKind.SwitchSection);
         }
     }
 }

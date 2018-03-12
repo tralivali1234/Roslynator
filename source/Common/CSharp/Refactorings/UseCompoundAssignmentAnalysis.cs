@@ -33,7 +33,6 @@ namespace Roslynator.CSharp.Refactorings
             return true;
         }
 
-        //TODO: ?
         public static string GetCompoundOperatorText(BinaryExpressionSyntax binaryExpression)
         {
             SyntaxKind compoundAssignmentKind = GetCompoundAssignmentKind(binaryExpression.Kind());

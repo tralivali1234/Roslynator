@@ -11,35 +11,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Roslynator.CSharp.Refactorings.UseReturnInsteadOfAssignmentAnalysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    //TODO: 
     internal static class UseReturnInsteadOfAssignmentRefactoring
     {
-        private static ReturnStatementSyntax FindReturnStatementBelow(SyntaxList<StatementSyntax> statements, int i)
-        {
-            int count = statements.Count;
-
-            i++;
-
-            while (i <= count - 1)
-            {
-                if (!statements[i].IsKind(SyntaxKind.LocalFunctionStatement))
-                    break;
-
-                i++;
-            }
-
-            if (i <= count - 1
-                && statements[i].IsKind(SyntaxKind.ReturnStatement))
-            {
-                return (ReturnStatementSyntax)statements[i];
-            }
-
-            return null;
-        }
-
         private static LocalDeclarationStatementSyntax FindLocalDeclarationStatementAbove(SyntaxList<StatementSyntax> statements, int i)
         {
             i--;
@@ -59,44 +36,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return null;
-        }
-
-        private static StatementSyntax GetLastStatementOrDefault(StatementSyntax statement)
-        {
-            if (statement?.Kind() == SyntaxKind.Block)
-            {
-                return ((BlockSyntax)statement).Statements.LastOrDefault();
-            }
-            else
-            {
-                return statement;
-            }
-        }
-
-        private static StatementSyntax GetLastStatementBeforeBreakStatementOrDefault(SwitchSectionSyntax switchSection)
-        {
-            SyntaxList<StatementSyntax> statements = GetStatements(switchSection);
-
-            if (statements.Count > 1
-                && statements.Last().IsKind(SyntaxKind.BreakStatement))
-            {
-                return statements[statements.Count - 2];
-            }
-
-            return null;
-        }
-
-        private static SyntaxList<StatementSyntax> GetStatements(SwitchSectionSyntax switchSection)
-        {
-            SyntaxList<StatementSyntax> statements = switchSection.Statements;
-
-            if (statements.Count == 1
-                && statements[0].IsKind(SyntaxKind.Block))
-            {
-                return ((BlockSyntax)statements[0]).Statements;
-            }
-
-            return statements;
         }
 
         public static async Task<Document> RefactorAsync(

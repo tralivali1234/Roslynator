@@ -77,7 +77,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
                 int index = members.IndexOf(enumMember);
-                int count = members.Take(index).Count(f => HasImplicitValue(f, semanticModel, cancellationToken));
+                int count = members.Take(index).Count(f => EnumMemberShouldDeclareExplicitValueAnalysis.HasImplicitValue(f, semanticModel, cancellationToken));
 
                 switch (specialType)
                 {
@@ -101,20 +101,6 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             return null;
-        }
-
-        private static bool HasImplicitValue(EnumMemberDeclarationSyntax enumMember, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            EqualsValueClauseSyntax equalsValue = enumMember.EqualsValue;
-
-            if (equalsValue == null)
-            {
-                return semanticModel
-                    .GetDeclaredSymbol(enumMember, cancellationToken)?
-                    .HasConstantValue == true;
-            }
-
-            return false;
         }
 
         private static IEnumerable<object> GetExplicitValues(

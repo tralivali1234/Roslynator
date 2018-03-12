@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                RemoveEmptyFinallyClauseRefactoring.AnalyzeFinallyClause,
+                RemoveEmptyFinallyClauseAnalysis.AnalyzeFinallyClause,
                 SyntaxKind.FinallyClause);
         }
     }

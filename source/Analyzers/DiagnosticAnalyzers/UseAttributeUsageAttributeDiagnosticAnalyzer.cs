@@ -32,7 +32,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                     && attributeUsageAttributeSymbol != null)
                 {
                     startContext.RegisterSymbolAction(
-                       nodeContext => UseAttributeUsageAttributeRefactoring.AnalyzerNamedTypeSymbol(nodeContext, attributeSymbol, attributeUsageAttributeSymbol),
+                       nodeContext => UseAttributeUsageAttributeAnalysis.AnalyzerNamedTypeSymbol(nodeContext, attributeSymbol, attributeUsageAttributeSymbol),
                        SymbolKind.NamedType);
                 }
             });

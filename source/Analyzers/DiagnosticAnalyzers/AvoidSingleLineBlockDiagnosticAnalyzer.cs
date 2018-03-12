@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AvoidSingleLineBlockRefactoring.AnalyzeBlock, SyntaxKind.Block);
+            context.RegisterSyntaxNodeAction(AvoidSingleLineBlockAnalysis.AnalyzeBlock, SyntaxKind.Block);
         }
     }
 }

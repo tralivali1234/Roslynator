@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.UsePostfixUnaryOperatorInsteadOfAssignmentRefactoring;
+using static Roslynator.CSharp.Refactorings.UsePostfixUnaryOperatorInsteadOfAssignmentAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

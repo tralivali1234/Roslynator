@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(RemoveEmptyElseClauseRefactoring.AnalyzeElseClause, SyntaxKind.ElseClause);
+            context.RegisterSyntaxNodeAction(RemoveEmptyElseClauseAnalysis.AnalyzeElseClause, SyntaxKind.ElseClause);
         }
     }
 }

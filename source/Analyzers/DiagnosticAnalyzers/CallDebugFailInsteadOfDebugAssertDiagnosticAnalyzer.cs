@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.CallDebugFailInsteadOfDebugAssertRefactoring;
+using static Roslynator.CSharp.Refactorings.CallDebugFailInsteadOfDebugAssertAnalysis;
 
 namespace Roslynator.CSharp.DiagnosticAnalyzers
 {

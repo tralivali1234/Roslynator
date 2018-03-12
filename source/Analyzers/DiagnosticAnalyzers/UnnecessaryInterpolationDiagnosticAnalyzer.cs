@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(UnnecessaryInterpolationRefactoring.AnalyzeInterpolation, SyntaxKind.Interpolation);
+            context.RegisterSyntaxNodeAction(UnnecessaryInterpolationAnalysis.AnalyzeInterpolation, SyntaxKind.Interpolation);
         }
     }
 }

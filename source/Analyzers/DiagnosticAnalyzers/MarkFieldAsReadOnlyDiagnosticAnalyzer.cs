@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSymbolAction(
-                MarkFieldAsReadOnlyRefactoring.Instance.AnalyzeNamedType,
+                MarkFieldAsReadOnlyAnalysis.Instance.AnalyzeNamedType,
                 SymbolKind.NamedType);
         }
     }

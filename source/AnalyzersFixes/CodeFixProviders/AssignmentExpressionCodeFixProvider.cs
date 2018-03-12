@@ -43,7 +43,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var binaryExpression = (BinaryExpressionSyntax)assignment.Right;
 
-                            string operatorText = UseCompoundAssignmentRefactoring.GetCompoundOperatorText(binaryExpression);
+                            string operatorText = UseCompoundAssignmentAnalysis.GetCompoundOperatorText(binaryExpression);
 
                             CodeAction codeAction = CodeAction.Create(
                                 $"Use {operatorText} operator",

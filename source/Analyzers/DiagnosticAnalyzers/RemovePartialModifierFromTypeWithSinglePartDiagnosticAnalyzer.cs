@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSymbolAction(
-                RemovePartialModifierFromTypeWithSinglePartRefactoring.AnalyzeNamedType,
+                RemovePartialModifierFromTypeWithSinglePartAnalysis.AnalyzeNamedType,
                 SymbolKind.NamedType);
         }
     }

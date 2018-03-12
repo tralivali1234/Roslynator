@@ -30,7 +30,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
                 if (flagsAttribute == null)
                     return;
 
-                startContext.RegisterSymbolAction(f => DeclareEnumMemberWithZeroValueRefactoring.AnalyzeNamedType(f, flagsAttribute), SymbolKind.NamedType);
+                startContext.RegisterSymbolAction(f => DeclareEnumMemberWithZeroValueAnalysis.AnalyzeNamedType(f, flagsAttribute), SymbolKind.NamedType);
             });
         }
     }

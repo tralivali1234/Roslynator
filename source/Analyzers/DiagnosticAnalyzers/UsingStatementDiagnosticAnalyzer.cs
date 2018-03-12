@@ -31,7 +31,7 @@ namespace Roslynator.CSharp.DiagnosticAnalyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                f => SimplifyNestedUsingStatementRefactoring.Analyze(f, (UsingStatementSyntax)f.Node),
+                f => SimplifyNestedUsingStatementAnalysis.Analyze(f, (UsingStatementSyntax)f.Node),
                 SyntaxKind.UsingStatement);
         }
     }
