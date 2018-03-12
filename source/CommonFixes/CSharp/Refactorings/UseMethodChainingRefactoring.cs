@@ -7,19 +7,16 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Refactorings.UseMethodChaining;
 using Roslynator.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Refactorings.UseMethodChaining
+namespace Roslynator.CSharp.Refactorings
 {
-    internal abstract class UseMethodChainingRefactoring
+    internal static class UseMethodChainingRefactoring
     {
-        //TODO: UseMethodChainingAnalysis
-        public UseMethodChainingAnalysis Analysis { get; }
-
-        protected abstract InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement);
-
-        public async Task<Document> RefactorAsync(
+        public static async Task<Document> RefactorAsync(
             Document document,
+            UseMethodChainingAnalysis analysis,
             ExpressionStatementSyntax expressionStatement,
             CancellationToken cancellationToken)
         {
@@ -48,7 +45,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             {
                 StatementSyntax statement = statements[j + 1];
 
-                if (!Analysis.IsFixableStatement(statement, name, returnType, semanticModel, cancellationToken))
+                if (!analysis.IsFixableStatement(statement, name, returnType, semanticModel, cancellationToken))
                     break;
 
                 sb.AppendLine();
@@ -88,7 +85,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             return await document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken).ConfigureAwait(false);
         }
 
-        private string GetTextToAppend(ExpressionStatementSyntax expressionStatement)
+        private static string GetTextToAppend(ExpressionStatementSyntax expressionStatement)
         {
             MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(GetInvocationExpression(expressionStatement));
 
@@ -99,6 +96,20 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
             return invocationExpression
                 .ToString()
                 .Substring(firstMemberInvocation.OperatorToken.SpanStart - invocationExpression.SpanStart);
+        }
+
+        private static InvocationExpressionSyntax GetInvocationExpression(ExpressionStatementSyntax expressionStatement)
+        {
+            ExpressionSyntax expression = expressionStatement.Expression;
+
+            if (expression is InvocationExpressionSyntax invocationExpression)
+            {
+                return invocationExpression;
+            }
+            else
+            {
+                return SyntaxInfo.SimpleAssignmentExpressionInfo(expression).Right as InvocationExpressionSyntax;
+            }
         }
     }
 }

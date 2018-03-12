@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using System.Composition;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -12,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Refactorings.UseMethodChaining;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -120,21 +119,20 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             var expressionStatement = (ExpressionStatementSyntax)statement;
 
-                            //TODO: UseMethodChainingAnalysis
-                            //Func<CancellationToken, Task<Document>> createChangedDocument;
-                            Func<CancellationToken, Task<Document>> createChangedDocument = null;
-                            if (expressionStatement.Expression.IsKind(SyntaxKind.InvocationExpression))
+                            UseMethodChainingAnalysis analysis;
+                            if (expressionStatement.Expression.Kind() == SyntaxKind.InvocationExpression)
                             {
-                                //createChangedDocument = cancellationToken => UseMethodChainingAnalysis.WithoutAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
+                                analysis = UseMethodChainingAnalysis.WithoutAssignmentAnalysis;
                             }
                             else
                             {
-                                //createChangedDocument = cancellationToken => UseMethodChainingAnalysis.WithAssignment.RefactorAsync(context.Document, expressionStatement, cancellationToken);
+                                analysis = UseMethodChainingAnalysis.WithAssignmentAnalysis;
                             }
 
+                            //TODO: test
                             CodeAction codeAction = CodeAction.Create(
                                 "Use method chaining",
-                                createChangedDocument,
+                                cancellationToken => UseMethodChainingRefactoring.RefactorAsync(context.Document, analysis, expressionStatement, cancellationToken),
                                 GetEquivalenceKey(diagnostic));
 
                             context.RegisterCodeFix(codeAction, diagnostic);

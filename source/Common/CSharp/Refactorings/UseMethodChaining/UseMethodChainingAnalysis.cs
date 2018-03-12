@@ -10,9 +10,9 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 {
     internal abstract class UseMethodChainingAnalysis
     {
-        public static MethodChainingWithoutAssignmentAnalysis WithoutAssignment { get; } = new MethodChainingWithoutAssignmentAnalysis();
+        public static MethodChainingWithoutAssignmentAnalysis WithoutAssignmentAnalysis { get; } = new MethodChainingWithoutAssignmentAnalysis();
 
-        public static MethodChainingWithAssignmentAnalysis WithAssignment { get; } = new MethodChainingWithAssignmentAnalysis();
+        public static MethodChainingWithAssignmentAnalysis WithAssignmentAnalysis { get; } = new MethodChainingWithAssignmentAnalysis();
 
         public static bool IsFixable(
             MemberInvocationExpressionInfo invocationInfo,
@@ -34,7 +34,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
 
                         string name = identifierName.Identifier.ValueText;
 
-                        return WithoutAssignment.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
+                        return WithoutAssignmentAnalysis.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
                     }
                 case SyntaxKind.SimpleAssignmentExpression:
                     {
@@ -54,7 +54,7 @@ namespace Roslynator.CSharp.Refactorings.UseMethodChaining
                         if (name != (WalkDownMethodChain(invocationInfo).Expression as IdentifierNameSyntax)?.Identifier.ValueText)
                             break;
 
-                        return WithAssignment.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
+                        return WithAssignmentAnalysis.Analyze(invocationInfo, expressionStatement, name, semanticModel, cancellationToken);
                     }
             }
 
