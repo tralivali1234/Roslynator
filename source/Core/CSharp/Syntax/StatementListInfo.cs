@@ -20,6 +20,7 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(block != null);
 
+            Parent = block;
             Statements = block.Statements;
         }
 
@@ -27,6 +28,7 @@ namespace Roslynator.CSharp.Syntax
         {
             Debug.Assert(switchSection != null);
 
+            Parent = switchSection;
             Statements = switchSection.Statements;
         }
 
@@ -35,11 +37,7 @@ namespace Roslynator.CSharp.Syntax
         /// <summary>
         /// The node that contains the statements. It can be either a <see cref="BlockSyntax"/> or a <see cref="SwitchSectionSyntax"/>.
         /// </summary>
-        public SyntaxNode Parent
-        {
-            get { return Statements.FirstOrDefault()?.Parent; }
-        }
-
+        public SyntaxNode Parent { get; }
         /// <summary>
         /// The list of statements.
         /// </summary>

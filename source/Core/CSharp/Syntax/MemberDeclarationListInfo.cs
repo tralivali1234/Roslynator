@@ -15,8 +15,9 @@ namespace Roslynator.CSharp.Syntax
     /// </summary>
     public readonly struct MemberDeclarationListInfo : IEquatable<MemberDeclarationListInfo>, IReadOnlyList<MemberDeclarationSyntax>
     {
-        internal MemberDeclarationListInfo(SyntaxList<MemberDeclarationSyntax> members)
+        internal MemberDeclarationListInfo(SyntaxNode parent, SyntaxList<MemberDeclarationSyntax> members)
         {
+            Parent = parent;
             Members = members;
         }
 
@@ -25,10 +26,7 @@ namespace Roslynator.CSharp.Syntax
         /// <summary>
         /// The declaration that contains the members.
         /// </summary>
-        public SyntaxNode Parent
-        {
-            get { return Members.FirstOrDefault()?.Parent; }
-        }
+        public SyntaxNode Parent { get; }
 
         /// <summary>
         /// A list of members.
@@ -85,7 +83,7 @@ namespace Roslynator.CSharp.Syntax
             if (compilationUnit == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(compilationUnit.Members);
+            return new MemberDeclarationListInfo(compilationUnit, compilationUnit.Members);
         }
 
         internal static MemberDeclarationListInfo Create(NamespaceDeclarationSyntax namespaceDeclaration)
@@ -93,7 +91,7 @@ namespace Roslynator.CSharp.Syntax
             if (namespaceDeclaration == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(namespaceDeclaration.Members);
+            return new MemberDeclarationListInfo(namespaceDeclaration, namespaceDeclaration.Members);
         }
 
         internal static MemberDeclarationListInfo Create(TypeDeclarationSyntax typeDeclaration)
@@ -101,7 +99,7 @@ namespace Roslynator.CSharp.Syntax
             if (typeDeclaration == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(typeDeclaration.Members);
+            return new MemberDeclarationListInfo(typeDeclaration, typeDeclaration.Members);
         }
 
         internal static MemberDeclarationListInfo Create(ClassDeclarationSyntax classDeclaration)
@@ -109,7 +107,7 @@ namespace Roslynator.CSharp.Syntax
             if (classDeclaration == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(classDeclaration.Members);
+            return new MemberDeclarationListInfo(classDeclaration, classDeclaration.Members);
         }
 
         internal static MemberDeclarationListInfo Create(StructDeclarationSyntax structDeclaration)
@@ -117,7 +115,7 @@ namespace Roslynator.CSharp.Syntax
             if (structDeclaration == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(structDeclaration.Members);
+            return new MemberDeclarationListInfo(structDeclaration, structDeclaration.Members);
         }
 
         internal static MemberDeclarationListInfo Create(InterfaceDeclarationSyntax interfaceDeclaration)
@@ -125,7 +123,7 @@ namespace Roslynator.CSharp.Syntax
             if (interfaceDeclaration == null)
                 return Default;
 
-            return new MemberDeclarationListInfo(interfaceDeclaration.Members);
+            return new MemberDeclarationListInfo(interfaceDeclaration, interfaceDeclaration.Members);
         }
 
         internal static MemberDeclarationListInfo Create(SyntaxNode node)
@@ -135,19 +133,19 @@ namespace Roslynator.CSharp.Syntax
                 case SyntaxKind.CompilationUnit:
                     {
                         var compilationUnit = (CompilationUnitSyntax)node;
-                        return new MemberDeclarationListInfo(compilationUnit.Members);
+                        return new MemberDeclarationListInfo(compilationUnit, compilationUnit.Members);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var namespaceDeclaration = (NamespaceDeclarationSyntax)node;
-                        return new MemberDeclarationListInfo(namespaceDeclaration.Members);
+                        return new MemberDeclarationListInfo(namespaceDeclaration, namespaceDeclaration.Members);
                     }
                 case SyntaxKind.ClassDeclaration:
                 case SyntaxKind.StructDeclaration:
                 case SyntaxKind.InterfaceDeclaration:
                     {
                         var typeDeclaration = (TypeDeclarationSyntax)node;
-                        return new MemberDeclarationListInfo(typeDeclaration.Members);
+                        return new MemberDeclarationListInfo(typeDeclaration, typeDeclaration.Members);
                     }
             }
 
@@ -156,7 +154,7 @@ namespace Roslynator.CSharp.Syntax
 
         internal static MemberDeclarationListInfo Create(MemberDeclarationListSelection selectedMembers)
         {
-            return new MemberDeclarationListInfo(selectedMembers.UnderlyingList);
+            return new MemberDeclarationListInfo(selectedMembers.Parent, selectedMembers.UnderlyingList);
         }
 
         /// <summary>
@@ -184,34 +182,34 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var compilationUnit = (CompilationUnitSyntax)Parent;
                         compilationUnit = compilationUnit.WithMembers(members);
-                        return new MemberDeclarationListInfo(compilationUnit.Members);
+                        return new MemberDeclarationListInfo(compilationUnit, compilationUnit.Members);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.WithMembers(members);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.ClassDeclaration:
                     {
                         var declaration = (ClassDeclarationSyntax)Parent;
                         declaration = declaration.WithMembers(members);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.StructDeclaration:
                     {
                         var declaration = (StructDeclarationSyntax)Parent;
                         declaration = declaration.WithMembers(members);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.InterfaceDeclaration:
                     {
                         var declaration = (InterfaceDeclarationSyntax)Parent;
                         declaration = declaration.WithMembers(members);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
             }
 
@@ -234,34 +232,34 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var compilationUnit = (CompilationUnitSyntax)Parent;
                         compilationUnit = compilationUnit.RemoveNode(node, options);
-                        return new MemberDeclarationListInfo(compilationUnit.Members);
+                        return new MemberDeclarationListInfo(compilationUnit, compilationUnit.Members);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.ClassDeclaration:
                     {
                         var declaration = (ClassDeclarationSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.StructDeclaration:
                     {
                         var declaration = (StructDeclarationSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.InterfaceDeclaration:
                     {
                         var declaration = (InterfaceDeclarationSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
             }
 
@@ -284,34 +282,34 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var compilationUnit = (CompilationUnitSyntax)Parent;
                         compilationUnit = compilationUnit.ReplaceNode(oldNode, newNode);
-                        return new MemberDeclarationListInfo(compilationUnit.Members);
+                        return new MemberDeclarationListInfo(compilationUnit, compilationUnit.Members);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.ClassDeclaration:
                     {
                         var declaration = (ClassDeclarationSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.StructDeclaration:
                     {
                         var declaration = (StructDeclarationSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
 
                 case SyntaxKind.InterfaceDeclaration:
                     {
                         var declaration = (InterfaceDeclarationSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new MemberDeclarationListInfo(declaration.Members);
+                        return new MemberDeclarationListInfo(declaration, declaration.Members);
                     }
             }
 

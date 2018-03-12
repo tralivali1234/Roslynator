@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp;
-using Roslynator.CSharp.CodeFixes;
 using Roslynator.Metadata;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -18,7 +17,7 @@ namespace Roslynator.CodeGeneration.CSharp
             return CompilationUnit(
                 UsingDirectives(),
                 NamespaceDeclaration(
-                    "Roslynator.CSharp.CodeFixes",
+                    "Roslynator.CSharp",
                     ClassDeclaration(
                         Modifiers.PublicStaticPartial(),
                         "CodeFixIdentifiers",
