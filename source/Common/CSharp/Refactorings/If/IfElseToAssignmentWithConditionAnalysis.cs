@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToAssignmentWithConditionAnalysis : IfAnalysis
+    internal sealed class IfElseToAssignmentWithConditionAnalysis : IfAnalysis
     {
         public IfElseToAssignmentWithConditionAnalysis(
             IfStatementSyntax ifStatement,
@@ -19,7 +19,7 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public override IfRefactoringKind Kind
         {
-            get { return IfRefactoringKind.IfElseToAssignmentWithExpression; }
+            get { return IfRefactoringKind.IfElseToAssignmentWithCondition; }
         }
 
         public override string Title

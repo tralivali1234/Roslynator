@@ -17,7 +17,5 @@ namespace Roslynator.CSharp.Refactorings.If
         }
 
         public TStatement Statement { get; }
-
-        protected abstract TStatement CreateNewStatement();
     }
 }

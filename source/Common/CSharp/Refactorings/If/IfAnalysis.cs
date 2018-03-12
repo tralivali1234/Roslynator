@@ -474,7 +474,7 @@ namespace Roslynator.CSharp.Refactorings.If
             if (!options.CheckSpanDirectives(ifStatement.Parent, TextSpan.FromBounds(localDeclarationStatement.SpanStart, ifStatement.Span.End)))
                 return Empty;
 
-            return new LocalDeclarationAndIfElseAssignmentWithConditionalExpressionAnalysis(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
+            return new LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis(localDeclarationStatement, ifStatement, assignment1.Right, assignment2.Right).ToImmutableArray();
         }
 
         private static ImmutableArray<IfAnalysis> Analyze(

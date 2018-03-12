@@ -68,19 +68,18 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            IfAnalysis refactoring = IfAnalysis.Analyze(
+                            IfAnalysis analysis = IfAnalysis.Analyze(
                                 ifStatement,
                                 IfStatementAnalyzer.AnalysisOptions,
                                 semanticModel,
                                 context.CancellationToken).First();
 
-                            //TODO: IfAnalysis
-                            //CodeAction codeAction = CodeAction.Create(
-                            //    refactoring.Title,
-                            //    cancellationToken => refactoring.RefactorAsync(context.Document, cancellationToken),
-                            //    GetEquivalenceKey(diagnostic));
+                            CodeAction codeAction = CodeAction.Create(
+                                analysis.Title,
+                                cancellationToken => IfRefactoring.RefactorAsync(context.Document, analysis, cancellationToken),
+                                GetEquivalenceKey(diagnostic));
 
-                            //context.RegisterCodeFix(codeAction, diagnostic);
+                            context.RegisterCodeFix(codeAction, diagnostic);
                             break;
                         }
                     case DiagnosticIdentifiers.ReduceIfNesting:

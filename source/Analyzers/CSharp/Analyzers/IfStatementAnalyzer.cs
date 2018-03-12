@@ -51,6 +51,7 @@ namespace Roslynator.CSharp.Analyzers
             {
                 Debug.Assert(refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCoalesceExpression
                     || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithExpression
+                    || refactoring.Kind == IfRefactoringKind.IfElseToAssignmentWithCondition
                     || refactoring.Kind == IfRefactoringKind.IfElseToReturnWithCoalesceExpression
                     || refactoring.Kind == IfRefactoringKind.IfElseToYieldReturnWithCoalesceExpression
                     || refactoring.Kind == IfRefactoringKind.IfReturnToReturnWithCoalesceExpression
@@ -76,6 +77,7 @@ namespace Roslynator.CSharp.Analyzers
                             break;
                         }
                     case IfRefactoringKind.IfElseToAssignmentWithExpression:
+                    case IfRefactoringKind.IfElseToAssignmentWithCondition:
                         {
                             context.ReportDiagnostic(DiagnosticDescriptors.ReplaceIfStatementWithAssignment, ifStatement);
                             break;

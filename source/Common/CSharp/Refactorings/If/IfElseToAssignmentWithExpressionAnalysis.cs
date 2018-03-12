@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToAssignmentWithExpressionAnalysis : IfAnalysis
+    internal sealed class IfElseToAssignmentWithExpressionAnalysis : IfAnalysis
     {
         public IfElseToAssignmentWithExpressionAnalysis(
             IfStatementSyntax ifStatement,

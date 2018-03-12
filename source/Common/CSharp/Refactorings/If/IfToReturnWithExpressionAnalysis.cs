@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfToReturnWithExpressionAnalysis : IfAnalysis
+    internal sealed class IfToReturnWithExpressionAnalysis : IfAnalysis
     {
         public IfToReturnWithExpressionAnalysis(
             IfStatementSyntax ifStatement,
@@ -47,18 +46,6 @@ namespace Roslynator.CSharp.Refactorings.If
                 return (IfStatement.IsSimpleIf())
                     ? "Replace if-return with return"
                     : "Replace if-else with return";
-            }
-        }
-
-        protected StatementSyntax CreateStatement(ExpressionSyntax expression)
-        {
-            if (IsYield)
-            {
-                return CSharpFactory.YieldReturnStatement(expression);
-            }
-            else
-            {
-                return SyntaxFactory.ReturnStatement(expression);
             }
         }
     }

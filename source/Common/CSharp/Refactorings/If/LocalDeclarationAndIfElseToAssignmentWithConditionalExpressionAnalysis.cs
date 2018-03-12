@@ -4,23 +4,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal sealed class AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis : ToAssignmentWithConditionalExpressionAnalysis<ExpressionStatementSyntax>
+    internal sealed class LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis : ToAssignmentWithConditionalExpressionAnalysis<LocalDeclarationStatementSyntax>
     {
-        internal AssignmentAndIfElseToAssignmentWithConditionalExpressionAnalysis(
-            ExpressionStatementSyntax statement,
-            ExpressionSyntax right,
+        internal LocalDeclarationAndIfElseToAssignmentWithConditionalExpressionAnalysis(
+            LocalDeclarationStatementSyntax statement,
             IfStatementSyntax ifStatement,
             ExpressionSyntax whenTrue,
             ExpressionSyntax whenFalse) : base(statement, ifStatement, whenTrue, whenFalse)
         {
-            Left = right;
         }
-
-        public ExpressionSyntax Left { get; }
 
         public override IfRefactoringKind Kind
         {
-            get { return IfRefactoringKind.AssignmentAndIfElseToAssignmentWithConditionalExpression; }
+            get { return IfRefactoringKind.LocalDeclarationAndIfElseAssignmentWithConditionalExpression; }
         }
     }
 }

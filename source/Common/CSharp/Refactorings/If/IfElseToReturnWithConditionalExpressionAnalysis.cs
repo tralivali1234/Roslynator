@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings.If
 {
-    internal class IfElseToReturnWithConditionalExpressionAnalysis : IfToReturnWithConditionalExpressionAnalysis
+    internal sealed class IfElseToReturnWithConditionalExpressionAnalysis : IfToReturnWithConditionalExpressionAnalysis
     {
         public IfElseToReturnWithConditionalExpressionAnalysis(
             IfStatementSyntax ifStatement,
@@ -22,11 +21,6 @@ namespace Roslynator.CSharp.Refactorings.If
         public override string Title
         {
             get { return "Use conditional expression"; }
-        }
-
-        protected override StatementSyntax CreateStatement(ExpressionSyntax expression)
-        {
-            return ReturnStatement(expression);
         }
     }
 }

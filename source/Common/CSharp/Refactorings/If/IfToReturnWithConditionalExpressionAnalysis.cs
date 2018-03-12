@@ -19,8 +19,6 @@ namespace Roslynator.CSharp.Refactorings.If
 
         public ExpressionSyntax Expression2 { get; }
 
-        protected abstract StatementSyntax CreateStatement(ExpressionSyntax expression);
-
         public static IfToReturnWithConditionalExpressionAnalysis Create(IfStatementSyntax ifStatement, ExpressionSyntax expression1, ExpressionSyntax expression2, bool isYield)
         {
             if (isYield)

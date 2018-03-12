@@ -15,11 +15,6 @@ namespace Roslynator.CSharp.Refactorings.If
             WhenFalse = whenFalse;
         }
 
-        public override IfRefactoringKind Kind
-        {
-            get { return IfRefactoringKind.IfElseToAssignmentWithConditionalExpression; }
-        }
-
         public override string Title
         {
             get { return "Use conditional expression"; }
