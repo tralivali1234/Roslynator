@@ -1,65 +1,133 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    public readonly struct CallExtensionMethodAsInstanceMethodAnalysis : IEquatable<CallExtensionMethodAsInstanceMethodAnalysis>
+    public static class CallExtensionMethodAsInstanceMethodAnalysis
     {
-        public CallExtensionMethodAsInstanceMethodAnalysis(
+        public const string Title = "Call extension method as instance method";
+
+        private static CallExtensionMethodAsInstanceMethodAnalysisResult Fail { get; }
+
+        public static CallExtensionMethodAsInstanceMethodAnalysisResult Analyze(
             InvocationExpressionSyntax invocationExpression,
-            InvocationExpressionSyntax newInvocationExpression,
-            IMethodSymbol methodSymbol)
+            SemanticModel semanticModel,
+            bool allowAnyExpression = false,
+            CancellationToken cancellationToken = default(CancellationToken))
         {
-            InvocationExpression = invocationExpression ?? throw new ArgumentNullException(nameof(invocationExpression));
-            NewInvocationExpression = newInvocationExpression ?? throw new ArgumentNullException(nameof(newInvocationExpression));
-            MethodSymbol = methodSymbol;
+            ExpressionSyntax expression = invocationExpression
+                .ArgumentList?
+                .Arguments
+                .FirstOrDefault()?
+                .Expression?
+                .WalkDownParentheses();
+
+            if (expression == null)
+                return Fail;
+
+            if (!allowAnyExpression)
+            {
+                switch (expression.Kind())
+                {
+                    case SyntaxKind.IdentifierName:
+                    case SyntaxKind.GenericName:
+                    case SyntaxKind.InvocationExpression:
+                    case SyntaxKind.SimpleMemberAccessExpression:
+                    case SyntaxKind.ElementAccessExpression:
+                    case SyntaxKind.ConditionalAccessExpression:
+                    case SyntaxKind.CastExpression:
+                        break;
+                    default:
+                        return Fail;
+                }
+            }
+
+            IMethodSymbol methodSymbol = semanticModel.GetMethodSymbol(invocationExpression, cancellationToken);
+
+            if (methodSymbol == null)
+                return Fail;
+
+            if (!methodSymbol.IsOrdinaryExtensionMethod())
+                return Fail;
+
+            InvocationExpressionSyntax newInvocationExpression = GetNewInvocation(invocationExpression);
+
+            if (newInvocationExpression == null)
+                return Fail;
+
+            if (semanticModel
+                .GetSpeculativeMethodSymbol(invocationExpression.SpanStart, newInvocationExpression)?
+                .ReducedFromOrSelf()
+                .Equals(methodSymbol.ConstructedFrom) != true)
+            {
+                return Fail;
+            }
+
+            return new CallExtensionMethodAsInstanceMethodAnalysisResult(invocationExpression, newInvocationExpression, methodSymbol);
         }
 
-        public InvocationExpressionSyntax InvocationExpression { get; }
-
-        public InvocationExpressionSyntax NewInvocationExpression { get; }
-
-        public IMethodSymbol MethodSymbol { get; }
-
-        public bool Success
+        public static SyntaxNodeOrToken GetNodeOrToken(ExpressionSyntax expression)
         {
-            get
+            switch (expression.Kind())
             {
-                return InvocationExpression != null
-                    && NewInvocationExpression != null;
+                case SyntaxKind.IdentifierName:
+                    return (SimpleNameSyntax)expression;
+                case SyntaxKind.GenericName:
+                    return ((GenericNameSyntax)expression).Identifier;
+                case SyntaxKind.SimpleMemberAccessExpression:
+                    return ((MemberAccessExpressionSyntax)expression).Name;
+                default:
+                    return null;
             }
         }
 
-        public override bool Equals(object obj)
+        private static InvocationExpressionSyntax GetNewInvocation(InvocationExpressionSyntax invocation)
         {
-            return obj is CallExtensionMethodAsInstanceMethodAnalysis other
-                && Equals(other);
-        }
+            ExpressionSyntax expression = invocation.Expression;
+            ArgumentListSyntax argumentList = invocation.ArgumentList;
+            SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
+            ArgumentSyntax argument = arguments.First();
 
-        public bool Equals(CallExtensionMethodAsInstanceMethodAnalysis other)
-        {
-            return EqualityComparer<InvocationExpressionSyntax>.Default.Equals(InvocationExpression, other.InvocationExpression)
-                   && EqualityComparer<InvocationExpressionSyntax>.Default.Equals(NewInvocationExpression, other.NewInvocationExpression)
-                   && EqualityComparer<IMethodSymbol>.Default.Equals(MethodSymbol, other.MethodSymbol);
-        }
+            MemberAccessExpressionSyntax newMemberAccess = CreateNewMemberAccessExpression();
 
-        public override int GetHashCode()
-        {
-            return Hash.Combine(InvocationExpression, Hash.Combine(NewInvocationExpression, Hash.Create(MethodSymbol)));
-        }
+            if (newMemberAccess == null)
+                return null;
 
-        public static bool operator ==(CallExtensionMethodAsInstanceMethodAnalysis analysis1, CallExtensionMethodAsInstanceMethodAnalysis analysis2)
-        {
-            return analysis1.Equals(analysis2);
-        }
+            return invocation
+                .WithExpression(newMemberAccess)
+                .WithArgumentList(argumentList.WithArguments(arguments.Remove(argument)));
 
-        public static bool operator !=(CallExtensionMethodAsInstanceMethodAnalysis analysis1, CallExtensionMethodAsInstanceMethodAnalysis analysis2)
-        {
-            return !(analysis1 == analysis2);
+            MemberAccessExpressionSyntax CreateNewMemberAccessExpression()
+            {
+                switch (expression.Kind())
+                {
+                    case SyntaxKind.IdentifierName:
+                    case SyntaxKind.GenericName:
+                        {
+                            return SimpleMemberAccessExpression(
+                                ParenthesizedExpression(argument.Expression),
+                                (SimpleNameSyntax)expression);
+                        }
+                    case SyntaxKind.SimpleMemberAccessExpression:
+                        {
+                            var memberAccess = (MemberAccessExpressionSyntax)expression;
+
+                            return memberAccess.WithExpression(ParenthesizedExpression(argument.Expression));
+                        }
+                    default:
+                        {
+                            Debug.Fail(expression.Kind().ToString());
+                            return null;
+                        }
+                }
+            }
         }
     }
 }

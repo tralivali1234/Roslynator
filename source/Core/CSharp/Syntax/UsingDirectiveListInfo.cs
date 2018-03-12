@@ -15,8 +15,9 @@ namespace Roslynator.CSharp.Syntax
     /// </summary>
     public readonly struct UsingDirectiveListInfo : IEquatable<UsingDirectiveListInfo>, IReadOnlyList<UsingDirectiveSyntax>
     {
-        internal UsingDirectiveListInfo(SyntaxList<UsingDirectiveSyntax> usings)
+        internal UsingDirectiveListInfo(SyntaxNode parent, SyntaxList<UsingDirectiveSyntax> usings)
         {
+            Parent = parent;
             Usings = usings;
         }
 
@@ -25,10 +26,7 @@ namespace Roslynator.CSharp.Syntax
         /// <summary>
         /// The declaration that contains the usings.
         /// </summary>
-        public SyntaxNode Parent
-        {
-            get { return Usings.FirstOrDefault()?.Parent; }
-        }
+        public SyntaxNode Parent { get; }
 
         /// <summary>
         /// A list of usings.
@@ -85,7 +83,7 @@ namespace Roslynator.CSharp.Syntax
             if (namespaceDeclaration == null)
                 return Default;
 
-            return new UsingDirectiveListInfo(namespaceDeclaration.Usings);
+            return new UsingDirectiveListInfo(namespaceDeclaration, namespaceDeclaration.Usings);
         }
 
         internal static UsingDirectiveListInfo Create(CompilationUnitSyntax compilationUnit)
@@ -93,7 +91,7 @@ namespace Roslynator.CSharp.Syntax
             if (compilationUnit == null)
                 return Default;
 
-            return new UsingDirectiveListInfo(compilationUnit.Usings);
+            return new UsingDirectiveListInfo(compilationUnit, compilationUnit.Usings);
         }
 
         internal static UsingDirectiveListInfo Create(SyntaxNode declaration)
@@ -103,12 +101,12 @@ namespace Roslynator.CSharp.Syntax
                 case SyntaxKind.CompilationUnit:
                     {
                         var typeDeclaration = (CompilationUnitSyntax)declaration;
-                        return new UsingDirectiveListInfo(typeDeclaration.Usings);
+                        return new UsingDirectiveListInfo(typeDeclaration, typeDeclaration.Usings);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var namespaceDeclaration = (NamespaceDeclarationSyntax)declaration;
-                        return new UsingDirectiveListInfo(namespaceDeclaration.Usings);
+                        return new UsingDirectiveListInfo(namespaceDeclaration, namespaceDeclaration.Usings);
                     }
             }
 
@@ -140,13 +138,13 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var declaration = (CompilationUnitSyntax)Parent;
                         declaration = declaration.WithUsings(usings);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.WithUsings(usings);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
             }
 
@@ -169,13 +167,13 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var declaration = (CompilationUnitSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.RemoveNode(node, options);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
             }
 
@@ -198,13 +196,13 @@ namespace Roslynator.CSharp.Syntax
                     {
                         var declaration = (CompilationUnitSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
                 case SyntaxKind.NamespaceDeclaration:
                     {
                         var declaration = (NamespaceDeclarationSyntax)Parent;
                         declaration = declaration.ReplaceNode(oldNode, newNode);
-                        return new UsingDirectiveListInfo(declaration.Usings);
+                        return new UsingDirectiveListInfo(declaration, declaration.Usings);
                     }
             }
 

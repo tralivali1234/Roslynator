@@ -9,6 +9,6 @@ namespace Roslynator.CSharp.Syntax
         Exclude = 2,
         InheritDoc = 3,
         Summary = 4,
-        Exception = 5
+        Exception = 5,
     }
 }

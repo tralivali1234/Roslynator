@@ -59,12 +59,10 @@ namespace Roslynator.Helpers
 
         private static ITypeSymbol ExtractFromNullableType(ITypeSymbol typeSymbol)
         {
-            if (typeSymbol.IsNamedType())
+            if (typeSymbol is INamedTypeSymbol namedTypeSymbol
+                && namedTypeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
             {
-                var namedTypeSymbol = (INamedTypeSymbol)typeSymbol;
-
-                if (namedTypeSymbol.IsConstructedFrom(SpecialType.System_Nullable_T))
-                    return namedTypeSymbol.TypeArguments[0];
+                return namedTypeSymbol.TypeArguments[0];
             }
 
             return typeSymbol;
@@ -131,7 +129,7 @@ namespace Roslynator.Helpers
 
         private static string GetName(ITypeSymbol typeSymbol)
         {
-            if (typeSymbol.IsTypeParameter())
+            if (typeSymbol.Kind == SymbolKind.TypeParameter)
             {
                 if (typeSymbol.Name.Length > 1
                     && typeSymbol.Name[0] == 'T')

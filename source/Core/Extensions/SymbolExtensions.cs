@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -291,66 +290,6 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Returns true if the symbol is declared as public.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsPublic(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Public;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as internal.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsInternal(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Internal;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as protected.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsProtected(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Protected;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is declared as private.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsPrivate(this ISymbol symbol)
-        {
-            return symbol?.DeclaredAccessibility == Accessibility.Private;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is an array type.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsArrayType(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.ArrayType;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a dynamic type.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsDynamicType(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.DynamicType;
-        }
-
-        /// <summary>
         /// Returns true if the symbol represents an error.
         /// </summary>
         /// <param name="symbol"></param>
@@ -361,109 +300,19 @@ namespace Roslynator
         }
 
         /// <summary>
-        /// Returns true if the symbol is an event.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsEvent(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Event;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a field.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsField(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Field;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a local.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsLocal(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Local;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a method.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsMethod(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Method;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a named type.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsNamedType(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.NamedType;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a namespace.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsNamespace(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Namespace;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a parameter.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsParameter(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Parameter;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a property.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsProperty(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.Property;
-        }
-
-        /// <summary>
-        /// Returns true if the symbol is a type parameter.
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public static bool IsTypeParameter(this ISymbol symbol)
-        {
-            return symbol?.Kind == SymbolKind.TypeParameter;
-        }
-
-        /// <summary>
         /// Returns true if the symbol is an async method.
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
         public static bool IsAsyncMethod(this ISymbol symbol)
         {
-            return IsMethod(symbol)
+            return symbol?.Kind == SymbolKind.Method
                 && ((IMethodSymbol)symbol).IsAsync;
         }
 
         internal static bool IsPropertyOfAnonymousType(this ISymbol symbol)
         {
-            return symbol.IsProperty()
+            return symbol?.Kind == SymbolKind.Property
                 && symbol.ContainingType.IsAnonymousType;
         }
 
@@ -1947,7 +1796,7 @@ namespace Roslynator
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
 
-            if (typeSymbol.IsNamedType())
+            if (typeSymbol.Kind == SymbolKind.NamedType)
             {
                 var namedTypeSymbol = (INamedTypeSymbol)typeSymbol;
 

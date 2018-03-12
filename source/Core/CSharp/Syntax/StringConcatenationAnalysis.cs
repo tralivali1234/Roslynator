@@ -114,7 +114,7 @@ namespace Roslynator.CSharp.Syntax
             ContainsVerbatimInterpolatedString = 16,
             ContainsVerbatimExpression = ContainsVerbatimStringLiteral | ContainsVerbatimInterpolatedString,
             ContainsInterpolatedString = ContainsRegularInterpolatedString | ContainsVerbatimInterpolatedString,
-            ContainsNonStringLiteral = ContainsInterpolatedString | ContainsUnspecifiedExpression
+            ContainsNonStringLiteral = ContainsInterpolatedString | ContainsUnspecifiedExpression,
         }
     }
 }
