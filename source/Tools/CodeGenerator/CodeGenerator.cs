@@ -20,11 +20,11 @@ namespace Roslynator.CodeGeneration
         public void Generate()
         {
             WriteCompilationUnit(
-                @"Refactorings\RefactoringIdentifiers.Generated.cs",
+                @"Refactorings\CSharp\RefactoringIdentifiers.Generated.cs",
                 RefactoringIdentifiersGenerator.Generate(Refactorings, obsolete: false, comparer: Comparer));
 
             WriteCompilationUnit(
-                @"Refactorings\RefactoringIdentifiers.Deprecated.Generated.cs",
+                @"Refactorings\CSharp\RefactoringIdentifiers.Deprecated.Generated.cs",
                 RefactoringIdentifiersGenerator.Generate(Refactorings, obsolete: true, comparer: Comparer));
 
             WriteCompilationUnit(
@@ -32,23 +32,23 @@ namespace Roslynator.CodeGeneration
                 RefactoringsOptionsPageGenerator.Generate(Refactorings.Where(f => !f.IsObsolete), Comparer));
 
             WriteCompilationUnit(
-                @"Analyzers\DiagnosticDescriptors.Generated.cs",
+                @"Analyzers\CSharp\DiagnosticDescriptors.Generated.cs",
                 DiagnosticDescriptorsGenerator.Generate(Analyzers, obsolete: false, comparer: Comparer), normalizeWhitespace: false);
 
             WriteCompilationUnit(
-                @"Analyzers\DiagnosticDescriptors.Deprecated.Generated.cs",
+                @"Analyzers\CSharp\DiagnosticDescriptors.Deprecated.Generated.cs",
                 DiagnosticDescriptorsGenerator.Generate(Analyzers, obsolete: true, comparer: Comparer), normalizeWhitespace: false);
 
             WriteCompilationUnit(
-                @"Analyzers\DiagnosticIdentifiers.Generated.cs",
+                @"Analyzers\CSharp\DiagnosticIdentifiers.Generated.cs",
                 DiagnosticIdentifiersGenerator.Generate(Analyzers, obsolete: false, comparer: Comparer));
 
             WriteCompilationUnit(
-                @"Analyzers\DiagnosticIdentifiers.Deprecated.Generated.cs",
+                @"Analyzers\CSharp\DiagnosticIdentifiers.Deprecated.Generated.cs",
                 DiagnosticIdentifiersGenerator.Generate(Analyzers, obsolete: true, comparer: Comparer));
 
             WriteCompilationUnit(
-                @"CodeFixes\CodeFixIdentifiers.Generated.cs",
+                @"CodeFixes\CSharp\CodeFixIdentifiers.Generated.cs",
                 CodeFixIdentifiersGenerator.Generate(CodeFixes, Comparer));
 
             WriteCompilationUnit(

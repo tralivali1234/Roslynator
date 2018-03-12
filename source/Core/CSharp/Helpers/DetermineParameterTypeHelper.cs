@@ -95,9 +95,9 @@ namespace Roslynator.CSharp.Helpers
             ITypeSymbol typeSymbol = parameterSymbol.Type;
 
             if (parameterSymbol.IsParams
-                && typeSymbol.IsArrayType())
+                && typeSymbol is IArrayTypeSymbol arrayType)
             {
-                return ((IArrayTypeSymbol)typeSymbol).ElementType;
+                return arrayType.ElementType;
             }
 
             return typeSymbol;

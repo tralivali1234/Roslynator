@@ -275,11 +275,8 @@ namespace Roslynator.CSharp
                     {
                         var fieldSymbol = (IFieldSymbol)symbol;
 
-                        if (string.Equals(fieldSymbol.Name, "Empty", StringComparison.Ordinal)
+                        if (SymbolUtility.IsPublicStaticReadOnly(fieldSymbol, "Empty")
                             && fieldSymbol.ContainingType?.SpecialType == SpecialType.System_String
-                            && fieldSymbol.IsPublic()
-                            && fieldSymbol.IsStatic
-                            && fieldSymbol.IsReadOnly
                             && fieldSymbol.Type.IsString())
                         {
                             return true;
@@ -312,11 +309,13 @@ namespace Roslynator.CSharp
                 if (semanticModel.GetAliasInfo(name, cancellationToken) != null
                     || !symbol.ContainingNamespace.IsGlobalNamespace)
                 {
-                    if (symbol.IsNamespace())
+                    SymbolKind kind = symbol.Kind;
+
+                    if (kind == SymbolKind.Namespace)
                     {
                         return SyntaxFactory.ParseName(symbol.ToString()).WithTriviaFrom(name);
                     }
-                    else if (symbol.IsNamedType())
+                    else if (kind == SymbolKind.NamedType)
                     {
                         return (NameSyntax)((INamedTypeSymbol)symbol).ToTypeSyntax(_symbolDisplayFormat).WithTriviaFrom(name);
                     }

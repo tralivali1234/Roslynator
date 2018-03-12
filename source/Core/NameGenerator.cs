@@ -126,7 +126,7 @@ namespace Roslynator
             if (semanticModel == null)
                 throw new ArgumentNullException(nameof(semanticModel));
 
-            if (containingSymbol.IsMethod())
+            if (containingSymbol.Kind == SymbolKind.Method)
             {
                 var methodSymbol = (IMethodSymbol)containingSymbol;
 

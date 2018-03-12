@@ -8,6 +8,6 @@ namespace Roslynator.CSharp.Syntax
         UIntOrULong = 1,
         LongOrULong = 2,
         ULong = 3,
-        Unknown = 4
+        Unknown = 4,
     }
 }

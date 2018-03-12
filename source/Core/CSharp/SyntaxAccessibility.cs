@@ -1159,7 +1159,7 @@ namespace Roslynator.CSharp
             if (declaration == null)
                 throw new ArgumentNullException(nameof(declaration));
 
-            return SyntaxInfo.ModifiersInfo(declaration).ExplicitAccessibility;
+            return SyntaxInfo.ModifierListInfo(declaration).ExplicitAccessibility;
         }
 
         /// <summary>
@@ -1495,7 +1495,7 @@ namespace Roslynator.CSharp
                     {
                         var eventDeclaration = (EventDeclarationSyntax)node;
 
-                        ModifierKinds kinds = SyntaxInfo.ModifiersInfo(eventDeclaration).GetKinds();
+                        ModifierKinds kinds = SyntaxInfo.ModifierListInfo(eventDeclaration).GetKinds();
 
                         return (ignoreOverride || !kinds.Any(ModifierKinds.Override))
                             && (accessibility != Accessibility.Private || !kinds.Any(ModifierKinds.AbstractVirtualOverride))
@@ -1506,7 +1506,7 @@ namespace Roslynator.CSharp
                     {
                         var indexerDeclaration = (IndexerDeclarationSyntax)node;
 
-                        ModifierKinds kinds = SyntaxInfo.ModifiersInfo(indexerDeclaration).GetKinds();
+                        ModifierKinds kinds = SyntaxInfo.ModifierListInfo(indexerDeclaration).GetKinds();
 
                         return (ignoreOverride || !kinds.Any(ModifierKinds.Override))
                             && (accessibility != Accessibility.Private || !kinds.Any(ModifierKinds.AbstractVirtualOverride))
@@ -1517,7 +1517,7 @@ namespace Roslynator.CSharp
                     {
                         var propertyDeclaration = (PropertyDeclarationSyntax)node;
 
-                        ModifierKinds kinds = SyntaxInfo.ModifiersInfo(propertyDeclaration).GetKinds();
+                        ModifierKinds kinds = SyntaxInfo.ModifierListInfo(propertyDeclaration).GetKinds();
 
                         return (ignoreOverride || !kinds.Any(ModifierKinds.Override))
                             && (accessibility != Accessibility.Private || !kinds.Any(ModifierKinds.AbstractVirtualOverride))
@@ -1528,7 +1528,7 @@ namespace Roslynator.CSharp
                     {
                         var methodDeclaration = (MethodDeclarationSyntax)node;
 
-                        ModifierKinds kinds = SyntaxInfo.ModifiersInfo(methodDeclaration).GetKinds();
+                        ModifierKinds kinds = SyntaxInfo.ModifierListInfo(methodDeclaration).GetKinds();
 
                         return (ignoreOverride || !kinds.Any(ModifierKinds.Override))
                             && (accessibility != Accessibility.Private || !kinds.Any(ModifierKinds.AbstractVirtualOverride))
@@ -1538,7 +1538,7 @@ namespace Roslynator.CSharp
                     {
                         var eventFieldDeclaration = (EventFieldDeclarationSyntax)node;
 
-                        ModifierKinds kinds = SyntaxInfo.ModifiersInfo(eventFieldDeclaration).GetKinds();
+                        ModifierKinds kinds = SyntaxInfo.ModifierListInfo(eventFieldDeclaration).GetKinds();
 
                         return (ignoreOverride || !kinds.Any(ModifierKinds.Override))
                             && (accessibility != Accessibility.Private || !kinds.Any(ModifierKinds.AbstractVirtualOverride))

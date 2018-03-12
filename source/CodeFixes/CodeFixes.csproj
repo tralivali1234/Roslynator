@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\CommonFixes\CommonFixes.csproj" />
     <ProjectReference Include="..\Workspaces\Workspaces.csproj" />
   </ItemGroup>
 

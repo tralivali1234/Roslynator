@@ -181,7 +181,7 @@ namespace Roslynator
                     }
 
                     if (span.Start >= en.Current.FullSpan.Start
-                        && span.Start <= en.Current.Span.Start)
+                        && span.Start <= en.Current.SpanStart)
                     {
                         int j = i;
 
@@ -238,7 +238,7 @@ namespace Roslynator
                     }
 
                     if (span.Start >= en.Current.FullSpan.Start
-                        && span.Start <= en.Current.Span.Start)
+                        && span.Start <= en.Current.SpanStart)
                     {
                         int j = i;
 
