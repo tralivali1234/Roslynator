@@ -1,7 +1,5 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -26,16 +24,6 @@ namespace Roslynator.CSharp.Refactorings
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.AddCommaAfterLastEnumMember, Location.Create(enumDeclaration.SyntaxTree, new TextSpan(members.Last().Span.End, 0)));
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            EnumDeclarationSyntax enumDeclaration,
-            CancellationToken cancellationToken)
-        {
-            var textChange = new TextChange(new TextSpan(enumDeclaration.Members.Last().Span.End, 0), ",");
-
-            return document.WithTextChangeAsync(textChange, cancellationToken);
         }
     }
 }
