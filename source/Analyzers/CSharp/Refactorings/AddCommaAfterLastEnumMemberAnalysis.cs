@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Refactorings
 {
-    internal static class AddCommaAfterLastEnumMemberRefactoring
+    internal static class AddCommaAfterLastEnumMemberAnalysis
     {
         public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
         {
@@ -26,16 +26,6 @@ namespace Roslynator.CSharp.Refactorings
                 return;
 
             context.ReportDiagnostic(DiagnosticDescriptors.AddCommaAfterLastEnumMember, Location.Create(enumDeclaration.SyntaxTree, new TextSpan(members.Last().Span.End, 0)));
-        }
-
-        public static Task<Document> RefactorAsync(
-            Document document,
-            EnumDeclarationSyntax enumDeclaration,
-            CancellationToken cancellationToken)
-        {
-            var textChange = new TextChange(new TextSpan(enumDeclaration.Members.Last().Span.End, 0), ",");
-
-            return document.WithTextChangeAsync(textChange, cancellationToken);
         }
     }
 }
