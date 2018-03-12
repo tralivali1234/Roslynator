@@ -189,7 +189,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(castExpression));
 
             return TextSpan.FromBounds(
-                castExpression.OpenParenToken.Span.Start,
+                castExpression.OpenParenToken.SpanStart,
                 castExpression.CloseParenToken.Span.End);
         }
         #endregion CastExpressionSyntax
@@ -238,7 +238,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(classDeclaration));
 
             return TextSpan.FromBounds(
-                classDeclaration.OpenBraceToken.Span.Start,
+                classDeclaration.OpenBraceToken.SpanStart,
                 classDeclaration.CloseBraceToken.Span.End);
         }
 
@@ -283,7 +283,7 @@ namespace Roslynator.CSharp
             if (forEachStatement == null)
                 throw new ArgumentNullException(nameof(forEachStatement));
 
-            return TextSpan.FromBounds(forEachStatement.OpenParenToken.Span.Start, forEachStatement.CloseParenToken.Span.End);
+            return TextSpan.FromBounds(forEachStatement.OpenParenToken.SpanStart, forEachStatement.CloseParenToken.Span.End);
         }
 
         internal static StatementSyntax EmbeddedStatement(this CommonForEachStatementSyntax forEachStatement)
@@ -425,7 +425,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(constructorDeclaration));
 
             return TextSpan.FromBounds(
-                constructorDeclaration.Span.Start,
+                constructorDeclaration.SpanStart,
                 constructorDeclaration.Initializer?.Span.End
                     ?? constructorDeclaration.ParameterList?.Span.End
                     ?? constructorDeclaration.Identifier.Span.End);
@@ -675,7 +675,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(enumDeclaration));
 
             return TextSpan.FromBounds(
-                enumDeclaration.OpenBraceToken.Span.Start,
+                enumDeclaration.OpenBraceToken.SpanStart,
                 enumDeclaration.CloseBraceToken.Span.End);
         }
         #endregion EnumDeclarationSyntax
@@ -687,7 +687,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(eventDeclaration));
 
             return TextSpan.FromBounds(
-                eventDeclaration.Span.Start,
+                eventDeclaration.SpanStart,
                 eventDeclaration.Identifier.Span.End);
         }
         #endregion EventDeclarationSyntax
@@ -772,7 +772,7 @@ namespace Roslynator.CSharp
             if (forStatement == null)
                 throw new ArgumentNullException(nameof(forStatement));
 
-            return TextSpan.FromBounds(forStatement.OpenParenToken.Span.Start, forStatement.CloseParenToken.Span.End);
+            return TextSpan.FromBounds(forStatement.OpenParenToken.SpanStart, forStatement.CloseParenToken.Span.End);
         }
 
         internal static StatementSyntax EmbeddedStatement(this ForStatementSyntax forStatement)
@@ -934,7 +934,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(indexerDeclaration));
 
             return TextSpan.FromBounds(
-                indexerDeclaration.Span.Start,
+                indexerDeclaration.SpanStart,
                 indexerDeclaration.ParameterList?.Span.End ?? indexerDeclaration.ThisKeyword.Span.End);
         }
 
@@ -981,7 +981,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(interfaceDeclaration));
 
             return TextSpan.FromBounds(
-                interfaceDeclaration.OpenBraceToken.Span.Start,
+                interfaceDeclaration.OpenBraceToken.SpanStart,
                 interfaceDeclaration.CloseBraceToken.Span.End);
         }
 
@@ -1373,7 +1373,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(methodDeclaration));
 
             return TextSpan.FromBounds(
-                methodDeclaration.Span.Start,
+                methodDeclaration.SpanStart,
                 methodDeclaration.ParameterList?.Span.End ?? methodDeclaration.Identifier.Span.End);
         }
 
@@ -1464,7 +1464,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(namespaceDeclaration));
 
             return TextSpan.FromBounds(
-                namespaceDeclaration.OpenBraceToken.Span.Start,
+                namespaceDeclaration.OpenBraceToken.SpanStart,
                 namespaceDeclaration.CloseBraceToken.Span.End);
         }
         #endregion NamespaceDeclarationSyntax
@@ -1518,7 +1518,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(propertyDeclaration));
 
             return TextSpan.FromBounds(
-                propertyDeclaration.Span.Start,
+                propertyDeclaration.SpanStart,
                 propertyDeclaration.Identifier.Span.End);
         }
 
@@ -1911,7 +1911,7 @@ namespace Roslynator.CSharp
                 throw new ArgumentNullException(nameof(structDeclaration));
 
             return TextSpan.FromBounds(
-                structDeclaration.OpenBraceToken.Span.Start,
+                structDeclaration.OpenBraceToken.SpanStart,
                 structDeclaration.CloseBraceToken.Span.End);
         }
 
@@ -2495,7 +2495,7 @@ namespace Roslynator.CSharp
         private static int GetStartIndex(SyntaxNode node, bool includeExteriorTrivia, bool trim)
         {
             if (!includeExteriorTrivia)
-                return node.Span.Start;
+                return node.SpanStart;
 
             int start = node.FullSpan.Start;
 

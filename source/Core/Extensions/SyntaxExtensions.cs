@@ -593,7 +593,7 @@ namespace Roslynator
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
 
-            return TextSpan.FromBounds(node.FullSpan.Start, node.Span.Start);
+            return TextSpan.FromBounds(node.FullSpan.Start, node.SpanStart);
         }
 
         internal static TextSpan TrailingTriviaSpan(this SyntaxNode node)
@@ -938,7 +938,7 @@ namespace Roslynator
 
         internal static TextSpan LeadingTriviaSpan(this SyntaxToken token)
         {
-            return TextSpan.FromBounds(token.FullSpan.Start, token.Span.Start);
+            return TextSpan.FromBounds(token.FullSpan.Start, token.SpanStart);
         }
 
         internal static TextSpan TrailingTriviaSpan(this SyntaxToken token)
@@ -1125,7 +1125,7 @@ namespace Roslynator
 
         internal static TextSpan LeadingTriviaSpan(this SyntaxTrivia trivia)
         {
-            return TextSpan.FromBounds(trivia.FullSpan.Start, trivia.Span.Start);
+            return TextSpan.FromBounds(trivia.FullSpan.Start, trivia.SpanStart);
         }
 
         internal static TextSpan TrailingTriviaSpan(this SyntaxTrivia trivia)

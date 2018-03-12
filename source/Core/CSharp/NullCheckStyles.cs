@@ -75,6 +75,6 @@ namespace Roslynator.CSharp
         /// <summary>
         /// All null check styles.
         /// </summary>
-        All = CheckingNull | CheckingNotNull
+        All = CheckingNull | CheckingNotNull,
     }
 }

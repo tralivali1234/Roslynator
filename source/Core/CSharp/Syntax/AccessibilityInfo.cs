@@ -352,9 +352,9 @@ namespace Roslynator.CSharp.Syntax
             return new AccessibilityInfo(node, modifiers, -1);
         }
 
-        internal ModifiersInfo ModifiersInfo()
+        internal ModifierListInfo ModifierListInfo()
         {
-            return new ModifiersInfo(Node, Modifiers);
+            return new ModifierListInfo(Node, Modifiers);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace Roslynator.CSharp.Syntax
         {
             ThrowInvalidOperationIfNotInitialized();
 
-            ModifiersInfo info = ModifiersInfo().WithModifiers(newModifiers);
+            ModifierListInfo info = ModifierListInfo().WithModifiers(newModifiers);
 
             return Create(info.Parent, info.Modifiers);
         }

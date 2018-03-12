@@ -406,7 +406,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceModifiersAsync(
             this Document document,
-            ModifiersInfo modifiersInfo,
+            ModifierListInfo modifiersInfo,
             IEnumerable<SyntaxToken> newModifiers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -415,7 +415,7 @@ namespace Roslynator.CSharp
 
         internal static Task<Document> ReplaceModifiersAsync(
             this Document document,
-            ModifiersInfo modifiersInfo,
+            ModifierListInfo modifiersInfo,
             SyntaxTokenList newModifiers,
             CancellationToken cancellationToken = default(CancellationToken))
         {
