@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
+namespace Roslynator.CSharp.Refactorings
 {
     internal static class UnnecessaryUnsafeContextAnalysis
     {

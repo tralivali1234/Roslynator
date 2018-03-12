@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Roslynator.CSharp.Analyzers.UnusedMember
+namespace Roslynator.CSharp.Refactorings.UnusedMember
 {
     internal static class UnusedMemberAnalysis
     {

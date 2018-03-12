@@ -5,10 +5,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext.UnnecessaryUnsafeContextAnalysis;
+using static Roslynator.CSharp.Refactorings.UnnecessaryUnsafeContextAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.UnnecessaryUnsafeContext
+namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class UnnecessaryUnsafeContextDiagnosticAnalyzer : BaseDiagnosticAnalyzer

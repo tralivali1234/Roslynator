@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.UnusedMember
+namespace Roslynator.CSharp.Refactorings.UnusedMember
 {
     internal static class UnusedMemberWalkerCache
     {

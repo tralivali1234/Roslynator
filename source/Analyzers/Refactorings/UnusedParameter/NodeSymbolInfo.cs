@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.UnusedMember
+namespace Roslynator.CSharp.Refactorings.UnusedParameter
 {
     internal readonly struct NodeSymbolInfo
     {

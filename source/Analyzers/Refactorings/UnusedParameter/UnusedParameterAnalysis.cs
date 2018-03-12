@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Analyzers.UnusedParameter
+namespace Roslynator.CSharp.Refactorings.UnusedParameter
 {
     internal static class UnusedParameterAnalysis
     {

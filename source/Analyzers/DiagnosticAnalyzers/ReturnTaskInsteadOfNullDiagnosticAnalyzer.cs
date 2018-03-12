@@ -5,10 +5,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull.ReturnTaskInsteadOfNullAnalysis;
+using static Roslynator.CSharp.Refactorings.ReturnTaskInsteadOfNull.ReturnTaskInsteadOfNullAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
+namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ReturnTaskInsteadOfReturningNullDiagnosticAnalyzer : BaseDiagnosticAnalyzer

@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
+namespace Roslynator.CSharp.Refactorings.MarkLocalVariableAsConst
 {
     internal static class MarkLocalVariableAsConstWalkerCache
     {

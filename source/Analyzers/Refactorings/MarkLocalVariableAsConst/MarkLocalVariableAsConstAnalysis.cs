@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Syntax;
 
-namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
+namespace Roslynator.CSharp.Refactorings.MarkLocalVariableAsConst
 {
     internal static class MarkLocalVariableAsConstAnalysis
     {

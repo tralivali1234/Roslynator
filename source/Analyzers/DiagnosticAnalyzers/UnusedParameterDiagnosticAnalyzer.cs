@@ -5,10 +5,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.DiagnosticAnalyzers;
-using static Roslynator.CSharp.Analyzers.UnusedParameter.UnusedParameterAnalysis;
+using static Roslynator.CSharp.Refactorings.UnusedParameter.UnusedParameterAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.UnusedParameter
+namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class UnusedParameterDiagnosticAnalyzer : BaseDiagnosticAnalyzer

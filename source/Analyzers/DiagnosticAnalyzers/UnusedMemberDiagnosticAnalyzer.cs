@@ -5,16 +5,16 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.DiagnosticAnalyzers;
+using static Roslynator.CSharp.Refactorings.UnusedMember.UnusedMemberAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
+namespace Roslynator.CSharp.DiagnosticAnalyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class LocalDeclarationStatementDiagnosticAnalyzer : BaseDiagnosticAnalyzer
+    public class UnusedMemberDiagnosticAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.MarkLocalVariableAsConst); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.RemoveUnusedMemberDeclaration); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -23,10 +23,10 @@ namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
                 throw new ArgumentNullException(nameof(context));
 
             base.Initialize(context);
+            context.EnableConcurrentExecution();
 
-            context.RegisterSyntaxNodeAction(
-                MarkLocalVariableAsConstAnalysis.AnalyzeLocalDeclarationStatement,
-                SyntaxKind.LocalDeclarationStatement);
+            context.RegisterSyntaxNodeAction(AnalyzeClassDeclaration, SyntaxKind.ClassDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeStructDeclaration, SyntaxKind.StructDeclaration);
         }
     }
 }

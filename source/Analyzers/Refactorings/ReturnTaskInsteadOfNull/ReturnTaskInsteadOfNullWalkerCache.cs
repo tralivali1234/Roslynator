@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 
-namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
+namespace Roslynator.CSharp.Refactorings.ReturnTaskInsteadOfNull
 {
     internal static class ReturnTaskInsteadOfNullWalkerCache
     {

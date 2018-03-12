@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxWalkers;
 
-namespace Roslynator.CSharp.Analyzers.MarkLocalVariableAsConst
+namespace Roslynator.CSharp.Refactorings.MarkLocalVariableAsConst
 {
     internal class MarkLocalVariableAsConstWalker : AssignedExpressionWalker
     {

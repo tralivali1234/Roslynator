@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
-namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
+namespace Roslynator.CSharp.Refactorings.ReturnTaskInsteadOfNull
 {
     internal static class ReturnTaskInsteadOfNullAnalysis
     {

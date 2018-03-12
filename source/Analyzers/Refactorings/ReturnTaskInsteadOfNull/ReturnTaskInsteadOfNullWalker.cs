@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp.SyntaxWalkers;
 
-namespace Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull
+namespace Roslynator.CSharp.Refactorings.ReturnTaskInsteadOfNull
 {
     internal class ReturnTaskInsteadOfNullWalker : SkipFunctionWalker
     {

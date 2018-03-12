@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 
-namespace Roslynator.CSharp.Analyzers.UnusedParameter
+namespace Roslynator.CSharp.Refactorings.UnusedParameter
 {
     internal static class UnusedParameterWalkerCache
     {
