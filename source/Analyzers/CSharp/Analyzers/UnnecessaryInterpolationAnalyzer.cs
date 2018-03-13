@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +25,25 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(UnnecessaryInterpolationAnalysis.AnalyzeInterpolation, SyntaxKind.Interpolation);
+            context.RegisterSyntaxNodeAction(AnalyzeInterpolation, SyntaxKind.Interpolation);
+        }
+
+        public static void AnalyzeInterpolation(SyntaxNodeAnalysisContext context)
+        {
+            var interpolation = (InterpolationSyntax)context.Node;
+
+            StringLiteralExpressionInfo stringLiteralInfo = SyntaxInfo.StringLiteralExpressionInfo(interpolation.Expression);
+
+            if (!stringLiteralInfo.Success)
+                return;
+
+            if (!(interpolation.Parent is InterpolatedStringExpressionSyntax interpolatedString))
+                return;
+
+            if (interpolatedString.StringStartToken.ValueText.Contains("@") != stringLiteralInfo.IsVerbatim)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UnnecessaryInterpolation, interpolation);
         }
     }
 }

@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,25 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                RemoveRedundantBaseConstructorCallAnalysis.AnalyzeConstructorDeclaration,
-                SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
+        }
+
+        public static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var constructor = (ConstructorDeclarationSyntax)context.Node;
+
+            ConstructorInitializerSyntax initializer = constructor.Initializer;
+
+            if (initializer?.Kind() == SyntaxKind.BaseConstructorInitializer
+                && initializer.ArgumentList?.Arguments.Count == 0
+                && initializer
+                    .DescendantTrivia(initializer.Span)
+                    .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.RemoveRedundantBaseConstructorCall,
+                    initializer);
+            }
         }
     }
 }

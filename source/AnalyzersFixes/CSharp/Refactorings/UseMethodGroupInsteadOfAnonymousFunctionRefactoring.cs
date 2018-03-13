@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -14,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
             AnonymousFunctionExpressionSyntax anonymousFunction,
             CancellationToken cancellationToken)
         {
-            InvocationExpressionSyntax invocationExpression = UseMethodGroupInsteadOfAnonymousFunctionAnalysis.GetInvocationExpression(anonymousFunction.Body);
+            InvocationExpressionSyntax invocationExpression = UseMethodGroupInsteadOfAnonymousFunctionAnalyzer.GetInvocationExpression(anonymousFunction.Body);
 
             ExpressionSyntax newNode = invocationExpression.Expression;
 

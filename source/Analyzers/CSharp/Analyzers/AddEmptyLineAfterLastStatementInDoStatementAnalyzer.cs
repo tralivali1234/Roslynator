@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,55 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                AddEmptyLineAfterLastStatementInDoStatementAnalysis.AnalyzeDoStatement,
-                SyntaxKind.DoStatement);
+            context.RegisterSyntaxNodeAction(AnalyzeDoStatement, SyntaxKind.DoStatement);
+        }
+
+        public static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
+        {
+            var doStatement = (DoStatementSyntax)context.Node;
+
+            StatementSyntax statement = doStatement.Statement;
+
+            if (statement?.Kind() != SyntaxKind.Block)
+                return;
+
+            var block = (BlockSyntax)statement;
+
+            StatementSyntax lastStatement = block.Statements.LastOrDefault();
+
+            if (lastStatement == null)
+                return;
+
+            SyntaxToken closeBrace = block.CloseBraceToken;
+
+            if (closeBrace.IsMissing)
+                return;
+
+            SyntaxToken whileKeyword = doStatement.WhileKeyword;
+
+            if (whileKeyword.IsMissing)
+                return;
+
+            int closeBraceLine = closeBrace.GetSpanEndLine();
+
+            if (closeBraceLine != whileKeyword.GetSpanStartLine())
+                return;
+
+            int line = lastStatement.GetSpanEndLine(context.CancellationToken);
+
+            if (closeBraceLine - line != 1)
+                return;
+
+            SyntaxTrivia trivia = lastStatement
+                .GetTrailingTrivia()
+                .FirstOrDefault(f => f.IsEndOfLineTrivia());
+
+            if (!trivia.IsEndOfLineTrivia())
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.AddEmptyLineAfterLastStatementInDoStatement,
+                Location.Create(doStatement.SyntaxTree, trivia.Span));
         }
     }
 }

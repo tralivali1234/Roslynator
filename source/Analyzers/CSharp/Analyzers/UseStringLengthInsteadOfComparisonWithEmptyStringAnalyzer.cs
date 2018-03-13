@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,46 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                UseStringLengthInsteadOfComparisonWithEmptyStringAnalysis.AnalyzeEqualsExpression,
-                SyntaxKind.EqualsExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeEqualsExpression, SyntaxKind.EqualsExpression);
+        }
+
+        public static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
+        {
+            var equalsExpression = (BinaryExpressionSyntax)context.Node;
+
+            ExpressionSyntax left = equalsExpression.Left;
+
+            if (left?.IsMissing == false)
+            {
+                ExpressionSyntax right = equalsExpression.Right;
+
+                if (right?.IsMissing == false)
+                {
+                    SemanticModel semanticModel = context.SemanticModel;
+                    CancellationToken cancellationToken = context.CancellationToken;
+
+                    if (CSharpUtility.IsEmptyStringExpression(left, semanticModel, cancellationToken))
+                    {
+                        if (CSharpUtility.IsStringExpression(right, semanticModel, cancellationToken))
+                            ReportDiagnostic(context, equalsExpression);
+                    }
+                    else if (CSharpUtility.IsEmptyStringExpression(right, semanticModel, cancellationToken)
+                        && CSharpUtility.IsStringExpression(left, semanticModel, cancellationToken))
+                    {
+                        ReportDiagnostic(context, equalsExpression);
+                    }
+                }
+            }
+        }
+
+        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxNode node)
+        {
+            if (!node.SpanContainsDirectives())
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseStringLengthInsteadOfComparisonWithEmptyString,
+                    node);
+            }
         }
     }
 }

@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,34 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                AddOrRemoveRegionNameAnalysis.AnalyzeEndRegionDirectiveTrivia,
-                SyntaxKind.EndRegionDirectiveTrivia);
+            context.RegisterSyntaxNodeAction(AnalyzeEndRegionDirectiveTrivia, SyntaxKind.EndRegionDirectiveTrivia);
+        }
+
+        public static void AnalyzeEndRegionDirectiveTrivia(SyntaxNodeAnalysisContext context)
+        {
+            var endRegionDirective = (EndRegionDirectiveTriviaSyntax)context.Node;
+
+            RegionDirectiveTriviaSyntax regionDirective = endRegionDirective.GetRegionDirective();
+
+            if (regionDirective == null)
+                return;
+
+            SyntaxTrivia trivia = regionDirective.GetPreprocessingMessageTrivia();
+
+            SyntaxTrivia endTrivia = endRegionDirective.GetPreprocessingMessageTrivia();
+
+            if (trivia.Kind() == SyntaxKind.PreprocessingMessageTrivia)
+            {
+                if (endTrivia.Kind() != SyntaxKind.PreprocessingMessageTrivia
+                    || !string.Equals(trivia.ToString(), endTrivia.ToString(), StringComparison.Ordinal))
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.AddOrRemoveRegionName, endRegionDirective, "Add", "to");
+                }
+            }
+            else if (endTrivia.Kind() == SyntaxKind.PreprocessingMessageTrivia)
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.AddOrRemoveRegionName, endRegionDirective, "Remove", "from");
+            }
         }
     }
 }

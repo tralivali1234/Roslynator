@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Analyzers;
 using static Roslynator.CSharp.CSharpFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -105,7 +106,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 return accessorList.ReplaceNodes(accessorList.Accessors, (f, g) =>
                 {
-                    if (FormatAccessorListAnalysis.ShouldBeFormatted(f))
+                    if (FormatAccessorListAnalyzer.ShouldBeFormatted(f))
                     {
                         return f.RemoveWhitespace(f.Span);
                     }

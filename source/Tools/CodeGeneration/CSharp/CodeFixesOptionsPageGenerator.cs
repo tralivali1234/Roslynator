@@ -17,7 +17,7 @@ namespace Roslynator.CodeGeneration.CSharp
             return CompilationUnit(
                 UsingDirectives(
                     "System.Collections.Generic",
-                    "Roslynator.CSharp.CodeFixes"),
+                    "Roslynator.CSharp"),
                 NamespaceDeclaration(
                     "Roslynator.VisualStudio",
                     ClassDeclaration(

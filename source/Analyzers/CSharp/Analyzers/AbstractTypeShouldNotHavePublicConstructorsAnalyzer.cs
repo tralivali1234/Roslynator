@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,38 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                AbstractTypeShouldNotHavePublicConstructorsAnalysis.AnalyzeConstructorDeclaration,
-                SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeConstructorDeclaration, SyntaxKind.ConstructorDeclaration);
+        }
+
+        public static void AnalyzeConstructorDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var constructorDeclaration = (ConstructorDeclarationSyntax)context.Node;
+
+            if (!SyntaxAccessibility.GetExplicitAccessibility(constructorDeclaration).Is(Accessibility.Public, Accessibility.ProtectedOrInternal))
+                return;
+
+            if (!constructorDeclaration.IsParentKind(SyntaxKind.ClassDeclaration))
+                return;
+
+            var classDeclaration = (ClassDeclarationSyntax)constructorDeclaration.Parent;
+
+            SyntaxTokenList modifiers = classDeclaration.Modifiers;
+
+            bool isAbstract = modifiers.Contains(SyntaxKind.AbstractKeyword);
+
+            if (!isAbstract
+                && modifiers.Contains(SyntaxKind.PartialKeyword))
+            {
+                INamedTypeSymbol classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration, context.CancellationToken);
+
+                if (classSymbol != null)
+                    isAbstract = classSymbol.IsAbstract;
+            }
+
+            if (!isAbstract)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AbstractTypeShouldNotHavePublicConstructors, constructorDeclaration.Identifier);
         }
     }
 }

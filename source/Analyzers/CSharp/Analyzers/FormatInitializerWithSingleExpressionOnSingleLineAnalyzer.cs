@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -26,10 +28,40 @@ namespace Roslynator.CSharp.Analyzers
             context.EnableConcurrentExecution();
 
             context.RegisterSyntaxNodeAction(
-                FormatInitializerWithSingleExpressionOnSingleLineAnalysis.AnalyzeInitializerExpression,
+                AnalyzeInitializerExpression,
                 SyntaxKind.ArrayInitializerExpression,
                 SyntaxKind.ObjectInitializerExpression,
                 SyntaxKind.CollectionInitializerExpression);
+        }
+
+        public static void AnalyzeInitializerExpression(SyntaxNodeAnalysisContext context)
+        {
+            var initializer = (InitializerExpressionSyntax)context.Node;
+
+            SeparatedSyntaxList<ExpressionSyntax> expressions = initializer.Expressions;
+
+            ExpressionSyntax expression = expressions.SingleOrDefault(shouldThrow: false);
+
+            if (expression == null)
+                return;
+
+            if (initializer.SpanContainsDirectives())
+                return;
+
+            if (!expression.IsSingleLine())
+                return;
+
+            if (initializer.IsSingleLine())
+                return;
+
+            if (!initializer
+                .DescendantTrivia(TextSpan.FromBounds(initializer.FullSpan.Start, initializer.Span.End))
+                .All(f => f.IsWhitespaceOrEndOfLineTrivia()))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.FormatInitializerWithSingleExpressionOnSingleLine, initializer);
         }
     }
 }

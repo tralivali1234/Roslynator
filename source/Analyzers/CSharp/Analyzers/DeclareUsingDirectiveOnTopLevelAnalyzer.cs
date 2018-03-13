@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,44 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                DeclareUsingDirectiveOnTopLevelAnalysis.AnalyzeNamespaceDeclaration,
-                SyntaxKind.NamespaceDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeNamespaceDeclaration, SyntaxKind.NamespaceDeclaration);
+        }
+
+        public static void AnalyzeNamespaceDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var namespaceDeclaration = (NamespaceDeclarationSyntax)context.Node;
+
+            SyntaxList<UsingDirectiveSyntax> usings = namespaceDeclaration.Usings;
+
+            if (!usings.Any())
+                return;
+
+            int count = usings.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (usings[i].ContainsDiagnostics)
+                    return;
+
+                if (i == 0)
+                {
+                    if (usings[i].SpanOrTrailingTriviaContainsDirectives())
+                        return;
+                }
+                else if (i == count - 1)
+                {
+                    if (usings[i].SpanOrLeadingTriviaContainsDirectives())
+                        return;
+                }
+                else if (usings[i].ContainsDirectives)
+                {
+                    return;
+                }
+            }
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.DeclareUsingDirectiveOnTopLevel,
+                Location.Create(namespaceDeclaration.SyntaxTree, usings.Span));
         }
     }
 }

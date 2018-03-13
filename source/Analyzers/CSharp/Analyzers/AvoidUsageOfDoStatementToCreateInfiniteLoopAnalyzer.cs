@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +24,19 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(ReplaceDoWithWhileAnalysis.AnalyzeDoStatement, SyntaxKind.DoStatement);
+            context.RegisterSyntaxNodeAction(AnalyzeDoStatement, SyntaxKind.DoStatement);
+        }
+
+        public static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
+        {
+            var doStatement = (DoStatementSyntax)context.Node;
+
+            if (doStatement.Condition?.Kind() == SyntaxKind.TrueLiteralExpression)
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.AvoidUsageOfDoStatementToCreateInfiniteLoop,
+                    doStatement.DoKeyword);
+            }
         }
     }
 }

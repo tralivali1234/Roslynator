@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.FormatEachStatementOnSeparateLineAnalysis;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -27,6 +27,41 @@ namespace Roslynator.CSharp.Analyzers
 
             context.RegisterSyntaxNodeAction(AnalyzeBlock, SyntaxKind.Block);
             context.RegisterSyntaxNodeAction(AnalyzeSwitchSection, SyntaxKind.SwitchSection);
+        }
+
+        public static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
+        {
+            var block = (BlockSyntax)context.Node;
+
+            Analyze(context, block.Statements);
+        }
+
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
+        {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
+            Analyze(context, switchSection.Statements);
+        }
+
+        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxList<StatementSyntax> statements)
+        {
+            if (statements.Count <= 1)
+                return;
+
+            int previousEndLine = statements[0].GetSpanEndLine();
+
+            for (int i = 1; i < statements.Count; i++)
+            {
+                StatementSyntax statement = statements[i];
+
+                if (!statement.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement)
+                    && statement.GetSpanStartLine() == previousEndLine)
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.FormatEachStatementOnSeparateLine, statement);
+                }
+
+                previousEndLine = statement.GetSpanEndLine();
+            }
         }
     }
 }

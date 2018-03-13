@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,32 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AvoidNullLiteralOnLeftOfBinaryExpressionAnalysis.AnalyzeBinaryExpression,
+            context.RegisterSyntaxNodeAction(AnalyzeBinaryExpression,
                 SyntaxKind.EqualsExpression,
                 SyntaxKind.NotEqualsExpression);
+        }
+
+        public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
+        {
+            var binaryExpression = (BinaryExpressionSyntax)context.Node;
+
+            if (binaryExpression.SpanContainsDirectives())
+                return;
+
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(binaryExpression);
+
+            if (!info.Success)
+                return;
+
+            if (info.Right.Kind() == SyntaxKind.NullLiteralExpression)
+                return;
+
+            if (info.Left.Kind() != SyntaxKind.NullLiteralExpression)
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.AvoidNullLiteralExpressionOnLeftSideOfBinaryExpression,
+                info.Left);
         }
     }
 }
