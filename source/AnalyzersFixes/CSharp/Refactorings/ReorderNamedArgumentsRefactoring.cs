@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -24,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SeparatedSyntaxList<ArgumentSyntax> arguments = argumentList.Arguments;
 
-            int firstIndex = ReorderNamedArgumentsAnalysis.IndexOfFirstFixableParameter(argumentList, arguments, semanticModel, cancellationToken);
+            int firstIndex = ReorderNamedArgumentsAnalyzer.IndexOfFirstFixableParameter(argumentList, arguments, semanticModel, cancellationToken);
 
             SeparatedSyntaxList<ArgumentSyntax> newArguments = arguments;
 

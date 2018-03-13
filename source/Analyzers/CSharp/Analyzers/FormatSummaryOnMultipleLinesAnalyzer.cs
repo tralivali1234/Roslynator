@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings.FormatSummary;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -25,8 +25,24 @@ namespace Roslynator.CSharp.Analyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                FormatSummaryOnMultipleLinesAnalysis.AnalyzeSingleLineDocumentationCommentTrivia,
+                AnalyzeSingleLineDocumentationCommentTrivia,
                 SyntaxKind.SingleLineDocumentationCommentTrivia);
+        }
+
+        public static void AnalyzeSingleLineDocumentationCommentTrivia(SyntaxNodeAnalysisContext context)
+        {
+            var documentationComment = (DocumentationCommentTriviaSyntax)context.Node;
+
+            XmlElementSyntax summaryElement = documentationComment.SummaryElement();
+
+            if (summaryElement?.StartTag?.IsMissing == false
+                && summaryElement.EndTag?.IsMissing == false
+                && summaryElement.IsSingleLine(includeExteriorTrivia: false, trim: false))
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.FormatDocumentationSummaryOnMultipleLines,
+                    summaryElement);
+            }
         }
     }
 }

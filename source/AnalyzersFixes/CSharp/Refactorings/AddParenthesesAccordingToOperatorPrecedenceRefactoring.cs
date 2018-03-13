@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -40,7 +41,7 @@ namespace Roslynator.CSharp.Refactorings
 
             private ExpressionSyntax VisitExpression(ExpressionSyntax expression)
             {
-                bool isFixable = AddParenthesesAccordingToOperatorPrecedenceAnalysis.IsFixable(expression);
+                bool isFixable = AddParenthesesAccordingToOperatorPrecedenceAnalyzer.IsFixable(expression);
 
                 expression = (ExpressionSyntax)base.Visit(expression);
 

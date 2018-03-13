@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Analyzers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -16,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
             IfStatementSyntax ifStatement,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            IfStatementSyntax nestedIf = MergeIfStatementWithNestedIfStatementAnalysis.GetNestedIfStatement(ifStatement);
+            IfStatementSyntax nestedIf = MergeIfStatementWithNestedIfStatementAnalyzer.GetNestedIfStatement(ifStatement);
 
             ExpressionSyntax left = ifStatement.Condition.Parenthesize();
             ExpressionSyntax right = nestedIf.Condition;

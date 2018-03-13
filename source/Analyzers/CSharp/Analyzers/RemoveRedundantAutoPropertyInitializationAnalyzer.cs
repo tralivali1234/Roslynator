@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,46 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                RemoveRedundantAutoPropertyInitializationAnalysis.AnalyzePropertyDeclaration,
-                SyntaxKind.PropertyDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzePropertyDeclaration, SyntaxKind.PropertyDeclaration);
+        }
+
+        public static void AnalyzePropertyDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            if (context.Node.ContainsDiagnostics)
+                return;
+
+            var propertyDeclaration = (PropertyDeclarationSyntax)context.Node;
+
+            EqualsValueClauseSyntax initializer = propertyDeclaration.Initializer;
+
+            if (initializer == null)
+                return;
+
+            if (initializer.SpanOrLeadingTriviaContainsDirectives())
+                return;
+
+            ExpressionSyntax value = initializer.Value;
+
+            if (value == null)
+                return;
+
+            AccessorListSyntax accessorList = propertyDeclaration.AccessorList;
+
+            if (accessorList == null)
+                return;
+
+            if (accessorList.Accessors.Any(f => !f.IsAutoImplemented()))
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(propertyDeclaration.Type, context.CancellationToken);
+
+            if (typeSymbol?.IsErrorType() != false)
+                return;
+
+            if (!context.SemanticModel.IsDefaultValue(typeSymbol, value, context.CancellationToken))
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveRedundantAutoPropertyInitialization, value);
         }
     }
 }

@@ -97,7 +97,8 @@ namespace Roslynator.CSharp.Analyzers
 
                     string methodName = invocationInfo.NameText;
 
-                    AvoidNullReferenceExceptionAnalysis.Analyze(context, invocationInfo);
+                    //TODO: ?
+                    AvoidNullReferenceExceptionAnalyzer.Analyze(context, invocationInfo);
 
                     CallStringConcatInsteadOfStringJoinAnalysis.Analyze(context, invocationInfo);
 
@@ -119,7 +120,7 @@ namespace Roslynator.CSharp.Analyzers
                                     case "Cast":
                                         {
                                             CallOfTypeInsteadOfWhereAndCastAnalysis.Analyze(context, invocationInfo);
-                                            RemoveRedundantCastAnalysis.Analyze(context, invocationInfo);
+                                            RemoveRedundantCastAnalyzer.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "Count":
@@ -142,7 +143,7 @@ namespace Roslynator.CSharp.Analyzers
                                     case "ToString":
                                         {
                                             RemoveRedundantToStringCallAnalysis.Analyze(context, invocationInfo);
-                                            UseNameOfOperatorAnalysis.Analyze(context, invocationInfo);
+                                            UseNameOfOperatorAnalyzer.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ToLower":
@@ -174,7 +175,7 @@ namespace Roslynator.CSharp.Analyzers
                                     case "All":
                                     case "Any":
                                         {
-                                            SimplifyLogicalNegationAnalysis.Analyze(context, invocationInfo);
+                                            SimplifyLogicalNegationAnalyzer.Analyze(context, invocationInfo);
                                             break;
                                         }
                                     case "ElementAt":

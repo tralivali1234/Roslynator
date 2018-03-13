@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -32,10 +32,26 @@ namespace Roslynator.CSharp.Analyzers
                     && attributeUsageAttributeSymbol != null)
                 {
                     startContext.RegisterSymbolAction(
-                       nodeContext => UseAttributeUsageAttributeAnalysis.AnalyzerNamedTypeSymbol(nodeContext, attributeSymbol, attributeUsageAttributeSymbol),
+                       nodeContext => AnalyzerNamedTypeSymbol(nodeContext, attributeSymbol, attributeUsageAttributeSymbol),
                        SymbolKind.NamedType);
                 }
             });
+        }
+
+        public static void AnalyzerNamedTypeSymbol(
+            SymbolAnalysisContext context,
+            INamedTypeSymbol attributeSymbol,
+            INamedTypeSymbol attributeUsageAttributeSymbol)
+        {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
+            if (symbol.InheritsFrom(attributeSymbol)
+                && !symbol.HasAttribute(attributeUsageAttributeSymbol))
+            {
+                context.ReportDiagnostic(
+                    DiagnosticDescriptors.UseAttributeUsageAttribute,
+                    ((ClassDeclarationSyntax)symbol.GetSyntax()).Identifier);
+            }
         }
     }
 }

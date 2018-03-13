@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
-using static Roslynator.CSharp.Refactorings.DeclareEnumValueAsCombinationOfNamesAnalysis;
+using static Roslynator.CSharp.Analyzers.DeclareEnumValueAsCombinationOfNamesAnalyzer;
 
 namespace Roslynator.CSharp.Refactorings
 {

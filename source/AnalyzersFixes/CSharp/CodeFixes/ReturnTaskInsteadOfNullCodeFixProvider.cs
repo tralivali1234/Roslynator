@@ -8,7 +8,8 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
-using Roslynator.CSharp.Refactorings.ReturnTaskInsteadOfNull;
+using Roslynator.CSharp.Analyzers;
+using Roslynator.CSharp.Analyzers.ReturnTaskInsteadOfNull;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -30,7 +31,7 @@ namespace Roslynator.CSharp.CodeFixes
 
             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-            InvocationExpressionSyntax newExpression = ReturnTaskInsteadOfNullAnalysis.CreateNewExpression(expression, semanticModel, context.CancellationToken);
+            InvocationExpressionSyntax newExpression = ReturnTaskInsteadOfReturningNullAnalyzer.CreateNewExpression(expression, semanticModel, context.CancellationToken);
 
             Diagnostic diagnostic = context.Diagnostics[0];
 

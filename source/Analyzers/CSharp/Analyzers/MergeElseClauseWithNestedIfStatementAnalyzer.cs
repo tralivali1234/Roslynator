@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -29,9 +29,31 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                MergeElseClauseWithNestedIfStatementAnalysis.AnalyzeElseClause,
-                SyntaxKind.ElseClause);
+            context.RegisterSyntaxNodeAction(AnalyzeElseClause, SyntaxKind.ElseClause);
+        }
+
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
+        {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
+            if (!(elseClause.Statement is BlockSyntax block))
+                return;
+
+            if (!(block.Statements.SingleOrDefault(shouldThrow: false) is IfStatementSyntax ifStatement))
+                return;
+
+            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace()
+                || !block.OpenBraceToken.LeadingTrivia.IsEmptyOrWhitespace()
+                || !block.OpenBraceToken.TrailingTrivia.IsEmptyOrWhitespace()
+                || !ifStatement.IfKeyword.LeadingTrivia.IsEmptyOrWhitespace()
+                || !ifStatement.GetTrailingTrivia().IsEmptyOrWhitespace()
+                || !block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatement, block);
+            context.ReportBraces(DiagnosticDescriptors.MergeElseClauseWithNestedIfStatementFadeOut, block);
         }
     }
 }

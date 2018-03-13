@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -23,9 +24,37 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSymbolAction(
-                RemovePartialModifierFromTypeWithSinglePartAnalysis.AnalyzeNamedType,
-                SymbolKind.NamedType);
+            context.RegisterSymbolAction(AnalyzeNamedType, SymbolKind.NamedType);
+        }
+
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
+        {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
+            if (!symbol.TypeKind.Is(TypeKind.Class, TypeKind.Struct, TypeKind.Interface))
+                return;
+
+            SyntaxReference syntaxReference = symbol.DeclaringSyntaxReferences.SingleOrDefault(shouldThrow: false);
+
+            if (syntaxReference == null)
+                return;
+
+            if (!(syntaxReference.GetSyntax(context.CancellationToken) is MemberDeclarationSyntax memberDeclaration))
+                return;
+
+            SyntaxToken partialKeyword = SyntaxInfo.ModifierListInfo(memberDeclaration).Modifiers.Find(SyntaxKind.PartialKeyword);
+
+            if (!partialKeyword.IsKind(SyntaxKind.PartialKeyword))
+                return;
+
+            if (SyntaxInfo.MemberDeclarationListInfo(memberDeclaration)
+                .Members
+                .Any(member => member.Kind() == SyntaxKind.MethodDeclaration && ((MethodDeclarationSyntax)member).Modifiers.Contains(SyntaxKind.PartialKeyword)))
+            {
+                return;
+            }
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemovePartialModifierFromTypeWithSinglePart, partialKeyword);
         }
     }
 }

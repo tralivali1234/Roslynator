@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
@@ -30,8 +31,40 @@ namespace Roslynator.CSharp.Analyzers
                 if (exceptionSymbol == null)
                     return;
 
-                startContext.RegisterSymbolAction(f => ImplementExceptionConstructorsAnalysis.AnalyzeNamedType(f, exceptionSymbol), SymbolKind.NamedType);
+                startContext.RegisterSymbolAction(f => AnalyzeNamedType(f, exceptionSymbol), SymbolKind.NamedType);
             });
+        }
+
+        public static void AnalyzeNamedType(SymbolAnalysisContext context, INamedTypeSymbol exceptionSymbol)
+        {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
+            if (symbol.TypeKind != TypeKind.Class)
+                return;
+
+            if (symbol.IsStatic)
+                return;
+
+            if (symbol.IsImplicitClass)
+                return;
+
+            if (symbol.IsImplicitlyDeclared)
+                return;
+
+            INamedTypeSymbol baseType = symbol.BaseType;
+
+            if (baseType?.IsObject() != false)
+                return;
+
+            if (!baseType.EqualsOrInheritsFrom(exceptionSymbol))
+                return;
+
+            if (!GenerateBaseConstructorsAnalysis.IsAnyBaseConstructorMissing(symbol, baseType))
+                return;
+
+            var classDeclaration = (ClassDeclarationSyntax)symbol.GetSyntax(context.CancellationToken);
+
+            context.ReportDiagnostic(DiagnosticDescriptors.ImplementExceptionConstructors, classDeclaration.Identifier);
         }
     }
 }

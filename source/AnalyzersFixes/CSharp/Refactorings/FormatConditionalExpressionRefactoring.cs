@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.Text;
 
 namespace Roslynator.CSharp.Refactorings
@@ -48,7 +49,7 @@ namespace Roslynator.CSharp.Refactorings
             string newText,
             SyntaxNodeTextBuilder builder)
         {
-            if (FormatConditionalExpressionAnalysis.IsFixable(expression, token))
+            if (FormatConditionalExpressionAnalyzer.IsFixable(expression, token))
             {
                 if (!expression.GetTrailingTrivia().IsEmptyOrWhitespace()
                     || !token.LeadingTrivia.IsEmptyOrWhitespace())

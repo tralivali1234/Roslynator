@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.UseIsOperatorInsteadOfAsOperatorAnalysis;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -28,6 +28,39 @@ namespace Roslynator.CSharp.Analyzers
             context.RegisterSyntaxNodeAction(AnalyzeEqualsExpression, SyntaxKind.EqualsExpression);
             context.RegisterSyntaxNodeAction(AnalyzeNotEqualsExpression, SyntaxKind.NotEqualsExpression);
             context.RegisterSyntaxNodeAction(AnalyzeIsPatternExpression, SyntaxKind.IsPatternExpression);
+        }
+
+        public static void AnalyzeEqualsExpression(SyntaxNodeAnalysisContext context)
+        {
+            Analyze(context, context.Node);
+        }
+
+        public static void AnalyzeNotEqualsExpression(SyntaxNodeAnalysisContext context)
+        {
+            Analyze(context, context.Node);
+        }
+
+        public static void AnalyzeIsPatternExpression(SyntaxNodeAnalysisContext context)
+        {
+            Analyze(context, context.Node);
+        }
+
+        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxNode node)
+        {
+            if (node.SpanContainsDirectives())
+                return;
+
+            NullCheckExpressionInfo nullCheck = SyntaxInfo.NullCheckExpressionInfo(node);
+
+            if (!nullCheck.Success)
+                return;
+
+            AsExpressionInfo asExpressionInfo = SyntaxInfo.AsExpressionInfo(nullCheck.Expression);
+
+            if (!asExpressionInfo.Success)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.UseIsOperatorInsteadOfAsOperator, node);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -27,7 +28,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             public override SyntaxNode VisitUsingStatement(UsingStatementSyntax node)
             {
-                if (SimplifyNestedUsingStatementAnalysis.ContainsEmbeddableUsingStatement(node))
+                if (SimplifyNestedUsingStatementAnalyzer.ContainsEmbeddableUsingStatement(node))
                 {
                     var block = (BlockSyntax)node.Statement;
 

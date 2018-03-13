@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,40 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                DefaultLabelShouldBeLastLabelInSwitchSectionAnalysis.AnalyzeSwitchSection,
-                SyntaxKind.SwitchSection);
+            context.RegisterSyntaxNodeAction(AnalyzeSwitchSection, SyntaxKind.SwitchSection);
+        }
+
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
+        {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
+            SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
+
+            int count = labels.Count;
+
+            if (count <= 1)
+                return;
+
+            SwitchLabelSyntax lastLabel = labels.Last();
+
+            for (int i = 0; i < count - 1; i++)
+            {
+                SwitchLabelSyntax label = labels[i];
+
+                if (label.Kind() == SyntaxKind.DefaultSwitchLabel)
+                {
+                    TextSpan span = TextSpan.FromBounds(label.Span.End, lastLabel.SpanStart);
+
+                    if (!switchSection.ContainsDirectives(span))
+                    {
+                        context.ReportDiagnostic(
+                            DiagnosticDescriptors.DefaultLabelShouldBeLastLabelInSwitchSection,
+                            label);
+
+                        break;
+                    }
+                }
+            }
         }
     }
 }

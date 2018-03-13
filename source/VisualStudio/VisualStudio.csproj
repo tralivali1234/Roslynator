@@ -193,6 +193,10 @@
       <Project>{4ad2a192-847e-4942-8a72-d99c5602d5a7}</Project>
       <Name>VisualStudio.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Workspaces\Workspaces.csproj">
+      <Project>{56da29a3-c179-471c-9941-42426eeb84d0}</Project>
+      <Name>Workspaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
