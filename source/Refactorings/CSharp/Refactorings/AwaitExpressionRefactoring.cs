@@ -15,7 +15,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (CallConfigureAwaitAnalysis.CanRefactor(awaitExpression, semanticModel, context.CancellationToken))
+                if (CallConfigureAwaitAnalysis.IsFixable(awaitExpression, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         "Call 'ConfigureAwait(false)'",

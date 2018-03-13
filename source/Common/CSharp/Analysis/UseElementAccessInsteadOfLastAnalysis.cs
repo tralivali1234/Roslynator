@@ -8,7 +8,7 @@ namespace Roslynator.CSharp.Analysis
 {
     internal static class UseElementAccessInsteadOfLastAnalysis
     {
-        public static bool CanRefactor(
+        public static bool IsFixable(
             MemberInvocationExpressionInfo invocationInfo,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

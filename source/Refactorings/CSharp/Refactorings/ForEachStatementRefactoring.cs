@@ -29,7 +29,9 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (ReplaceForEachWithForAnalysis.CanRefactor(forEachStatement, semanticModel, context.CancellationToken))
+                ITypeSymbol typeSymbol = semanticModel.GetTypeSymbol(forEachStatement.Expression, context.CancellationToken);
+
+                if (SymbolUtility.HasAccessibleIndexer(typeSymbol, semanticModel, forEachStatement.SpanStart))
                 {
                     if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceForEachWithFor))
                     {

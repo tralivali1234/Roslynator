@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -13,9 +12,11 @@ namespace Roslynator.CSharp.Refactorings
     {
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, AssignmentExpressionSyntax assignmentExpression)
         {
+            //TODO: test
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandAssignmentExpression)
-                && assignmentExpression.OperatorToken.Span.Contains(context.Span)
-                && ExpandAssignmentExpressionAnalysis.CanRefactor(assignmentExpression))
+                && context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(assignmentExpression.OperatorToken)
+                && CSharpFacts.IsCompoundAssignment(assignmentExpression.Kind())
+                && SyntaxInfo.AssignmentExpressionInfo(assignmentExpression).Success)
             {
                 context.RegisterRefactoring(
                     "Expand assignment",

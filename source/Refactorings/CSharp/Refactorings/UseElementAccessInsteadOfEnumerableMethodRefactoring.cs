@@ -42,7 +42,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Any())
                             break;
 
-                        if (!UseElementAccessInsteadOfLastAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfLastAnalysis.IsFixable(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         string propertyName = CSharpUtility.GetCountOrLengthPropertyName(invocationInfo.Expression, semanticModel, context.CancellationToken);

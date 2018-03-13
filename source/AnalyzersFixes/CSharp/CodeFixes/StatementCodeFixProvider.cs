@@ -129,7 +129,6 @@ namespace Roslynator.CSharp.CodeFixes
                                 analysis = UseMethodChainingAnalysis.WithAssignmentAnalysis;
                             }
 
-                            //TODO: test
                             CodeAction codeAction = CodeAction.Create(
                                 "Use method chaining",
                                 cancellationToken => UseMethodChainingRefactoring.RefactorAsync(context.Document, analysis, expressionStatement, cancellationToken),

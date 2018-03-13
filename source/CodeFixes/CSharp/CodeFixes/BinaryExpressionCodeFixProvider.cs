@@ -40,7 +40,7 @@ namespace Roslynator.CSharp.CodeFixes
                         {
                             SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                            if (!ReplaceAsWithCastAnalysis.CanRefactor(binaryExpression, semanticModel, context.CancellationToken))
+                            if (!ReplaceAsWithCastAnalysis.IsFixable(binaryExpression, semanticModel, context.CancellationToken))
                                 break;
 
                             CodeAction codeAction = CodeAction.Create(

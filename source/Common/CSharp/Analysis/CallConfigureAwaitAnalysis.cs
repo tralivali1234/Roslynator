@@ -9,7 +9,7 @@ namespace Roslynator.CSharp.Analysis
 {
     internal static class CallConfigureAwaitAnalysis
     {
-        public static bool CanRefactor(
+        public static bool IsFixable(
             AwaitExpressionSyntax awaitExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))

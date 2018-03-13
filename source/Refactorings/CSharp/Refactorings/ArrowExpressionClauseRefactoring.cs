@@ -17,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandExpressionBody)
                 && (context.Span.IsEmptyAndContainedInSpan(arrowExpressionClause) || context.Span.IsBetweenSpans(expression))
-                && ExpandExpressionBodyAnalysis.CanRefactor(arrowExpressionClause))
+                && ExpandExpressionBodyAnalysis.IsFixable(arrowExpressionClause))
             {
                 context.RegisterRefactoring(
                     "Expand expression body",

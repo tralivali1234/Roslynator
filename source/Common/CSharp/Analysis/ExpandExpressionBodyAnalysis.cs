@@ -8,7 +8,7 @@ namespace Roslynator.CSharp.Analysis
 {
     internal static class ExpandExpressionBodyAnalysis
     {
-        public static bool CanRefactor(ArrowExpressionClauseSyntax arrowExpressionClause)
+        public static bool IsFixable(ArrowExpressionClauseSyntax arrowExpressionClause)
         {
             SyntaxNode parent = arrowExpressionClause.Parent;
 

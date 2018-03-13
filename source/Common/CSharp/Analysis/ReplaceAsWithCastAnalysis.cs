@@ -9,7 +9,7 @@ namespace Roslynator.CSharp.Analysis
 {
     internal static class ReplaceAsWithCastAnalysis
     {
-        public static bool CanRefactor(
+        public static bool IsFixable(
             BinaryExpressionSyntax binaryExpression,
             SemanticModel semanticModel,
             CancellationToken cancellationToken = default(CancellationToken))
