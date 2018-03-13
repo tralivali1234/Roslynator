@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Refactorings.ExtractCondition;
 using Roslynator.CSharp.Refactorings.ReplaceEqualsExpression;
 using Roslynator.CSharp.Syntax;

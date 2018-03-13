@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Roslynator.Diagnostics
 {
+    //TODO: ?
     internal static class Assert
     {
         [Conditional("DEBUG")]

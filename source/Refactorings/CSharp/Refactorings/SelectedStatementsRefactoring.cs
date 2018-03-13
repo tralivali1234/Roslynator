@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Roslynator.CSharp.Refactorings.If;
+using Roslynator.CSharp.Analysis.If;
 using Roslynator.CSharp.Refactorings.WrapStatements;
 
 namespace Roslynator.CSharp.Refactorings

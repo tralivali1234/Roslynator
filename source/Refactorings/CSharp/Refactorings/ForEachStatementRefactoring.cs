@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Rename;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {

@@ -3,6 +3,7 @@
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -25,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Any())
                             break;
 
-                        if (!UseElementAccessInsteadOfFirstAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfFirstAnalysis.IsFixable(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         context.RegisterRefactoring(
@@ -62,7 +63,7 @@ namespace Roslynator.CSharp.Refactorings
                         if (invocationInfo.Arguments.Count != 1)
                             break;
 
-                        if (!UseElementAccessInsteadOfElementAtAnalysis.CanRefactor(invocationInfo, semanticModel, context.CancellationToken))
+                        if (!UseElementAccessInsteadOfElementAtAnalysis.IsFixable(invocationInfo, semanticModel, context.CancellationToken))
                             break;
 
                         context.RegisterRefactoring(

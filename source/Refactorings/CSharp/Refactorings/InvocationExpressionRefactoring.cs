@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Refactorings.InlineDefinition;
 
 namespace Roslynator.CSharp.Refactorings
@@ -73,7 +74,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (UseBitwiseOperationInsteadOfCallingHasFlagAnalysis.CanRefactor(invocationExpression, semanticModel, context.CancellationToken))
+                if (UseBitwiseOperationInsteadOfCallingHasFlagAnalysis.IsFixable(invocationExpression, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         UseBitwiseOperationInsteadOfCallingHasFlagRefactoring.Title,
