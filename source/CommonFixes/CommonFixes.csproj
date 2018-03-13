@@ -6,11 +6,11 @@
 
   <PropertyGroup>
     <Version>1.7.1.0</Version>
-    <AssemblyName>Roslynator.Common.Fixes</AssemblyName>
+    <AssemblyName>Roslynator.Common.CodeFixes</AssemblyName>
     <RootNamespace>Roslynator</RootNamespace>
     <CodeAnalysisRuleSet>..\global.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Roslynator.Common.Fixes.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Roslynator.Common.CodeFixes.snk</AssemblyOriginatorKeyFile>
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
