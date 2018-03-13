@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -32,7 +33,7 @@ namespace Roslynator.CSharp.CodeFixes
 
             bool fMultiple = usingStatement.Statement
                 .DescendantNodes()
-                .Any(f => f.IsKind(SyntaxKind.UsingStatement) && SimplifyNestedUsingStatementAnalysis.ContainsEmbeddableUsingStatement((UsingStatementSyntax)f));
+                .Any(f => f.IsKind(SyntaxKind.UsingStatement) && SimplifyNestedUsingStatementAnalyzer.ContainsEmbeddableUsingStatement((UsingStatementSyntax)f));
 
             string title = "Remove braces from using statement";
 

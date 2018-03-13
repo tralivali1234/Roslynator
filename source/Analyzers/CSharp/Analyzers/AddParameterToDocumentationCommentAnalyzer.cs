@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.DocumentationComment.AddParameterToDocumentationCommentAnalysis;
+using static Roslynator.CSharp.Analyzers.DocumentationComment.AddParameterToDocumentationCommentAnalysis;
 
 namespace Roslynator.CSharp.Analyzers
 {

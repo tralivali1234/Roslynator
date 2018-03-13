@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,32 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                RemoveEmptyNamespaceDeclarationAnalysis.AnalyzeNamespaceDeclaration,
-                SyntaxKind.NamespaceDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeNamespaceDeclaration, SyntaxKind.NamespaceDeclaration);
+        }
+
+        public static void AnalyzeNamespaceDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var declaration = (NamespaceDeclarationSyntax)context.Node;
+
+            if (declaration.Members.Any())
+                return;
+
+            SyntaxToken openBrace = declaration.OpenBraceToken;
+            SyntaxToken closeBrace = declaration.CloseBraceToken;
+
+            if (openBrace.IsMissing)
+                return;
+
+            if (closeBrace.IsMissing)
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyNamespaceDeclaration, declaration);
         }
     }
 }

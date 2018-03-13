@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -31,10 +31,27 @@ namespace Roslynator.CSharp.Analyzers
                 if (eventArgsSymbol != null)
                 {
                     startContext.RegisterSyntaxNodeAction(
-                        nodeContext => UseEventArgsEmptyAnalysis.AnalyzeObjectCreationExpression(nodeContext, eventArgsSymbol),
+                        nodeContext => AnalyzeObjectCreationExpression(nodeContext, eventArgsSymbol),
                         SyntaxKind.ObjectCreationExpression);
                 }
             });
+        }
+
+        public static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context, INamedTypeSymbol eventArgsSymbol)
+        {
+            if (context.Node.SpanContainsDirectives())
+                return;
+
+            var objectCreation = (ObjectCreationExpressionSyntax)context.Node;
+
+            if (objectCreation.ArgumentList?.Arguments.Count == 0
+                && objectCreation.Initializer == null)
+            {
+                ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(objectCreation, context.CancellationToken);
+
+                if (typeSymbol?.Equals(eventArgsSymbol) == true)
+                    context.ReportDiagnostic(DiagnosticDescriptors.UseEventArgsEmpty, objectCreation);
+            }
         }
     }
 }

@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.AvoidEmptyCatchClauseThatCatchesSystemExceptionAnalysis;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -33,6 +33,34 @@ namespace Roslynator.CSharp.Analyzers
 
                 startContext.RegisterSyntaxNodeAction(nodeContext => AnalyzeCatchClause(nodeContext, exceptionSymbol), SyntaxKind.CatchClause);
             });
+        }
+
+        public static void AnalyzeCatchClause(SyntaxNodeAnalysisContext context, ITypeSymbol exceptionSymbol)
+        {
+            var catchClause = (CatchClauseSyntax)context.Node;
+
+            if (catchClause.ContainsDiagnostics)
+                return;
+
+            if (catchClause.Filter != null)
+                return;
+
+            if (catchClause.Block?.Statements.Any() != false)
+                return;
+
+            TypeSyntax type = catchClause.Declaration?.Type;
+
+            if (type == null)
+                return;
+
+            ITypeSymbol typeSymbol = context.SemanticModel.GetTypeSymbol(type, context.CancellationToken);
+
+            if (typeSymbol?.Equals(exceptionSymbol) != true)
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.AvoidEmptyCatchClauseThatCatchesSystemException,
+                catchClause.CatchKeyword);
         }
     }
 }

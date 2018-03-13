@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using static Roslynator.CSharp.Refactorings.FormatEmbeddedStatementOnSeparateLineAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -35,6 +36,85 @@ namespace Roslynator.CSharp.Analyzers
             context.RegisterSyntaxNodeAction(AnalyzeLockStatement, SyntaxKind.LockStatement);
             context.RegisterSyntaxNodeAction(AnalyzeFixedStatement, SyntaxKind.FixedStatement);
             context.RegisterSyntaxNodeAction(AnalyzeElseClause, SyntaxKind.ElseClause);
+        }
+
+        internal static void AnalyzeIfStatement(SyntaxNodeAnalysisContext context)
+        {
+            var ifStatement = (IfStatementSyntax)context.Node;
+
+            Analyze(context, ifStatement.CloseParenToken, ifStatement.Statement);
+        }
+
+        internal static void AnalyzeCommonForEachStatement(SyntaxNodeAnalysisContext context)
+        {
+            var forEachStatement = (CommonForEachStatementSyntax)context.Node;
+
+            Analyze(context, forEachStatement.CloseParenToken, forEachStatement.Statement);
+        }
+
+        internal static void AnalyzeForStatement(SyntaxNodeAnalysisContext context)
+        {
+            var forStatement = (ForStatementSyntax)context.Node;
+
+            Analyze(context, forStatement.CloseParenToken, forStatement.Statement);
+        }
+
+        internal static void AnalyzeUsingStatement(SyntaxNodeAnalysisContext context)
+        {
+            var usingStatement = (UsingStatementSyntax)context.Node;
+
+            Analyze(context, usingStatement.CloseParenToken, usingStatement.Statement);
+        }
+
+        internal static void AnalyzeWhileStatement(SyntaxNodeAnalysisContext context)
+        {
+            var whileStatement = (WhileStatementSyntax)context.Node;
+
+            Analyze(context, whileStatement.CloseParenToken, whileStatement.Statement);
+        }
+
+        internal static void AnalyzeDoStatement(SyntaxNodeAnalysisContext context)
+        {
+            var doStatement = (DoStatementSyntax)context.Node;
+
+            Analyze(context, doStatement.DoKeyword, doStatement.Statement);
+        }
+
+        internal static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
+        {
+            var lockStatement = (LockStatementSyntax)context.Node;
+
+            Analyze(context, lockStatement.CloseParenToken, lockStatement.Statement);
+        }
+
+        internal static void AnalyzeFixedStatement(SyntaxNodeAnalysisContext context)
+        {
+            var fixedStatement = (FixedStatementSyntax)context.Node;
+
+            Analyze(context, fixedStatement.CloseParenToken, fixedStatement.Statement);
+        }
+
+        private static void Analyze(SyntaxNodeAnalysisContext context, SyntaxToken token, StatementSyntax statement)
+        {
+            if (!token.IsMissing
+                && statement?.IsKind(SyntaxKind.Block, SyntaxKind.EmptyStatement) == false
+                && statement.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(token.SpanStart, statement.SpanStart)))
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine, statement);
+            }
+        }
+
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
+        {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
+            StatementSyntax statement = elseClause.Statement;
+
+            if (statement?.IsKind(SyntaxKind.Block, SyntaxKind.IfStatement) == false
+                && elseClause.SyntaxTree.IsSingleLineSpan(TextSpan.FromBounds(elseClause.ElseKeyword.SpanStart, statement.SpanStart)))
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.FormatEmbeddedStatementOnSeparateLine, statement);
+            }
         }
     }
 }

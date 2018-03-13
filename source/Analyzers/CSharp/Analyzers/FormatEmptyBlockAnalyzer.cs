@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +24,40 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(FormatEmptyBlockAnalysis.AnalyzeBlock, SyntaxKind.Block);
+            context.RegisterSyntaxNodeAction(AnalyzeBlock, SyntaxKind.Block);
+        }
+
+        public static void AnalyzeBlock(SyntaxNodeAnalysisContext context)
+        {
+            var block = (BlockSyntax)context.Node;
+
+            SyntaxList<StatementSyntax> statements = block.Statements;
+
+            if (statements.Any())
+                return;
+
+            if (block.Parent is AccessorDeclarationSyntax)
+                return;
+
+            if (block.Parent is AnonymousFunctionExpressionSyntax)
+                return;
+
+            SyntaxToken openBrace = block.OpenBraceToken;
+            SyntaxToken closeBrace = block.CloseBraceToken;
+
+            int startLine = openBrace.GetSpanStartLine();
+            int endLine = closeBrace.GetSpanEndLine();
+
+            if ((endLine - startLine) == 1)
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.FormatEmptyBlock, block);
         }
     }
 }

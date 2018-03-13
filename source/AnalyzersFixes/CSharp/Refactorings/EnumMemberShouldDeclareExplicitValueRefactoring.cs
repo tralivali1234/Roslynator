@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -77,7 +78,7 @@ namespace Roslynator.CSharp.Refactorings
 
                 SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
                 int index = members.IndexOf(enumMember);
-                int count = members.Take(index).Count(f => EnumMemberShouldDeclareExplicitValueAnalysis.HasImplicitValue(f, semanticModel, cancellationToken));
+                int count = members.Take(index).Count(f => EnumMemberShouldDeclareExplicitValueAnalyzer.HasImplicitValue(f, semanticModel, cancellationToken));
 
                 switch (specialType)
                 {

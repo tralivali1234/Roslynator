@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,33 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                AddArgumentListToObjectCreationAnalysis.AnalyzeObjectCreationExpression,
-                SyntaxKind.ObjectCreationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeObjectCreationExpression, SyntaxKind.ObjectCreationExpression);
+        }
+
+        public static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
+        {
+            var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
+
+            TypeSyntax type = objectCreationExpression.Type;
+
+            if (type?.IsMissing != false)
+                return;
+
+            InitializerExpressionSyntax initializer = objectCreationExpression.Initializer;
+
+            if (initializer?.IsMissing != false)
+                return;
+
+            ArgumentListSyntax argumentList = objectCreationExpression.ArgumentList;
+
+            if (argumentList != null)
+                return;
+
+            var span = new TextSpan(type.Span.End, 1);
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.AddArgumentListToObjectCreation,
+                Location.Create(objectCreationExpression.SyntaxTree, span));
         }
     }
 }

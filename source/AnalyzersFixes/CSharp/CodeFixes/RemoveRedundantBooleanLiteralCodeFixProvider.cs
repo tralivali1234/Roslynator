@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.CodeFixes

@@ -3,8 +3,9 @@
 using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -23,9 +24,43 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSymbolAction(
-                AddStaticModifierToAllPartialClassDeclarationsAnalysis.AnalyzeNamedType,
-                SymbolKind.NamedType);
+            context.RegisterSymbolAction(AnalyzeNamedType, SymbolKind.NamedType);
+        }
+
+        public static void AnalyzeNamedType(SymbolAnalysisContext context)
+        {
+            var symbol = (INamedTypeSymbol)context.Symbol;
+
+            if (symbol.TypeKind != TypeKind.Class)
+                return;
+
+            if (!symbol.IsStatic)
+                return;
+
+            if (symbol.IsImplicitClass)
+                return;
+
+            if (symbol.IsImplicitlyDeclared)
+                return;
+
+            ImmutableArray<SyntaxReference> syntaxReferences = symbol.DeclaringSyntaxReferences;
+
+            if (syntaxReferences.Length <= 1)
+                return;
+
+            foreach (SyntaxReference syntaxReference in syntaxReferences)
+            {
+                var classDeclaration = (ClassDeclarationSyntax)syntaxReference.GetSyntax(context.CancellationToken);
+
+                SyntaxTokenList modifiers = classDeclaration.Modifiers;
+
+                if (!modifiers.Contains(SyntaxKind.StaticKeyword))
+                {
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.AddStaticModifierToAllPartialClassDeclarations,
+                        classDeclaration.Identifier);
+                }
+            }
         }
     }
 }

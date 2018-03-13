@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.CSharp.Syntax;
 using static Roslynator.CSharp.CSharpFactory;
 
@@ -65,7 +66,7 @@ namespace Roslynator.CSharp.Refactorings
 
                         SingleParameterLambdaExpressionInfo lambdaInfo = SyntaxInfo.SingleParameterLambdaExpressionInfo(lambdaExpression);
 
-                        var logicalNot2 = (PrefixUnaryExpressionSyntax)SimplifyLogicalNegationAnalysis.GetReturnExpression(lambdaInfo.Body).WalkDownParentheses();
+                        var logicalNot2 = (PrefixUnaryExpressionSyntax)SimplifyLogicalNegationAnalyzer.GetReturnExpression(lambdaInfo.Body).WalkDownParentheses();
 
                         InvocationExpressionSyntax newNode = invocationExpression.ReplaceNode(logicalNot2, logicalNot2.Operand.WithTriviaFrom(logicalNot2));
 
