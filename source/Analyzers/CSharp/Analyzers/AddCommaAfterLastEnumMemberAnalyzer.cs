@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +25,24 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AddCommaAfterLastEnumMemberAnalysis.AnalyzeEnumDeclaration, SyntaxKind.EnumDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeEnumDeclaration, SyntaxKind.EnumDeclaration);
+        }
+
+        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
+
+            SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
+
+            int count = members.Count;
+
+            if (count == 0)
+                return;
+
+            if (count - members.SeparatorCount != 1)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.AddCommaAfterLastEnumMember, Location.Create(enumDeclaration.SyntaxTree, new TextSpan(members.Last().Span.End, 0)));
         }
     }
 }
