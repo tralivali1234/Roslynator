@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,35 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                JoinStringExpressionsAnalysis.AnalyzeAddExpression,
-                SyntaxKind.AddExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeAddExpression, SyntaxKind.AddExpression);
+        }
+
+        public static void AnalyzeAddExpression(SyntaxNodeAnalysisContext context)
+        {
+            SyntaxNode node = context.Node;
+
+            if (node.ContainsDiagnostics)
+                return;
+
+            if (node.SpanContainsDirectives())
+                return;
+
+            var addExpression = (BinaryExpressionSyntax)node;
+
+            StringConcatenationExpressionInfo concatenationInfo = SyntaxInfo.StringConcatenationExpressionInfo(addExpression, context.SemanticModel, context.CancellationToken);
+
+            if (!concatenationInfo.Success)
+                return;
+
+            StringConcatenationAnalysis analysis = concatenationInfo.Analyze();
+
+            if (!analysis.ContainsUnspecifiedExpression
+                && (analysis.ContainsStringLiteral ^ analysis.ContainsInterpolatedString)
+                && (analysis.ContainsNonVerbatimExpression ^ analysis.ContainsVerbatimExpression)
+                && (analysis.ContainsVerbatimExpression || addExpression.IsSingleLine(includeExteriorTrivia: false, cancellationToken: context.CancellationToken)))
+            {
+                context.ReportDiagnostic(DiagnosticDescriptors.JoinStringExpressions, addExpression);
+            }
         }
     }
 }

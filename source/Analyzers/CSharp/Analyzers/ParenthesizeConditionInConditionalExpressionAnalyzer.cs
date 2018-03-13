@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,25 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                ParenthesizeConditionInConditionalExpressionAnalysis.AnalyzeConditionalExpression,
-                SyntaxKind.ConditionalExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeConditionalExpression, SyntaxKind.ConditionalExpression);
+        }
+
+        public static void AnalyzeConditionalExpression(SyntaxNodeAnalysisContext context)
+        {
+            var conditionalExpression = (ConditionalExpressionSyntax)context.Node;
+
+            if (conditionalExpression.ContainsDiagnostics)
+                return;
+
+            ConditionalExpressionInfo info = SyntaxInfo.ConditionalExpressionInfo(conditionalExpression, walkDownParentheses: false);
+
+            if (!info.Success)
+                return;
+
+            if (info.Condition.Kind() == SyntaxKind.ParenthesizedExpression)
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.ParenthesizeConditionInConditionalExpression, info.Condition);
         }
     }
 }

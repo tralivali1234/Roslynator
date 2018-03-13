@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +24,40 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                RemoveArgumentListFromObjectCreationAnalysis.AnalyzeObjectCreationExpression,
-                SyntaxKind.ObjectCreationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeObjectCreationExpression, SyntaxKind.ObjectCreationExpression);
+        }
+
+        public static void AnalyzeObjectCreationExpression(SyntaxNodeAnalysisContext context)
+        {
+            var objectCreationExpression = (ObjectCreationExpressionSyntax)context.Node;
+
+            if (objectCreationExpression.Type?.IsMissing != false)
+                return;
+
+            if (objectCreationExpression.Initializer?.IsMissing != false)
+                return;
+
+            ArgumentListSyntax argumentList = objectCreationExpression.ArgumentList;
+
+            if (argumentList?.Arguments.Any() != false)
+                return;
+
+            SyntaxToken openParen = argumentList.OpenParenToken;
+            SyntaxToken closeParen = argumentList.CloseParenToken;
+
+            if (openParen.IsMissing)
+                return;
+
+            if (closeParen.IsMissing)
+                return;
+
+            if (!openParen.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!closeParen.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveArgumentListFromObjectCreation, argumentList);
         }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -35,7 +36,7 @@ namespace Roslynator.CSharp.Refactorings
 
             ExpressionSyntax right = logicalAnd.Right?.WalkDownParentheses();
 
-            ExpressionSyntax expression2 = UseConditionalAccessAnalysis.FindExpressionThatCanBeConditionallyAccessed(
+            ExpressionSyntax expression2 = UseConditionalAccessAnalyzer.FindExpressionThatCanBeConditionallyAccessed(
                 expression,
                 right);
 

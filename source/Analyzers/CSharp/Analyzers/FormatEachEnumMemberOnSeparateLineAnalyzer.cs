@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,9 +25,37 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(
-                FormatEachEnumMemberOnSeparateLineAnalysis.AnalyzeEnumDeclaration,
-                SyntaxKind.EnumDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzeEnumDeclaration, SyntaxKind.EnumDeclaration);
+        }
+
+        public static void AnalyzeEnumDeclaration(SyntaxNodeAnalysisContext context)
+        {
+            var enumDeclaration = (EnumDeclarationSyntax)context.Node;
+
+            SeparatedSyntaxList<EnumMemberDeclarationSyntax> members = enumDeclaration.Members;
+
+            if (members.Count <= 1)
+                return;
+
+            int previousIndex = members[0].GetSpanStartLine();
+
+            for (int i = 1; i < members.Count; i++)
+            {
+                if (members[i].GetSpanStartLine() == previousIndex)
+                {
+                    TextSpan span = TextSpan.FromBounds(
+                        members.First().SpanStart,
+                        members.Last().Span.End);
+
+                    context.ReportDiagnostic(
+                        DiagnosticDescriptors.FormatEachEnumMemberOnSeparateLine,
+                        Location.Create(enumDeclaration.SyntaxTree, span));
+
+                    return;
+                }
+
+                previousIndex = members[i].GetSpanEndLine();
+            }
         }
     }
 }

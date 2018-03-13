@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Analyzers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.Refactorings
@@ -20,7 +21,7 @@ namespace Roslynator.CSharp.Refactorings
 
             SyntaxList<SwitchSectionSyntax> sections = switchStatement.Sections;
 
-            SyntaxList<StatementSyntax> statements = MergeSwitchSectionsAnalysis.GetStatementsOrDefault(switchSection);
+            SyntaxList<StatementSyntax> statements = MergeSwitchSectionsAnalyzer.GetStatementsOrDefault(switchSection);
 
             int index = sections.IndexOf(switchSection);
 
@@ -28,7 +29,7 @@ namespace Roslynator.CSharp.Refactorings
 
             while (i < sections.Count - 1
                 && !sections[i].SpanOrLeadingTriviaContainsDirectives()
-                && AreEquivalent(statements, MergeSwitchSectionsAnalysis.GetStatementsOrDefault(sections[i + 1])))
+                && AreEquivalent(statements, MergeSwitchSectionsAnalyzer.GetStatementsOrDefault(sections[i + 1])))
             {
                 i++;
             }

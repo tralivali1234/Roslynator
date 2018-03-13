@@ -4,8 +4,9 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -25,7 +26,7 @@ namespace Roslynator.CSharp.Analyzers
             base.Initialize(context);
 
             context.RegisterSyntaxNodeAction(
-                FormatBinaryOperatorOnNextLineAnalysis.AnalyzeBinaryExpression,
+                AnalyzeBinaryExpression,
                 SyntaxKind.AddExpression,
                 SyntaxKind.SubtractExpression,
                 SyntaxKind.MultiplyExpression,
@@ -46,6 +47,59 @@ namespace Roslynator.CSharp.Analyzers
                 SyntaxKind.GreaterThanOrEqualExpression,
                 SyntaxKind.IsExpression,
                 SyntaxKind.AsExpression);
+        }
+
+        public static void AnalyzeBinaryExpression(SyntaxNodeAnalysisContext context)
+        {
+            var binaryExpression = (BinaryExpressionSyntax)context.Node;
+
+            BinaryExpressionInfo info = SyntaxInfo.BinaryExpressionInfo(binaryExpression);
+
+            if (!info.Success)
+                return;
+
+            if (CSharpUtility.IsStringConcatenation(binaryExpression, context.SemanticModel, context.CancellationToken))
+                return;
+
+            if (!info.Left.GetTrailingTrivia().All(f => f.IsWhitespaceTrivia()))
+                return;
+
+            if (!CheckOperatorTrailingTrivia(binaryExpression.OperatorToken.TrailingTrivia))
+                return;
+
+            if (!info.Right.GetLeadingTrivia().IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(
+                DiagnosticDescriptors.FormatBinaryOperatorOnNextLine,
+                binaryExpression.OperatorToken);
+        }
+
+        private static bool CheckOperatorTrailingTrivia(SyntaxTriviaList triviaList)
+        {
+            bool result = false;
+
+            foreach (SyntaxTrivia trivia in triviaList)
+            {
+                switch (trivia.Kind())
+                {
+                    case SyntaxKind.WhitespaceTrivia:
+                        {
+                            continue;
+                        }
+                    case SyntaxKind.EndOfLineTrivia:
+                        {
+                            result = true;
+                            continue;
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+            }
+
+            return result;
         }
     }
 }

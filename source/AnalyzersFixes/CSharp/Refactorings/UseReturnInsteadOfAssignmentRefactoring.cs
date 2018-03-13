@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Roslynator.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using static Roslynator.CSharp.Refactorings.UseReturnInsteadOfAssignmentAnalysis;
+using static Roslynator.CSharp.Analyzers.UseReturnInsteadOfAssignmentAnalyzer;
 
 namespace Roslynator.CSharp.Refactorings
 {

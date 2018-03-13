@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analyzers;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings
@@ -34,7 +35,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 string name = typeParameters[i].Identifier.ValueText;
 
-                int index = ReorderTypeParameterConstraintsAnalysis.IndexOf(constraintClauses, name);
+                int index = ReorderTypeParameterConstraintsAnalyzer.IndexOf(constraintClauses, name);
 
                 if (index != -1)
                 {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings.MakeMemberReadOnly;
+using Roslynator.CSharp.Analyzers.MakeMemberReadOnly;
 
 namespace Roslynator.CSharp.Analyzers
 {

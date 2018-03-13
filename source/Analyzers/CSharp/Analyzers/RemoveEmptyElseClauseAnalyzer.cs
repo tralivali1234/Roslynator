@@ -4,8 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +24,38 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(RemoveEmptyElseClauseAnalysis.AnalyzeElseClause, SyntaxKind.ElseClause);
+            context.RegisterSyntaxNodeAction(AnalyzeElseClause, SyntaxKind.ElseClause);
+        }
+
+        public static void AnalyzeElseClause(SyntaxNodeAnalysisContext context)
+        {
+            var elseClause = (ElseClauseSyntax)context.Node;
+
+            StatementSyntax statement = elseClause.Statement;
+
+            if (statement?.Kind() != SyntaxKind.Block)
+                return;
+
+            var block = (BlockSyntax)statement;
+
+            if (block.Statements.Any())
+                return;
+
+            if (!elseClause.ElseKeyword.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            SyntaxToken openBrace = block.OpenBraceToken;
+
+            if (!openBrace.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!openBrace.TrailingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            if (!block.CloseBraceToken.LeadingTrivia.IsEmptyOrWhitespace())
+                return;
+
+            context.ReportDiagnostic(DiagnosticDescriptors.RemoveEmptyElseClause, elseClause);
         }
     }
 }

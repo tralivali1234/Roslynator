@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Roslynator.CSharp.Refactorings;
+using Roslynator.CSharp;
 
 namespace Roslynator.CSharp.Analyzers
 {
@@ -24,7 +26,33 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(RemoveUnnecessaryCaseLabelAnalysis.AnalyzeSwitchSection, SyntaxKind.SwitchSection);
+            context.RegisterSyntaxNodeAction(AnalyzeSwitchSection, SyntaxKind.SwitchSection);
+        }
+
+        public static void AnalyzeSwitchSection(SyntaxNodeAnalysisContext context)
+        {
+            var switchSection = (SwitchSectionSyntax)context.Node;
+
+            if (!switchSection.IsParentKind(SyntaxKind.SwitchStatement))
+                return;
+
+            SyntaxList<SwitchLabelSyntax> labels = switchSection.Labels;
+
+            if (labels.Count <= 1)
+                return;
+
+            if (!labels.Any(SyntaxKind.DefaultSwitchLabel))
+                return;
+
+            foreach (SwitchLabelSyntax label in labels)
+            {
+                if (!label.IsKind(SyntaxKind.DefaultSwitchLabel)
+                    && label.Keyword.TrailingTrivia.IsEmptyOrWhitespace()
+                    && label.ColonToken.LeadingTrivia.IsEmptyOrWhitespace())
+                {
+                    context.ReportDiagnostic(DiagnosticDescriptors.RemoveUnnecessaryCaseLabel, label);
+                }
+            }
         }
     }
 }
