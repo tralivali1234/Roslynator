@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
-using Roslynator.CSharp.Analyzers;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings

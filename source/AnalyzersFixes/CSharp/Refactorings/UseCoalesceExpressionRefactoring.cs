@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -16,44 +17,6 @@ namespace Roslynator.CSharp.Refactorings
 {
     internal static class UseCoalesceExpressionRefactoring
     {
-        public static Task<Document> InlineLazyInitializationAsync(
-            Document document,
-            IfStatementSyntax ifStatement,
-            CancellationToken cancellationToken)
-        {
-            StatementListInfo statementsInfo = SyntaxInfo.StatementListInfo(ifStatement);
-
-            SyntaxList<StatementSyntax> statements = statementsInfo.Statements;
-
-            int index = statements.IndexOf(ifStatement);
-
-            StatementSyntax expressionStatement = (ExpressionStatementSyntax)statements[index + 1];
-
-            MemberInvocationStatementInfo invocationInfo = SyntaxInfo.MemberInvocationStatementInfo((ExpressionStatementSyntax)expressionStatement);
-
-            ExpressionSyntax expression = invocationInfo.Expression;
-
-            SimpleAssignmentStatementInfo assignmentInfo = SyntaxInfo.SimpleAssignmentStatementInfo((ExpressionStatementSyntax)ifStatement.SingleNonBlockStatementOrDefault());
-
-            BinaryExpressionSyntax coalesceExpression = CSharpFactory.CoalesceExpression(expression.WithoutTrivia(), ParenthesizedExpression(assignmentInfo.AssignmentExpression));
-
-            ParenthesizedExpressionSyntax newExpression = ParenthesizedExpression(coalesceExpression)
-                .WithTriviaFrom(expression);
-
-            StatementSyntax newExpressionStatement = expressionStatement.ReplaceNode(expression, newExpression);
-
-            IEnumerable<SyntaxTrivia> trivia = statementsInfo.Parent.DescendantTrivia(TextSpan.FromBounds(ifStatement.FullSpan.Start, expressionStatement.FullSpan.Start));
-
-            if (trivia.Any(f => !f.IsWhitespaceOrEndOfLineTrivia()))
-                newExpressionStatement = newExpressionStatement.PrependToLeadingTrivia(trivia);
-
-            SyntaxList<StatementSyntax> newStatements = statements
-                .Replace(expressionStatement, newExpressionStatement)
-                .RemoveAt(index);
-
-            return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
-        }
-
         public static async Task<Document> RefactorAsync(
             Document document,
             StatementSyntax statement,
@@ -80,10 +43,10 @@ namespace Roslynator.CSharp.Refactorings
                         ExpressionSyntax left = assignment.Left;
                         ExpressionSyntax right = assignment.Right;
 
-                        BinaryExpressionSyntax coalesceExpression = CodeFixesUtility.CreateCoalesceExpression(
-                            semanticModel.GetTypeSymbol(left, cancellationToken),
+                        BinaryExpressionSyntax coalesceExpression = CreateCoalesceExpression(
                             left.WithoutLeadingTrivia().WithTrailingTrivia(Space),
                             right.WithLeadingTrivia(Space),
+                            semanticModel.GetTypeSymbol(left, cancellationToken),
                             ifStatement.SpanStart,
                             semanticModel);
 
@@ -150,10 +113,10 @@ namespace Roslynator.CSharp.Refactorings
 
             var assignment = (AssignmentExpressionSyntax)expressionStatement.Expression;
 
-            BinaryExpressionSyntax newNode = CodeFixesUtility.CreateCoalesceExpression(
-                semanticModel.GetTypeSymbol(assignment.Left, cancellationToken),
+            BinaryExpressionSyntax newNode = CreateCoalesceExpression(
                 expression.WithoutTrailingTrivia(),
                 assignment.Right.WithTrailingTrivia(expression.GetTrailingTrivia()),
+                semanticModel.GetTypeSymbol(assignment.Left, cancellationToken),
                 statement.SpanStart,
                 semanticModel);
 
@@ -176,6 +139,25 @@ namespace Roslynator.CSharp.Refactorings
                 .ReplaceAt(statementIndex, newStatement);
 
             return document.ReplaceStatementsAsync(statementsInfo, newStatements, cancellationToken);
+        }
+
+        private static BinaryExpressionSyntax CreateCoalesceExpression(
+            ExpressionSyntax left,
+            ExpressionSyntax right,
+            ITypeSymbol targetType,
+            int position,
+            SemanticModel semanticModel)
+        {
+            if (targetType?.SupportsExplicitDeclaration() == true)
+            {
+                right = CastExpression(
+                    targetType.ToMinimalTypeSyntax(semanticModel, position),
+                    right.Parenthesize()).WithSimplifierAnnotation();
+            }
+
+            return CSharpFactory.CoalesceExpression(
+                left.Parenthesize(),
+                right.Parenthesize());
         }
     }
 }

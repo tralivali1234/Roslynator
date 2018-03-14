@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -16,7 +17,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandExpressionBody)
                 && (context.Span.IsEmptyAndContainedInSpan(arrowExpressionClause) || context.Span.IsBetweenSpans(expression))
-                && ExpandExpressionBodyAnalysis.CanRefactor(arrowExpressionClause))
+                && ExpandExpressionBodyAnalysis.IsFixable(arrowExpressionClause))
             {
                 context.RegisterRefactoring(
                     "Expand expression body",

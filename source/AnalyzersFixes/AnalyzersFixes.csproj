@@ -6,11 +6,11 @@
 
   <PropertyGroup>
     <Version>1.7.1.0</Version>
-    <AssemblyName>Roslynator.CSharp.Analyzers.Fixes</AssemblyName>
+    <AssemblyName>Roslynator.CSharp.Analyzers.CodeFixes</AssemblyName>
     <RootNamespace>Roslynator.CSharp</RootNamespace>
     <CodeAnalysisRuleSet>..\global.ruleset</CodeAnalysisRuleSet>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Roslynator.CSharp.Analyzers.Fixes.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>Roslynator.CSharp.Analyzers.CodeFixes.snk</AssemblyOriginatorKeyFile>
     <LangVersion>7.2</LangVersion>
     <NuspecFile>Roslynator.Analyzers.nuspec</NuspecFile> 
     <NuspecProperties>configuration=$(Configuration)</NuspecProperties>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -29,7 +30,7 @@ namespace Roslynator.CSharp.Refactorings
         {
             while (memberAccess != null)
             {
-                if (UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.CanRefactor(memberAccess, semanticModel, context.CancellationToken))
+                if (UseEmptyStringLiteralInsteadOfStringEmptyAnalysis.IsFixable(memberAccess, semanticModel, context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         $"Use \"\" instead of '{memberAccess}'",

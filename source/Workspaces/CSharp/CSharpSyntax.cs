@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static Roslynator.CSharp.CSharpFactory;
@@ -136,14 +137,21 @@ namespace Roslynator.CSharp
             return ReturnStatement(FalseLiteralExpression());
         }
 
-        public static ThrowExpressionSyntax ThrowNewNotImplementedExceptionExpression()
+        public static ThrowExpressionSyntax ThrowNewNotImplementedExceptionExpression(SemanticModel semanticModel, int position)
         {
-            return ThrowExpression(ObjectCreationExpression(ParseTypeName(MetadataNames.System_NotImplementedException).WithSimplifierAnnotation(), ArgumentList()));
+            return ThrowExpression(
+                ObjectCreationExpression(
+                    semanticModel.GetTypeByMetadataName(MetadataNames.System_NotImplementedException).ToMinimalTypeSyntax(semanticModel, position),
+                    ArgumentList()));
         }
 
-        public static ThrowStatementSyntax ThrowNewNotImplementedExceptionStatement()
+        //TODO: test
+        public static ThrowStatementSyntax ThrowNewNotImplementedExceptionStatement(SemanticModel semanticModel, int position)
         {
-            return ThrowStatement(ObjectCreationExpression(ParseTypeName(MetadataNames.System_NotImplementedException).WithSimplifierAnnotation(), ArgumentList()));
+            return ThrowStatement(
+                ObjectCreationExpression(
+                    semanticModel.GetTypeByMetadataName(MetadataNames.System_NotImplementedException).ToMinimalTypeSyntax(semanticModel, position),
+                    ArgumentList()));
         }
     }
 }

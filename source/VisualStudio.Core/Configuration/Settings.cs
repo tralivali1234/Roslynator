@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using Roslynator.CodeFixes;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.Configuration
 {
