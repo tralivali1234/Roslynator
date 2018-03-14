@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Inline lazy initialization",
                                 cancellationToken =>
                                 {
-                                    return UseCoalesceExpressionRefactoring.InlineLazyInitializationAsync(
+                                    return InlineLazyInitializationRefactoring.RefactorAsync(
                                         context.Document,
                                         (IfStatementSyntax)statement,
                                         cancellationToken);

@@ -115,10 +115,10 @@ namespace Roslynator.CSharp.Refactorings
         {
             IfStatementSyntax ifStatement = analysis.IfStatement;
 
-            BinaryExpressionSyntax coalesceExpression = CodeFixesUtility.CreateCoalesceExpression(
-                analysis.SemanticModel.GetTypeSymbol(analysis.Left, cancellationToken),
+            BinaryExpressionSyntax coalesceExpression = CreateCoalesceExpression(
                 analysis.Right1.WithoutTrivia(),
                 analysis.Right2.WithoutTrivia(),
+                analysis.SemanticModel.GetTypeSymbol(analysis.Left, cancellationToken),
                 ifStatement.SpanStart,
                 analysis.SemanticModel);
 
@@ -203,10 +203,10 @@ namespace Roslynator.CSharp.Refactorings
 
             ITypeSymbol targetType = GetTargetType();
 
-            BinaryExpressionSyntax coalesceExpression = CodeFixesUtility.CreateCoalesceExpression(
-                targetType,
+            BinaryExpressionSyntax coalesceExpression = CreateCoalesceExpression(
                 analysis.Left.WithoutTrivia(),
                 analysis.Right.WithoutTrivia(),
+                targetType,
                 position,
                 analysis.SemanticModel);
 
@@ -529,6 +529,23 @@ namespace Roslynator.CSharp.Refactorings
                     left.Parenthesize(),
                     right.Parenthesize());
             }
+        }
+
+        private static BinaryExpressionSyntax CreateCoalesceExpression(
+            ExpressionSyntax left,
+            ExpressionSyntax right,
+            ITypeSymbol targetType,
+            int position,
+            SemanticModel semanticModel)
+        {
+            if (targetType?.SupportsExplicitDeclaration() == true)
+            {
+                right = CastExpression(
+                    targetType.ToMinimalTypeSyntax(semanticModel, position),
+                    right.Parenthesize()).WithSimplifierAnnotation();
+            }
+
+            return CoalesceExpression(left.Parenthesize(), right.Parenthesize());
         }
     }
 }
