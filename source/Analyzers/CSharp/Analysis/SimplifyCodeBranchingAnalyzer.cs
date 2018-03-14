@@ -7,14 +7,14 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Roslynator.CSharp.Refactorings;
 
-namespace Roslynator.CSharp.Analyzers
+namespace Roslynator.CSharp.Analysis
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class AddCommaAfterLastEnumMemberAnalyzer : BaseDiagnosticAnalyzer
+    public class SimplifyCodeBranchingAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
-            get { return ImmutableArray.Create(DiagnosticDescriptors.AddCommaAfterLastEnumMember); }
+            get { return ImmutableArray.Create(DiagnosticDescriptors.SimplifyCodeBranching); }
         }
 
         public override void Initialize(AnalysisContext context)
@@ -24,7 +24,7 @@ namespace Roslynator.CSharp.Analyzers
 
             base.Initialize(context);
 
-            context.RegisterSyntaxNodeAction(AddCommaAfterLastEnumMemberAnalysis.AnalyzeEnumDeclaration, SyntaxKind.EnumDeclaration);
+            context.RegisterSyntaxNodeAction(SimplifyCodeBranchingAnalysis.AnalyzeIfStatement, SyntaxKind.IfStatement);
         }
     }
 }
