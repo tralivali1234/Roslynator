@@ -442,14 +442,34 @@ namespace Roslynator.CSharp.Analysis
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            ITypeSymbol typeSymbol = GetTypeArgumentOfTask(node, semanticModel, cancellationToken);
+            INamedTypeSymbol taskOfT = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T);
 
-            if (typeSymbol == null)
+            if (taskOfT == null)
                 return false;
+
+            IMethodSymbol methodSymbol = GetMethodSymbol(node, semanticModel, cancellationToken);
+
+            if (methodSymbol == null)
+                return false;
+
+            var returnType = methodSymbol.ReturnType as INamedTypeSymbol;
+
+            if (returnType?.ConstructedFrom.EqualsOrInheritsFrom(taskOfT) != true)
+                return false;
+
+            ITypeSymbol typeArgument = returnType.TypeArguments.Single();
 
             foreach (AwaitExpressionSyntax awaitExpression in awaitExpressions)
             {
-                if (!typeSymbol.Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
+                if (!typeArgument.Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
+                    return false;
+
+                var expressionTypeSymbol = semanticModel.GetTypeSymbol(awaitExpression.Expression, cancellationToken) as INamedTypeSymbol;
+
+                if (expressionTypeSymbol == null)
+                    return false;
+
+                if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT))
                     return false;
             }
 
@@ -462,27 +482,33 @@ namespace Roslynator.CSharp.Analysis
             SemanticModel semanticModel,
             CancellationToken cancellationToken)
         {
-            return GetTypeArgumentOfTask(node, semanticModel, cancellationToken)?
-                .Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)) == true;
-        }
+            INamedTypeSymbol taskOfT = semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T);
 
-        private static ITypeSymbol GetTypeArgumentOfTask(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
+            if (taskOfT == null)
+                return false;
+
             IMethodSymbol methodSymbol = GetMethodSymbol(node, semanticModel, cancellationToken);
 
-            if (methodSymbol != null)
-            {
-                var returnType = methodSymbol.ReturnType as INamedTypeSymbol;
+            if (methodSymbol == null)
+                return false;
 
-                if (returnType?
-                    .ConstructedFrom
-                    .EqualsOrInheritsFrom(semanticModel.GetTypeByMetadataName(MetadataNames.System_Threading_Tasks_Task_T)) == true)
-                {
-                    return returnType.TypeArguments.Single();
-                }
-            }
+            var returnType = methodSymbol.ReturnType as INamedTypeSymbol;
 
-            return null;
+            if (returnType?.ConstructedFrom.EqualsOrInheritsFrom(taskOfT) != true)
+                return false;
+
+            if (!returnType.TypeArguments.Single().Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
+                return false;
+
+            var expressionTypeSymbol = semanticModel.GetTypeSymbol(awaitExpression.Expression, cancellationToken) as INamedTypeSymbol;
+
+            if (expressionTypeSymbol == null)
+                return false;
+
+            if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT))
+                return false;
+
+            return true;
         }
 
         private static IMethodSymbol GetMethodSymbol(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)
