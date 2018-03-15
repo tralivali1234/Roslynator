@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -43,7 +44,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
 
-                if (UseConstantInsteadOfFieldAnalysis.CanRefactor(fieldDeclaration, semanticModel, onlyPrivate: false, cancellationToken: context.CancellationToken))
+                if (UseConstantInsteadOfFieldAnalysis.IsFixable(fieldDeclaration, semanticModel, onlyPrivate: false, cancellationToken: context.CancellationToken))
                 {
                     context.RegisterRefactoring(
                         "Use constant instead of field",

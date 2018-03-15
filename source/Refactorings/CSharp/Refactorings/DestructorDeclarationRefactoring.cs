@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -11,7 +12,7 @@ namespace Roslynator.CSharp.Refactorings
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && destructorDeclaration.Body?.Span.Contains(context.Span) == true
                 && context.SupportsCSharp6
-                && UseExpressionBodiedMemberAnalysis.CanRefactor(destructorDeclaration))
+                && UseExpressionBodiedMemberAnalysis.IsFixable(destructorDeclaration))
             {
                 context.RegisterRefactoring(
                     "Use expression-bodied member",

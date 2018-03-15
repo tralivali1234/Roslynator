@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -25,7 +26,7 @@ namespace Roslynator.CSharp.Refactorings
             }
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ReplaceInterpolatedStringWithStringLiteral)
-                && ReplaceInterpolatedStringWithStringLiteralAnalysis.CanRefactor(interpolatedString))
+                && ReplaceInterpolatedStringWithStringLiteralAnalysis.IsFixable(interpolatedString))
             {
                 context.RegisterRefactoring("Remove $",
                     cancellationToken =>

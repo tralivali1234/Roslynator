@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Roslynator.CSharp.Refactorings.UseMethodChaining;
+using Roslynator.CSharp.Analysis.UseMethodChaining;
 using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Refactorings

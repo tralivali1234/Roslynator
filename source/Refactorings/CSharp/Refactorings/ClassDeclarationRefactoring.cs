@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Refactorings.SortMemberDeclarations;
 
 namespace Roslynator.CSharp.Refactorings

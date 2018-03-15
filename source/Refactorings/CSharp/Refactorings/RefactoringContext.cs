@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.CodeRefactorings;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {

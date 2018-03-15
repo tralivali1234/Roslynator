@@ -25,7 +25,7 @@ namespace Roslynator.CSharp.Refactorings
             {
                 if (ifOrElse.IsIf)
                 {
-                    if (!IsFixable(ifOrElse.AsIf(), semanticModel, context.CancellationToken))
+                    if (!CanRefactor(ifOrElse.AsIf(), semanticModel, context.CancellationToken))
                         return;
                 }
                 else if (ContainsBreakStatementThatBelongsToParentLoop(ifOrElse.AsElse().Statement))
@@ -39,7 +39,7 @@ namespace Roslynator.CSharp.Refactorings
                 cancellationToken => RefactorAsync(context.Document, ifStatement, cancellationToken));
         }
 
-        private static bool IsFixable(
+        private static bool CanRefactor(
             IfStatementSyntax ifStatement,
             SemanticModel semanticModel,
             CancellationToken cancellationToken)

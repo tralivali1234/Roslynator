@@ -9,8 +9,8 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
+using Roslynator.CSharp.Analysis.UseMethodChaining;
 using Roslynator.CSharp.Refactorings;
-using Roslynator.CSharp.Refactorings.UseMethodChaining;
 
 namespace Roslynator.CSharp.CodeFixes
 {
@@ -81,7 +81,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 "Inline lazy initialization",
                                 cancellationToken =>
                                 {
-                                    return UseCoalesceExpressionRefactoring.InlineLazyInitializationAsync(
+                                    return InlineLazyInitializationRefactoring.RefactorAsync(
                                         context.Document,
                                         (IfStatementSyntax)statement,
                                         cancellationToken);
@@ -129,7 +129,6 @@ namespace Roslynator.CSharp.CodeFixes
                                 analysis = UseMethodChainingAnalysis.WithAssignmentAnalysis;
                             }
 
-                            //TODO: test
                             CodeAction codeAction = CodeAction.Create(
                                 "Use method chaining",
                                 cancellationToken => UseMethodChainingRefactoring.RefactorAsync(context.Document, analysis, expressionStatement, cancellationToken),
