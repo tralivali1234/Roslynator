@@ -4568,6 +4568,8 @@ string y = $"{x}{x}{x}";]]></Before>
     <IsEnabledByDefault>true</IsEnabledByDefault>
     <SupportsFadeOut>false</SupportsFadeOut>
     <SupportsFadeOutAnalyzer>false</SupportsFadeOutAnalyzer>
+    <Summary>Having comma after last enum member allows easily reorder members.
+Also when new enum member is added, previous line will not show up in file comparison.</Summary>
     <Samples>
       <Sample>
         <Before>
