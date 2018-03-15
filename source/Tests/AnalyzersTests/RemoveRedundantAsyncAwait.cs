@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Josef Pihrt. All rights reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 #pragma warning disable CS0162, CS0168, CS0219, RCS1002, RCS1004, RCS1016, RCS1021, RCS1048, RCS1054, RCS1061, RCS1090, RCS1118, RCS1124, RCS1136, RCS1163, RCS1176
@@ -530,6 +531,14 @@ namespace Roslynator.CSharp.Analyzers.Tests
             public static async Task DoAsync(object parameter)
             {
                 return await DoAsync(await GetAsync().ConfigureAwait(false)).ConfigureAwait(false);
+            }
+        }
+
+        private class AwaitableNonTaskType
+        {
+            public static async Task<bool> GetAsync()
+            {
+                return await Observable.Range(0, 1).Any(_ => false);
             }
         }
     }

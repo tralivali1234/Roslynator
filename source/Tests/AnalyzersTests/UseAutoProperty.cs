@@ -2,6 +2,7 @@
 
 #pragma warning disable CS0219, RCS1016, RCS1036, RCS1060, RCS1081, RCS1118
 
+using System;
 using System.Runtime.InteropServices;
 
 namespace Roslynator.CSharp.Analyzers.Tests
@@ -236,6 +237,18 @@ namespace Roslynator.CSharp.Analyzers.Tests
             {
                 get { return _property; }
                 set { _property = value; }
+            }
+        }
+
+        private class FooFieldWithNonSerializedAttribute
+        {
+            [NonSerialized]
+            private string _value;
+
+            public string Value
+            {
+                get { return _value; }
+                set { _value = value; }
             }
         }
     }

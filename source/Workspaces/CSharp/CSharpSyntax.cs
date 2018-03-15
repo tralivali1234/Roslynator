@@ -145,7 +145,6 @@ namespace Roslynator.CSharp
                     ArgumentList()));
         }
 
-        //TODO: test
         public static ThrowStatementSyntax ThrowNewNotImplementedExceptionStatement(SemanticModel semanticModel, int position)
         {
             return ThrowStatement(
