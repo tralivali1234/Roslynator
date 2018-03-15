@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Roslynator.CSharp.Analysis;
 
 namespace Roslynator.CSharp.Refactorings
 {
@@ -45,7 +46,7 @@ namespace Roslynator.CSharp.Refactorings
 
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.UseExpressionBodiedMember)
                 && localFunctionStatement.Body?.Span.Contains(context.Span) == true
-                && UseExpressionBodiedMemberAnalysis.CanRefactor(localFunctionStatement))
+                && UseExpressionBodiedMemberAnalysis.IsFixable(localFunctionStatement))
             {
                 context.RegisterRefactoring(
                     "Use expression-bodied member",

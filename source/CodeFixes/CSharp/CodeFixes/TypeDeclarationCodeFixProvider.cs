@@ -67,7 +67,7 @@ namespace Roslynator.CSharp.CodeFixes
                                 {
                                     TypeSyntax type = typeSymbol.ToMinimalTypeSyntax(semanticModel, typeDeclaration.Identifier.SpanStart);
 
-                                    MethodDeclarationSyntax methodDeclaration = ObjectEqualsMethodDeclaration(type);
+                                    MethodDeclarationSyntax methodDeclaration = ObjectEqualsMethodDeclaration(type, semanticModel, typeDeclaration.OpenBraceToken.Span.End);
 
                                     TypeDeclarationSyntax newNode = typeDeclaration.InsertMember(methodDeclaration);
 
@@ -84,7 +84,9 @@ namespace Roslynator.CSharp.CodeFixes
                             if (!Settings.IsCodeFixEnabled(CodeFixIdentifiers.DefineObjectGetHashCode))
                                 break;
 
-                            MethodDeclarationSyntax methodDeclaration = ObjectGetHashCodeMethodDeclaration();
+                            SemanticModel semanticModel = await context.GetSemanticModelAsync().ConfigureAwait(false);
+
+                            MethodDeclarationSyntax methodDeclaration = ObjectGetHashCodeMethodDeclaration(semanticModel, typeDeclaration.CloseBraceToken.Span.End);
 
                             CodeAction codeAction = CodeAction.Create(
                                 "Override object.GetHashCode",
@@ -105,6 +107,8 @@ namespace Roslynator.CSharp.CodeFixes
 
         private static MethodDeclarationSyntax ObjectEqualsMethodDeclaration(
             TypeSyntax type,
+            SemanticModel semanticModel,
+            int position,
             string parameterName = "obj",
             string localName = "other")
         {
@@ -120,17 +124,17 @@ namespace Roslynator.CSharp.CodeFixes
                             DeclarationPattern(
                                 type,
                                 SingleVariableDesignation(Identifier(localName))))),
-                    ThrowNewNotImplementedExceptionStatement()));
+                    ThrowNewNotImplementedExceptionStatement(semanticModel, position)));
         }
 
-        private static MethodDeclarationSyntax ObjectGetHashCodeMethodDeclaration()
+        private static MethodDeclarationSyntax ObjectGetHashCodeMethodDeclaration(SemanticModel semanticModel, int position)
         {
             return MethodDeclaration(
                 Modifiers.PublicOverride(),
                 IntType(),
                 Identifier("GetHashCode"),
                 ParameterList(),
-                Block(ThrowNewNotImplementedExceptionStatement()));
+                Block(ThrowNewNotImplementedExceptionStatement(semanticModel, position)));
         }
     }
 }

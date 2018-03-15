@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
 using Roslynator.CSharp.Helpers;
+using Roslynator.CSharp.Refactorings;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Roslynator.CSharp.CodeFixes
@@ -177,18 +178,16 @@ namespace Roslynator.CSharp.CodeFixes
                                         foreach (ITypeSymbol typeSymbol2 in DetermineParameterTypeHelper.DetermineParameterTypes(argument, semanticModel, context.CancellationToken))
                                         {
                                             if (!typeSymbol.Equals(typeSymbol2)
-                                                && typeSymbol2 is IArrayTypeSymbol arrayType)
+                                                && typeSymbol2 is IArrayTypeSymbol arrayType
+                                                && semanticModel.IsImplicitConversion(expression, arrayType.ElementType))
                                             {
-                                                if (semanticModel.IsImplicitConversion(expression, arrayType.ElementType))
-                                                {
-                                                    CodeAction codeAction = CodeAction.Create(
-                                                        "Create singleton array",
-                                                        cancellationToken => CreateSingletonArrayRefactoring.RefactorAsync(context.Document, expression, arrayType.ElementType, semanticModel, cancellationToken),
-                                                        GetEquivalenceKey(diagnostic, CodeFixIdentifiers.CreateSingletonArray));
+                                                CodeAction codeAction = CodeAction.Create(
+                                                    "Create singleton array",
+                                                    cancellationToken => CreateSingletonArrayRefactoring.RefactorAsync(context.Document, expression, arrayType.ElementType, semanticModel, cancellationToken),
+                                                    GetEquivalenceKey(diagnostic, CodeFixIdentifiers.CreateSingletonArray));
 
-                                                    context.RegisterCodeFix(codeAction, diagnostic);
-                                                    break;
-                                                }
+                                                context.RegisterCodeFix(codeAction, diagnostic);
+                                                break;
                                             }
                                         }
                                     }

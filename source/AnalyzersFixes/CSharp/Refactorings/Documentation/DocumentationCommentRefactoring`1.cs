@@ -11,7 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CSharp;
-using Roslynator.CSharp.Analyzers.DocumentationComment;
+using Roslynator.CSharp.Analysis.DocumentationComment;
 
 namespace Roslynator.CSharp.Refactorings.DocumentationComment
 {

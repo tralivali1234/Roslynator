@@ -261,6 +261,26 @@ namespace Roslynator.CSharp
                 SyntaxKind.PostDecrementExpression);
         }
 
+        public static bool IsCompoundAssignment(SyntaxKind assignmentExpressionKind)
+        {
+            switch (assignmentExpressionKind)
+            {
+                case SyntaxKind.AddAssignmentExpression:
+                case SyntaxKind.SubtractAssignmentExpression:
+                case SyntaxKind.MultiplyAssignmentExpression:
+                case SyntaxKind.DivideAssignmentExpression:
+                case SyntaxKind.ModuloAssignmentExpression:
+                case SyntaxKind.AndAssignmentExpression:
+                case SyntaxKind.ExclusiveOrAssignmentExpression:
+                case SyntaxKind.OrAssignmentExpression:
+                case SyntaxKind.LeftShiftAssignmentExpression:
+                case SyntaxKind.RightShiftAssignmentExpression:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Returns true if a syntax of the specified kind can be simplified to a compound assignment.
         /// </summary>

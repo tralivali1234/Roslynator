@@ -3,7 +3,8 @@
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Roslynator.CSharp.Refactorings.If;
+using Roslynator.CSharp.Analysis.If;
+using Roslynator.CSharp.Analysis.ReduceIfNesting;
 using Roslynator.CSharp.Refactorings.ReduceIfNesting;
 
 namespace Roslynator.CSharp.Refactorings

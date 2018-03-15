@@ -11,9 +11,9 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Roslynator.CodeFixes;
-using Roslynator.CSharp.Analyzers;
+using Roslynator.CSharp.Analysis;
 using Roslynator.CSharp.Refactorings;
-using Roslynator.CSharp.Refactorings.If;
+using Roslynator.CSharp.Analysis.If;
 using Roslynator.CSharp.Refactorings.ReduceIfNesting;
 
 namespace Roslynator.CSharp.CodeFixes

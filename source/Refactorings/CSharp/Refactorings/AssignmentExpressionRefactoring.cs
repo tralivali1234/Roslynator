@@ -13,8 +13,9 @@ namespace Roslynator.CSharp.Refactorings
         public static async Task ComputeRefactoringsAsync(RefactoringContext context, AssignmentExpressionSyntax assignmentExpression)
         {
             if (context.IsRefactoringEnabled(RefactoringIdentifiers.ExpandAssignmentExpression)
-                && assignmentExpression.OperatorToken.Span.Contains(context.Span)
-                && ExpandAssignmentExpressionAnalysis.CanRefactor(assignmentExpression))
+                && context.Span.IsEmptyAndContainedInSpanOrBetweenSpans(assignmentExpression.OperatorToken)
+                && CSharpFacts.IsCompoundAssignment(assignmentExpression.Kind())
+                && SyntaxInfo.AssignmentExpressionInfo(assignmentExpression).Success)
             {
                 context.RegisterRefactoring(
                     "Expand assignment",

@@ -4,7 +4,6 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using Roslynator.Configuration;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.VisualStudio
 {

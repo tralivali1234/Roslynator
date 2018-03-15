@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Roslynator.CodeFixes;
 using Roslynator.Configuration;
-using Roslynator.CSharp.Refactorings;
 
 namespace Roslynator.VisualStudio
 {
