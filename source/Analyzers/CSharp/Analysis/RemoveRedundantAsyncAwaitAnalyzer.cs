@@ -458,7 +458,10 @@ namespace Roslynator.CSharp.Analysis
             if (returnType?.ConstructedFrom.EqualsOrInheritsFrom(taskOfT) != true)
                 return false;
 
-            ITypeSymbol typeArgument = returnType.TypeArguments.Single();
+            ITypeSymbol typeArgument = returnType.TypeArguments.SingleOrDefault(shouldThrow: false);
+
+            if (typeArgument == null)
+                return false;
 
             foreach (AwaitExpressionSyntax awaitExpression in awaitExpressions)
             {
@@ -473,7 +476,7 @@ namespace Roslynator.CSharp.Analysis
                     return false;
 
                 if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT)
-                    && !IsAwaitableConfiguredTask(expression, expressionTypeSymbol, semanticModel))
+                    && !IsConfiguredTaskAwaitableOfT(expression, expressionTypeSymbol, semanticModel))
                 {
                     return false;
                 }
@@ -503,7 +506,12 @@ namespace Roslynator.CSharp.Analysis
             if (returnType?.ConstructedFrom.EqualsOrInheritsFrom(taskOfT) != true)
                 return false;
 
-            if (!returnType.TypeArguments.Single().Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
+            ITypeSymbol typeArgument = returnType.TypeArguments.SingleOrDefault(shouldThrow: false);
+
+            if (typeArgument == null)
+                return false;
+
+            if (!typeArgument.Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
                 return false;
 
             ExpressionSyntax expression = awaitExpression.Expression;
@@ -513,17 +521,11 @@ namespace Roslynator.CSharp.Analysis
             if (expressionTypeSymbol == null)
                 return false;
 
-            //TODO: simplify if-return
-            if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT)
-                && !IsAwaitableConfiguredTask(expression, expressionTypeSymbol, semanticModel))
-            {
-                return false;
-            }
-
-            return true;
+            return expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT)
+                || IsConfiguredTaskAwaitableOfT(expression, expressionTypeSymbol, semanticModel);
         }
 
-        private static bool IsAwaitableConfiguredTask(
+        private static bool IsConfiguredTaskAwaitableOfT(
             ExpressionSyntax expression,
             INamedTypeSymbol expressionTypeSymbol,
             SemanticModel semanticModel)
