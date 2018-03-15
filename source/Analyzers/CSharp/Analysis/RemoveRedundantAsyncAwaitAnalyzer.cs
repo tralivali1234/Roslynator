@@ -12,11 +12,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Roslynator.CSharp;
+using Roslynator.CSharp.Syntax;
 
 namespace Roslynator.CSharp.Analysis
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public partial class RemoveRedundantAsyncAwaitAnalyzer : BaseDiagnosticAnalyzer
+    public class RemoveRedundantAsyncAwaitAnalyzer : BaseDiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
@@ -464,13 +465,18 @@ namespace Roslynator.CSharp.Analysis
                 if (!typeArgument.Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
                     return false;
 
-                var expressionTypeSymbol = semanticModel.GetTypeSymbol(awaitExpression.Expression, cancellationToken) as INamedTypeSymbol;
+                ExpressionSyntax expression = awaitExpression.Expression;
+
+                var expressionTypeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken) as INamedTypeSymbol;
 
                 if (expressionTypeSymbol == null)
                     return false;
 
-                if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT))
+                if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT)
+                    && !IsAwaitableConfiguredTask(expression, expressionTypeSymbol, semanticModel))
+                {
                     return false;
+                }
             }
 
             return true;
@@ -500,15 +506,40 @@ namespace Roslynator.CSharp.Analysis
             if (!returnType.TypeArguments.Single().Equals(semanticModel.GetTypeSymbol(awaitExpression, cancellationToken)))
                 return false;
 
-            var expressionTypeSymbol = semanticModel.GetTypeSymbol(awaitExpression.Expression, cancellationToken) as INamedTypeSymbol;
+            ExpressionSyntax expression = awaitExpression.Expression;
+
+            var expressionTypeSymbol = semanticModel.GetTypeSymbol(expression, cancellationToken) as INamedTypeSymbol;
 
             if (expressionTypeSymbol == null)
                 return false;
 
-            if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT))
+            //TODO: simplify if-return
+            if (!expressionTypeSymbol.ConstructedFrom.EqualsOrInheritsFrom(taskOfT)
+                && !IsAwaitableConfiguredTask(expression, expressionTypeSymbol, semanticModel))
+            {
                 return false;
+            }
 
             return true;
+        }
+
+        private static bool IsAwaitableConfiguredTask(
+            ExpressionSyntax expression,
+            INamedTypeSymbol expressionTypeSymbol,
+            SemanticModel semanticModel)
+        {
+            MemberInvocationExpressionInfo invocationInfo = SyntaxInfo.MemberInvocationExpressionInfo(expression);
+
+            if (!invocationInfo.Success)
+                return false;
+
+            if (invocationInfo.Arguments.Count != 1)
+                return false;
+
+            if (invocationInfo.NameText != "ConfigureAwait")
+                return false;
+
+            return expressionTypeSymbol.ConstructedFrom.Equals(semanticModel.GetTypeByMetadataName(MetadataNames.System_Runtime_CompilerServices_ConfiguredTaskAwaitable_T));
         }
 
         private static IMethodSymbol GetMethodSymbol(SyntaxNode node, SemanticModel semanticModel, CancellationToken cancellationToken)

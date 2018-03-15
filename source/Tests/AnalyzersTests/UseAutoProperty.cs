@@ -180,7 +180,7 @@ namespace Roslynator.CSharp.Analyzers.Tests
                 set { _propertyOut = value; }
             }
 
-            private void VoidMethod()
+            internal void VoidMethod()
             {
                 RefMethod(ref _propertyRef);
                 OutMethod(out _propertyOut);
