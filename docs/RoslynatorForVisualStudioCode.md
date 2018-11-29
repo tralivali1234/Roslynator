@@ -16,9 +16,11 @@
 
 4. Copy selected libraries to a directory of your choice (for example **C://lib/roslynator**)
 
-   * **Roslynator.Common.dll** (required)
    * **Roslynator.Core.dll** (required)
-   * **Roslynator.Workspaces.dll** (required)
+   * **Roslynator.Common.dll** (required)
+   * **Roslynator.Common.Workspaces.dll** (required)
+   * **Roslynator.CSharp.dll** (required)
+   * **Roslynator.CSharp.Workspaces.dll** (required)
    * **Roslynator.CSharp.CodeFixes.dll** (contains code fixes for compiler diagnostics)
    * **Roslynator.CSharp.Refactorings.dll** (contains refactorings)
 

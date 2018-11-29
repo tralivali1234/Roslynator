@@ -15,13 +15,13 @@
 #### Add braces to switch section \(RR0004\)
 
 * **Syntax**: switch section
-* **Span**: statements
+* **Span**: case or default keyword
 ![Add braces to switch section](../../images/refactorings/AddBracesToSwitchSection.png)
 
 #### Add braces to switch sections \(RR0005\)
 
 * **Syntax**: switch statement
-* **Span**: switch keyword
+* **Span**: case or default keyword
 ![Add braces to switch sections](../../images/refactorings/AddBracesToSwitchSections.png)
 
 #### Add cast expression \(RR0006\)
@@ -46,10 +46,38 @@
 * **Syntax**: return statement without expression
 ![Add default value to return statement](../../images/refactorings/AddDefaultValueToReturnStatement.png)
 
+#### Add empty line between declarations \(RR0205\)
+
+* **Syntax**: selected declarations
+
+#### Before
+
+```csharp
+private object x;
+private object y;
+private object z;
+```
+
+#### After
+
+```csharp
+private object x;
+
+private object y;
+
+private object z;
+```
+
 #### Add exception to documentation comment \(RR0009\)
 
 * **Syntax**: throw statement
 ![Add exception to documentation comment](../../images/refactorings/AddExceptionToDocumentationComment.png)
+
+#### Add identifier to parameter \(RR0012\)
+
+* **Syntax**: parameter
+* **Span**: missing identifier
+![Add identifier to parameter](../../images/refactorings/AddIdentifierToParameter.png)
 
 #### Add identifier to variable declaration \(RR0010\)
 
@@ -97,11 +125,31 @@ public interface IFoo
 * **Syntax**: argument list
 ![Add parameter name to argument](../../images/refactorings/AddParameterNameToArgument.png)
 
-#### Add parameter name to parameter \(RR0012\)
+#### Add tag to documentation comment \(RR0208\)
 
-* **Syntax**: parameter
-* **Span**: missing identifier
-![Add parameter name to parameter](../../images/refactorings/AddParameterNameToParameter.png)
+* **Syntax**: selected word\(s\) in documentation comment
+
+#### Before
+
+```csharp
+/// <summary>
+/// null
+/// </summary>
+public class Foo
+{
+}
+```
+
+#### After
+
+```csharp
+/// <summary>
+/// <c>null</c>
+/// </summary>
+public class Foo
+{
+}
+```
 
 #### Add type parameter \(RR0178\)
 
@@ -131,6 +179,27 @@ public interface IFoo
 * **Syntax**: method invocation
 ![Call extension method as instance method](../../images/refactorings/CallExtensionMethodAsInstanceMethod.png)
 
+#### Call string\.IndexOf instead of string\.Contains \(RR0144\)
+
+* **Syntax**: method invocation
+* **Span**: method name
+
+#### Before
+
+```csharp
+if (s.Contains("a"))
+{
+{
+```
+
+#### After
+
+```csharp
+if (s.IndexOf("a", StringComparison.OrdinalIgnoreCase) != -1)
+{
+{
+```
+
 #### Call 'To\.\.\.' method \(ToString, ToArray, ToList\) \(RR0017\)
 
 * **Syntax**: argument, assignment expression, return statement, variable declaration
@@ -149,7 +218,7 @@ public interface IFoo
 
 #### Change method return type to 'void' \(RR0021\)
 
-* **Syntax**: method
+* **Syntax**: method, local function
 ![Change method return type to 'void'](../../images/refactorings/ChangeMethodReturnTypeToVoid.png)
 
 #### Change method/property/indexer type according to return expression \(RR0019\)
@@ -233,17 +302,17 @@ public interface IFoo
 * **Span**: opening or closing brace
 ![Duplicate statement](../../images/refactorings/DuplicateStatement.png)
 
-#### Expand assignment expression \(RR0034\)
-
-* **Syntax**: assignment expression
-* **Span**: operator
-![Expand assignment expression](../../images/refactorings/ExpandAssignmentExpression.png)
-
 #### Expand coalesce expression \(RR0035\)
 
 * **Syntax**: coalesce expression
 * **Span**: ?? operator
 ![Expand coalesce expression](../../images/refactorings/ExpandCoalesceExpression.png)
+
+#### Expand compound assignment operator \(RR0034\)
+
+* **Syntax**: compound assignment expression
+* **Span**: operator
+![Expand compound assignment operator](../../images/refactorings/ExpandCompoundAssignmentOperator.png)
 
 #### Expand event \(RR0036\)
 
@@ -275,6 +344,33 @@ public interface IFoo
 
 * **Syntax**: auto\-property
 ![Expand property and add backing field](../../images/refactorings/ExpandPropertyAndAddBackingField.png)
+
+#### Extract event handler method \(RR0203\)
+
+* **Syntax**: lambda expression
+
+#### Before
+
+```csharp
+void Foo()
+{
+  x.Changed += (s, e) => Bar();
+}
+```
+
+#### After
+
+```csharp
+void Foo()
+{
+  x.Changed += Changed;
+}
+
+void OnChanged(object sender, EventArgs e)
+{
+  Bar();
+}
+```
 
 #### Extract expression from condition \(RR0043\)
 
@@ -437,6 +533,38 @@ private void Foo<T1, T2, T3>()
 * **Span**: identifier
 ![Generate event invoking method](../../images/refactorings/GenerateEventInvokingMethod.png)
 
+#### Generate property for DebuggerDisplay attribute \(RR0204\)
+
+* **Syntax**: DebuggerDisplay attribute
+
+#### Before
+
+```csharp
+[DebuggerDisplay("A: {A} B: {B}")]
+public class Foo
+{
+    public string A { get; }
+    public string B { get; }
+}
+```
+
+#### After
+
+```csharp
+DebuggerDisplay("{DebuggerDisplay,nq}")]
+public class Foo
+{
+    public string A { get; }
+    public string B { get; }
+
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    private string DebuggerDisplay
+    {
+        get { return $"A: {A} B: {B}"; }
+    }
+}
+```
+
 #### Generate switch sections \(RR0059\)
 
 * **Syntax**: switch statement \(that is empty or contains only default section\)
@@ -517,6 +645,32 @@ public class Foo
 * **Syntax**: constant declaration
 ![Inline constant](../../images/refactorings/InlineConstant.png)
 
+#### Inline constant value \(RR0127\)
+
+* **Syntax**: expression that has constant value
+
+#### Before
+
+```csharp
+public const string Value = "x";
+
+void Foo()
+{
+    string x = Value;
+}
+```
+
+#### After
+
+```csharp
+public const string Value = "x";
+
+void Foo()
+{
+    string x = "x";
+}
+```
+
 #### Inline method \(RR0062\)
 
 * **Syntax**: method invocation
@@ -564,6 +718,102 @@ public class Foo
 
 * **Syntax**: expression statement, expression in using statement
 ![Introduce local variable](../../images/refactorings/IntroduceLocalVariable.png)
+
+#### Invert binary expression \(RR0079\)
+
+* **Syntax**: logical and/or expression
+![Invert binary expression](../../images/refactorings/InvertBinaryExpression.png)
+
+#### Invert boolean literal \(RR0080\)
+
+* **Syntax**: boolean literal
+![Invert boolean literal](../../images/refactorings/InvertBooleanLiteral.png)
+
+#### Invert conditional expression \(RR0160\)
+
+* **Syntax**: conditional expression
+* **Span**: condition
+![Invert conditional expression](../../images/refactorings/InvertConditionalExpression.png)
+
+#### Invert if \(RR0189\)
+
+* **Syntax**: if statement
+* **Span**: if keyword
+
+#### Before
+
+```csharp
+if (condition1)
+{
+    if (condition2)
+    {
+        Foo();
+    }
+}
+```
+
+#### After
+
+```csharp
+if (!condition1)
+{
+    return;
+}
+
+if (!condition2)
+{
+    return;
+}
+
+Foo();
+```
+
+- - -
+
+#### Before
+
+```csharp
+if (!condition1)
+{
+    return;
+}
+
+if (!condition2)
+{
+    return;
+}
+
+Foo();
+```
+
+#### After
+
+```csharp
+if (condition1)
+{
+    if (condition2)
+    {
+        Foo();
+    }
+}
+```
+
+#### Invert if\-else \(RR0162\)
+
+* **Syntax**: if\-else statement
+* **Span**: if keyword
+![Invert if-else](../../images/refactorings/InvertIfElse.png)
+
+#### Invert is expression \(RR0081\)
+
+* **Syntax**: is expression
+* **Span**: operator
+![Invert is expression](../../images/refactorings/InvertIsExpression.png)
+
+#### Invert operator \(RR0082\)
+
+* **Syntax**: \!=, &&, \|\|, \<, \<=, ==, >, >=
+![Invert operator](../../images/refactorings/InvertOperator.png)
 
 #### Invert prefix/postfix unary operator \(RR0134\)
 
@@ -679,26 +929,32 @@ else
 * **Syntax**: local declarations with same type
 ![Merge local declarations](../../images/refactorings/MergeLocalDeclarations.png)
 
-#### Negate binary expression \(RR0079\)
+#### Move unsafe context to containing declaration \(RR0202\)
 
-* **Syntax**: logical and/or expression
-![Negate binary expression](../../images/refactorings/NegateBinaryExpression.png)
+* **Syntax**: unsafe declaration
+* **Span**: unsafe modifier
 
-#### Negate boolean literal \(RR0080\)
+#### Before
 
-* **Syntax**: boolean literal
-![Negate boolean literal](../../images/refactorings/NegateBooleanLiteral.png)
+```csharp
+public class Foo
+{
+  public unsafe void Bar()
+  {
+  }
+}
+```
 
-#### Negate is expression \(RR0081\)
+#### After
 
-* **Syntax**: is expression
-* **Span**: operator
-![Negate is expression](../../images/refactorings/NegateIsExpression.png)
-
-#### Negate operator \(RR0082\)
-
-* **Syntax**: \!=, &&, \|\|, \<, \<=, ==, >, >=
-![Negate operator](../../images/refactorings/NegateOperator.png)
+```csharp
+public unsafe class Foo
+{
+  public void Bar()
+  {
+  }
+}
+```
 
 #### Notify property changed \(RR0083\)
 
@@ -715,55 +971,6 @@ else
 
 * **Syntax**: local declaration in method
 ![Promote local to parameter](../../images/refactorings/PromoteLocalToParameter.png)
-
-#### Reduce if nesting \(RR0189\)
-
-* **Syntax**: if statement
-* **Span**: if keyword
-
-#### Before
-
-```csharp
-if (condition1)
-{
-    Foo1();
-
-    if (condition2)
-    {
-        Foo2();
-
-        if (condition3)
-        {
-            Foo3();
-        }
-    }
-}
-```
-
-#### After
-
-```csharp
-if (!condition1)
-{
-    return;
-}
-
-Foo1();
-
-if (!condition2)
-{
-    return;
-}
-
-Foo2();
-
-if (!condition3)
-{
-    return;
-}
-
-Foo3();
-```
 
 #### Remove all comments \(RR0086\)
 
@@ -808,6 +1015,35 @@ Foo3();
 * **Span**: opening or closing brace
 ![Remove all switch sections](../../images/refactorings/RemoveAllSwitchSections.png)
 
+#### Remove async/await \(RR0209\)
+
+* **Syntax**: method declaration, local function, lambda, anonymous method
+* **Span**: async keyword
+
+#### Before
+
+```csharp
+class C
+{
+    async Task<object> FooAsync()
+    {
+        return await BarAsync().ConfigureAwait(false);
+    }
+}
+```
+
+#### After
+
+```csharp
+class C
+{
+    Task<object> FooAsync()
+    {
+        return BarAsync();
+    }
+}
+```
+
 #### Remove braces \(RR0094\)
 
 * **Syntax**: do statement, else clause, fixed statement, for statement, foreach statement, if statement, lock statement, using statement, while statement
@@ -823,13 +1059,13 @@ Foo3();
 #### Remove braces from switch section \(RR0096\)
 
 * **Syntax**: switch section
-* **Span**: block
+* **Span**: case or default keyword
 ![Remove braces from switch section](../../images/refactorings/RemoveBracesFromSwitchSection.png)
 
 #### Remove braces from switch sections \(RR0097\)
 
 * **Syntax**: switch statement
-* **Span**: switch keyword
+* **Span**: case or default keyword
 ![Remove braces from switch sections](../../images/refactorings/RemoveBracesFromSwitchSections.png)
 
 #### Remove comment \(RR0098\)
@@ -966,7 +1202,28 @@ public enum Foo
 #### Replace ?: with if\-else \(RR0120\)
 
 * **Syntax**: local declaration statement with conditional expression, assignment with conditional expression, return statement conditional expression, yield statement conditional expression
-![Replace ?: with if-else](../../images/refactorings/ReplaceConditionalExpressionWithIfElse.png)
+
+#### Before
+
+```csharp
+string s = (condition) ? "a" : "b";
+{
+}
+```
+
+#### After
+
+```csharp
+string s;
+if (condition)
+{
+    s = "a";
+}
+else
+{
+    s = "b";
+}
+```
 
 #### Replace Any with All \(or All with Any\) \(RR0116\)
 
@@ -1058,11 +1315,6 @@ while (condition)
 * **Span**: operator
 ![Replace equals expression with string.IsNullOrWhiteSpace](../../images/refactorings/ReplaceEqualsExpressionWithStringIsNullOrWhiteSpace.png)
 
-#### Replace expression with constant value \(RR0127\)
-
-* **Syntax**: expression that has constant value
-![Replace expression with constant value](../../images/refactorings/ReplaceExpressionWithConstantValue.png)
-
 #### Replace for statement with foreach statement \(RR0130\)
 
 * **Syntax**: for statement
@@ -1078,6 +1330,32 @@ while (condition)
 
 * **Syntax**: foreach statement
 ![Replace foreach statement with for statement](../../images/refactorings/ReplaceForEachWithFor.png)
+
+#### Replace foreach with enumerator \(RR0206\)
+
+* **Syntax**: foreach statement
+* **Span**: foreach keyword
+
+#### Before
+
+```csharp
+foreach (var item in items)
+{
+    yield return item;
+}
+```
+
+#### After
+
+```csharp
+using (var en = items.GetEnumerator())
+{
+    while (en.MoveNext())
+    {
+        yield return item;
+    }
+}
+```
 
 #### Replace foreach with for and reverse loop \(RR0188\)
 
@@ -1193,7 +1471,18 @@ string.Format("name: {0,0:f} value: {1}", name, value)
 #### Replace method group with lambda \(RR0137\)
 
 * **Syntax**: method group
-![Replace method group with lambda](../../images/refactorings/ReplaceMethodGroupWithLambda.png)
+
+#### Before
+
+```csharp
+Func<object, object, object> func = Foo;
+```
+
+#### After
+
+```csharp
+Func<object, object, object> func = (f, g) => Foo(f, g)
+```
 
 #### Replace method with property \(RR0138\)
 
@@ -1251,12 +1540,6 @@ object[] arr = null;
 
 * **Syntax**: regular string literal
 ![Replace regular string literal with verbatim string literal](../../images/refactorings/ReplaceRegularStringLiteralWithVerbatimStringLiteral.png)
-
-#### Replace string\.Contains with string\.IndexOf \(RR0144\)
-
-* **Syntax**: method invocation
-* **Span**: method name
-![Replace string.Contains with string.IndexOf](../../images/refactorings/ReplaceStringContainsWithStringIndexOf.png)
 
 #### Replace string\.Format with interpolated string \(RR0145\)
 
@@ -1322,6 +1605,46 @@ do
 * **Syntax**: lambda expression with block with single single\-line statement
 * **Span**: body
 ![Simplify lambda expression](../../images/refactorings/SimplifyLambdaExpression.png)
+
+#### Sort case labels \(RR0207\)
+
+* **Syntax**: selected case labels with string literal or enum field
+
+#### Before
+
+```csharp
+bool Foo(string s)
+{
+    switch (s)
+    {
+        case "d":
+        case "b":
+        case "a":
+        case "c":
+            return true;
+        default:
+            return false;
+    }
+}
+```
+
+#### After
+
+```csharp
+bool Foo(string s)
+{
+    switch (s)
+    {
+        case "a":
+        case "b":
+        case "c":
+        case "d":
+            return true;
+        default:
+            return false;
+    }
+}
+```
 
 #### Sort member declarations \(RR0155\)
 
@@ -1412,23 +1735,26 @@ return false;
 * **Syntax**: local declaration, field declaration, event field declaration
 ![Split variable declaration](../../images/refactorings/SplitLocalDeclaration.png)
 
-#### Swap expressions in binary expression \(RR0159\)
+#### Swap binary operands \(RR0159\)
 
-* **Syntax**: logical and/or expression
+* **Syntax**: binary expression
 * **Span**: binary operator
-![Swap expressions in binary expression](../../images/refactorings/SwapExpressionsInBinaryExpression.png)
 
-#### Swap expressions in conditional expression \(RR0160\)
+#### Before
 
-* **Syntax**: conditional expression
-* **Span**: condition
-![Swap expressions in conditional expression](../../images/refactorings/SwapExpressionsInConditionalExpression.png)
+```csharp
+if (x && y)
+{
+{
+```
 
-#### Swap if\-else \(RR0162\)
+#### After
 
-* **Syntax**: if statement
-* **Span**: if keyword or selected if statement
-![Swap if-else](../../images/refactorings/SwapIfElse.png)
+```csharp
+if (y && x)
+{
+{
+```
 
 #### Swap member declarations \(RR0161\)
 
